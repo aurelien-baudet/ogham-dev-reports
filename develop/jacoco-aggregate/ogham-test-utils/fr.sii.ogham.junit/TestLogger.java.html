@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>TestLogger.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">reporting</a> &gt; <a href="../index.html" class="el_bundle">ogham-test-utils</a> &gt; <a href="index.source.html" class="el_package">fr.sii.ogham.junit</a> &gt; <span class="el_source">TestLogger.java</span></div><h1>TestLogger.java</h1><pre class="source lang-java linenums">package fr.sii.ogham.junit;
+
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+public class TestLogger {
+<span class="fc" id="L8">	private static final Logger LOG = LoggerFactory.getLogger(&quot;&quot;);</span>
+	private static final String DASH = &quot;─&quot;;
+
+	private final int maxLength;
+	
+	public TestLogger(int maxLength) {
+<span class="fc" id="L14">		super();</span>
+<span class="fc" id="L15">		this.maxLength = maxLength;</span>
+<span class="fc" id="L16">	}</span>
+
+	public void writeStart(String testName) {
+<span class="fc" id="L19">		LOG.info(header());</span>
+<span class="fc" id="L20">		LOG.info(&quot;│{}│&quot;, format(&quot;Starting test &quot;+testName));					// NOSONAR</span>
+<span class="fc" id="L21">		LOG.info(footer());</span>
+<span class="fc" id="L22">	}</span>
+
+	public void writeSuccess(String testName) {
+<span class="fc" id="L25">		LOG.info(header());</span>
+<span class="fc" id="L26">		LOG.info(&quot;│{}│&quot;, format(&quot;Test &quot;+testName+&quot; successfully done&quot;));	// NOSONAR</span>
+<span class="fc" id="L27">		LOG.info(&quot;{}\r\n\r\n&quot;, footer());</span>
+<span class="fc" id="L28">	}</span>
+
+	public void writeFailure(String testName, Throwable e) {
+<span class="nc" id="L31">		LOG.error(&quot;&quot;);</span>
+<span class="nc" id="L32">		LOG.error(&quot;StackTrace:\r\n&quot;, e);</span>
+<span class="nc" id="L33">		LOG.error(header());</span>
+<span class="nc" id="L34">		LOG.error(&quot;│{}│&quot;, format(&quot;Test &quot;+testName+&quot; has failed&quot;));</span>
+<span class="nc" id="L35">		LOG.error(&quot;│{}│&quot;, format(&quot;Cause: &quot;+e));</span>
+<span class="nc" id="L36">		LOG.error(&quot;{}\r\n\r\n&quot;, footer());</span>
+<span class="nc" id="L37">	}</span>
+
+	private String dashLine() {
+<span class="fc" id="L40">		return StringUtils.repeat(DASH, maxLength-2);</span>
+	}
+	
+	private String header() {
+<span class="fc" id="L44">		return &quot;┌&quot;+dashLine()+&quot;┐&quot;;</span>
+	}
+
+	private String footer() {
+<span class="fc" id="L48">		return &quot;└&quot;+dashLine()+&quot;┘&quot;;</span>
+	}
+
+	private String format(String text) {
+<span class="fc" id="L52">		return StringUtils.center(StringUtils.abbreviate(text, maxLength-4), maxLength-2);</span>
+	}
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>
