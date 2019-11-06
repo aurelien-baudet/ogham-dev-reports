@@ -10,6 +10,7 @@ import fr.sii.ogham.core.exception.template.ParseException;
 import fr.sii.ogham.core.message.content.Content;
 import fr.sii.ogham.core.message.content.ParsedContent;
 import fr.sii.ogham.core.resource.path.ResourcePath;
+import fr.sii.ogham.core.resource.resolver.ResourceResolver;
 import fr.sii.ogham.core.template.context.Context;
 import fr.sii.ogham.core.template.parser.TemplateParser;
 import fr.sii.ogham.template.exception.TemplateRuntimeException;
@@ -21,7 +22,7 @@ import fr.sii.ogham.template.exception.TemplateRuntimeException;
  *
  */
 public class ThymeleafParser implements TemplateParser {
-<span class="fc" id="L24">	private static final Logger LOG = LoggerFactory.getLogger(ThymeleafParser.class);</span>
+<span class="fc" id="L25">	private static final Logger LOG = LoggerFactory.getLogger(ThymeleafParser.class);</span>
 
 	/**
 	 * Thymeleaf engine
@@ -32,35 +33,41 @@ public class ThymeleafParser implements TemplateParser {
 	 * Converts general context into Thymeleaf specific context
 	 */
 	private ThymeleafContextConverter contextConverter;
-	
-	public ThymeleafParser(TemplateEngine engine, ThymeleafContextConverter contextConverter) {
-<span class="fc" id="L37">		super();</span>
-<span class="fc" id="L38">		this.engine = engine;</span>
-<span class="fc" id="L39">		this.contextConverter = contextConverter;</span>
-<span class="fc" id="L40">	}</span>
 
-	public ThymeleafParser(TemplateEngine engine) {
-<span class="nc" id="L43">		this(engine, new SimpleThymeleafContextConverter());</span>
-<span class="nc" id="L44">	}</span>
+	/**
+	 * The template resolver used to find the template
+	 */
+	private final ResourceResolver resolver;
+	
+	public ThymeleafParser(TemplateEngine engine, ResourceResolver resolver, ThymeleafContextConverter contextConverter) {
+<span class="fc" id="L43">		super();</span>
+<span class="fc" id="L44">		this.engine = engine;</span>
+<span class="fc" id="L45">		this.resolver = resolver;</span>
+<span class="fc" id="L46">		this.contextConverter = contextConverter;</span>
+<span class="fc" id="L47">	}</span>
+
+	public ThymeleafParser(TemplateEngine engine, ResourceResolver resolver) {
+<span class="nc" id="L50">		this(engine, resolver, new SimpleThymeleafContextConverter());</span>
+<span class="nc" id="L51">	}</span>
 	
 	@Override
 	public Content parse(ResourcePath templatePath, Context ctx) throws ParseException {
 		try {
-<span class="fc" id="L49">			LOG.debug(&quot;Parsing Thymeleaf template {} with context {}...&quot;, templatePath, ctx);</span>
-<span class="fc" id="L50">			String result = engine.process(templatePath.getOriginalPath(), contextConverter.convert(ctx));</span>
-<span class="fc" id="L51">			LOG.debug(&quot;Template {} successfully parsed with context {}. Result:&quot;, templatePath, ctx);</span>
-<span class="fc" id="L52">			LOG.debug(result);</span>
-<span class="fc" id="L53">			return new ParsedContent(templatePath, ctx, result);</span>
-<span class="fc" id="L54">		} catch (TemplateEngineException | TemplateRuntimeException e) {</span>
-<span class="fc" id="L55">			throw new ParseException(&quot;Failed to parse template with thymeleaf&quot;, templatePath, ctx, e);</span>
-<span class="nc" id="L56">		} catch (ContextException e) {</span>
-<span class="nc" id="L57">			throw new ParseException(&quot;Failed to parse template with thymeleaf due to conversion error&quot;, templatePath, ctx, e);</span>
+<span class="fc" id="L56">			LOG.debug(&quot;Parsing Thymeleaf template {} with context {}...&quot;, templatePath, ctx);</span>
+<span class="fc" id="L57">			String result = engine.process(templatePath.getOriginalPath(), contextConverter.convert(ctx));</span>
+<span class="fc" id="L58">			LOG.debug(&quot;Template {} successfully parsed with context {}. Result:&quot;, templatePath, ctx);</span>
+<span class="fc" id="L59">			LOG.debug(result);</span>
+<span class="fc" id="L60">			return new ParsedContent(resolver.resolve(templatePath), ctx, result);</span>
+<span class="fc" id="L61">		} catch (TemplateEngineException | TemplateRuntimeException e) {</span>
+<span class="fc" id="L62">			throw new ParseException(&quot;Failed to parse template with thymeleaf&quot;, templatePath, ctx, e);</span>
+<span class="nc" id="L63">		} catch (ContextException e) {</span>
+<span class="nc" id="L64">			throw new ParseException(&quot;Failed to parse template with thymeleaf due to conversion error&quot;, templatePath, ctx, e);</span>
 		}
 	}
 
 	@Override
 	public String toString() {
-<span class="fc" id="L63">		return &quot;ThymeleafParser&quot;;</span>
+<span class="fc" id="L70">		return &quot;ThymeleafParser&quot;;</span>
 	}
 	
 }
