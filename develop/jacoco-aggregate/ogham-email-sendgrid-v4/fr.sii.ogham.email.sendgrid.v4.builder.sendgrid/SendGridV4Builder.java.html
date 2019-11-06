@@ -373,74 +373,78 @@ public class SendGridV4Builder extends AbstractSendGridBuilder&lt;SendGridV4Buil
 <span class="fc" id="L373">			return null;</span>
 		}
 <span class="fc" id="L375">		LOG.info(&quot;Sending email using SendGrid API is registered&quot;);</span>
-<span class="fc" id="L376">		LOG.debug(&quot;SendGrid account: apiKey={}, test={}&quot;, apiKey, test);</span>
-<span class="fc" id="L377">		return new SendGridV4Sender(builtClient, buildContentHandler(), buildMimetypeProvider(), interceptor);</span>
+<span class="fc bfc" id="L376" title="All 2 branches covered.">		if (client == null) {</span>
+<span class="fc" id="L377">			LOG.debug(&quot;SendGrid account: apiKey={}, test={}&quot;, apiKey, test);</span>
+		} else {
+<span class="fc" id="L379">			LOG.debug(&quot;SendGrid instance provided so apiKey and unitTesting properties are not used&quot;);</span>
+		}
+<span class="fc" id="L381">		return new SendGridV4Sender(builtClient, buildContentHandler(), buildMimetypeProvider(), interceptor);</span>
 	}
 
 	private Client buildClientHelper(Client clientHelper, CloseableHttpClient httpClient, boolean test, URL url) {
 		// custom implementation
-<span class="pc bpc" id="L382" title="1 of 2 branches missed.">		if (clientHelper != null) {</span>
-<span class="nc" id="L383">			return clientHelper;</span>
+<span class="pc bpc" id="L386" title="1 of 2 branches missed.">		if (clientHelper != null) {</span>
+<span class="nc" id="L387">			return clientHelper;</span>
 		}
 		// case where custom URL is set.
 		// SendGrid Client doesn't support neither custom port nor custom
 		// protocol
-<span class="pc bpc" id="L388" title="1 of 4 branches missed.">		if (url != null &amp;&amp; httpClient != null) {</span>
-<span class="nc" id="L389">			return new CustomizableUrlClient(httpClient, url.getProtocol(), url.getPort());</span>
+<span class="pc bpc" id="L392" title="1 of 4 branches missed.">		if (url != null &amp;&amp; httpClient != null) {</span>
+<span class="nc" id="L393">			return new CustomizableUrlClient(httpClient, url.getProtocol(), url.getPort());</span>
 		}
-<span class="fc bfc" id="L391" title="All 2 branches covered.">		if (url != null) {</span>
-<span class="fc" id="L392">			return new CustomizableUrlClient(test, url.getProtocol(), url.getPort());</span>
+<span class="fc bfc" id="L395" title="All 2 branches covered.">		if (url != null) {</span>
+<span class="fc" id="L396">			return new CustomizableUrlClient(test, url.getProtocol(), url.getPort());</span>
 		}
 		// custom http client
-<span class="pc bpc" id="L395" title="1 of 2 branches missed.">		if (httpClient != null) {</span>
-<span class="nc" id="L396">			return new Client(httpClient);</span>
+<span class="pc bpc" id="L399" title="1 of 2 branches missed.">		if (httpClient != null) {</span>
+<span class="nc" id="L400">			return new Client(httpClient);</span>
 		}
 		// test client (just to allow http instead of https)
-<span class="pc bpc" id="L399" title="1 of 2 branches missed.">		if (test) {</span>
-<span class="nc" id="L400">			return new Client(true);</span>
+<span class="pc bpc" id="L403" title="1 of 2 branches missed.">		if (test) {</span>
+<span class="nc" id="L404">			return new Client(true);</span>
 		}
 		// use default Client implementation created directly by SendGrid
-<span class="fc" id="L403">		return null;</span>
+<span class="fc" id="L407">		return null;</span>
 	}
 
 	private SendGridClient buildClient(String apiKey, Client client, URL url) {
-<span class="fc bfc" id="L407" title="All 2 branches covered.">		if (this.client != null) {</span>
-<span class="fc" id="L408">			return this.client;</span>
+<span class="fc bfc" id="L411" title="All 2 branches covered.">		if (this.client != null) {</span>
+<span class="fc" id="L412">			return this.client;</span>
 		}
-<span class="fc bfc" id="L410" title="All 2 branches covered.">		if (apiKey != null) {</span>
-<span class="fc" id="L411">			return new DelegateSendGridClient(buildSendGrid(apiKey, client, url));</span>
+<span class="fc bfc" id="L414" title="All 2 branches covered.">		if (apiKey != null) {</span>
+<span class="fc" id="L415">			return new DelegateSendGridClient(buildSendGrid(apiKey, client, url));</span>
 		}
-<span class="fc" id="L413">		return null;</span>
+<span class="fc" id="L417">		return null;</span>
 	}
 
 	private SendGrid buildSendGrid(String apiKey, Client client, URL url) {
-<span class="fc" id="L417">		SendGrid sendGrid = newSendGrid(apiKey, client);</span>
-<span class="fc bfc" id="L418" title="All 2 branches covered.">		if (url != null) {</span>
-<span class="fc" id="L419">			sendGrid.setHost(url.getHost());</span>
+<span class="fc" id="L421">		SendGrid sendGrid = newSendGrid(apiKey, client);</span>
+<span class="fc bfc" id="L422" title="All 2 branches covered.">		if (url != null) {</span>
+<span class="fc" id="L423">			sendGrid.setHost(url.getHost());</span>
 		}
-<span class="fc" id="L421">		return sendGrid;</span>
+<span class="fc" id="L425">		return sendGrid;</span>
 	}
 
 	private SendGrid newSendGrid(String apiKey, Client client) {
-<span class="fc bfc" id="L425" title="All 2 branches covered.">		if (client != null) {</span>
-<span class="fc" id="L426">			return new SendGrid(apiKey, client);</span>
+<span class="fc bfc" id="L429" title="All 2 branches covered.">		if (client != null) {</span>
+<span class="fc" id="L430">			return new SendGrid(apiKey, client);</span>
 		}
-<span class="fc" id="L428">		return new SendGrid(apiKey);</span>
+<span class="fc" id="L432">		return new SendGrid(apiKey);</span>
 	}
 
 	private MapContentHandler buildContentHandler() {
-<span class="fc" id="L432">		MimeTypeProvider mimetypeProvider = buildMimetypeProvider();</span>
-<span class="fc" id="L433">		MapContentHandler contentHandler = new MapContentHandler();</span>
-<span class="fc" id="L434">		contentHandler.register(MultiContent.class, new MultiContentHandler(contentHandler));</span>
-<span class="fc" id="L435">		contentHandler.register(MayHaveStringContent.class, new StringContentHandler(mimetypeProvider));</span>
-<span class="fc" id="L436">		return contentHandler;</span>
+<span class="fc" id="L436">		MimeTypeProvider mimetypeProvider = buildMimetypeProvider();</span>
+<span class="fc" id="L437">		MapContentHandler contentHandler = new MapContentHandler();</span>
+<span class="fc" id="L438">		contentHandler.register(MultiContent.class, new MultiContentHandler(contentHandler));</span>
+<span class="fc" id="L439">		contentHandler.register(MayHaveStringContent.class, new StringContentHandler(mimetypeProvider));</span>
+<span class="fc" id="L440">		return contentHandler;</span>
 	}
 
 	private MimeTypeProvider buildMimetypeProvider() {
-<span class="pc bpc" id="L440" title="1 of 2 branches missed.">		if (mimetypeBuilder == null) {</span>
-<span class="nc" id="L441">			return null;</span>
+<span class="pc bpc" id="L444" title="1 of 2 branches missed.">		if (mimetypeBuilder == null) {</span>
+<span class="nc" id="L445">			return null;</span>
 		}
-<span class="fc" id="L443">		return mimetypeBuilder.build();</span>
+<span class="fc" id="L447">		return mimetypeBuilder.build();</span>
 	}
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

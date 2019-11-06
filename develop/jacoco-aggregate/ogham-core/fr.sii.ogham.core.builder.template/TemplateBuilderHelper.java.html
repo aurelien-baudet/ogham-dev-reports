@@ -19,8 +19,8 @@ import fr.sii.ogham.core.template.parser.AutoDetectTemplateParser;
 import fr.sii.ogham.core.template.parser.AutoDetectTemplateParser.TemplateImplementation;
 import fr.sii.ogham.core.template.parser.TemplateParser;
 import fr.sii.ogham.template.common.adapter.FailIfNotFoundVariantResolver;
+import fr.sii.ogham.template.common.adapter.FailIfNotFoundWithTestedPathsVariantResolver;
 import fr.sii.ogham.template.common.adapter.FirstExistingResourceVariantResolver;
-import fr.sii.ogham.template.common.adapter.NullVariantResolver;
 import fr.sii.ogham.template.common.adapter.VariantResolver;
 
 /**
@@ -222,24 +222,33 @@ public class TemplateBuilderHelper&lt;P&gt; {
 	}
 
 	private VariantResolver buildDefaultVariantResolver() {
-<span class="pc bpc" id="L225" title="1 of 2 branches missed.">		if (missingVariantFail) {</span>
-<span class="nc" id="L226">			return new FailIfNotFoundVariantResolver();</span>
+<span class="pc bpc" id="L225" title="1 of 2 branches missed.">		if (missingResolver != null) {</span>
+<span class="nc" id="L226">			return missingResolver;</span>
 		}
-<span class="pc bpc" id="L228" title="1 of 2 branches missed.">		return missingResolver == null ? new NullVariantResolver() : missingResolver;</span>
+<span class="pc bpc" id="L228" title="1 of 2 branches missed.">		if (missingVariantFail) {</span>
+<span class="nc" id="L229">			return new FailIfNotFoundVariantResolver();</span>
+		}
+<span class="fc" id="L231">		FailIfNotFoundWithTestedPathsVariantResolver fail = new FailIfNotFoundWithTestedPathsVariantResolver();</span>
+<span class="fc bfc" id="L232" title="All 2 branches covered.">		for (Builder&lt;? extends TemplateParser&gt; builder : templateBuilders) {</span>
+<span class="pc bpc" id="L233" title="1 of 2 branches missed.">			if (builder instanceof VariantBuilder) {</span>
+<span class="fc" id="L234">				fail.addVariantResolver(((VariantBuilder&lt;?&gt;) builder).buildVariant());</span>
+			}
+<span class="fc" id="L236">		}</span>
+<span class="fc" id="L237">		return fail;</span>
 	}
 
 	private List&lt;TemplateImplementation&gt; buildTemplateParserImpls() {
-<span class="fc" id="L232">		List&lt;TemplateImplementation&gt; impls = new ArrayList&lt;&gt;();</span>
-<span class="fc bfc" id="L233" title="All 2 branches covered.">		for (Builder&lt;? extends TemplateParser&gt; builder : templateBuilders) {</span>
+<span class="fc" id="L241">		List&lt;TemplateImplementation&gt; impls = new ArrayList&lt;&gt;();</span>
+<span class="fc bfc" id="L242" title="All 2 branches covered.">		for (Builder&lt;? extends TemplateParser&gt; builder : templateBuilders) {</span>
 			TemplateEngineDetector detector;
-<span class="pc bpc" id="L235" title="1 of 2 branches missed.">			if (builder instanceof DetectorBuilder) {</span>
-<span class="fc" id="L236">				detector = ((DetectorBuilder&lt;?&gt;) builder).buildDetector();</span>
+<span class="pc bpc" id="L244" title="1 of 2 branches missed.">			if (builder instanceof DetectorBuilder) {</span>
+<span class="fc" id="L245">				detector = ((DetectorBuilder&lt;?&gt;) builder).buildDetector();</span>
 			} else {
-<span class="nc" id="L238">				detector = new FixedEngineDetector(true);</span>
+<span class="nc" id="L247">				detector = new FixedEngineDetector(true);</span>
 			}
-<span class="fc" id="L240">			impls.add(new TemplateImplementation(detector, builder.build()));</span>
-<span class="fc" id="L241">		}</span>
-<span class="fc" id="L242">		return impls;</span>
+<span class="fc" id="L249">			impls.add(new TemplateImplementation(detector, builder.build()));</span>
+<span class="fc" id="L250">		}</span>
+<span class="fc" id="L251">		return impls;</span>
 	}
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

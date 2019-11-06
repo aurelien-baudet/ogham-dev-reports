@@ -43,42 +43,39 @@ public class AutoDetectTemplateParser implements TemplateParser {
 		try {
 <span class="fc" id="L44">			LOG.info(&quot;Start template engine automatic detection for {}&quot;, templatePath);</span>
 <span class="fc" id="L45">			TemplateParser parser = findParser(templatePath, ctx);</span>
-<span class="pc bpc" id="L46" title="1 of 2 branches missed.">			if (parser == null) {</span>
-<span class="nc" id="L47">				throw new NoEngineDetectionException(&quot;Auto detection couldn't find any parser able to handle the template &quot; + templatePath);</span>
-			}
-<span class="fc" id="L49">			LOG.info(&quot;Parse the template {} using template engine {}&quot;, templatePath, parser);</span>
-<span class="fc" id="L50">			return parser.parse(templatePath, ctx);</span>
-<span class="nc" id="L51">		} catch (EngineDetectionException e) {</span>
-<span class="nc" id="L52">			throw new ParseException(&quot;Failed to automatically detect parser due to detection error&quot;, templatePath, ctx, e);</span>
+<span class="fc" id="L46">			LOG.info(&quot;Parse the template {} using template engine {}&quot;, templatePath, parser);</span>
+<span class="fc" id="L47">			return parser.parse(templatePath, ctx);</span>
+<span class="nc" id="L48">		} catch (EngineDetectionException e) {</span>
+<span class="nc" id="L49">			throw new ParseException(&quot;Failed to automatically detect parser due to detection error&quot;, templatePath, ctx, e);</span>
 		}
 	}
 
 	private TemplateParser findParser(ResourcePath templatePath, Context ctx) throws EngineDetectionException {
-<span class="pc bpc" id="L57" title="1 of 2 branches missed.">		for (TemplateImplementation impl : implementations) {</span>
-<span class="fc bfc" id="L58" title="All 2 branches covered.">			if (impl.getDetector().canParse(templatePath, ctx)) {</span>
-<span class="fc" id="L59">				TemplateParser parser = impl.getParser();</span>
-<span class="fc" id="L60">				LOG.debug(&quot;Template engine {} is used for {}&quot;, parser, templatePath);</span>
-<span class="fc" id="L61">				return parser;</span>
+<span class="pc bpc" id="L54" title="1 of 2 branches missed.">		for (TemplateImplementation impl : implementations) {</span>
+<span class="fc bfc" id="L55" title="All 2 branches covered.">			if (impl.getDetector().canParse(templatePath, ctx)) {</span>
+<span class="fc" id="L56">				TemplateParser parser = impl.getParser();</span>
+<span class="fc" id="L57">				LOG.debug(&quot;Template engine {} is used for {}&quot;, parser, templatePath);</span>
+<span class="fc" id="L58">				return parser;</span>
 			} else {
-<span class="fc" id="L63">				LOG.debug(&quot;Template engine {} can't be used for {}&quot;, impl.getParser(), templatePath);</span>
+<span class="fc" id="L60">				LOG.debug(&quot;Template engine {} can't be used for {}&quot;, impl.getParser(), templatePath);</span>
 			}
-<span class="fc" id="L65">		}</span>
-<span class="nc" id="L66">		return null;</span>
+<span class="fc" id="L62">		}</span>
+<span class="nc" id="L63">		throw new NoEngineDetectionException(&quot;Auto detection couldn't find any parser able to handle the template &quot; + templatePath.getOriginalPath());</span>
 	}
 
 	public static class TemplateImplementation {
 		private final TemplateEngineDetector detector;
 		private final TemplateParser parser;
 		public TemplateImplementation(TemplateEngineDetector detector, TemplateParser parser) {
-<span class="fc" id="L73">			super();</span>
-<span class="fc" id="L74">			this.detector = detector;</span>
-<span class="fc" id="L75">			this.parser = parser;</span>
-<span class="fc" id="L76">		}</span>
+<span class="fc" id="L70">			super();</span>
+<span class="fc" id="L71">			this.detector = detector;</span>
+<span class="fc" id="L72">			this.parser = parser;</span>
+<span class="fc" id="L73">		}</span>
 		public TemplateEngineDetector getDetector() {
-<span class="fc" id="L78">			return detector;</span>
+<span class="fc" id="L75">			return detector;</span>
 		}
 		public TemplateParser getParser() {
-<span class="fc" id="L81">			return parser;</span>
+<span class="fc" id="L78">			return parser;</span>
 		}
 	}
 }
