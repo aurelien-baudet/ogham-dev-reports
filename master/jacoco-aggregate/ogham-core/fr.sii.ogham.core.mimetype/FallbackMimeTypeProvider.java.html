@@ -108,16 +108,19 @@ public class FallbackMimeTypeProvider implements MimeTypeProvider {
 	public MimeType detect(String content) throws MimeTypeDetectionException {
 <span class="pc bpc" id="L109" title="1 of 2 branches missed.">		for (MimeTypeProvider provider : providers) {</span>
 			try {
-<span class="fc" id="L111">				LOG.debug(&quot;Trying to get mime type using {} from content {}&quot;, provider, content);</span>
-<span class="fc" id="L112">				MimeType mimetype = provider.detect(content);</span>
-<span class="fc" id="L113">				LOG.debug(&quot;{} has detected mime type {} from content {}&quot;, provider, mimetype, content);</span>
-<span class="fc" id="L114">				return mimetype;</span>
-<span class="nc" id="L115">			} catch (MimeTypeDetectionException e) {</span>
+<span class="fc" id="L111">				LOG.debug(&quot;Trying to get mime type using {} from content&quot;, provider);</span>
+<span class="fc" id="L112">				LOG.trace(&quot;content: {}&quot;, content);</span>
+<span class="fc" id="L113">				MimeType mimetype = provider.detect(content);</span>
+<span class="fc" id="L114">				LOG.debug(&quot;{} has detected mime type {} from content&quot;, provider, mimetype);</span>
+<span class="fc" id="L115">				LOG.trace(&quot;content: {}&quot;, content);</span>
+<span class="fc" id="L116">				return mimetype;</span>
+<span class="nc" id="L117">			} catch (MimeTypeDetectionException e) {</span>
 				// nothing to do =&gt; try next one
-<span class="nc" id="L117">				LOG.debug(&quot;{} could not detect mime type from content {}. Cause: {}&quot;, provider, content, e);</span>
+<span class="nc" id="L119">				LOG.debug(&quot;{} could not detect mime type from content. Cause: {}&quot;, provider, e);</span>
+<span class="nc" id="L120">				LOG.trace(&quot;content: {}&quot;, content);</span>
 			}
-<span class="nc" id="L119">		}</span>
-<span class="nc" id="L120">		throw new MimeTypeDetectionException(&quot;No mimetype provider could provide the mimetype from the provided content&quot;);</span>
+<span class="nc" id="L122">		}</span>
+<span class="nc" id="L123">		throw new MimeTypeDetectionException(&quot;No mimetype provider could provide the mimetype from the provided content&quot;);</span>
 	}
 
 	/**
@@ -128,8 +131,8 @@ public class FallbackMimeTypeProvider implements MimeTypeProvider {
 	 *            the implementation to register
 	 */
 	public void addProvider(MimeTypeProvider provider) {
-<span class="nc" id="L131">		providers.add(provider);</span>
-<span class="nc" id="L132">	}</span>
+<span class="nc" id="L134">		providers.add(provider);</span>
+<span class="nc" id="L135">	}</span>
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

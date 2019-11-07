@@ -3,21 +3,27 @@
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class SequentialIdGenerator implements IdGenerator {
-	private AtomicInteger idx;
-	
-	public SequentialIdGenerator(int initial) {
-<span class="fc" id="L9">		super();</span>
-<span class="fc" id="L10">		this.idx = new AtomicInteger(initial);</span>
-<span class="fc" id="L11">	}</span>
+	private final AtomicInteger idx;
+	private final boolean useNamePrefix;
 
 	public SequentialIdGenerator() {
-<span class="fc" id="L14">		this(0);</span>
+<span class="fc" id="L10">		this(false);</span>
+<span class="fc" id="L11">	}</span>
+
+	public SequentialIdGenerator(boolean useNamePrefix) {
+<span class="fc" id="L14">		this(useNamePrefix, 0);</span>
 <span class="fc" id="L15">	}</span>
+	
+	public SequentialIdGenerator(boolean useNamePrefix, int initial) {
+<span class="fc" id="L18">		super();</span>
+<span class="fc" id="L19">		this.idx = new AtomicInteger(initial);</span>
+<span class="fc" id="L20">		this.useNamePrefix = useNamePrefix;</span>
+<span class="fc" id="L21">	}</span>
 	
 
 	@Override
 	public String generate(String name) {
-<span class="fc" id="L20">		return name+idx.getAndIncrement();</span>
+<span class="pc bpc" id="L26" title="1 of 2 branches missed.">		return (useNamePrefix ? name : &quot;&quot;)+idx.getAndIncrement();</span>
 	}
 
 }
