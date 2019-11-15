@@ -44,19 +44,19 @@ public class ThymeleafV2TemplateDetector implements TemplateEngineDetector {
 
 	@Override
 	public boolean canParse(ResourcePath template, Context ctx) throws EngineDetectionException {
-<span class="nc" id="L47">		LOG.debug(&quot;Checking if Thymeleaf can handle the template {}&quot;, template);</span>
-<span class="nc" id="L48">		Resource resolvedTemplate = getTemplate(template);</span>
-<span class="nc bnc" id="L49" title="All 2 branches missed.">		if (resolvedTemplate == null) {</span>
+<span class="fc" id="L47">		LOG.debug(&quot;Checking if Thymeleaf can handle the template {}&quot;, template);</span>
+<span class="fc" id="L48">		Resource resolvedTemplate = getTemplate(template);</span>
+<span class="pc bpc" id="L49" title="1 of 2 branches missed.">		if (resolvedTemplate == null) {</span>
 <span class="nc" id="L50">			return false;</span>
 		}
-<span class="nc" id="L52">		try (BufferedReader br = new BufferedReader(new InputStreamReader(resolvedTemplate.getInputStream()))) {</span>
-<span class="nc" id="L53">			boolean containsThymeleafNamespace = containsThymeleafNamespace(br);</span>
-<span class="nc bnc" id="L54" title="All 2 branches missed.">			if (containsThymeleafNamespace) {</span>
-<span class="nc" id="L55">				LOG.debug(&quot;The template {} contains the namespace http://www.thymeleaf.org. Thymeleaf can be used&quot;, template);</span>
+<span class="fc" id="L52">		try (BufferedReader br = new BufferedReader(new InputStreamReader(resolvedTemplate.getInputStream()))) {</span>
+<span class="fc" id="L53">			boolean containsThymeleafNamespace = containsThymeleafNamespace(br);</span>
+<span class="fc bfc" id="L54" title="All 2 branches covered.">			if (containsThymeleafNamespace) {</span>
+<span class="fc" id="L55">				LOG.debug(&quot;The template {} contains the namespace http://www.thymeleaf.org. Thymeleaf can be used&quot;, template);</span>
 			} else {
-<span class="nc" id="L57">				LOG.debug(&quot;The template {} doesn't contain the namespace http://www.thymeleaf.org. Thymeleaf can't be used&quot;, template);</span>
+<span class="fc" id="L57">				LOG.debug(&quot;The template {} doesn't contain the namespace http://www.thymeleaf.org. Thymeleaf can't be used&quot;, template);</span>
 			}
-<span class="nc" id="L59">			return containsThymeleafNamespace;</span>
+<span class="fc" id="L59">			return containsThymeleafNamespace;</span>
 <span class="nc" id="L60">		} catch (IOException e) {</span>
 <span class="nc" id="L61">			throw new EngineDetectionException(&quot;Failed to detect if template can be read by thymeleaf&quot;, e);</span>
 		}
@@ -65,17 +65,17 @@ public class ThymeleafV2TemplateDetector implements TemplateEngineDetector {
 	private boolean containsThymeleafNamespace(BufferedReader br) throws IOException {
 		String line;
 		do {
-<span class="nc" id="L68">			line = br.readLine();</span>
-<span class="nc bnc" id="L69" title="All 4 branches missed.">			if (line != null &amp;&amp; NAMESPACE_PATTERN.matcher(line).find()) {</span>
-<span class="nc" id="L70">				return true;</span>
+<span class="fc" id="L68">			line = br.readLine();</span>
+<span class="fc bfc" id="L69" title="All 4 branches covered.">			if (line != null &amp;&amp; NAMESPACE_PATTERN.matcher(line).find()) {</span>
+<span class="fc" id="L70">				return true;</span>
 			}
-<span class="nc bnc" id="L72" title="All 2 branches missed.">		} while (line != null);</span>
-<span class="nc" id="L73">		return false;</span>
+<span class="fc bfc" id="L72" title="All 2 branches covered.">		} while (line != null);</span>
+<span class="fc" id="L73">		return false;</span>
 	}
 
 	private Resource getTemplate(ResourcePath templateName) {
 		try {
-<span class="nc" id="L78">			return resolver.getResource(templateName);</span>
+<span class="fc" id="L78">			return resolver.getResource(templateName);</span>
 <span class="nc" id="L79">		} catch (ResourceResolutionException e) {</span>
 <span class="nc" id="L80">			LOG.trace(&quot;Thymeleaf detector can't be applied because &quot; + templateName + &quot; couldn't be resolved&quot;, e);</span>
 <span class="nc" id="L81">			return null;</span>
