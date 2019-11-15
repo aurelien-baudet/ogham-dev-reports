@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import fr.sii.ogham.core.builder.AbstractParent;
 import fr.sii.ogham.core.builder.Builder;
@@ -55,11 +56,11 @@ public class FreemarkerConfigurationBuilder&lt;P&gt; extends AbstractParent&lt;P
 	 *            the configuration for property resolution and evaluation
 	 */
 	public FreemarkerConfigurationBuilder(P parent, EnvironmentBuilder&lt;?&gt; environmentBuilder) {
-<span class="fc" id="L58">		super(parent);</span>
-<span class="fc" id="L59">		defaultEncodings = new ArrayList&lt;&gt;();</span>
-<span class="fc" id="L60">		sharedVariables = new HashMap&lt;&gt;();</span>
-<span class="fc" id="L61">		this.environmentBuilder = environmentBuilder;</span>
-<span class="fc" id="L62">	}</span>
+<span class="fc" id="L59">		super(parent);</span>
+<span class="fc" id="L60">		defaultEncodings = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L61">		sharedVariables = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L62">		this.environmentBuilder = environmentBuilder;</span>
+<span class="fc" id="L63">	}</span>
 
 	/**
 	 * Sets the base configuration that will be configured.
@@ -71,8 +72,8 @@ public class FreemarkerConfigurationBuilder&lt;P&gt; extends AbstractParent&lt;P
 	 * @return this instance for fluent chaining
 	 */
 	public FreemarkerConfigurationBuilder&lt;P&gt; base(Configuration base) {
-<span class="fc" id="L74">		this.base = base;</span>
-<span class="fc" id="L75">		return this;</span>
+<span class="fc" id="L75">		this.base = base;</span>
+<span class="fc" id="L76">		return this;</span>
 	}
 
 	/**
@@ -89,8 +90,8 @@ public class FreemarkerConfigurationBuilder&lt;P&gt; extends AbstractParent&lt;P
 	 * @return this instance for fluent chaining
 	 */
 	public FreemarkerConfigurationBuilder&lt;P&gt; version(Version version) {
-<span class="nc" id="L92">		this.version = version;</span>
-<span class="nc" id="L93">		return this;</span>
+<span class="nc" id="L93">		this.version = version;</span>
+<span class="nc" id="L94">		return this;</span>
 	}
 
 	/**
@@ -136,8 +137,8 @@ public class FreemarkerConfigurationBuilder&lt;P&gt; extends AbstractParent&lt;P
 	 * @return this instance for fluent chaining
 	 */
 	public FreemarkerConfigurationBuilder&lt;P&gt; defaultEncoding(String... encodings) {
-<span class="fc" id="L139">		this.defaultEncodings.addAll(Arrays.asList(encodings));</span>
-<span class="fc" id="L140">		return this;</span>
+<span class="fc" id="L140">		this.defaultEncodings.addAll(Arrays.asList(encodings));</span>
+<span class="fc" id="L141">		return this;</span>
 	}
 
 	/**
@@ -174,8 +175,8 @@ public class FreemarkerConfigurationBuilder&lt;P&gt; extends AbstractParent&lt;P
 	 * @return this instance for fluent chaining
 	 */
 	public FreemarkerConfigurationBuilder&lt;P&gt; templateExceptionHandler(TemplateExceptionHandler exceptionHandler) {
-<span class="fc" id="L177">		this.templateExceptionHandler = exceptionHandler;</span>
-<span class="fc" id="L178">		return this;</span>
+<span class="fc" id="L178">		this.templateExceptionHandler = exceptionHandler;</span>
+<span class="fc" id="L179">		return this;</span>
 	}
 
 	/**
@@ -185,9 +186,10 @@ public class FreemarkerConfigurationBuilder&lt;P&gt; extends AbstractParent&lt;P
 	 * contain a variable with the same name.
 	 *
 	 * &lt;p&gt;
-	 * Never use &lt;tt&gt;TemplateModel&lt;/tt&gt; implementation that is not thread-safe
-	 * for shared sharedVariables, if the configuration is used by multiple
-	 * threads! It is the typical situation for Servlet based Web sites.
+	 * Never use &lt;code&gt;TemplateModel&lt;/code&gt; implementation that is not
+	 * thread-safe for shared sharedVariables, if the configuration is used by
+	 * multiple threads! It is the typical situation for Servlet based Web
+	 * sites.
 	 * 
 	 * &lt;p&gt;
 	 * This method is &lt;b&gt;not&lt;/b&gt; thread safe; use it with the same restrictions
@@ -206,8 +208,8 @@ public class FreemarkerConfigurationBuilder&lt;P&gt; extends AbstractParent&lt;P
 	 * @return this instance for fluent chaining
 	 */
 	public FreemarkerConfigurationBuilder&lt;P&gt; addSharedVariable(String name, TemplateModel tm) {
-<span class="nc" id="L209">		this.sharedVariables.put(name, tm);</span>
-<span class="nc" id="L210">		return this;</span>
+<span class="nc" id="L211">		this.sharedVariables.put(name, tm);</span>
+<span class="nc" id="L212">		return this;</span>
 	}
 
 	/**
@@ -238,8 +240,8 @@ public class FreemarkerConfigurationBuilder&lt;P&gt; extends AbstractParent&lt;P
 	 * @return this instance for fluent chaining
 	 */
 	public FreemarkerConfigurationBuilder&lt;P&gt; addSharedVariable(String name, Object value) throws TemplateModelException {
-<span class="nc" id="L241">		this.sharedVariables.put(name, value);</span>
-<span class="nc" id="L242">		return this;</span>
+<span class="nc" id="L243">		this.sharedVariables.put(name, value);</span>
+<span class="nc" id="L244">		return this;</span>
 	}
 
 	/**
@@ -249,10 +251,10 @@ public class FreemarkerConfigurationBuilder&lt;P&gt; extends AbstractParent&lt;P
 	 * before doing this.
 	 *
 	 * &lt;p&gt;
-	 * Never use &lt;tt&gt;TemplateModel&lt;/tt&gt; implementation that is not thread-safe
-	 * for shared shared variable values, if the configuration is used by
-	 * multiple threads! It is the typical situation for Servlet based Web
-	 * sites.
+	 * Never use &lt;code&gt;TemplateModel&lt;/code&gt; implementation that is not
+	 * thread-safe for shared shared variable values, if the configuration is
+	 * used by multiple threads! It is the typical situation for Servlet based
+	 * Web sites.
 	 *
 	 * &lt;p&gt;
 	 * This method is &lt;b&gt;not&lt;/b&gt; thread safe; use it with the same restrictions
@@ -266,43 +268,46 @@ public class FreemarkerConfigurationBuilder&lt;P&gt; extends AbstractParent&lt;P
 	 * @return this instance for fluent chaining
 	 */
 	public FreemarkerConfigurationBuilder&lt;P&gt; addSharedVariables(TemplateHashModelEx variables) {
-<span class="fc" id="L269">		this.variablesHash = variables;</span>
-<span class="fc" id="L270">		return this;</span>
+<span class="fc" id="L271">		this.variablesHash = variables;</span>
+<span class="fc" id="L272">		return this;</span>
 	}
 
 	@Override
 	public Configuration build() {
-<span class="fc" id="L275">		Configuration configuration = getConfiguration();</span>
-<span class="fc" id="L276">		PropertyResolver propertyResolver = environmentBuilder.build();</span>
-<span class="fc" id="L277">		String defaultEncoding = BuilderUtils.evaluate(defaultEncodings, propertyResolver, String.class);</span>
-<span class="pc bpc" id="L278" title="1 of 2 branches missed.">		if (defaultEncoding != null) {</span>
-<span class="fc" id="L279">			configuration.setDefaultEncoding(defaultEncoding);</span>
+<span class="fc" id="L277">		Configuration configuration = getConfiguration();</span>
+<span class="fc" id="L278">		PropertyResolver propertyResolver = environmentBuilder.build();</span>
+<span class="fc" id="L279">		String defaultEncoding = BuilderUtils.evaluate(defaultEncodings, propertyResolver, String.class);</span>
+<span class="pc bpc" id="L280" title="1 of 2 branches missed.">		if (defaultEncoding != null) {</span>
+<span class="fc" id="L281">			configuration.setDefaultEncoding(defaultEncoding);</span>
 		}
-<span class="pc bpc" id="L281" title="1 of 2 branches missed.">		if (templateExceptionHandler != null) {</span>
-<span class="fc" id="L282">			configuration.setTemplateExceptionHandler(templateExceptionHandler);</span>
+<span class="pc bpc" id="L283" title="1 of 2 branches missed.">		if (templateExceptionHandler != null) {</span>
+<span class="fc" id="L284">			configuration.setTemplateExceptionHandler(templateExceptionHandler);</span>
 		}
-<span class="fc" id="L284">		buildSharedVariables(configuration);</span>
-<span class="fc" id="L285">		return configuration;</span>
+<span class="fc" id="L286">		buildSharedVariables(configuration);</span>
+<span class="fc" id="L287">		return configuration;</span>
 	}
 
 	private Configuration getConfiguration() {
-<span class="fc bfc" id="L289" title="All 2 branches covered.">		if (base != null) {</span>
-<span class="pc bpc" id="L290" title="1 of 2 branches missed.">			if (version != null) {</span>
-<span class="nc" id="L291">				base.setIncompatibleImprovements(version);</span>
+<span class="fc bfc" id="L291" title="All 2 branches covered.">		if (base != null) {</span>
+<span class="pc bpc" id="L292" title="1 of 2 branches missed.">			if (version != null) {</span>
+<span class="nc" id="L293">				base.setIncompatibleImprovements(version);</span>
 			}
-<span class="fc" id="L293">			return base;</span>
+<span class="fc" id="L295">			return base;</span>
 		}
-<span class="pc bpc" id="L295" title="1 of 2 branches missed.">		return version == null ? new Configuration(DEFAULT_INCOMPATIBLE_IMPROVEMENTS) : new Configuration(version);</span>
+<span class="pc bpc" id="L297" title="1 of 2 branches missed.">		return version == null ? new Configuration(DEFAULT_INCOMPATIBLE_IMPROVEMENTS) : new Configuration(version);</span>
 	}
 
 	private void buildSharedVariables(Configuration configuration) {
 		try {
-<span class="fc bfc" id="L300" title="All 2 branches covered.">			if (variablesHash != null) {</span>
-<span class="fc" id="L301">				configuration.setAllSharedVariables(variablesHash);</span>
+<span class="fc bfc" id="L302" title="All 2 branches covered.">			if (variablesHash != null) {</span>
+<span class="fc" id="L303">				configuration.setAllSharedVariables(variablesHash);</span>
 			}
-<span class="nc" id="L303">		} catch (TemplateModelException e) {</span>
-<span class="nc" id="L304">			throw new BuildException(&quot;Failed to configure FreeMarker shared variables&quot;, e);</span>
-<span class="fc" id="L305">		}</span>
-<span class="fc" id="L306">	}</span>
+<span class="pc bpc" id="L305" title="1 of 2 branches missed.">			for (Entry&lt;String, Object&gt; entry : sharedVariables.entrySet()) {</span>
+<span class="nc" id="L306">				configuration.setSharedVariable(entry.getKey(), entry.getValue());</span>
+<span class="nc" id="L307">			}</span>
+<span class="nc" id="L308">		} catch (TemplateModelException e) {</span>
+<span class="nc" id="L309">			throw new BuildException(&quot;Failed to configure FreeMarker shared variables&quot;, e);</span>
+<span class="fc" id="L310">		}</span>
+<span class="fc" id="L311">	}</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>
