@@ -459,38 +459,49 @@ public class Email implements Message, HasContentFluent&lt;Email&gt;, HasSubject
 
 	@Override
 	public String toString() {
-<span class="fc" id="L462">		StringBuilder builder = new StringBuilder();</span>
-<span class="fc" id="L463">		builder.append(&quot;Email message\r\nFrom: &quot;).append(from);</span>
-<span class="fc bfc" id="L464" title="All 2 branches covered.">		for (RecipientType type : RecipientType.values()) {</span>
-<span class="fc" id="L465">			List&lt;EmailAddress&gt; addresses = new ArrayList&lt;&gt;();</span>
-<span class="fc bfc" id="L466" title="All 2 branches covered.">			for (Recipient recipient : recipients) {</span>
-<span class="fc bfc" id="L467" title="All 2 branches covered.">				if (type.equals(recipient.getType())) {</span>
-<span class="fc" id="L468">					addresses.add(recipient.getAddress());</span>
-				}
-<span class="fc" id="L470">			}</span>
-<span class="fc bfc" id="L471" title="All 2 branches covered.">			if (!addresses.isEmpty()) {</span>
-<span class="fc" id="L472">				builder.append(&quot;\r\n&quot;);</span>
-<span class="fc" id="L473">				builder.append(type).append(&quot;: &quot;);</span>
-<span class="fc" id="L474">				builder.append(StringUtils.join(addresses, &quot;, &quot;));</span>
-			}
-		}
-<span class="fc" id="L477">		builder.append(&quot;\r\nSubject: &quot;).append(subject).append(&quot;\r\n----------------------------------\r\n&quot;).append(content);</span>
-<span class="pc bpc" id="L478" title="1 of 4 branches missed.">		if (attachments != null &amp;&amp; !attachments.isEmpty()) {</span>
-<span class="fc" id="L479">			builder.append(&quot;\r\n----------------------------------&quot;).append(&quot;\r\nAttachments: &quot;).append(attachments);</span>
-		}
-<span class="fc" id="L481">		builder.append(&quot;\r\n==================================\r\n&quot;);</span>
-<span class="fc" id="L482">		return builder.toString();</span>
+<span class="fc" id="L462">		return toString(true);</span>
+	}
+
+	public String toSummaryString() {
+<span class="nc" id="L466">		return toString(false);</span>
 	}
 
 	@Override
 	public int hashCode() {
-<span class="fc" id="L487">		return new HashCodeBuilder().append(subject, content, from, recipients, attachments).hashCode();</span>
+<span class="fc" id="L471">		return new HashCodeBuilder().append(subject, content, from, recipients, attachments).hashCode();</span>
 	}
 
 	@Override
 	public boolean equals(Object obj) {
-<span class="fc" id="L492">		return new EqualsBuilder(this, obj).appendFields(&quot;subject&quot;, &quot;content&quot;, &quot;from&quot;, &quot;recipients&quot;, &quot;attachments&quot;).isEqual();</span>
+<span class="fc" id="L476">		return new EqualsBuilder(this, obj).appendFields(&quot;subject&quot;, &quot;content&quot;, &quot;from&quot;, &quot;recipients&quot;, &quot;attachments&quot;).isEqual();</span>
 	}
 
+	private String toString(boolean includeContent) {
+<span class="fc" id="L480">		StringBuilder builder = new StringBuilder();</span>
+<span class="fc" id="L481">		builder.append(&quot;Email message\r\nFrom: &quot;).append(from);</span>
+<span class="fc bfc" id="L482" title="All 2 branches covered.">		for (RecipientType type : RecipientType.values()) {</span>
+<span class="fc" id="L483">			List&lt;EmailAddress&gt; addresses = new ArrayList&lt;&gt;();</span>
+<span class="fc bfc" id="L484" title="All 2 branches covered.">			for (Recipient recipient : recipients) {</span>
+<span class="fc bfc" id="L485" title="All 2 branches covered.">				if (type.equals(recipient.getType())) {</span>
+<span class="fc" id="L486">					addresses.add(recipient.getAddress());</span>
+				}
+<span class="fc" id="L488">			}</span>
+<span class="fc bfc" id="L489" title="All 2 branches covered.">			if (!addresses.isEmpty()) {</span>
+<span class="fc" id="L490">				builder.append(&quot;\r\n&quot;);</span>
+<span class="fc" id="L491">				builder.append(type).append(&quot;: &quot;);</span>
+<span class="fc" id="L492">				builder.append(StringUtils.join(addresses, &quot;, &quot;));</span>
+			}
+		}
+<span class="fc" id="L495">		builder.append(&quot;\r\nSubject: &quot;).append(subject);</span>
+<span class="pc bpc" id="L496" title="1 of 2 branches missed.">		if (includeContent) {</span>
+<span class="fc" id="L497">			builder.append(&quot;\r\n----------------------------------\r\n&quot;).append(content);</span>
+		}
+<span class="pc bpc" id="L499" title="1 of 4 branches missed.">		if (attachments != null &amp;&amp; !attachments.isEmpty()) {</span>
+<span class="fc" id="L500">			builder.append(&quot;\r\n----------------------------------&quot;).append(&quot;\r\nAttachments: &quot;).append(attachments);</span>
+		}
+<span class="fc" id="L502">		builder.append(&quot;\r\n==================================\r\n&quot;);</span>
+<span class="fc" id="L503">		return builder.toString();</span>
+	}
+	
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

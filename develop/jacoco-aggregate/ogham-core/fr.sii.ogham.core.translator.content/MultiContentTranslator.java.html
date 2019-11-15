@@ -57,26 +57,28 @@ public class MultiContentTranslator implements ContentTranslator {
 <span class="fc" id="L57">		MultiContent result = new MultiContent();</span>
 <span class="fc" id="L58">		List&lt;ContentTranslatorException&gt; errors = new ArrayList&lt;&gt;();</span>
 <span class="fc bfc" id="L59" title="All 2 branches covered.">		for (Content c : ((MultiContent) content).getContents()) {</span>
-<span class="fc" id="L60">			LOG.debug(&quot;Translate the sub content {} using {}&quot;, c, delegate);</span>
+<span class="fc" id="L60">			LOG.debug(&quot;Translate the sub content using {}&quot;, delegate);</span>
+<span class="fc" id="L61">			LOG.trace(&quot;sub content: {}&quot;, c);</span>
 			try {
-<span class="fc" id="L62">				Content translated = delegate.translate(c);</span>
-<span class="pc bpc" id="L63" title="1 of 2 branches missed.">				if(translated!=null) {</span>
-<span class="fc" id="L64">					LOG.debug(&quot;Sub content {} skipped&quot;, c);</span>
-<span class="fc" id="L65">					result.addContent(translated);</span>
+<span class="fc" id="L63">				Content translated = delegate.translate(c);</span>
+<span class="pc bpc" id="L64" title="1 of 2 branches missed.">				if(translated!=null) {</span>
+<span class="fc" id="L65">					LOG.debug(&quot;Sub content skipped&quot;);</span>
+<span class="fc" id="L66">					LOG.trace(&quot;sub-content: {}&quot;, c);</span>
+<span class="fc" id="L67">					result.addContent(translated);</span>
 				}
-<span class="fc" id="L67">			} catch(ContentTranslatorException e) {</span>
-<span class="fc" id="L68">				errors.add(e);</span>
-<span class="fc" id="L69">			}</span>
-<span class="fc" id="L70">		}</span>
-<span class="fc bfc" id="L71" title="All 4 branches covered.">		if (!errors.isEmpty() &amp;&amp; result.getContents().isEmpty()) {</span>
-<span class="fc" id="L72">			throw new NoContentException(&quot;The message is empty maybe due to some errors:\n&quot; + errors.stream().map(Exception::getMessage).collect(Collectors.joining(&quot;\n&quot;)), (MultiContent) content, errors);</span>
+<span class="fc" id="L69">			} catch(ContentTranslatorException e) {</span>
+<span class="fc" id="L70">				errors.add(e);</span>
+<span class="fc" id="L71">			}</span>
+<span class="fc" id="L72">		}</span>
+<span class="fc bfc" id="L73" title="All 4 branches covered.">		if (!errors.isEmpty() &amp;&amp; result.getContents().isEmpty()) {</span>
+<span class="fc" id="L74">			throw new NoContentException(&quot;The message is empty maybe due to some errors:\n&quot; + errors.stream().map(Exception::getMessage).collect(Collectors.joining(&quot;\n&quot;)), (MultiContent) content, errors);</span>
 		}
-<span class="fc" id="L74">		return result;</span>
+<span class="fc" id="L76">		return result;</span>
 	}
 
 	@Override
 	public String toString() {
-<span class="fc" id="L79">		return &quot;MultiContentTranslator&quot;;</span>
+<span class="fc" id="L81">		return &quot;MultiContentTranslator&quot;;</span>
 	}
 
 }

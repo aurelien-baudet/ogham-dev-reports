@@ -201,7 +201,7 @@ public abstract class AbstractFreemarkerBuilder&lt;MYSELF extends AbstractFreema
 	 * @return the fluent builder for Freemarker configuration object
 	 */
 	public FreemarkerConfigurationBuilder&lt;MYSELF&gt; configuration() {
-<span class="pc bpc" id="L204" title="1 of 2 branches missed.">		if (configurationBuilder == null) {</span>
+<span class="fc bfc" id="L204" title="All 2 branches covered.">		if (configurationBuilder == null) {</span>
 <span class="fc" id="L205">			configurationBuilder = new FreemarkerConfigurationBuilder&lt;&gt;(myself, environmentBuilder);</span>
 		}
 <span class="fc" id="L207">		return configurationBuilder;</span>
@@ -211,17 +211,51 @@ public abstract class AbstractFreemarkerBuilder&lt;MYSELF extends AbstractFreema
 	 * Sets a Freemarker configuration.
 	 * 
 	 * This value preempts any other value defined by calling
-	 * {@link #configuration()} method.
+	 * {@link #configuration()} method. It means that the provided configuration
+	 * is used as-is and any call to {@link #configuration()} builder methods
+	 * has no effect on the provided configuration. You have to manually
+	 * configure it.
 	 * 
-	 * If this method is called several times, only the last provider is used.
+	 * If this method is called several times, only the last provided
+	 * configuration is used.
 	 * 
 	 * @param configuration
 	 *            the Freemarker configuration
 	 * @return this instance for fluent chaining
 	 */
 	public MYSELF configuration(Configuration configuration) {
-<span class="fc" id="L223">		this.configuration = configuration;</span>
-<span class="fc" id="L224">		return myself;</span>
+<span class="nc" id="L227">		return configuration(configuration, false);</span>
+	}
+
+	/**
+	 * Sets a Freemarker configuration.
+	 * 
+	 * If merge parameter is true, then the provided configuration is used and
+	 * any call to {@link #configuration()} builder methods are applied to the
+	 * provided configuration.
+	 * 
+	 * If merge parameter is false, then the provided configuration is used
+	 * as-is and any call to {@link #configuration()} builder methods has no
+	 * effect on the provided configuration.
+	 * 
+	 * If this method is called several times, only the last provided
+	 * configuration is used.
+	 * 
+	 * @param configuration
+	 *            The Freemarker configuration to apply
+	 * @param merge
+	 *            If true, the provided configuration with any configuration set
+	 *            using {@link #configuration()} builder. If false, replace any
+	 *            previously provided configuration.
+	 * @return this instance for fluent chaining
+	 */
+	public MYSELF configuration(Configuration configuration, boolean merge) {
+<span class="pc bpc" id="L253" title="1 of 2 branches missed.">		if (merge) {</span>
+<span class="fc" id="L254">			configuration().base(configuration);</span>
+		} else {
+<span class="nc" id="L256">			this.configuration = configuration;</span>
+		}
+<span class="fc" id="L258">		return myself;</span>
 	}
 
 	/**
@@ -241,27 +275,27 @@ public abstract class AbstractFreemarkerBuilder&lt;MYSELF extends AbstractFreema
 	 * @return this instance for fluent chaining
 	 */
 	public MYSELF classLoader(ClassLoader classLoader) {
-<span class="nc" id="L244">		this.classLoader = classLoader;</span>
-<span class="nc" id="L245">		return myself;</span>
+<span class="nc" id="L278">		this.classLoader = classLoader;</span>
+<span class="nc" id="L279">		return myself;</span>
 	}
 
 	@Override
 	public TemplateParser build() {
-<span class="fc" id="L250">		LOG.info(&quot;Freemarker parser is registered&quot;);</span>
-<span class="fc" id="L251">		return new FreeMarkerParser(buildConfiguration(), buildResolver());</span>
+<span class="fc" id="L284">		LOG.info(&quot;Freemarker parser is registered&quot;);</span>
+<span class="fc" id="L285">		return new FreeMarkerParser(buildConfiguration(), buildResolver());</span>
 	}
 
 	@Override
 	public TemplateEngineDetector buildDetector() {
-<span class="pc bpc" id="L256" title="1 of 2 branches missed.">		return detector == null ? buildDefaultDetector() : detector;</span>
+<span class="pc bpc" id="L290" title="1 of 2 branches missed.">		return detector == null ? buildDefaultDetector() : detector;</span>
 	}
 
 	private TemplateEngineDetector buildDefaultDetector() {
-<span class="fc" id="L260">		FirstSupportingResourceResolver resolver = buildResolver();</span>
-<span class="fc" id="L261">		OrTemplateDetector or = new OrTemplateDetector();</span>
-<span class="fc" id="L262">		or.addDetector(new FreeMarkerTemplateDetector(resolver, &quot;.ftl&quot;));</span>
-<span class="fc" id="L263">		or.addDetector(new SimpleResourceEngineDetector(resolver, new FixedEngineDetector(true)));</span>
-<span class="fc" id="L264">		return or;</span>
+<span class="fc" id="L294">		FirstSupportingResourceResolver resolver = buildResolver();</span>
+<span class="fc" id="L295">		OrTemplateDetector or = new OrTemplateDetector();</span>
+<span class="fc" id="L296">		or.addDetector(new FreeMarkerTemplateDetector(resolver, &quot;.ftl&quot;));</span>
+<span class="fc" id="L297">		or.addDetector(new SimpleResourceEngineDetector(resolver, new FixedEngineDetector(true)));</span>
+<span class="fc" id="L298">		return or;</span>
 	}
 
 	/**
@@ -270,47 +304,47 @@ public abstract class AbstractFreemarkerBuilder&lt;MYSELF extends AbstractFreema
 	 * @return the resource resolver
 	 */
 	public FirstSupportingResourceResolver buildResolver() {
-<span class="fc" id="L273">		return new FirstSupportingResourceResolver(buildResolvers());</span>
+<span class="fc" id="L307">		return new FirstSupportingResourceResolver(buildResolvers());</span>
 	}
 
 	private Configuration buildConfiguration() {
 		Configuration builtConfiguration;
-<span class="fc bfc" id="L278" title="All 2 branches covered.">		if (this.configuration != null) {</span>
-<span class="fc" id="L279">			builtConfiguration = this.configuration;</span>
-<span class="fc bfc" id="L280" title="All 2 branches covered.">		} else if (configurationBuilder != null) {</span>
-<span class="fc" id="L281">			builtConfiguration = configurationBuilder.build();</span>
+<span class="pc bpc" id="L312" title="1 of 2 branches missed.">		if (this.configuration != null) {</span>
+<span class="nc" id="L313">			builtConfiguration = this.configuration;</span>
+<span class="fc bfc" id="L314" title="All 2 branches covered.">		} else if (configurationBuilder != null) {</span>
+<span class="fc" id="L315">			builtConfiguration = configurationBuilder.build();</span>
 		} else {
-<span class="fc" id="L283">			builtConfiguration = new Configuration(DEFAULT_INCOMPATIBLE_IMPROVEMENTS);</span>
-<span class="fc" id="L284">			builtConfiguration.setDefaultEncoding(&quot;UTF-8&quot;);</span>
-<span class="fc" id="L285">			builtConfiguration.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);</span>
+<span class="fc" id="L317">			builtConfiguration = new Configuration(DEFAULT_INCOMPATIBLE_IMPROVEMENTS);</span>
+<span class="fc" id="L318">			builtConfiguration.setDefaultEncoding(&quot;UTF-8&quot;);</span>
+<span class="fc" id="L319">			builtConfiguration.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);</span>
 		}
-<span class="fc" id="L287">		FirstSupportingResourceResolver builtResolver = buildResolver();</span>
-<span class="fc" id="L288">		FirstSupportingResolverAdapter builtAdapter = buildAdapter();</span>
-<span class="fc" id="L289">		builtConfiguration.setTemplateLoader(new FreeMarkerFirstSupportingTemplateLoader(builtResolver, builtAdapter));</span>
-<span class="fc" id="L290">		builtConfiguration.setTemplateLookupStrategy(new SkipLocaleForStringContentTemplateLookupStrategy(builtConfiguration.getTemplateLookupStrategy(), builtResolver, builtAdapter));</span>
-<span class="fc" id="L291">		return builtConfiguration;</span>
+<span class="fc" id="L321">		FirstSupportingResourceResolver builtResolver = buildResolver();</span>
+<span class="fc" id="L322">		FirstSupportingResolverAdapter builtAdapter = buildAdapter();</span>
+<span class="fc" id="L323">		builtConfiguration.setTemplateLoader(new FreeMarkerFirstSupportingTemplateLoader(builtResolver, builtAdapter));</span>
+<span class="fc" id="L324">		builtConfiguration.setTemplateLookupStrategy(new SkipLocaleForStringContentTemplateLookupStrategy(builtConfiguration.getTemplateLookupStrategy(), builtResolver, builtAdapter));</span>
+<span class="fc" id="L325">		return builtConfiguration;</span>
 	}
 
 	protected List&lt;ResourceResolver&gt; buildResolvers() {
-<span class="fc" id="L295">		return resourceResolutionBuilderHelper.buildResolvers();</span>
+<span class="fc" id="L329">		return resourceResolutionBuilderHelper.buildResolvers();</span>
 	}
 
 	protected FirstSupportingResolverAdapter buildAdapter() {
-<span class="fc" id="L299">		FirstSupportingResolverAdapter adapter = new FirstSupportingResolverAdapter();</span>
-<span class="pc bpc" id="L300" title="1 of 2 branches missed.">		for (TemplateLoaderAdapter custom : customAdapters) {</span>
-<span class="nc" id="L301">			adapter.addAdapter(custom);</span>
-<span class="nc" id="L302">		}</span>
-<span class="fc" id="L303">		adapter.addAdapter(new ClassPathResolverAdapter(classLoader));</span>
-<span class="fc" id="L304">		adapter.addAdapter(new FileResolverAdapter());</span>
-<span class="fc" id="L305">		adapter.addAdapter(new StringResolverAdapter());</span>
-<span class="fc" id="L306">		adapter.setOptions(new TemplateLoaderOptions());</span>
-<span class="fc" id="L307">		return adapter;</span>
+<span class="fc" id="L333">		FirstSupportingResolverAdapter adapter = new FirstSupportingResolverAdapter();</span>
+<span class="pc bpc" id="L334" title="1 of 2 branches missed.">		for (TemplateLoaderAdapter custom : customAdapters) {</span>
+<span class="nc" id="L335">			adapter.addAdapter(custom);</span>
+<span class="nc" id="L336">		}</span>
+<span class="fc" id="L337">		adapter.addAdapter(new ClassPathResolverAdapter(classLoader));</span>
+<span class="fc" id="L338">		adapter.addAdapter(new FileResolverAdapter());</span>
+<span class="fc" id="L339">		adapter.addAdapter(new StringResolverAdapter());</span>
+<span class="fc" id="L340">		adapter.setOptions(new TemplateLoaderOptions());</span>
+<span class="fc" id="L341">		return adapter;</span>
 	}
 
 	private void initResolutionBuilder() {
-<span class="fc bfc" id="L311" title="All 2 branches covered.">		if (resourceResolutionBuilderHelper == null) {</span>
-<span class="fc" id="L312">			resourceResolutionBuilderHelper = new ResourceResolutionBuilderHelper&lt;&gt;(myself, environmentBuilder);</span>
+<span class="fc bfc" id="L345" title="All 2 branches covered.">		if (resourceResolutionBuilderHelper == null) {</span>
+<span class="fc" id="L346">			resourceResolutionBuilderHelper = new ResourceResolutionBuilderHelper&lt;&gt;(myself, environmentBuilder);</span>
 		}
-<span class="fc" id="L314">	}</span>
+<span class="fc" id="L348">	}</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

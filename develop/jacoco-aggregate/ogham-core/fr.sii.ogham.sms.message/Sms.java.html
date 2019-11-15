@@ -310,22 +310,32 @@ public class Sms implements Message, HasContentFluent&lt;Sms&gt;, HasRecipients&
 
 	@Override
 	public String toString() {
-<span class="fc" id="L313">		StringBuilder builder = new StringBuilder();</span>
-<span class="fc" id="L314">		builder.append(&quot;Sms message\r\nFrom: &quot;).append(from);</span>
-<span class="fc" id="L315">		builder.append(&quot;\r\nTo: &quot;).append(StringUtils.join(recipients, &quot;, &quot;));</span>
-<span class="fc" id="L316">		builder.append(&quot;\r\n----------------------------------\r\n&quot;).append(content);</span>
-<span class="fc" id="L317">		builder.append(&quot;\r\n==================================\r\n&quot;);</span>
-<span class="fc" id="L318">		return builder.toString();</span>
+<span class="fc" id="L313">		return toString(true);</span>
+	}
+
+	public String toSummaryString() {
+<span class="nc" id="L317">		return toString(false);</span>
 	}
 
 	@Override
 	public int hashCode() {
-<span class="nc" id="L323">		return new HashCodeBuilder().append(from, recipients, content).hashCode();</span>
+<span class="nc" id="L322">		return new HashCodeBuilder().append(from, recipients, content).hashCode();</span>
 	}
 
 	@Override
 	public boolean equals(Object obj) {
-<span class="fc" id="L328">		return new EqualsBuilder(this, obj).appendFields(&quot;from&quot;, &quot;recipients&quot;, &quot;content&quot;).isEqual();</span>
+<span class="fc" id="L327">		return new EqualsBuilder(this, obj).appendFields(&quot;from&quot;, &quot;recipients&quot;, &quot;content&quot;).isEqual();</span>
+	}
+
+	private String toString(boolean includeContent) {
+<span class="fc" id="L331">		StringBuilder builder = new StringBuilder();</span>
+<span class="fc" id="L332">		builder.append(&quot;Sms message\r\nFrom: &quot;).append(from);</span>
+<span class="fc" id="L333">		builder.append(&quot;\r\nTo: &quot;).append(StringUtils.join(recipients, &quot;, &quot;));</span>
+<span class="pc bpc" id="L334" title="1 of 2 branches missed.">		if (includeContent) {</span>
+<span class="fc" id="L335">			builder.append(&quot;\r\n----------------------------------\r\n&quot;).append(content);</span>
+		}
+<span class="fc" id="L337">		builder.append(&quot;\r\n==================================\r\n&quot;);</span>
+<span class="fc" id="L338">		return builder.toString();</span>
 	}
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

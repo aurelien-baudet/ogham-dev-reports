@@ -3,7 +3,6 @@
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.thymeleaf.ThymeleafProperties;
-import org.thymeleaf.TemplateEngine;
 
 import fr.sii.ogham.core.builder.MessagingBuilder;
 import fr.sii.ogham.core.builder.configurer.MessagingConfigurerAdapter;
@@ -13,7 +12,9 @@ import fr.sii.ogham.spring.common.OghamTemplateProperties;
 import fr.sii.ogham.spring.common.SpringMessagingConfigurer;
 import fr.sii.ogham.spring.email.OghamEmailProperties;
 import fr.sii.ogham.spring.sms.OghamSmsProperties;
+import fr.sii.ogham.spring.template.thymeleaf.TemplateEngineSupplier;
 import fr.sii.ogham.template.thymeleaf.common.ThymeleafConstants;
+import fr.sii.ogham.template.thymeleaf.common.ThymeleafContextConverter;
 import fr.sii.ogham.template.thymeleaf.common.ThymeleafParser;
 import fr.sii.ogham.template.thymeleaf.common.buider.AbstractThymeleafBuilder;
 
@@ -22,7 +23,7 @@ import fr.sii.ogham.template.thymeleaf.common.buider.AbstractThymeleafBuilder;
  * provided by Spring and by using Spring properties defined with prefix
  * {@code spring.thymeleaf} (see {@link ThymeleafProperties}).
  * 
- * If both Spring property and Ogham property is defined, Spring property is
+ * If both Spring property and Ogham property is defined, Ogham property is
  * used.
  * 
  * For example, if the file application.properties contains the following
@@ -33,7 +34,7 @@ import fr.sii.ogham.template.thymeleaf.common.buider.AbstractThymeleafBuilder;
  * ogham.email.thymeleaf.path-prefix=/foo/
  * &lt;/pre&gt;
  * 
- * The {@link ThymeleafParser} will use the templates in &quot;/email/&quot;.
+ * The {@link ThymeleafParser} will use the templates in &quot;/foo/&quot;.
  * 
  * &lt;p&gt;
  * This configurer is also useful to support property naming variants (see
@@ -46,9 +47,10 @@ import fr.sii.ogham.template.thymeleaf.common.buider.AbstractThymeleafBuilder;
  *
  */
 public class ThymeLeafConfigurer extends MessagingConfigurerAdapter implements SpringMessagingConfigurer {
-<span class="fc" id="L49">	private static final Logger LOG = LoggerFactory.getLogger(ThymeLeafConfigurer.class);</span>
-	
-	private final TemplateEngine springTemplateEngine;
+<span class="fc" id="L50">	private static final Logger LOG = LoggerFactory.getLogger(ThymeLeafConfigurer.class);</span>
+
+	private final TemplateEngineSupplier springTemplateEngineSupplier;
+	private final ThymeleafContextConverter contextConverter;
 	private final OghamCommonTemplateProperties templateProperties;
 	private final OghamEmailProperties emailProperties;
 	private final OghamSmsProperties smsProperties;
@@ -56,105 +58,114 @@ public class ThymeLeafConfigurer extends MessagingConfigurerAdapter implements S
 	private final Class&lt;? extends AbstractThymeleafBuilder&lt;?, ?, ?&gt;&gt; emailBuilderClass;
 	private final Class&lt;? extends AbstractThymeleafBuilder&lt;?, ?, ?&gt;&gt; smsBuilderClass;
 
-	public ThymeLeafConfigurer(TemplateEngine springTemplateEngine, OghamCommonTemplateProperties templateProperties, OghamEmailProperties emailProperties, OghamSmsProperties smsProperties,
-			ThymeleafProperties springProperties, Class&lt;? extends AbstractThymeleafBuilder&lt;?, ?, ?&gt;&gt; emailBuilderClass, Class&lt;? extends AbstractThymeleafBuilder&lt;?, ?, ?&gt;&gt; smsBuilderClass) {
-<span class="fc" id="L61">		super();</span>
-<span class="fc" id="L62">		this.springTemplateEngine = springTemplateEngine;</span>
-<span class="fc" id="L63">		this.templateProperties = templateProperties;</span>
-<span class="fc" id="L64">		this.emailProperties = emailProperties;</span>
-<span class="fc" id="L65">		this.smsProperties = smsProperties;</span>
-<span class="fc" id="L66">		this.springProperties = springProperties;</span>
-<span class="fc" id="L67">		this.emailBuilderClass = emailBuilderClass;</span>
-<span class="fc" id="L68">		this.smsBuilderClass = smsBuilderClass;</span>
-<span class="fc" id="L69">	}</span>
+	public ThymeLeafConfigurer(TemplateEngineSupplier springTemplateEngineSupplier, ThymeleafContextConverter contextConverter, OghamCommonTemplateProperties templateProperties,
+			OghamEmailProperties emailProperties, OghamSmsProperties smsProperties, ThymeleafProperties springProperties, Class&lt;? extends AbstractThymeleafBuilder&lt;?, ?, ?&gt;&gt; emailBuilderClass,
+			Class&lt;? extends AbstractThymeleafBuilder&lt;?, ?, ?&gt;&gt; smsBuilderClass) {
+<span class="fc" id="L64">		super();</span>
+<span class="fc" id="L65">		this.springTemplateEngineSupplier = springTemplateEngineSupplier;</span>
+<span class="fc" id="L66">		this.contextConverter = contextConverter;</span>
+<span class="fc" id="L67">		this.templateProperties = templateProperties;</span>
+<span class="fc" id="L68">		this.emailProperties = emailProperties;</span>
+<span class="fc" id="L69">		this.smsProperties = smsProperties;</span>
+<span class="fc" id="L70">		this.springProperties = springProperties;</span>
+<span class="fc" id="L71">		this.emailBuilderClass = emailBuilderClass;</span>
+<span class="fc" id="L72">		this.smsBuilderClass = smsBuilderClass;</span>
+<span class="fc" id="L73">	}</span>
 
 	@Override
 	public void configure(MessagingBuilder builder) {
-<span class="fc" id="L73">		LOG.debug(&quot;[{}] apply configuration&quot;, this);</span>
+<span class="fc" id="L77">		LOG.debug(&quot;[{}] apply configuration&quot;, this);</span>
 		// use same environment as parent builder
-<span class="fc" id="L75">		builder.email().template(emailBuilderClass).environment(builder.environment());</span>
-<span class="fc" id="L76">		builder.sms().template(smsBuilderClass).environment(builder.environment());</span>
-<span class="fc" id="L77">		super.configure(builder);</span>
-<span class="fc" id="L78">	}</span>
+<span class="fc" id="L79">		builder.email().template(emailBuilderClass).environment(builder.environment());</span>
+<span class="fc" id="L80">		builder.sms().template(smsBuilderClass).environment(builder.environment());</span>
+<span class="fc" id="L81">		super.configure(builder);</span>
+<span class="fc" id="L82">	}</span>
 
 	@Override
 	public void configure(EmailBuilder emailBuilder) {
-<span class="fc" id="L82">		AbstractThymeleafBuilder&lt;?, ?, ?&gt; builder = emailBuilder.template(emailBuilderClass);</span>
-<span class="fc bfc" id="L83" title="All 2 branches covered.">		if(springTemplateEngine != null) {</span>
-<span class="fc" id="L84">			builder.engine(springTemplateEngine);</span>
+<span class="fc" id="L86">		AbstractThymeleafBuilder&lt;?, ?, ?&gt; builder = emailBuilder.template(emailBuilderClass);</span>
+<span class="fc" id="L87">		configureSpringEngine(builder);</span>
+		// specific Ogham properties explicitly take precedence over Spring
+		// properties
+<span class="pc bpc" id="L90" title="1 of 2 branches missed.">		if (emailProperties != null) {</span>
+<span class="fc" id="L91">			applyOghamConfiguration(builder, emailProperties);</span>
 		}
-		// specific Ogham properties explicitly take precedence over Spring properties
-<span class="pc bpc" id="L87" title="1 of 2 branches missed.">		if (emailProperties != null) {</span>
-<span class="fc" id="L88">			applyOghamConfiguration(builder, emailProperties);</span>
+<span class="fc bfc" id="L93" title="All 2 branches covered.">		if (springProperties != null) {</span>
+<span class="fc" id="L94">			applySpringConfiguration(builder);</span>
 		}
-<span class="fc bfc" id="L90" title="All 2 branches covered.">		if (springProperties != null) {</span>
-<span class="fc" id="L91">			applySpringConfiguration(builder);</span>
-		}
-<span class="fc" id="L93">	}</span>
+<span class="fc" id="L96">	}</span>
 
 	@Override
 	public void configure(SmsBuilder smsBuilder) {
-<span class="fc" id="L97">		AbstractThymeleafBuilder&lt;?, ?, ?&gt; builder = smsBuilder.template(smsBuilderClass);</span>
-<span class="fc bfc" id="L98" title="All 2 branches covered.">		if(springTemplateEngine != null) {</span>
-<span class="fc" id="L99">			builder.engine(springTemplateEngine);</span>
+<span class="fc" id="L100">		AbstractThymeleafBuilder&lt;?, ?, ?&gt; builder = smsBuilder.template(smsBuilderClass);</span>
+<span class="fc" id="L101">		configureSpringEngine(builder);</span>
+		// specific Ogham properties explicitly take precedence over Spring
+		// properties
+<span class="pc bpc" id="L104" title="1 of 2 branches missed.">		if (smsProperties != null) {</span>
+<span class="fc" id="L105">			applyOghamConfiguration(builder, smsProperties);</span>
 		}
-		// specific Ogham properties explicitly take precedence over Spring properties
-<span class="pc bpc" id="L102" title="1 of 2 branches missed.">		if (smsProperties != null) {</span>
-<span class="fc" id="L103">			applyOghamConfiguration(builder, smsProperties);</span>
+<span class="fc bfc" id="L107" title="All 2 branches covered.">		if (springProperties != null) {</span>
+<span class="fc" id="L108">			applySpringConfiguration(builder);</span>
 		}
-<span class="fc bfc" id="L105" title="All 2 branches covered.">		if (springProperties != null) {</span>
-<span class="fc" id="L106">			applySpringConfiguration(builder);</span>
-		}
-<span class="fc" id="L108">	}</span>
+<span class="fc" id="L110">	}</span>
 
 	@Override
 	public int getOrder() {
-<span class="fc" id="L112">		return ThymeleafConstants.DEFAULT_THYMELEAF_EMAIL_CONFIGURER_PRIORITY + 1000;</span>
+<span class="fc" id="L114">		return ThymeleafConstants.DEFAULT_THYMELEAF_EMAIL_CONFIGURER_PRIORITY + 1000;</span>
 	}
 
+	private void configureSpringEngine(AbstractThymeleafBuilder&lt;?, ?, ?&gt; builder) {
+<span class="pc bpc" id="L118" title="1 of 2 branches missed.">		if (springTemplateEngineSupplier != null) {</span>
+<span class="fc" id="L119">			builder.engine(springTemplateEngineSupplier.get());</span>
+		}
+<span class="pc bpc" id="L121" title="1 of 2 branches missed.">		if (contextConverter != null) {</span>
+<span class="fc" id="L122">			builder.contextConverter(contextConverter);</span>
+		}
+<span class="fc" id="L124">	}</span>
+
 	private void applyOghamConfiguration(AbstractThymeleafBuilder&lt;?, ?, ?&gt; builder, OghamTemplateProperties props) {
-<span class="fc" id="L116">		LOG.debug(&quot;[{}] apply ogham configuration properties to {}&quot;, this, builder);</span>
+<span class="fc" id="L127">		LOG.debug(&quot;[{}] apply ogham configuration properties to {}&quot;, this, builder);</span>
 		// @formatter:off
-<span class="fc" id="L118">		builder</span>
-<span class="fc" id="L119">			.classpath()</span>
-<span class="fc" id="L120">				.pathPrefix(props.getThymeleaf().getClasspath().getPathPrefix(),</span>
-<span class="fc" id="L121">							props.getTemplate().getClasspath().getPathPrefix(),</span>
-<span class="fc" id="L122">							props.getThymeleaf().getPathPrefix(),</span>
-<span class="fc" id="L123">							props.getTemplate().getPathPrefix(),</span>
-<span class="fc" id="L124">							templateProperties.getPathPrefix())</span>
-<span class="fc" id="L125">				.pathSuffix(props.getThymeleaf().getClasspath().getPathSuffix(),</span>
-<span class="fc" id="L126">							props.getTemplate().getClasspath().getPathSuffix(),</span>
-<span class="fc" id="L127">							props.getThymeleaf().getPathSuffix(),</span>
-<span class="fc" id="L128">							props.getTemplate().getPathSuffix(),</span>
-<span class="fc" id="L129">							templateProperties.getPathSuffix())</span>
-<span class="fc" id="L130">				.and()</span>
-<span class="fc" id="L131">			.file()</span>
-<span class="fc" id="L132">				.pathPrefix(props.getThymeleaf().getFile().getPathPrefix(),</span>
-<span class="fc" id="L133">							props.getTemplate().getFile().getPathPrefix(),</span>
-<span class="fc" id="L134">							props.getThymeleaf().getPathPrefix(),</span>
-<span class="fc" id="L135">							props.getTemplate().getPathPrefix(),</span>
-<span class="fc" id="L136">							templateProperties.getPathPrefix())</span>
-<span class="fc" id="L137">				.pathSuffix(props.getThymeleaf().getFile().getPathSuffix(),</span>
-<span class="fc" id="L138">							props.getTemplate().getFile().getPathSuffix(),</span>
-<span class="fc" id="L139">							props.getThymeleaf().getPathSuffix(),</span>
-<span class="fc" id="L140">							props.getTemplate().getPathSuffix(),</span>
-<span class="fc" id="L141">							templateProperties.getPathSuffix());</span>
+<span class="fc" id="L129">		builder</span>
+<span class="fc" id="L130">			.classpath()</span>
+<span class="fc" id="L131">				.pathPrefix(props.getThymeleaf().getClasspath().getPathPrefix(),</span>
+<span class="fc" id="L132">							props.getTemplate().getClasspath().getPathPrefix(),</span>
+<span class="fc" id="L133">							props.getThymeleaf().getPathPrefix(),</span>
+<span class="fc" id="L134">							props.getTemplate().getPathPrefix(),</span>
+<span class="fc" id="L135">							templateProperties.getPathPrefix())</span>
+<span class="fc" id="L136">				.pathSuffix(props.getThymeleaf().getClasspath().getPathSuffix(),</span>
+<span class="fc" id="L137">							props.getTemplate().getClasspath().getPathSuffix(),</span>
+<span class="fc" id="L138">							props.getThymeleaf().getPathSuffix(),</span>
+<span class="fc" id="L139">							props.getTemplate().getPathSuffix(),</span>
+<span class="fc" id="L140">							templateProperties.getPathSuffix())</span>
+<span class="fc" id="L141">				.and()</span>
+<span class="fc" id="L142">			.file()</span>
+<span class="fc" id="L143">				.pathPrefix(props.getThymeleaf().getFile().getPathPrefix(),</span>
+<span class="fc" id="L144">							props.getTemplate().getFile().getPathPrefix(),</span>
+<span class="fc" id="L145">							props.getThymeleaf().getPathPrefix(),</span>
+<span class="fc" id="L146">							props.getTemplate().getPathPrefix(),</span>
+<span class="fc" id="L147">							templateProperties.getPathPrefix())</span>
+<span class="fc" id="L148">				.pathSuffix(props.getThymeleaf().getFile().getPathSuffix(),</span>
+<span class="fc" id="L149">							props.getTemplate().getFile().getPathSuffix(),</span>
+<span class="fc" id="L150">							props.getThymeleaf().getPathSuffix(),</span>
+<span class="fc" id="L151">							props.getTemplate().getPathSuffix(),</span>
+<span class="fc" id="L152">							templateProperties.getPathSuffix());</span>
 		// @formatter:on
-<span class="fc" id="L143">	}</span>
+<span class="fc" id="L154">	}</span>
 
 	private void applySpringConfiguration(AbstractThymeleafBuilder&lt;?, ?, ?&gt; builder) {
-<span class="fc" id="L146">		LOG.debug(&quot;[{}] apply spring configuration properties to {}&quot;, this, builder);</span>
+<span class="fc" id="L157">		LOG.debug(&quot;[{}] apply spring configuration properties to {}&quot;, this, builder);</span>
 		// @formatter:off
-<span class="fc" id="L148">		builder</span>
-<span class="fc" id="L149">			.classpath()</span>
-<span class="fc" id="L150">				.pathPrefix(springProperties.getPrefix())</span>
-<span class="fc" id="L151">				.pathSuffix(springProperties.getSuffix())</span>
-<span class="fc" id="L152">				.and()</span>
-<span class="fc" id="L153">			.file()</span>
-<span class="fc" id="L154">				.pathPrefix(springProperties.getPrefix())</span>
-<span class="fc" id="L155">				.pathSuffix(springProperties.getSuffix());</span>
+<span class="fc" id="L159">		builder</span>
+<span class="fc" id="L160">			.classpath()</span>
+<span class="fc" id="L161">				.pathPrefix(springProperties.getPrefix())</span>
+<span class="fc" id="L162">				.pathSuffix(springProperties.getSuffix())</span>
+<span class="fc" id="L163">				.and()</span>
+<span class="fc" id="L164">			.file()</span>
+<span class="fc" id="L165">				.pathPrefix(springProperties.getPrefix())</span>
+<span class="fc" id="L166">				.pathSuffix(springProperties.getSuffix());</span>
 		// @formatter:on
-<span class="fc" id="L157">	}</span>
+<span class="fc" id="L168">	}</span>
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>
