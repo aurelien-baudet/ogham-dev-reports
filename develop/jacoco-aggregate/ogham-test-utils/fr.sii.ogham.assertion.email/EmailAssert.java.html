@@ -27,7 +27,7 @@ import org.junit.Assert;
 
 import fr.sii.ogham.assertion.HasParent;
 import fr.sii.ogham.assertion.context.SingleMessageContext;
-import fr.sii.ogham.helper.email.AnyPredicate;
+import fr.sii.ogham.helper.email.EmailUtils;
 import fr.sii.ogham.helper.email.FileNamePredicate;
 
 public class EmailAssert&lt;P&gt; extends HasParent&lt;P&gt; {
@@ -432,7 +432,7 @@ public class EmailAssert&lt;P&gt; extends HasParent&lt;P&gt; {
 <span class="fc bfc" id="L432" title="All 2 branches covered.">			for (Message message : actual) {</span>
 <span class="fc" id="L433">				Object content = message.getContent();</span>
 <span class="fc" id="L434">				Assert.assertTrue(&quot;should be multipart message&quot;, content instanceof Multipart);</span>
-<span class="fc" id="L435">				assertThat(getAttachments((Multipart) content), usingContext(desc, new SingleMessageContext(index++), matcher));</span>
+<span class="fc" id="L435">				assertThat(getAttachments(message), usingContext(desc, new SingleMessageContext(index++), matcher));</span>
 <span class="fc" id="L436">			}</span>
 <span class="fc" id="L437">			return this;</span>
 <span class="nc" id="L438">		} catch (MessagingException | IOException e) {</span>
@@ -502,7 +502,7 @@ public class EmailAssert&lt;P&gt; extends HasParent&lt;P&gt; {
 <span class="nc bnc" id="L502" title="All 2 branches missed.">			for (Message message : actual) {</span>
 <span class="nc" id="L503">				Object content = message.getContent();</span>
 <span class="nc" id="L504">				Assert.assertTrue(&quot;should be multipart message&quot;, content instanceof Multipart);</span>
-<span class="nc" id="L505">				List&lt;BodyPart&gt; found = getAttachments((Multipart) content, new AnyPredicate&lt;BodyPart&gt;());</span>
+<span class="nc" id="L505">				List&lt;BodyPart&gt; found = getAttachments(message);</span>
 <span class="nc bnc" id="L506" title="All 2 branches missed.">				BodyPart attachment = index &gt;= found.size() ? null : found.get(index);</span>
 <span class="nc" id="L507">				attachments.add(new PartWithContext(attachment, &quot;attachment with index &quot; + index, new SingleMessageContext(msgIndex++)));</span>
 <span class="nc" id="L508">			}</span>
@@ -537,7 +537,7 @@ public class EmailAssert&lt;P&gt; extends HasParent&lt;P&gt; {
 	 *            the filter used to find attachments
 	 * @return the fluent API for chaining assertions on received message(s)
 	 */
-	public PartAssert&lt;EmailAssert&lt;P&gt;&gt; attachments(Predicate&lt;BodyPart&gt; filter) {
+	public PartAssert&lt;EmailAssert&lt;P&gt;&gt; attachments(Predicate&lt;Part&gt; filter) {
 		try {
 <span class="fc" id="L542">			int index = 0;</span>
 <span class="fc" id="L543">			List&lt;PartWithContext&gt; attachments = new ArrayList&lt;&gt;();</span>
@@ -545,7 +545,7 @@ public class EmailAssert&lt;P&gt; extends HasParent&lt;P&gt; {
 <span class="fc" id="L545">				Object content = message.getContent();</span>
 <span class="fc" id="L546">				Assert.assertTrue(&quot;should be multipart message&quot;, content instanceof Multipart);</span>
 <span class="fc" id="L547">				int attachmentIdx = 0;</span>
-<span class="fc bfc" id="L548" title="All 2 branches covered.">				for (BodyPart attachment : getAttachments((Multipart) content, filter)) {</span>
+<span class="fc bfc" id="L548" title="All 2 branches covered.">				for (BodyPart attachment : EmailUtils.&lt;BodyPart&gt;getAttachments(message, filter)) {</span>
 <span class="fc" id="L549">					attachments.add(new PartWithContext(attachment, &quot;attachment &quot; + filter + &quot;(&quot; + attachmentIdx + &quot;)&quot;, new SingleMessageContext(index)));</span>
 <span class="fc" id="L550">					attachmentIdx++;</span>
 <span class="fc" id="L551">				}</span>

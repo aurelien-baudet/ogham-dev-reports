@@ -14,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import fr.sii.ogham.core.exception.handler.ContentTranslatorException;
+import fr.sii.ogham.core.exception.handler.ImageInliningException;
 import fr.sii.ogham.core.exception.mimetype.MimeTypeDetectionException;
 import fr.sii.ogham.core.exception.resource.ResourceResolutionException;
 import fr.sii.ogham.core.message.content.Content;
@@ -51,8 +52,8 @@ import fr.sii.ogham.html.inliner.ImageResource;
  * 
  */
 public class InlineImageTranslator implements ContentTranslator {
-<span class="fc" id="L54">	private static final Logger LOG = LoggerFactory.getLogger(InlineImageTranslator.class);</span>
-<span class="fc" id="L55">	private static final Pattern URL_PATTERN = Pattern.compile(&quot;^https?://.+$&quot;, Pattern.CASE_INSENSITIVE);</span>
+<span class="fc" id="L55">	private static final Logger LOG = LoggerFactory.getLogger(InlineImageTranslator.class);</span>
+<span class="fc" id="L56">	private static final Pattern URL_PATTERN = Pattern.compile(&quot;^https?://.+$&quot;, Pattern.CASE_INSENSITIVE);</span>
 	
 	/**
 	 * The image inliner
@@ -75,106 +76,108 @@ public class InlineImageTranslator implements ContentTranslator {
 	private final RelativePathResolver relativePathProvider;
 
 	public InlineImageTranslator(ImageInliner inliner, ResourceResolver resourceResolver, MimeTypeProvider mimetypeProvider, RelativePathResolver relativePathProvider) {
-<span class="fc" id="L78">		super();</span>
-<span class="fc" id="L79">		this.inliner = inliner;</span>
-<span class="fc" id="L80">		this.resourceResolver = resourceResolver;</span>
-<span class="fc" id="L81">		this.mimetypeProvider = mimetypeProvider;</span>
-<span class="fc" id="L82">		this.relativePathProvider = relativePathProvider;</span>
-<span class="fc" id="L83">	}</span>
+<span class="fc" id="L79">		super();</span>
+<span class="fc" id="L80">		this.inliner = inliner;</span>
+<span class="fc" id="L81">		this.resourceResolver = resourceResolver;</span>
+<span class="fc" id="L82">		this.mimetypeProvider = mimetypeProvider;</span>
+<span class="fc" id="L83">		this.relativePathProvider = relativePathProvider;</span>
+<span class="fc" id="L84">	}</span>
 
 	@Override
 	public Content translate(Content content) throws ContentTranslatorException {
-<span class="pc bpc" id="L87" title="1 of 4 branches missed.">		if (content instanceof MayHaveStringContent &amp;&amp; ((MayHaveStringContent) content).canProvideString()) {</span>
-<span class="fc" id="L88">			String stringContent = ((MayHaveStringContent) content).asString();</span>
-<span class="fc" id="L89">			List&lt;String&gt; images = filterExternalUrls(HtmlUtils.getDistinctImageUrls(stringContent));</span>
-<span class="fc bfc" id="L90" title="All 2 branches covered.">			if (!images.isEmpty()) {</span>
+<span class="pc bpc" id="L88" title="1 of 4 branches missed.">		if (content instanceof MayHaveStringContent &amp;&amp; ((MayHaveStringContent) content).canProvideString()) {</span>
+<span class="fc" id="L89">			String stringContent = ((MayHaveStringContent) content).asString();</span>
+<span class="fc" id="L90">			List&lt;String&gt; images = filterExternalUrls(HtmlUtils.getDistinctImageUrls(stringContent));</span>
+<span class="fc bfc" id="L91" title="All 2 branches covered.">			if (!images.isEmpty()) {</span>
+<span class="fc" id="L92">				LOG.debug(&quot;inlining {} images&quot;, images.size());</span>
 				// parepare list of images paths/urls with their content
-<span class="fc" id="L92">				List&lt;ImageResource&gt; imageResources = load(getSourcePath(content), images);</span>
+<span class="fc" id="L94">				List&lt;ImageResource&gt; imageResources = load(getSourcePath(content), images);</span>
 				// generate new HTML with inlined images
-<span class="fc" id="L94">				ContentWithImages contentWithImages = inliner.inline(stringContent, imageResources);</span>
+<span class="fc" id="L96">				ContentWithImages contentWithImages = inliner.inline(stringContent, imageResources);</span>
 				// remove ogham attributes
-<span class="fc" id="L96">				ContentWithImages cleaned = clean(contentWithImages);</span>
+<span class="fc" id="L98">				ContentWithImages cleaned = clean(contentWithImages);</span>
 				// update the HTML content
-<span class="fc" id="L98">				Content inlinedContent = updateHtmlContent(content, cleaned);</span>
+<span class="fc" id="L100">				Content inlinedContent = updateHtmlContent(content, cleaned);</span>
+<span class="fc" id="L101">				LOG.debug(&quot;{} images inlined&quot;, contentWithImages.getAttachments().size());</span>
 				// if it was already a content with attachments then update it otherwise create a new one
-<span class="fc" id="L100">				return generateFinalContent(content, cleaned, inlinedContent);</span>
+<span class="fc" id="L103">				return generateFinalContent(content, cleaned, inlinedContent);</span>
 			}
-<span class="fc" id="L102">		} else {</span>
-<span class="fc" id="L103">			LOG.debug(&quot;Neither content usable as string nor HTML. Skip image inlining&quot;);</span>
-<span class="fc" id="L104">			LOG.trace(&quot;content: {}&quot;, content);</span>
+<span class="fc" id="L105">		} else {</span>
+<span class="fc" id="L106">			LOG.debug(&quot;Neither content usable as string nor HTML. Skip image inlining&quot;);</span>
+<span class="fc" id="L107">			LOG.trace(&quot;content: {}&quot;, content);</span>
 		}
-<span class="fc" id="L106">		return content;</span>
+<span class="fc" id="L109">		return content;</span>
 	}
 
 	private ContentWithImages clean(ContentWithImages contentWithImages) {
-<span class="fc" id="L110">		String html = removeOghamAttributes(contentWithImages.getContent());</span>
-<span class="fc" id="L111">		contentWithImages.setContent(html);</span>
-<span class="fc" id="L112">		return contentWithImages;</span>
+<span class="fc" id="L113">		String html = removeOghamAttributes(contentWithImages.getContent());</span>
+<span class="fc" id="L114">		contentWithImages.setContent(html);</span>
+<span class="fc" id="L115">		return contentWithImages;</span>
 	}
 
 	private List&lt;String&gt; filterExternalUrls(List&lt;String&gt; imageUrls) {
-<span class="fc bfc" id="L116" title="All 2 branches covered.">		for(Iterator&lt;String&gt; it = imageUrls.iterator() ; it.hasNext() ; ) {</span>
-<span class="fc" id="L117">			String url = it.next();</span>
-<span class="fc bfc" id="L118" title="All 2 branches covered.">			if(URL_PATTERN.matcher(url).matches()) {</span>
-<span class="fc" id="L119">				it.remove();</span>
+<span class="fc bfc" id="L119" title="All 2 branches covered.">		for(Iterator&lt;String&gt; it = imageUrls.iterator() ; it.hasNext() ; ) {</span>
+<span class="fc" id="L120">			String url = it.next();</span>
+<span class="fc bfc" id="L121" title="All 2 branches covered.">			if(URL_PATTERN.matcher(url).matches()) {</span>
+<span class="fc" id="L122">				it.remove();</span>
 			}
-<span class="fc" id="L121">		}</span>
-<span class="fc" id="L122">		return imageUrls;</span>
+<span class="fc" id="L124">		}</span>
+<span class="fc" id="L125">		return imageUrls;</span>
 	}
 
 	private ResourcePath getSourcePath(Content content) {
-<span class="fc bfc" id="L126" title="All 2 branches covered.">		if(content instanceof HasResourcePath) {</span>
-<span class="fc" id="L127">			return ((HasResourcePath) content).getPath();</span>
+<span class="fc bfc" id="L129" title="All 2 branches covered.">		if(content instanceof HasResourcePath) {</span>
+<span class="fc" id="L130">			return ((HasResourcePath) content).getPath();</span>
 		}
-<span class="fc" id="L129">		return new UnresolvedPath(&quot;&quot;);</span>
+<span class="fc" id="L132">		return new UnresolvedPath(&quot;&quot;);</span>
 	}
 	
 	private List&lt;ImageResource&gt; load(ResourcePath sourcePath, List&lt;String&gt; images) throws ContentTranslatorException {
-<span class="fc" id="L133">		List&lt;ImageResource&gt; imageResources = new ArrayList&lt;&gt;(images.size());</span>
-<span class="fc bfc" id="L134" title="All 2 branches covered.">		for (String path : images) {</span>
-<span class="fc" id="L135">			load(imageResources, relativePathProvider.resolve(sourcePath, path));</span>
-<span class="fc" id="L136">		}</span>
-<span class="fc" id="L137">		return imageResources;</span>
+<span class="fc" id="L136">		List&lt;ImageResource&gt; imageResources = new ArrayList&lt;&gt;(images.size());</span>
+<span class="fc bfc" id="L137" title="All 2 branches covered.">		for (String path : images) {</span>
+<span class="fc" id="L138">			load(imageResources, relativePathProvider.resolve(sourcePath, path));</span>
+<span class="fc" id="L139">		}</span>
+<span class="fc" id="L140">		return imageResources;</span>
 	}
 
 	private void load(List&lt;ImageResource&gt; imageResources, RelativePath path) throws ContentTranslatorException {
 		try {
-<span class="fc" id="L142">			byte[] imgContent = IOUtils.toByteArray(resourceResolver.getResource(path).getInputStream());</span>
-<span class="fc" id="L143">			String mimetype = mimetypeProvider.detect(new ByteArrayInputStream(imgContent)).toString();</span>
-<span class="fc" id="L144">			String imgName = new File(path.getOriginalPath()).getName();</span>
-<span class="fc" id="L145">			imageResources.add(new ImageResource(imgName, path.getRelativePath().getOriginalPath(), path, imgContent, mimetype));</span>
-<span class="nc" id="L146">		} catch (IOException e) {</span>
-<span class="nc" id="L147">			throw new ContentTranslatorException(&quot;Failed to inline CSS file &quot; + path + &quot; because it can't be read&quot;, e);</span>
-<span class="nc" id="L148">		} catch (ResourceResolutionException e) {</span>
-<span class="nc" id="L149">			throw new ContentTranslatorException(&quot;Failed to inline CSS file &quot; + path + &quot; because it can't be resolved&quot;, e);</span>
-<span class="nc" id="L150">		} catch (MimeTypeDetectionException e) {</span>
-<span class="nc" id="L151">			throw new ContentTranslatorException(&quot;Failed to inline CSS file &quot; + path + &quot; because mimetype can't be detected&quot;, e);</span>
-<span class="fc" id="L152">		}</span>
-<span class="fc" id="L153">	}</span>
+<span class="fc" id="L145">			byte[] imgContent = IOUtils.toByteArray(resourceResolver.getResource(path).getInputStream());</span>
+<span class="fc" id="L146">			String mimetype = mimetypeProvider.detect(new ByteArrayInputStream(imgContent)).toString();</span>
+<span class="fc" id="L147">			String imgName = new File(path.getOriginalPath()).getName();</span>
+<span class="fc" id="L148">			imageResources.add(new ImageResource(imgName, path.getRelativePath().getOriginalPath(), path, imgContent, mimetype));</span>
+<span class="nc" id="L149">		} catch (IOException e) {</span>
+<span class="nc" id="L150">			throw new ImageInliningException(&quot;Failed to inline image file &quot; + path + &quot; because it can't be read&quot;, e);</span>
+<span class="fc" id="L151">		} catch (ResourceResolutionException e) {</span>
+<span class="fc" id="L152">			throw new ImageInliningException(&quot;Failed to inline image file &quot; + path + &quot; because it can't be resolved&quot;, e);</span>
+<span class="nc" id="L153">		} catch (MimeTypeDetectionException e) {</span>
+<span class="nc" id="L154">			throw new ImageInliningException(&quot;Failed to inline image file &quot; + path + &quot; because mimetype can't be detected&quot;, e);</span>
+<span class="fc" id="L155">		}</span>
+<span class="fc" id="L156">	}</span>
 
 	private Content updateHtmlContent(Content content, ContentWithImages contentWithImages) {
-<span class="pc bpc" id="L156" title="1 of 2 branches missed.">		if(content instanceof UpdatableStringContent) {</span>
-<span class="fc" id="L157">			LOG.debug(&quot;Content is updatable =&gt; update it with inlined images&quot;);</span>
-<span class="fc" id="L158">			((UpdatableStringContent) content).setStringContent(contentWithImages.getContent());</span>
-<span class="fc" id="L159">			return content;</span>
+<span class="pc bpc" id="L159" title="1 of 2 branches missed.">		if(content instanceof UpdatableStringContent) {</span>
+<span class="fc" id="L160">			LOG.debug(&quot;Content is updatable =&gt; update it with inlined images&quot;);</span>
+<span class="fc" id="L161">			((UpdatableStringContent) content).setStringContent(contentWithImages.getContent());</span>
+<span class="fc" id="L162">			return content;</span>
 		}
-<span class="nc" id="L161">		LOG.info(&quot;Content is not updatable =&gt; create a new StringContent for image inlining result&quot;);</span>
-<span class="nc" id="L162">		return new StringContent(contentWithImages.getContent());</span>
+<span class="nc" id="L164">		LOG.info(&quot;Content is not updatable =&gt; create a new StringContent for image inlining result&quot;);</span>
+<span class="nc" id="L165">		return new StringContent(contentWithImages.getContent());</span>
 	}
 
 	private Content generateFinalContent(Content content, ContentWithImages contentWithImages, Content inlinedContent) {
-<span class="pc bpc" id="L166" title="1 of 2 branches missed.">		if(content instanceof ContentWithAttachments) {</span>
-<span class="nc" id="L167">			ContentWithAttachments finalContent = (ContentWithAttachments) content;</span>
-<span class="nc" id="L168">			finalContent.addAttachments(contentWithImages.getAttachments());</span>
-<span class="nc" id="L169">			finalContent.setContent(inlinedContent);</span>
-<span class="nc" id="L170">			return finalContent;</span>
+<span class="pc bpc" id="L169" title="1 of 2 branches missed.">		if(content instanceof ContentWithAttachments) {</span>
+<span class="nc" id="L170">			ContentWithAttachments finalContent = (ContentWithAttachments) content;</span>
+<span class="nc" id="L171">			finalContent.addAttachments(contentWithImages.getAttachments());</span>
+<span class="nc" id="L172">			finalContent.setContent(inlinedContent);</span>
+<span class="nc" id="L173">			return finalContent;</span>
 		}
-<span class="fc" id="L172">		return new ContentWithAttachments(inlinedContent, contentWithImages.getAttachments());</span>
+<span class="fc" id="L175">		return new ContentWithAttachments(inlinedContent, contentWithImages.getAttachments());</span>
 	}
 
 	@Override
 	public String toString() {
-<span class="fc" id="L177">		return &quot;InlineImageTranslator&quot;;</span>
+<span class="fc" id="L180">		return &quot;InlineImageTranslator&quot;;</span>
 	}
 	
 }

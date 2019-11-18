@@ -3,6 +3,9 @@
 import javax.mail.Multipart;
 import javax.mail.internet.MimePart;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import fr.sii.ogham.core.message.content.Content;
 import fr.sii.ogham.email.attachment.Attachment;
 import fr.sii.ogham.email.exception.javamail.ContentHandlerException;
@@ -10,24 +13,27 @@ import fr.sii.ogham.email.message.Email;
 import fr.sii.ogham.email.message.content.ContentWithAttachments;
 
 public class ContentWithAttachmentsHandler implements JavaMailContentHandler {
+<span class="fc" id="L16">	private static final Logger LOG = LoggerFactory.getLogger(ContentWithAttachmentsHandler.class);</span>
+	
 	/**
 	 * The content handler used for sub content
 	 */
 	private JavaMailContentHandler delegate;
 
 	public ContentWithAttachmentsHandler(JavaMailContentHandler delegate) {
-<span class="fc" id="L19">		super();</span>
-<span class="fc" id="L20">		this.delegate = delegate;</span>
-<span class="fc" id="L21">	}</span>
+<span class="fc" id="L24">		super();</span>
+<span class="fc" id="L25">		this.delegate = delegate;</span>
+<span class="fc" id="L26">	}</span>
 
 	@Override
 	public void setContent(MimePart message, Multipart multipart, Email email, Content content) throws ContentHandlerException {
-<span class="fc" id="L25">		ContentWithAttachments cwa = (ContentWithAttachments) content;</span>
-<span class="fc bfc" id="L26" title="All 2 branches covered.">		for(Attachment attachment : cwa.getAttachments()) {</span>
-<span class="fc" id="L27">			email.attach(attachment);</span>
-<span class="fc" id="L28">		}</span>
-<span class="fc" id="L29">		delegate.setContent(message, multipart, email, cwa.getContent());</span>
-<span class="fc" id="L30">	}</span>
+<span class="fc" id="L30">		ContentWithAttachments cwa = (ContentWithAttachments) content;</span>
+<span class="fc bfc" id="L31" title="All 2 branches covered.">		for(Attachment attachment : cwa.getAttachments()) {</span>
+<span class="fc" id="L32">			LOG.debug(&quot;Attaching {} to email&quot;, attachment);</span>
+<span class="fc" id="L33">			email.attach(attachment);</span>
+<span class="fc" id="L34">		}</span>
+<span class="fc" id="L35">		delegate.setContent(message, multipart, email, cwa.getContent());</span>
+<span class="fc" id="L36">	}</span>
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import fr.sii.ogham.core.exception.handler.ContentTranslatorException;
+import fr.sii.ogham.core.exception.handler.CssInliningException;
 import fr.sii.ogham.core.exception.resource.ResourceResolutionException;
 import fr.sii.ogham.core.message.content.Content;
 import fr.sii.ogham.core.message.content.HasResourcePath;
@@ -35,7 +36,7 @@ import fr.sii.ogham.html.inliner.ExternalCss;
  *
  */
 public class InlineCssTranslator implements ContentTranslator {
-<span class="fc" id="L38">	private static final Logger LOG = LoggerFactory.getLogger(InlineCssTranslator.class);</span>
+<span class="fc" id="L39">	private static final Logger LOG = LoggerFactory.getLogger(InlineCssTranslator.class);</span>
 	
 	/**
 	 * The CSS inliner
@@ -53,74 +54,74 @@ public class InlineCssTranslator implements ContentTranslator {
 	private final RelativePathResolver relativePathProvider;
 
 	public InlineCssTranslator(CssInliner cssInliner, ResourceResolver resourceResolver, RelativePathResolver relativePathProvider) {
-<span class="fc" id="L56">		super();</span>
-<span class="fc" id="L57">		this.cssInliner = cssInliner;</span>
-<span class="fc" id="L58">		this.resourceResolver = resourceResolver;</span>
-<span class="fc" id="L59">		this.relativePathProvider = relativePathProvider;</span>
-<span class="fc" id="L60">	}</span>
+<span class="fc" id="L57">		super();</span>
+<span class="fc" id="L58">		this.cssInliner = cssInliner;</span>
+<span class="fc" id="L59">		this.resourceResolver = resourceResolver;</span>
+<span class="fc" id="L60">		this.relativePathProvider = relativePathProvider;</span>
+<span class="fc" id="L61">	}</span>
 
 	@Override
 	public Content translate(Content content) throws ContentTranslatorException {
-<span class="pc bpc" id="L64" title="1 of 4 branches missed.">		if (content instanceof MayHaveStringContent &amp;&amp; ((MayHaveStringContent) content).canProvideString()) {</span>
-<span class="fc" id="L65">			String stringContent = ((MayHaveStringContent) content).asString();</span>
-<span class="fc bfc" id="L66" title="All 2 branches covered.">			if (HtmlUtils.isHtml(stringContent)) {</span>
-<span class="fc" id="L67">				List&lt;String&gt; cssFiles = HtmlUtils.getDistinctCssUrls(stringContent);</span>
-<span class="fc bfc" id="L68" title="All 2 branches covered.">				if (!cssFiles.isEmpty()) {</span>
+<span class="pc bpc" id="L65" title="1 of 4 branches missed.">		if (content instanceof MayHaveStringContent &amp;&amp; ((MayHaveStringContent) content).canProvideString()) {</span>
+<span class="fc" id="L66">			String stringContent = ((MayHaveStringContent) content).asString();</span>
+<span class="fc bfc" id="L67" title="All 2 branches covered.">			if (HtmlUtils.isHtml(stringContent)) {</span>
+<span class="fc" id="L68">				List&lt;String&gt; cssFiles = HtmlUtils.getDistinctCssUrls(stringContent);</span>
+<span class="fc bfc" id="L69" title="All 2 branches covered.">				if (!cssFiles.isEmpty()) {</span>
 					// prepare list of css files/urls with their content
-<span class="fc" id="L70">					List&lt;ExternalCss&gt; cssResources = load(getSourcePath(content), cssFiles);</span>
+<span class="fc" id="L71">					List&lt;ExternalCss&gt; cssResources = load(getSourcePath(content), cssFiles);</span>
 					// generate the content with inlined css
-<span class="fc" id="L72">					String inlinedContentStr = cssInliner.inline(stringContent, cssResources);</span>
+<span class="fc" id="L73">					String inlinedContentStr = cssInliner.inline(stringContent, cssResources);</span>
 					// update the HTML content
-<span class="fc" id="L74">					return updateHtmlContent(content, inlinedContentStr);</span>
+<span class="fc" id="L75">					return updateHtmlContent(content, inlinedContentStr);</span>
 				}
 			}
-<span class="fc" id="L77">		} else {</span>
-<span class="fc" id="L78">			LOG.debug(&quot;Neither content as string nor HTML. Skip CSS inlining&quot;);</span>
-<span class="fc" id="L79">			LOG.trace(&quot;content: {}&quot;, content);</span>
+<span class="fc" id="L78">		} else {</span>
+<span class="fc" id="L79">			LOG.debug(&quot;Neither content as string nor HTML. Skip CSS inlining&quot;);</span>
+<span class="fc" id="L80">			LOG.trace(&quot;content: {}&quot;, content);</span>
 		}
-<span class="fc" id="L81">		return content;</span>
+<span class="fc" id="L82">		return content;</span>
 	}
 
 	private ResourcePath getSourcePath(Content content) {
-<span class="fc bfc" id="L85" title="All 2 branches covered.">		if(content instanceof HasResourcePath) {</span>
-<span class="fc" id="L86">			return ((HasResourcePath) content).getPath();</span>
+<span class="fc bfc" id="L86" title="All 2 branches covered.">		if(content instanceof HasResourcePath) {</span>
+<span class="fc" id="L87">			return ((HasResourcePath) content).getPath();</span>
 		}
-<span class="fc" id="L88">		return new UnresolvedPath(&quot;&quot;);</span>
+<span class="fc" id="L89">		return new UnresolvedPath(&quot;&quot;);</span>
 	}
 
 	private List&lt;ExternalCss&gt; load(ResourcePath sourcePath, List&lt;String&gt; cssFiles) throws ContentTranslatorException {
-<span class="fc" id="L92">		List&lt;ExternalCss&gt; cssResources = new ArrayList&lt;&gt;(cssFiles.size());</span>
-<span class="fc bfc" id="L93" title="All 2 branches covered.">		for (String path : cssFiles) {</span>
-<span class="fc" id="L94">			load(cssResources, relativePathProvider.resolve(sourcePath, path));</span>
-<span class="fc" id="L95">		}</span>
-<span class="fc" id="L96">		return cssResources;</span>
+<span class="fc" id="L93">		List&lt;ExternalCss&gt; cssResources = new ArrayList&lt;&gt;(cssFiles.size());</span>
+<span class="fc bfc" id="L94" title="All 2 branches covered.">		for (String path : cssFiles) {</span>
+<span class="fc" id="L95">			load(cssResources, relativePathProvider.resolve(sourcePath, path));</span>
+<span class="fc" id="L96">		}</span>
+<span class="fc" id="L97">		return cssResources;</span>
 	}
 
 	private void load(List&lt;ExternalCss&gt; cssResources, ResourcePath path) throws ContentTranslatorException {
 		try {
-<span class="fc" id="L101">			cssResources.add(new ExternalCss(path, IOUtils.toString(resourceResolver.getResource(path).getInputStream())));</span>
-<span class="nc" id="L102">		} catch (IOException e) {</span>
-<span class="nc" id="L103">			throw new ContentTranslatorException(&quot;Failed to inline CSS file &quot; + path + &quot; because it can't be read&quot;, e);</span>
-<span class="nc" id="L104">		} catch (ResourceResolutionException e) {</span>
-<span class="nc" id="L105">			throw new ContentTranslatorException(&quot;Failed to inline CSS file &quot; + path + &quot; because it can't be resolved&quot;, e);</span>
-<span class="fc" id="L106">		}</span>
-<span class="fc" id="L107">	}</span>
+<span class="fc" id="L102">			cssResources.add(new ExternalCss(path, IOUtils.toString(resourceResolver.getResource(path).getInputStream())));</span>
+<span class="nc" id="L103">		} catch (IOException e) {</span>
+<span class="nc" id="L104">			throw new CssInliningException(&quot;Failed to inline CSS file &quot; + path + &quot; because it can't be read&quot;, e);</span>
+<span class="nc" id="L105">		} catch (ResourceResolutionException e) {</span>
+<span class="nc" id="L106">			throw new CssInliningException(&quot;Failed to inline CSS file &quot; + path + &quot; because it can't be resolved&quot;, e);</span>
+<span class="fc" id="L107">		}</span>
+<span class="fc" id="L108">	}</span>
 
 	private Content updateHtmlContent(Content content, String inlinedContentStr) {
-<span class="fc" id="L110">		Content inlinedContent = content;</span>
-<span class="pc bpc" id="L111" title="1 of 2 branches missed.">		if(content instanceof UpdatableStringContent) {</span>
-<span class="fc" id="L112">			LOG.debug(&quot;Content is updatable =&gt; update it with inlined CSS&quot;);</span>
-<span class="fc" id="L113">			((UpdatableStringContent) inlinedContent).setStringContent(inlinedContentStr);</span>
+<span class="fc" id="L111">		Content inlinedContent = content;</span>
+<span class="pc bpc" id="L112" title="1 of 2 branches missed.">		if(content instanceof UpdatableStringContent) {</span>
+<span class="fc" id="L113">			LOG.debug(&quot;Content is updatable =&gt; update it with inlined CSS&quot;);</span>
+<span class="fc" id="L114">			((UpdatableStringContent) inlinedContent).setStringContent(inlinedContentStr);</span>
 		} else {
-<span class="nc" id="L115">			LOG.info(&quot;Content is not updatable =&gt; create a new StringContent for CSS inlining result&quot;);</span>
-<span class="nc" id="L116">			inlinedContent = new StringContent(inlinedContentStr);</span>
+<span class="nc" id="L116">			LOG.info(&quot;Content is not updatable =&gt; create a new StringContent for CSS inlining result&quot;);</span>
+<span class="nc" id="L117">			inlinedContent = new StringContent(inlinedContentStr);</span>
 		}
-<span class="fc" id="L118">		return inlinedContent;</span>
+<span class="fc" id="L119">		return inlinedContent;</span>
 	}
 
 	@Override
 	public String toString() {
-<span class="fc" id="L123">		return &quot;InlineCssTranslator&quot;;</span>
+<span class="fc" id="L124">		return &quot;InlineCssTranslator&quot;;</span>
 	}
 	
 }
