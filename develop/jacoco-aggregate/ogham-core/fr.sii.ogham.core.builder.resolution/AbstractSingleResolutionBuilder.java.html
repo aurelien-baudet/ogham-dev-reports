@@ -97,20 +97,66 @@ public abstract class AbstractSingleResolutionBuilder&lt;MYSELF extends Abstract
 <span class="fc" id="L97">		return myself;</span>
 	}
 
+	/**
+	 * Configure lookup prefix. For example:
+	 * 
+	 * &lt;pre&gt;
+	 * .classpath().lookup(&quot;classpath:&quot;);
+	 * 
+	 * // path prefixed by classpath: matches 
+	 * // then classpath resolver is used
+	 * resourceResolver.getResource(&quot;classpath:foo/bar.html&quot;);
+	 * // path is not prefixed (or using another prefix) doesn't match 
+	 * // then classpath resolver is not used
+	 * resourceResolver.getResource(&quot;foo/bar.html&quot;);
+	 * &lt;/pre&gt;
+	 * 
+	 * &lt;p&gt;
+	 * Several lookups can be provided:
+	 * 
+	 * &lt;pre&gt;
+	 * .classpath().lookup(&quot;classpath:&quot;, &quot;cp:&quot;);
+	 * &lt;/pre&gt;
+	 * 
+	 * If a path starts with one of the prefix (&quot;classpath:&quot; or &quot;cp:&quot;), the
+	 * corresponding resolver (classpath resolver in this example) is used to
+	 * resolve the file.
+	 * 
+	 * &lt;p&gt;
+	 * Lookup may be empty meaning that if the path has no prefix, the
+	 * corresponding resolver is use as default. For example:
+	 * 
+	 * &lt;pre&gt;
+	 * .classpath().lookup(&quot;&quot;);
+	 * &lt;/pre&gt;
+	 * 
+	 * If the path is &quot;foo/bar.html&quot; is provided then the classpath resolver is
+	 * used.
+	 * 
+	 * @param prefix
+	 *            one or several prefixes that indicates which resolver to use
+	 *            according to path
+	 * @return this instance for fluent chaining
+	 */
+	public MYSELF lookup(List&lt;String&gt; prefix) {
+<span class="fc" id="L142">		this.lookups.addAll(prefix);</span>
+<span class="fc" id="L143">		return myself;</span>
+	}
+	
 	@Override
 	public ResourceResolver build() {
-<span class="fc" id="L102">		ResourceResolver resolver = createResolver();</span>
-<span class="pc bpc" id="L103" title="1 of 4 branches missed.">		if (!(resolver instanceof RelativisableResourceResolver) || environmentBuilder == null) {</span>
-<span class="fc" id="L104">			return resolver;</span>
+<span class="fc" id="L148">		ResourceResolver resolver = createResolver();</span>
+<span class="pc bpc" id="L149" title="1 of 4 branches missed.">		if (!(resolver instanceof RelativisableResourceResolver) || environmentBuilder == null) {</span>
+<span class="fc" id="L150">			return resolver;</span>
 		}
-<span class="fc" id="L106">		PropertyResolver propertyResolver = environmentBuilder.build();</span>
-<span class="fc" id="L107">		String resolvedPathPrefix = getValue(propertyResolver, pathPrefixes);</span>
-<span class="fc" id="L108">		String resolvedPathSuffix = getValue(propertyResolver, pathSuffixes);</span>
-<span class="fc bfc" id="L109" title="All 4 branches covered.">		if (!resolvedPathPrefix.isEmpty() || !resolvedPathSuffix.isEmpty()) {</span>
-<span class="fc" id="L110">			LOG.debug(&quot;Using parentPath {} and extension {} for resource resolution&quot;, resolvedPathPrefix, resolvedPathSuffix);</span>
-<span class="fc" id="L111">			resolver = new RelativeResolver((RelativisableResourceResolver) resolver, resolvedPathPrefix, resolvedPathSuffix);</span>
+<span class="fc" id="L152">		PropertyResolver propertyResolver = environmentBuilder.build();</span>
+<span class="fc" id="L153">		String resolvedPathPrefix = getValue(propertyResolver, pathPrefixes);</span>
+<span class="fc" id="L154">		String resolvedPathSuffix = getValue(propertyResolver, pathSuffixes);</span>
+<span class="fc bfc" id="L155" title="All 4 branches covered.">		if (!resolvedPathPrefix.isEmpty() || !resolvedPathSuffix.isEmpty()) {</span>
+<span class="fc" id="L156">			LOG.debug(&quot;Using parentPath {} and extension {} for resource resolution&quot;, resolvedPathPrefix, resolvedPathSuffix);</span>
+<span class="fc" id="L157">			resolver = new RelativeResolver((RelativisableResourceResolver) resolver, resolvedPathPrefix, resolvedPathSuffix);</span>
 		}
-<span class="fc" id="L113">		return resolver;</span>
+<span class="fc" id="L159">		return resolver;</span>
 	}
 
 	protected abstract ResourceResolver createResolver();
@@ -121,15 +167,15 @@ public abstract class AbstractSingleResolutionBuilder&lt;MYSELF extends Abstract
 	 * @return the list of lookups
 	 */
 	public List&lt;String&gt; getLookups() {
-<span class="fc" id="L124">		return lookups;</span>
+<span class="fc" id="L170">		return lookups;</span>
 	}
 
 	protected String getValue(PropertyResolver propertyResolver, List&lt;String&gt; props) {
-<span class="pc bpc" id="L128" title="1 of 2 branches missed.">		if (props == null) {</span>
-<span class="nc" id="L129">			return &quot;&quot;;</span>
+<span class="pc bpc" id="L174" title="1 of 2 branches missed.">		if (props == null) {</span>
+<span class="nc" id="L175">			return &quot;&quot;;</span>
 		}
-<span class="fc" id="L131">		String value = BuilderUtils.evaluate(props, propertyResolver, String.class);</span>
-<span class="fc bfc" id="L132" title="All 2 branches covered.">		return value == null ? &quot;&quot; : value;</span>
+<span class="fc" id="L177">		String value = BuilderUtils.evaluate(props, propertyResolver, String.class);</span>
+<span class="fc bfc" id="L178" title="All 2 branches covered.">		return value == null ? &quot;&quot; : value;</span>
 	}
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>
