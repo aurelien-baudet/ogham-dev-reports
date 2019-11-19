@@ -26,45 +26,46 @@ public class TestSmppServerHandler implements SmppServerHandler {
 <span class="nc" id="L26">	}</span>
 
 	@Override
+	@SuppressWarnings(&quot;rawtypes&quot;)
 	public void sessionBindRequested(Long sessionId, SmppSessionConfiguration sessionConfiguration, final BaseBind bindRequest) throws SmppProcessingException {
 		// test name change of sessions
-<span class="nc" id="L31">		sessionConfiguration.setName(&quot;Test1&quot;);</span>
+<span class="nc" id="L32">		sessionConfiguration.setName(&quot;Test1&quot;);</span>
 
-<span class="nc bnc" id="L33" title="All 2 branches missed.">		if (!systemId.equals(bindRequest.getSystemId())) {</span>
-<span class="nc" id="L34">			throw new SmppProcessingException(SmppConstants.STATUS_INVSYSID);</span>
+<span class="nc bnc" id="L34" title="All 2 branches missed.">		if (!systemId.equals(bindRequest.getSystemId())) {</span>
+<span class="nc" id="L35">			throw new SmppProcessingException(SmppConstants.STATUS_INVSYSID);</span>
 		}
 
-<span class="nc bnc" id="L37" title="All 2 branches missed.">		if (!password.equals(bindRequest.getPassword())) {</span>
-<span class="nc" id="L38">			throw new SmppProcessingException(SmppConstants.STATUS_INVPASWD);</span>
+<span class="nc bnc" id="L38" title="All 2 branches missed.">		if (!password.equals(bindRequest.getPassword())) {</span>
+<span class="nc" id="L39">			throw new SmppProcessingException(SmppConstants.STATUS_INVPASWD);</span>
 		}
-<span class="nc" id="L40">	}</span>
+<span class="nc" id="L41">	}</span>
 
 	@Override
 	public void sessionCreated(Long sessionId, SmppServerSession session, BaseBindResp preparedBindResponse) {
-<span class="nc" id="L44">		sessions.add(session);</span>
+<span class="nc" id="L45">		sessions.add(session);</span>
 		// need to do something it now (flag we're ready)
-<span class="nc" id="L46">		session.serverReady(sessionHandler);</span>
-<span class="nc" id="L47">	}</span>
+<span class="nc" id="L47">		session.serverReady(sessionHandler);</span>
+<span class="nc" id="L48">	}</span>
 
 	@Override
 	public void sessionDestroyed(Long sessionId, SmppServerSession session) {
-<span class="nc" id="L51">		sessions.remove(session);</span>
-<span class="nc" id="L52">	}</span>
+<span class="nc" id="L52">		sessions.remove(session);</span>
+<span class="nc" id="L53">	}</span>
 
 	public Set&lt;SmppServerSession&gt; getSessions() {
-<span class="nc" id="L55">		return sessions;</span>
+<span class="nc" id="L56">		return sessions;</span>
 	}
 
 	public PollableSmppSessionHandler getSessionHandler() {
-<span class="nc" id="L59">		return sessionHandler;</span>
+<span class="nc" id="L60">		return sessionHandler;</span>
 	}
 
 	public String getSystemId() {
-<span class="nc" id="L63">		return systemId;</span>
+<span class="nc" id="L64">		return systemId;</span>
 	}
 
 	public String getPassword() {
-<span class="nc" id="L67">		return password;</span>
+<span class="nc" id="L68">		return password;</span>
 	}
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

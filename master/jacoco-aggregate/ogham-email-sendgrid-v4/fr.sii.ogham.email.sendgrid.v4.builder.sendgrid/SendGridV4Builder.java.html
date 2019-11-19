@@ -28,7 +28,7 @@ import fr.sii.ogham.email.sendgrid.v4.sender.impl.sendgrid.client.CustomizableUr
 import fr.sii.ogham.email.sendgrid.v4.sender.impl.sendgrid.client.DelegateSendGridClient;
 import fr.sii.ogham.email.sendgrid.v4.sender.impl.sendgrid.client.SendGridClient;
 import fr.sii.ogham.email.sendgrid.v4.sender.impl.sendgrid.client.SendGridInterceptor;
-import fr.sii.ogham.email.sendgrid.v4.sender.impl.sendgrid.handler.MapContentHandler;
+import fr.sii.ogham.email.sendgrid.v4.sender.impl.sendgrid.handler.PriorizedContentHandler;
 import fr.sii.ogham.email.sendgrid.v4.sender.impl.sendgrid.handler.MultiContentHandler;
 import fr.sii.ogham.email.sendgrid.v4.sender.impl.sendgrid.handler.StringContentHandler;
 
@@ -432,9 +432,9 @@ public class SendGridV4Builder extends AbstractSendGridBuilder&lt;SendGridV4Buil
 <span class="fc" id="L432">		return new SendGrid(apiKey);</span>
 	}
 
-	private MapContentHandler buildContentHandler() {
+	private PriorizedContentHandler buildContentHandler() {
 <span class="fc" id="L436">		MimeTypeProvider mimetypeProvider = buildMimetypeProvider();</span>
-<span class="fc" id="L437">		MapContentHandler contentHandler = new MapContentHandler();</span>
+<span class="fc" id="L437">		PriorizedContentHandler contentHandler = new PriorizedContentHandler();</span>
 <span class="fc" id="L438">		contentHandler.register(MultiContent.class, new MultiContentHandler(contentHandler));</span>
 <span class="fc" id="L439">		contentHandler.register(MayHaveStringContent.class, new StringContentHandler(mimetypeProvider));</span>
 <span class="fc" id="L440">		return contentHandler;</span>

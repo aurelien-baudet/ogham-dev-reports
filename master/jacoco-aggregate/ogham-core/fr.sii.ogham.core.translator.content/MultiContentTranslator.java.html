@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 
 import fr.sii.ogham.core.exception.handler.ContentTranslatorException;
 import fr.sii.ogham.core.exception.handler.NoContentException;
+import fr.sii.ogham.core.exception.handler.TemplateNotFoundException;
 import fr.sii.ogham.core.message.content.Content;
 import fr.sii.ogham.core.message.content.MultiContent;
 
@@ -36,7 +37,7 @@ import fr.sii.ogham.core.message.content.MultiContent;
  *
  */
 public class MultiContentTranslator implements ContentTranslator {
-<span class="fc" id="L39">	private static final Logger LOG = LoggerFactory.getLogger(MultiContentTranslator.class);</span>
+<span class="fc" id="L40">	private static final Logger LOG = LoggerFactory.getLogger(MultiContentTranslator.class);</span>
 
 	/**
 	 * The content translator to apply on each sub content
@@ -44,42 +45,53 @@ public class MultiContentTranslator implements ContentTranslator {
 	private ContentTranslator delegate;
 
 	public MultiContentTranslator(ContentTranslator delegate) {
-<span class="fc" id="L47">		super();</span>
-<span class="fc" id="L48">		this.delegate = delegate;</span>
-<span class="fc" id="L49">	}</span>
+<span class="fc" id="L48">		super();</span>
+<span class="fc" id="L49">		this.delegate = delegate;</span>
+<span class="fc" id="L50">	}</span>
 
 	@Override
 	public Content translate(Content content) throws ContentTranslatorException {
-<span class="fc bfc" id="L53" title="All 2 branches covered.">		if (!(content instanceof MultiContent)) {</span>
-<span class="fc" id="L54">			LOG.trace(&quot;Not a MultiContent =&gt; skip it&quot;);</span>
-<span class="fc" id="L55">			return content;</span>
+<span class="fc bfc" id="L54" title="All 2 branches covered.">		if (!(content instanceof MultiContent)) {</span>
+<span class="fc" id="L55">			LOG.trace(&quot;Not a MultiContent =&gt; skip it&quot;);</span>
+<span class="fc" id="L56">			return content;</span>
 		}
-<span class="fc" id="L57">		MultiContent result = new MultiContent();</span>
-<span class="fc" id="L58">		List&lt;ContentTranslatorException&gt; errors = new ArrayList&lt;&gt;();</span>
-<span class="fc bfc" id="L59" title="All 2 branches covered.">		for (Content c : ((MultiContent) content).getContents()) {</span>
-<span class="fc" id="L60">			LOG.debug(&quot;Translate the sub content using {}&quot;, delegate);</span>
-<span class="fc" id="L61">			LOG.trace(&quot;sub content: {}&quot;, c);</span>
+<span class="fc" id="L58">		MultiContent result = new MultiContent();</span>
+<span class="fc" id="L59">		List&lt;ContentTranslatorException&gt; missing = new ArrayList&lt;&gt;();</span>
+<span class="fc bfc" id="L60" title="All 2 branches covered.">		for (Content c : ((MultiContent) content).getContents()) {</span>
+<span class="fc" id="L61">			LOG.debug(&quot;Translate the sub content using {}&quot;, delegate);</span>
+<span class="fc" id="L62">			LOG.trace(&quot;sub content: {}&quot;, c);</span>
 			try {
-<span class="fc" id="L63">				Content translated = delegate.translate(c);</span>
-<span class="pc bpc" id="L64" title="1 of 2 branches missed.">				if(translated!=null) {</span>
-<span class="fc" id="L65">					LOG.debug(&quot;Sub content skipped&quot;);</span>
-<span class="fc" id="L66">					LOG.trace(&quot;sub-content: {}&quot;, c);</span>
-<span class="fc" id="L67">					result.addContent(translated);</span>
+<span class="fc" id="L64">				Content translated = delegate.translate(c);</span>
+<span class="pc bpc" id="L65" title="1 of 2 branches missed.">				if (translated == null) {</span>
+<span class="nc" id="L66">					LOG.debug(&quot;Sub content skipped&quot;);</span>
+<span class="nc" id="L67">					LOG.trace(&quot;sub-content: {}&quot;, c);</span>
+				} else {
+<span class="fc" id="L69">					LOG.debug(&quot;Sub content added&quot;);</span>
+<span class="fc" id="L70">					LOG.trace(&quot;sub-content: {}&quot;, c);</span>
+<span class="fc" id="L71">					result.addContent(translated);</span>
 				}
-<span class="fc" id="L69">			} catch(ContentTranslatorException e) {</span>
-<span class="fc" id="L70">				errors.add(e);</span>
-<span class="fc" id="L71">			}</span>
-<span class="fc" id="L72">		}</span>
-<span class="fc bfc" id="L73" title="All 4 branches covered.">		if (!errors.isEmpty() &amp;&amp; result.getContents().isEmpty()) {</span>
-<span class="fc" id="L74">			throw new NoContentException(&quot;The message is empty maybe due to some errors:\n&quot; + errors.stream().map(Exception::getMessage).collect(Collectors.joining(&quot;\n&quot;)), (MultiContent) content, errors);</span>
+<span class="fc" id="L73">			} catch (TemplateNotFoundException e) {</span>
+<span class="fc" id="L74">				LOG.debug(&quot;Sub content not found =&gt; skipped&quot;, e);</span>
+<span class="fc" id="L75">				missing.add(e);</span>
+<span class="fc" id="L76">			}</span>
+<span class="fc" id="L77">		}</span>
+<span class="fc bfc" id="L78" title="All 2 branches covered.">		if (result.getContents().isEmpty()) {</span>
+<span class="nc" id="L79">			handleEmptyContent(content, result, missing);</span>
 		}
-<span class="fc" id="L76">		return result;</span>
+<span class="fc" id="L81">		return result;</span>
 	}
 
 	@Override
 	public String toString() {
-<span class="fc" id="L81">		return &quot;MultiContentTranslator&quot;;</span>
+<span class="fc" id="L86">		return &quot;MultiContentTranslator&quot;;</span>
 	}
 
+	private void handleEmptyContent(Content content, MultiContent result, List&lt;ContentTranslatorException&gt; missing) throws NoContentException {
+<span class="pc bpc" id="L90" title="1 of 2 branches missed.">		if (!missing.isEmpty()) {</span>
+<span class="fc" id="L91">			String notFoundTemplates = missing.stream().map(Exception::getMessage).collect(Collectors.joining(&quot;\n&quot;));</span>
+<span class="fc" id="L92">			throw new NoContentException(&quot;The message is empty maybe due to some errors:\n&quot; + notFoundTemplates, (MultiContent) content, missing);</span>
+		}
+<span class="nc" id="L94">		throw new NoContentException(&quot;The message is empty&quot;, (MultiContent) content, missing);</span>
+	}
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

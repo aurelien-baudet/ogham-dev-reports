@@ -51,7 +51,7 @@ import fr.sii.ogham.email.sender.impl.javamail.ContentWithAttachmentsHandler;
 import fr.sii.ogham.email.sender.impl.javamail.FileResourceHandler;
 import fr.sii.ogham.email.sender.impl.javamail.JavaMailInterceptor;
 import fr.sii.ogham.email.sender.impl.javamail.MapAttachmentResourceHandler;
-import fr.sii.ogham.email.sender.impl.javamail.MapContentHandler;
+import fr.sii.ogham.email.sender.impl.javamail.PriorizedContentHandler;
 import fr.sii.ogham.email.sender.impl.javamail.MultiContentHandler;
 import fr.sii.ogham.email.sender.impl.javamail.StreamResourceHandler;
 import fr.sii.ogham.email.sender.impl.javamail.StringContentHandler;
@@ -676,11 +676,11 @@ public class JavaMailBuilder extends AbstractParent&lt;EmailBuilder&gt; implemen
 <span class="fc" id="L676">		return null;</span>
 	}
 
-	private MapContentHandler buildContentHandler(MimeTypeProvider mimetypeProvider) {
-<span class="fc" id="L680">		MapContentHandler contentHandler = new MapContentHandler();</span>
-<span class="fc" id="L681">		contentHandler.addContentHandler(MultiContent.class, new MultiContentHandler(contentHandler));</span>
-<span class="fc" id="L682">		contentHandler.addContentHandler(ContentWithAttachments.class, new ContentWithAttachmentsHandler(contentHandler));</span>
-<span class="fc" id="L683">		contentHandler.addContentHandler(MayHaveStringContent.class, new StringContentHandler(mimetypeProvider, buildCharset()));</span>
+	private PriorizedContentHandler buildContentHandler(MimeTypeProvider mimetypeProvider) {
+<span class="fc" id="L680">		PriorizedContentHandler contentHandler = new PriorizedContentHandler();</span>
+<span class="fc" id="L681">		contentHandler.register(MultiContent.class, new MultiContentHandler(contentHandler));</span>
+<span class="fc" id="L682">		contentHandler.register(ContentWithAttachments.class, new ContentWithAttachmentsHandler(contentHandler));</span>
+<span class="fc" id="L683">		contentHandler.register(MayHaveStringContent.class, new StringContentHandler(mimetypeProvider, buildCharset()));</span>
 <span class="fc" id="L684">		return contentHandler;</span>
 	}
 
