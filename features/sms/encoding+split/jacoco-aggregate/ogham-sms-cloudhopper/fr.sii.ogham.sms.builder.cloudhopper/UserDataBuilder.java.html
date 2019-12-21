@@ -1,0 +1,264 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>UserDataBuilder.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">reporting</a> &gt; <a href="../index.html" class="el_bundle">ogham-sms-cloudhopper</a> &gt; <a href="index.source.html" class="el_package">fr.sii.ogham.sms.builder.cloudhopper</a> &gt; <span class="el_source">UserDataBuilder.java</span></div><h1>UserDataBuilder.java</h1><pre class="source lang-java linenums">package fr.sii.ogham.sms.builder.cloudhopper;
+
+import static fr.sii.ogham.core.util.BuilderUtils.evaluate;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+import fr.sii.ogham.core.builder.AbstractParent;
+import fr.sii.ogham.core.builder.Builder;
+import fr.sii.ogham.core.builder.env.EnvironmentBuilder;
+import fr.sii.ogham.core.env.PropertyResolver;
+import fr.sii.ogham.sms.builder.cloudhopper.UserDataBuilder.UserDataPropValues;
+import fr.sii.ogham.sms.sender.impl.cloudhopper.preparator.MessagePreparator;
+
+/**
+ * &quot;User Data&quot; represents the text message or data to be transmitted the
+ * end-user.
+ * 
+ * &lt;p&gt;
+ * The length of the short message text (or user data) is defined in the
+ * {@code sm_length} field of the {@code submit_sm}, {@code submit_multi},
+ * {@code deliver_sm} and {@code replace_sm} SMPP PDUs. The maximum message
+ * length which can be specified in {@code sm_length} field is 254 octets. If an
+ * ESME wishes to submit a message of length greater than 254 octets, the
+ * {@code sm_length} field must be set to {@code NULL} and the
+ * {@code message_payload} optional parameter must be populated with the message
+ * length value and user data. SMPP supports extended message lengths in the
+ * {@code submit_sm}, {@code submit_multi}, {@code data_sm} and
+ * {@code deliver_sm} PDUs. Note: The actual short message length which can be
+ * transmitted to a MS may vary according to the underlying network.
+ * 
+ * &lt;p&gt;
+ * This builder allows to select which field to use:
+ * &lt;ul&gt;
+ * &lt;li&gt;either {@code short_message} fields&lt;/li&gt;
+ * &lt;li&gt;or {@code message_payload} optional TLV (Tag-Length-Value) parameter&lt;/li&gt;
+ * &lt;/ul&gt;
+ * 
+ * @author Aurélien Baudet
+ *
+ */
+public class UserDataBuilder extends AbstractParent&lt;CloudhopperBuilder&gt; implements Builder&lt;UserDataPropValues&gt; {
+	private final EnvironmentBuilder&lt;?&gt; environmentBuilder;
+	private final List&lt;String&gt; useShortMessageProps;
+	private final List&lt;String&gt; useTlvMessagePayloadProps;
+
+	/**
+	 * Initializes the builder with a parent builder. The parent builder is used
+	 * when calling {@link #and()} method. The {@link EnvironmentBuilder} is
+	 * used to evaluate properties when {@link #build()} method is called.
+	 * 
+	 * @param parent
+	 *            the parent builder
+	 * @param environmentBuilder
+	 *            the configuration for property resolution and evaluation
+	 */
+	public UserDataBuilder(CloudhopperBuilder parent, EnvironmentBuilder&lt;?&gt; environmentBuilder) {
+<span class="fc" id="L59">		super(parent);</span>
+<span class="fc" id="L60">		this.environmentBuilder = environmentBuilder;</span>
+<span class="fc" id="L61">		useShortMessageProps = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L62">		useTlvMessagePayloadProps = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L63">	}</span>
+
+	/**
+	 * Enable/disable use of {@code short_message} field.
+	 * 
+	 * &lt;p&gt;
+	 * If several properties are already set using
+	 * {@link #useShortMessage(String...)}, then the enabled value is appended.
+	 * 
+	 * For example,
+	 * 
+	 * &lt;pre&gt;
+	 * {@code 
+	 * .useShortMessage(&quot;${custom.property.high-priority}&quot;)
+	 * .useShortMessage(true)
+	 * }
+	 * &lt;/pre&gt;
+	 * 
+	 * If &quot;custom.property.high-priority&quot; property doesn't exist, then
+	 * {@code .useTlvMessagePayload(true)} is used. If
+	 * &quot;custom.property.high-priority&quot; property exists, then the value of
+	 * &quot;custom.property.high-priority&quot; is used.
+	 * 
+	 * &lt;pre&gt;
+	 * {@code 
+	 * .useShortMessage(true)
+	 * .useShortMessage(&quot;${custom.property.high-priority}&quot;)
+	 * }
+	 * &lt;/pre&gt;
+	 * 
+	 * The value of {@code .useShortMessage(true)} is always used.
+	 * 
+	 * @param useShortMessage
+	 *            enable (true) or disable (false) use of {@code short_message}
+	 *            field
+	 * @return this instance for fluent chaining
+	 */
+	public UserDataBuilder useShortMessage(boolean useShortMessage) {
+<span class="fc" id="L101">		useShortMessageProps.add(String.valueOf(useShortMessage));</span>
+<span class="fc" id="L102">		return this;</span>
+	}
+
+	/**
+	 * Enable/disable use of {@code short_message} field.
+	 * 
+	 * You can specify a direct value. For example:
+	 * 
+	 * &lt;pre&gt;
+	 * .useShortMessage(&quot;true&quot;);
+	 * &lt;/pre&gt;
+	 * 
+	 * &lt;p&gt;
+	 * You can also specify one or several property keys. For example:
+	 * 
+	 * &lt;pre&gt;
+	 * .useShortMessage(&quot;${custom.property.high-priority}&quot;, &quot;${custom.property.low-priority}&quot;);
+	 * &lt;/pre&gt;
+	 * 
+	 * The properties are not immediately evaluated. The evaluation will be done
+	 * when the {@link #build()} method is called.
+	 * 
+	 * If you provide several property keys, evaluation will be done on the
+	 * first key and if the property exists (see {@link EnvironmentBuilder}),
+	 * its value is used. If the first property doesn't exist in properties,
+	 * then it tries with the second one and so on.
+	 * 
+	 * @param useShortMessage
+	 *            one value, or one or several property keys
+	 * @return this instance for fluent chaining
+	 */
+	public UserDataBuilder useShortMessage(String... useShortMessage) {
+<span class="fc" id="L134">		Collections.addAll(useShortMessageProps, useShortMessage);</span>
+<span class="fc" id="L135">		return this;</span>
+	}
+
+	/**
+	 * Enable/disable use of {@code message_payload} optional TLV
+	 * (Tag-Value-Length) parameter.
+	 * 
+	 * &lt;p&gt;
+	 * If several properties are already set using
+	 * {@link #useTlvMessagePayload(String...)}, then the enabled value is
+	 * appended.
+	 * 
+	 * For example,
+	 * 
+	 * &lt;pre&gt;
+	 * {@code 
+	 * .useTlvMessagePayload(&quot;${custom.property.high-priority}&quot;)
+	 * .useTlvMessagePayload(true)
+	 * }
+	 * &lt;/pre&gt;
+	 * 
+	 * If &quot;custom.property.high-priority&quot; property doesn't exist, then
+	 * {@code .useTlvMessagePayload(true)} is used. If
+	 * &quot;custom.property.high-priority&quot; property exists, then the value of
+	 * &quot;custom.property.high-priority&quot; is used.
+	 * 
+	 * &lt;pre&gt;
+	 * {@code 
+	 * .useTlvMessagePayload(true)
+	 * .useTlvMessagePayload(&quot;${custom.property.high-priority}&quot;)
+	 * }
+	 * &lt;/pre&gt;
+	 * 
+	 * The value of {@code .useTlvMessagePayload(true)} is always used.
+	 * 
+	 * @param useTlvMessagePayload
+	 *            enable (true) or disable (false) use of
+	 *            {@code message_payload} optional TLV parameter
+	 * @return this instance for fluent chaining
+	 */
+	public UserDataBuilder useTlvMessagePayload(boolean useTlvMessagePayload) {
+<span class="fc" id="L176">		useTlvMessagePayloadProps.add(String.valueOf(useTlvMessagePayload));</span>
+<span class="fc" id="L177">		return this;</span>
+	}
+
+	/**
+	 * Enable/disable use of {@code message_payload} optional TLV
+	 * (Tag-Length-Value) parameter.
+	 * 
+	 * You can specify a direct value. For example:
+	 * 
+	 * &lt;pre&gt;
+	 * .useTlvMessagePayload(&quot;true&quot;);
+	 * &lt;/pre&gt;
+	 * 
+	 * &lt;p&gt;
+	 * You can also specify one or several property keys. For example:
+	 * 
+	 * &lt;pre&gt;
+	 * .useTlvMessagePayload(&quot;${custom.property.high-priority}&quot;, &quot;${custom.property.low-priority}&quot;);
+	 * &lt;/pre&gt;
+	 * 
+	 * The properties are not immediately evaluated. The evaluation will be done
+	 * when the {@link #build()} method is called.
+	 * 
+	 * If you provide several property keys, evaluation will be done on the
+	 * first key and if the property exists (see {@link EnvironmentBuilder}),
+	 * its value is used. If the first property doesn't exist in properties,
+	 * then it tries with the second one and so on.
+	 * 
+	 * @param useTlvMessagePayload
+	 *            one value, or one or several property keys
+	 * @return this instance for fluent chaining
+	 */
+	public UserDataBuilder useTlvMessagePayload(String... useTlvMessagePayload) {
+<span class="fc" id="L210">		Collections.addAll(useTlvMessagePayloadProps, useTlvMessagePayload);</span>
+<span class="fc" id="L211">		return this;</span>
+	}
+
+	@Override
+	public UserDataPropValues build() {
+<span class="fc" id="L216">		PropertyResolver propertyResolver = environmentBuilder.build();</span>
+<span class="fc" id="L217">		Boolean useShortMessage = evaluate(useShortMessageProps, propertyResolver, Boolean.class);</span>
+<span class="fc" id="L218">		Boolean useTlvMessagePayload = evaluate(useTlvMessagePayloadProps, propertyResolver, Boolean.class);</span>
+<span class="pc bpc" id="L219" title="2 of 8 branches missed.">		return new UserDataPropValues(useShortMessage != null &amp;&amp; useShortMessage, useTlvMessagePayload != null &amp;&amp; useTlvMessagePayload);</span>
+	}
+
+	/**
+	 * Simple data class to provide configured values. This is used by parent
+	 * builder to affect {@link MessagePreparator} strategy.
+	 * 
+	 * @author Aurélien Baudet
+	 */
+	public static class UserDataPropValues {
+		private final boolean useShortMessage;
+		private final boolean useTlvMessagePayload;
+
+		/**
+		 * Initializes with configured values.
+		 * 
+		 * @param useShortMessage
+		 *            true if {@code short_message} field should be used
+		 * @param useTlvMessagePayload
+		 *            true {@code message_payload} optional parameter should be
+		 *            used
+		 */
+		public UserDataPropValues(boolean useShortMessage, boolean useTlvMessagePayload) {
+<span class="fc" id="L242">			super();</span>
+<span class="fc" id="L243">			this.useShortMessage = useShortMessage;</span>
+<span class="fc" id="L244">			this.useTlvMessagePayload = useTlvMessagePayload;</span>
+<span class="fc" id="L245">		}</span>
+
+		/**
+		 * @return is the {@code short_message} field should be used
+		 */
+		public boolean isUseShortMessage() {
+<span class="fc" id="L251">			return useShortMessage;</span>
+		}
+
+		/**
+		 * @return is the {@code message_payload} optional parameter should be
+		 *         used
+		 */
+		public boolean isUseTlvMessagePayload() {
+<span class="fc" id="L259">			return useTlvMessagePayload;</span>
+		}
+
+	}
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

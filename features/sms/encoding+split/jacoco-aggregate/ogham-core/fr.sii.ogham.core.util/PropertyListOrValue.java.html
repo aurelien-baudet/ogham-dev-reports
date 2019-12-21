@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>PropertyListOrValue.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">reporting</a> &gt; <a href="../index.html" class="el_bundle">ogham-core</a> &gt; <a href="index.source.html" class="el_package">fr.sii.ogham.core.util</a> &gt; <span class="el_source">PropertyListOrValue.java</span></div><h1>PropertyListOrValue.java</h1><pre class="source lang-java linenums">package fr.sii.ogham.core.util;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.function.Function;
+
+import fr.sii.ogham.core.builder.Builder;
+import fr.sii.ogham.core.builder.env.EnvironmentBuilder;
+import fr.sii.ogham.core.env.PropertyResolver;
+
+/**
+ * Utility class for builders that allow to either use a property or use direct
+ * value.
+ * 
+ * &lt;p&gt;
+ * The helper registers one or several property keys. For example:
+ * 
+ * &lt;pre&gt;
+ * .register(&quot;${custom.property.high-priority}&quot;, &quot;${custom.property.low-priority}&quot;);
+ * &lt;/pre&gt;
+ * 
+ * The properties are not immediately evaluated. The evaluation will be done
+ * when the {@link Builder#build()} method is called.
+ * 
+ * If you provide several property keys, evaluation will be done on the first
+ * key and if the property exists (see {@link EnvironmentBuilder}), its value is
+ * used. If the first property doesn't exist in properties, then it tries with
+ * the second one and so on.
+ * 
+ * You can specify a direct value as a string. For example:
+ * 
+ * &lt;pre&gt;
+ * .register(&quot;${custom.property.high-priority}&quot;, &quot;true&quot;);
+ * &lt;/pre&gt;
+ * 
+ * If the property &quot;custom.property.high-priority&quot; doesn't exist then &quot;true&quot; is
+ * always used (any other property or value registered later is not used).
+ * 
+ * 
+ * &lt;p&gt;
+ * You can also register a direct value using the right type
+ * ({@link #register(Object)}). If not specified, the direct value is appended.
+ * 
+ * For example,
+ * 
+ * &lt;pre&gt;
+ * {@code 
+ * .register(&quot;${custom.property.high-priority}&quot;)
+ * .register(true)
+ * }
+ * &lt;/pre&gt;
+ * 
+ * If &quot;custom.property.high-priority&quot; property doesn't exist, then
+ * {@code .register(true)} is used. If &quot;custom.property.high-priority&quot; property
+ * exists, then the value of &quot;custom.property.high-priority&quot; is used.
+ * 
+ * &lt;pre&gt;
+ * {@code 
+ * .register(true)
+ * .register(&quot;${custom.property.high-priority}&quot;)
+ * }
+ * &lt;/pre&gt;
+ * 
+ * The value of {@code .register(true)} is always used.
+ * 
+ * &lt;p&gt;
+ * It is also possible to force override.
+ * 
+ * 
+ * @author Aurélien Baudet
+ *
+ * @param &lt;T&gt;
+ *            The type of the value
+ */
+public class PropertyListOrValue&lt;T&gt; {
+	private final List&lt;String&gt; properties;
+	private final Function&lt;T, String&gt; converter;
+
+	/**
+	 * Initializes with an empty list.
+	 * 
+	 * &lt;p&gt;
+	 * Default value to string converter is used (based on
+	 * {@link String#valueOf(Object)} but keeps {@code null} value).
+	 * 
+	 */
+	public PropertyListOrValue() {
+<span class="fc" id="L89">		this(new ArrayList&lt;&gt;());</span>
+<span class="fc" id="L90">	}</span>
+
+	/**
+	 * Initializes with a custom list of properties.
+	 * 
+	 * &lt;p&gt;
+	 * Default value to string converter is used (based on
+	 * {@link String#valueOf(Object)} but keeps {@code null} value).
+	 * 
+	 * @param properties
+	 *            custom list of properties
+	 */
+	public PropertyListOrValue(List&lt;String&gt; properties) {
+<span class="pc bpc" id="L103" title="1 of 2 branches missed.">		this(properties, v -&gt; v == null ? null : String.valueOf(v));</span>
+<span class="fc" id="L104">	}</span>
+
+	/**
+	 * Initializes with a empty list of properties and a custom value to string
+	 * converter.
+	 * 
+	 * @param converter
+	 *            the value to string converter
+	 */
+	public PropertyListOrValue(Function&lt;T, String&gt; converter) {
+<span class="nc" id="L114">		this(new ArrayList&lt;&gt;(), converter);</span>
+<span class="nc" id="L115">	}</span>
+
+	/**
+	 * Initializes with a list of properties and a custom value to string
+	 * converter.
+	 * 
+	 * @param properties
+	 *            the list of properties (must be mutable)
+	 * @param converter
+	 *            the value to string converter
+	 */
+	public PropertyListOrValue(List&lt;String&gt; properties, Function&lt;T, String&gt; converter) {
+<span class="fc" id="L127">		super();</span>
+<span class="fc" id="L128">		this.properties = properties;</span>
+<span class="fc" id="L129">		this.converter = converter;</span>
+<span class="fc" id="L130">	}</span>
+
+	/**
+	 * &lt;p&gt;
+	 * Registers a direct value using the right type
+	 * ({@link #register(Object)}).The direct value is appended so the value has
+	 * low priority.
+	 * 
+	 * For example,
+	 * 
+	 * &lt;pre&gt;
+	 * {@code 
+	 * .register(&quot;${custom.property.high-priority}&quot;)
+	 * .register(true)
+	 * }
+	 * &lt;/pre&gt;
+	 * 
+	 * If &quot;custom.property.high-priority&quot; property doesn't exist, then
+	 * {@code .register(true)} is used. If &quot;custom.property.high-priority&quot;
+	 * property exists, then the value of &quot;custom.property.high-priority&quot; is
+	 * used.
+	 * 
+	 * &lt;pre&gt;
+	 * {@code 
+	 * .register(true)
+	 * .register(&quot;${custom.property.high-priority}&quot;)
+	 * }
+	 * &lt;/pre&gt;
+	 * 
+	 * The value of {@code .register(true)} is always used.
+	 * 
+	 * @param value
+	 *            the value to register with low priority
+	 */
+	public void register(T value) {
+<span class="fc" id="L165">		register(value, false);</span>
+<span class="fc" id="L166">	}</span>
+
+	/**
+	 * &lt;p&gt;
+	 * Registers a direct value using the right type
+	 * ({@link #register(Object)}). If override is true, the direct value is
+	 * added at the beginning so it has highest priority.
+	 * 
+	 * &lt;p&gt;
+	 * If override parameter is false, then this method behaves exactly the same
+	 * as {@link #register(Object)}.
+	 * 
+	 * @param value
+	 *            the value to register
+	 * @param override
+	 *            the value is registered with highest priority
+	 */
+	public void register(T value, boolean override) {
+<span class="fc bfc" id="L184" title="All 2 branches covered.">		if (override) {</span>
+<span class="fc" id="L185">			properties.add(0, converter.apply(value));</span>
+		} else {
+<span class="fc" id="L187">			properties.add(converter.apply(value));</span>
+		}
+<span class="fc" id="L189">	}</span>
+
+	/**
+	 * Registers one or several property keys. For example:
+	 * 
+	 * &lt;pre&gt;
+	 * .register(&quot;${custom.property.high-priority}&quot;, &quot;${custom.property.low-priority}&quot;);
+	 * &lt;/pre&gt;
+	 * 
+	 * The properties are not immediately evaluated. The evaluation will be done
+	 * when the {@link Builder#build()} method is called.
+	 * 
+	 * If you provide several property keys, evaluation will be done on the
+	 * first key and if the property exists (see {@link EnvironmentBuilder}),
+	 * its value is used. If the first property doesn't exist in properties,
+	 * then it tries with the second one and so on.
+	 * 
+	 * You can specify a direct value as a string. For example:
+	 * 
+	 * &lt;pre&gt;
+	 * .register(&quot;${custom.property.high-priority}&quot;, &quot;true&quot;, &quot;${custom.property.low-priority}&quot;);
+	 * &lt;/pre&gt;
+	 * 
+	 * If the property &quot;custom.property.high-priority&quot; doesn't exist then &quot;true&quot;
+	 * is always used (any other property or value registered later is not
+	 * used).
+	 * 
+	 * @param property
+	 *            one value, or one or several property keys
+	 */
+	public void register(String... property) {
+<span class="fc" id="L220">		Collections.addAll(properties, property);</span>
+<span class="fc" id="L221">	}</span>
+
+	/**
+	 * Evaluate the value according to previously registered properties and
+	 * values.
+	 * 
+	 * @param propertyResolver
+	 *            the property resolver used to resolve property values
+	 * @param resultClass
+	 *            the type of the result class
+	 * @return the final value
+	 */
+	public T evaluate(PropertyResolver propertyResolver, Class&lt;T&gt; resultClass) {
+<span class="fc" id="L234">		return BuilderUtils.evaluate(properties, propertyResolver, resultClass);</span>
+	}
+
+	/**
+	 * @return The final ordered list of mixed property keys and direct values.
+	 */
+	public List&lt;String&gt; getProperties() {
+<span class="fc" id="L241">		return properties;</span>
+	}
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

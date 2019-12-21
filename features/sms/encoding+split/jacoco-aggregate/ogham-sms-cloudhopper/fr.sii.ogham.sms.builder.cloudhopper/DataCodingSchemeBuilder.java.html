@@ -1,0 +1,421 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>DataCodingSchemeBuilder.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">reporting</a> &gt; <a href="../index.html" class="el_bundle">ogham-sms-cloudhopper</a> &gt; <a href="index.source.html" class="el_package">fr.sii.ogham.sms.builder.cloudhopper</a> &gt; <span class="el_source">DataCodingSchemeBuilder.java</span></div><h1>DataCodingSchemeBuilder.java</h1><pre class="source lang-java linenums">package fr.sii.ogham.sms.builder.cloudhopper;
+
+import static fr.sii.ogham.core.util.BuilderUtils.evaluate;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.function.Function;
+
+import com.cloudhopper.commons.charset.Charset;
+import com.cloudhopper.commons.charset.CharsetUtil;
+import com.cloudhopper.commons.gsm.DataCoding;
+import com.cloudhopper.smpp.SmppConstants;
+
+import fr.sii.ogham.core.builder.AbstractParent;
+import fr.sii.ogham.core.builder.Builder;
+import fr.sii.ogham.core.builder.env.EnvironmentBuilder;
+import fr.sii.ogham.core.env.PropertyResolver;
+import fr.sii.ogham.core.util.BuilderUtils;
+import fr.sii.ogham.sms.sender.impl.cloudhopper.preparator.CharsetMapToCharacterEncodingGroupDataCodingProvider;
+import fr.sii.ogham.sms.sender.impl.cloudhopper.preparator.CharsetMapToGeneralGroupDataCodingProvider;
+import fr.sii.ogham.sms.sender.impl.cloudhopper.preparator.DataCodingProvider;
+import fr.sii.ogham.sms.sender.impl.cloudhopper.preparator.FirstSupportingDataCodingProvider;
+import fr.sii.ogham.sms.sender.impl.cloudhopper.preparator.FixedByteValueDataCodingProvider;
+
+/**
+ * Data Coding Scheme is a one-octet field in Short Messages (SM) and Cell
+ * Broadcast Messages (CB) which carries a basic information how the recipient
+ * handset should process the received message. The information includes:
+ * &lt;ul&gt;
+ * &lt;li&gt;the character set or message coding which determines the encoding of the
+ * message user data&lt;/li&gt;
+ * &lt;li&gt;the message class which determines to which component of the Mobile
+ * Station (MS) or User Equipment (UE) should be the message delivered&lt;/li&gt;
+ * &lt;li&gt;the request to automatically delete the message after reading&lt;/li&gt;
+ * &lt;li&gt;the state of flags indicating presence of unread voicemail, fax, e-mail
+ * or other messages&lt;/li&gt;
+ * &lt;li&gt;the indication that the message content is compressed&lt;/li&gt;
+ * &lt;li&gt;the language of the cell broadcast message&lt;/li&gt;
+ * &lt;/ul&gt;
+ * The field is described in 3GPP 23.040 and 3GPP 23.038 under the name TP-DCS
+ * (see &lt;a href=
+ * &quot;https://en.wikipedia.org/wiki/Data_Coding_Scheme#SMS_Data_Coding_Scheme&quot;&gt;SMS
+ * Data Coding Scheme&lt;/a&gt;).
+ * 
+ * &lt;p&gt;
+ * Configures how Cloudhopper determines the Data Coding Scheme to use:
+ * &lt;ul&gt;
+ * &lt;li&gt;Automatic mode:
+ * &lt;ul&gt;
+ * &lt;li&gt;If SMPP v3.3 is used then
+ * {@link CharsetMapToGeneralGroupDataCodingProvider} generates a
+ * {@link DataCoding} with
+ * {@link DataCoding#createGeneralGroup(byte, Byte, boolean)}&lt;/li&gt;
+ * &lt;li&gt;If SMPP v3.4+ is used then
+ * {@link CharsetMapToCharacterEncodingGroupDataCodingProvider} generates a
+ * {@link DataCoding} with
+ * {@link DataCoding#createCharacterEncodingGroup(byte)}&lt;/li&gt;
+ * &lt;/ul&gt;
+ * &lt;/li&gt;
+ * &lt;li&gt;Allow registration of custom {@link DataCodingProvider}&lt;/li&gt;
+ * &lt;/ul&gt;
+ * 
+ * @author Aurélien Baudet
+ */
+public class DataCodingSchemeBuilder extends AbstractParent&lt;CloudhopperBuilder&gt; implements Builder&lt;DataCodingProvider&gt; {
+	private final EnvironmentBuilder&lt;?&gt; environmentBuilder;
+	private final Function&lt;PropertyResolver, Byte&gt; interfaceVersionProvider;
+	private final List&lt;String&gt; autoProps;
+	private final List&lt;String&gt; valueProps;
+	private DataCodingProvider custom;
+
+	/**
+	 * Initializes the builder with a parent builder. The parent builder is used
+	 * when calling {@link #and()} method. The {@link EnvironmentBuilder} is
+	 * used to evaluate properties when {@link #build()} method is called.
+	 * 
+	 * @param parent
+	 *            the parent builder
+	 * @param environmentBuilder
+	 *            the configuration for property resolution and evaluation
+	 * @param interfaceVersionProvider
+	 *            A function used to retrieve the value of the interface
+	 *            version. This is needed when {@link #auto(String...)} mode is
+	 *            enabled.
+	 */
+	public DataCodingSchemeBuilder(CloudhopperBuilder parent, EnvironmentBuilder&lt;?&gt; environmentBuilder, Function&lt;PropertyResolver, Byte&gt; interfaceVersionProvider) {
+<span class="fc" id="L88">		super(parent);</span>
+<span class="fc" id="L89">		this.environmentBuilder = environmentBuilder;</span>
+<span class="fc" id="L90">		this.interfaceVersionProvider = interfaceVersionProvider;</span>
+<span class="fc" id="L91">		this.autoProps = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L92">		this.valueProps = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L93">	}</span>
+
+	/**
+	 * Enable/disable automatic mode based on SMPP interface version.
+	 * 
+	 * &lt;p&gt;
+	 * {@link DataCodingProvider} implementation is selected based on SMPP
+	 * interface version. SMPP v3.3 Data Coding Scheme values are defined in
+	 * &lt;a href=
+	 * &quot;https://en.wikipedia.org/wiki/Data_Coding_Scheme#SMS_Data_Coding_Scheme&quot;&gt;SMS
+	 * Data Coding Scheme&lt;/a&gt;. SMPP 3.4 introduced a new list of data_coding
+	 * values (&lt;a href=
+	 * &quot;https://en.wikipedia.org/wiki/Short_Message_Peer-to-Peer#PDU_body&quot;&gt;PDU
+	 * body&lt;/a&gt;).
+	 * &lt;/p&gt;
+	 * 
+	 * &lt;h3&gt;SMPP v3.3&lt;/h3&gt;
+	 * &lt;p&gt;
+	 * The text message is encoded using {@link Charset}. According to that
+	 * charset, the Data Coding Scheme is determined using the &lt;strong&gt;General
+	 * Data Coding group&lt;/strong&gt; table. Therefore, a simple mapping is applied:
+	 * &lt;ul&gt;
+	 * &lt;li&gt;{@link CharsetUtil#NAME_GSM7} {@literal -&gt;}
+	 * {@link DataCoding#CHAR_ENC_DEFAULT}&lt;/li&gt;
+	 * &lt;li&gt;{@link CharsetUtil#NAME_PACKED_GSM} {@literal -&gt;}
+	 * {@link DataCoding#CHAR_ENC_DEFAULT}&lt;/li&gt;
+	 * &lt;li&gt;{@link CharsetUtil#NAME_GSM} {@literal -&gt;}
+	 * {@link DataCoding#CHAR_ENC_8BIT}&lt;/li&gt;
+	 * &lt;li&gt;{@link CharsetUtil#NAME_GSM8} {@literal -&gt;}
+	 * {@link DataCoding#CHAR_ENC_8BIT}&lt;/li&gt;
+	 * &lt;li&gt;{@link CharsetUtil#NAME_UCS_2} {@literal -&gt;}
+	 * {@link DataCoding#CHAR_ENC_UCS2}&lt;/li&gt;
+	 * &lt;/ul&gt;
+	 * 
+	 * 
+	 * &lt;h3&gt;SMPP v3.4+&lt;/h3&gt;
+	 * &lt;p&gt;
+	 * The text message is encoded using {@link Charset}. According to that
+	 * charset, the Data Coding Scheme is determined using only the
+	 * &lt;strong&gt;Alphabet&lt;/strong&gt; table. Therefore, a simple mapping is applied:
+	 * &lt;ul&gt;
+	 * &lt;li&gt;{@link CharsetUtil#NAME_GSM7} {@literal -&gt;}
+	 * {@link DataCoding#CHAR_ENC_DEFAULT}&lt;/li&gt;
+	 * &lt;li&gt;{@link CharsetUtil#NAME_PACKED_GSM} {@literal -&gt;}
+	 * {@link DataCoding#CHAR_ENC_DEFAULT}&lt;/li&gt;
+	 * &lt;li&gt;{@link CharsetUtil#NAME_GSM} {@literal -&gt;}
+	 * {@link DataCoding#CHAR_ENC_8BIT}&lt;/li&gt;
+	 * &lt;li&gt;{@link CharsetUtil#NAME_GSM8} {@literal -&gt;}
+	 * {@link DataCoding#CHAR_ENC_8BIT}&lt;/li&gt;
+	 * &lt;li&gt;{@link CharsetUtil#NAME_ISO_8859_1} {@literal -&gt;}
+	 * {@link DataCoding#CHAR_ENC_LATIN1}&lt;/li&gt;
+	 * &lt;li&gt;{@link CharsetUtil#NAME_UCS_2} {@literal -&gt;}
+	 * {@link DataCoding#CHAR_ENC_UCS2}&lt;/li&gt;
+	 * &lt;/ul&gt;
+	 * 
+	 * &lt;h3&gt;Behavior&lt;/h3&gt;
+	 * &lt;h4&gt;Standalone&lt;/h4&gt;
+	 * &lt;p&gt;
+	 * You can specify a direct value. For example:
+	 * 
+	 * &lt;pre&gt;
+	 * .enable(&quot;true&quot;);
+	 * &lt;/pre&gt;
+	 * 
+	 * &lt;p&gt;
+	 * You can also specify one or several property keys. For example:
+	 * 
+	 * &lt;pre&gt;
+	 * .enable(&quot;${custom.property.high-priority}&quot;, &quot;${custom.property.low-priority}&quot;);
+	 * &lt;/pre&gt;
+	 * 
+	 * The properties are not immediately evaluated. The evaluation will be done
+	 * when the {@link #build()} method is called.
+	 * 
+	 * If you provide several property keys, evaluation will be done on the
+	 * first key and if the property exists (see {@link EnvironmentBuilder}),
+	 * its value is used. If the first property doesn't exist in properties,
+	 * then it tries with the second one and so on.
+	 * 
+	 * &lt;h4&gt;Custom {@link DataCodingProvider} also configured&lt;/h4&gt;
+	 * &lt;p&gt;
+	 * If a custom {@link DataCodingProvider} instance is registered, this
+	 * instance is tried first (see {@link #custom(DataCodingProvider)} for more
+	 * information). The automatic behavior is applied after if returned value
+	 * of custom {@link DataCodingProvider} is {@code null}.
+	 * 
+	 * &lt;h4&gt;Fixed value also configured&lt;/h4&gt;
+	 * &lt;p&gt;
+	 * If a fixed value is configured then it preempts any other configuration (
+	 * {@link #auto(String...)} and {@link #custom(DataCodingProvider)} are not
+	 * used at all).
+	 * &lt;/p&gt;
+	 * 
+	 * @param enable
+	 *            one value, or one or several property keys
+	 * @return this instance for fluent chaining
+	 */
+	public DataCodingSchemeBuilder auto(String... enable) {
+<span class="fc" id="L191">		Collections.addAll(autoProps, enable);</span>
+<span class="fc" id="L192">		return this;</span>
+	}
+
+	/**
+	 * Enable/disable automatic mode based on SMPP interface version.
+	 * 
+	 * &lt;p&gt;
+	 * {@link DataCodingProvider} implementation is selected based on SMPP
+	 * interface version. SMPP v3.3 Data Coding Scheme values are defined in
+	 * &lt;a href=
+	 * &quot;https://en.wikipedia.org/wiki/Data_Coding_Scheme#SMS_Data_Coding_Scheme&quot;&gt;SMS
+	 * Data Coding Scheme&lt;/a&gt;. SMPP 3.4 introduced a new list of data_coding
+	 * values (&lt;a href=
+	 * &quot;https://en.wikipedia.org/wiki/Short_Message_Peer-to-Peer#PDU_body&quot;&gt;PDU
+	 * body&lt;/a&gt;).
+	 * &lt;/p&gt;
+	 * 
+	 * &lt;h3&gt;SMPP v3.3&lt;/h3&gt;
+	 * &lt;p&gt;
+	 * The text message is encoded using {@link Charset}. According to that
+	 * charset, the Data Coding Scheme is determined using the &lt;strong&gt;General
+	 * Data Coding group&lt;/strong&gt; table. Therefore, a simple mapping is applied:
+	 * &lt;ul&gt;
+	 * &lt;li&gt;{@link CharsetUtil#NAME_GSM7} {@literal -&gt;}
+	 * {@link DataCoding#CHAR_ENC_DEFAULT}&lt;/li&gt;
+	 * &lt;li&gt;{@link CharsetUtil#NAME_PACKED_GSM} {@literal -&gt;}
+	 * {@link DataCoding#CHAR_ENC_DEFAULT}&lt;/li&gt;
+	 * &lt;li&gt;{@link CharsetUtil#NAME_GSM} {@literal -&gt;}
+	 * {@link DataCoding#CHAR_ENC_8BIT}&lt;/li&gt;
+	 * &lt;li&gt;{@link CharsetUtil#NAME_GSM8} {@literal -&gt;}
+	 * {@link DataCoding#CHAR_ENC_8BIT}&lt;/li&gt;
+	 * &lt;li&gt;{@link CharsetUtil#NAME_UCS_2} {@literal -&gt;}
+	 * {@link DataCoding#CHAR_ENC_UCS2}&lt;/li&gt;
+	 * &lt;/ul&gt;
+	 * 
+	 * 
+	 * &lt;h3&gt;SMPP v3.4+&lt;/h3&gt;
+	 * &lt;p&gt;
+	 * The text message is encoded using {@link Charset}. According to that
+	 * charset, the Data Coding Scheme is determined using only the
+	 * &lt;strong&gt;Alphabet&lt;/strong&gt; table. Therefore, a simple mapping is applied:
+	 * &lt;ul&gt;
+	 * &lt;li&gt;{@link CharsetUtil#NAME_GSM7} {@literal -&gt;}
+	 * {@link DataCoding#CHAR_ENC_DEFAULT}&lt;/li&gt;
+	 * &lt;li&gt;{@link CharsetUtil#NAME_PACKED_GSM} {@literal -&gt;}
+	 * {@link DataCoding#CHAR_ENC_DEFAULT}&lt;/li&gt;
+	 * &lt;li&gt;{@link CharsetUtil#NAME_GSM} {@literal -&gt;}
+	 * {@link DataCoding#CHAR_ENC_8BIT}&lt;/li&gt;
+	 * &lt;li&gt;{@link CharsetUtil#NAME_GSM8} {@literal -&gt;}
+	 * {@link DataCoding#CHAR_ENC_8BIT}&lt;/li&gt;
+	 * &lt;li&gt;{@link CharsetUtil#NAME_ISO_8859_1} {@literal -&gt;}
+	 * {@link DataCoding#CHAR_ENC_LATIN1}&lt;/li&gt;
+	 * &lt;li&gt;{@link CharsetUtil#NAME_UCS_2} {@literal -&gt;}
+	 * {@link DataCoding#CHAR_ENC_UCS2}&lt;/li&gt;
+	 * &lt;/ul&gt;
+	 * 
+	 * &lt;h3&gt;Behavior&lt;/h3&gt;
+	 * &lt;h4&gt;Standalone&lt;/h4&gt;
+	 * &lt;p&gt;
+	 * If several properties are already set using {@link #auto(String...)},
+	 * then the enabled value is appended.
+	 * 
+	 * For example,
+	 * 
+	 * &lt;pre&gt;
+	 * {@code
+	 * .auto(&quot;${custom.property.high-priority}&quot;)
+	 * .auto(true)
+	 * }
+	 * &lt;/pre&gt;
+	 * 
+	 * If &quot;custom.property.high-priority&quot; property doesn't exist, then
+	 * {@code .auto(true)} is used. If &quot;custom.property.high-priority&quot; property
+	 * exists, then the value of &quot;custom.property.high-priority&quot; is used.
+	 * 
+	 * &lt;pre&gt;
+	 * {@code
+	 * .auto(true)
+	 * .auto(&quot;${custom.property.high-priority}&quot;)
+	 * }
+	 * &lt;/pre&gt;
+	 * 
+	 * The value of {@code .auto(true)} is always used.
+	 * 
+	 * &lt;h4&gt;Custom {@link DataCodingProvider} also configured&lt;/h4&gt;
+	 * &lt;p&gt;
+	 * If a custom {@link DataCodingProvider} instance is registered, this
+	 * instance is tried first (see {@link #custom(DataCodingProvider)} for more
+	 * information). The automatic behavior is applied after if returned value
+	 * of custom {@link DataCodingProvider} is {@code null}.
+	 * 
+	 * &lt;h4&gt;Fixed value also configured&lt;/h4&gt;
+	 * &lt;p&gt;
+	 * If a fixed value is configured then it preempts any other configuration (
+	 * {@link #auto(String...)} and {@link #custom(DataCodingProvider)} are not
+	 * used at all).
+	 * &lt;/p&gt;
+	 * 
+	 * @param enable
+	 *            enable (true) or disable (false) message splitting
+	 * @return this instance for fluent chaining
+	 */
+	public DataCodingSchemeBuilder auto(boolean enable) {
+<span class="nc" id="L295">		Collections.addAll(autoProps, String.valueOf(enable));</span>
+<span class="nc" id="L296">		return this;</span>
+	}
+
+	/**
+	 * Use the same Data Coding Scheme value for all messages.
+	 * 
+	 * You can specify a direct value. For example:
+	 * 
+	 * &lt;pre&gt;
+	 * .value((byte) 0x10);
+	 * &lt;/pre&gt;
+	 * 
+	 * &lt;p&gt;
+	 * You can also specify one or several property keys. For example:
+	 * 
+	 * &lt;pre&gt;
+	 * .value(&quot;${custom.property.high-priority}&quot;, &quot;${custom.property.low-priority}&quot;);
+	 * &lt;/pre&gt;
+	 * 
+	 * The properties are not immediately evaluated. The evaluation will be done
+	 * when the {@link #build()} method is called.
+	 * 
+	 * If you provide several property keys, evaluation will be done on the
+	 * first key and if the property exists (see {@link EnvironmentBuilder}),
+	 * its value is used. If the first property doesn't exist in properties,
+	 * then it tries with the second one and so on.
+	 * 
+	 * @param dataCoding
+	 *            one value, or one or several property keys
+	 * @return this instance for fluent chaining
+	 */
+	public DataCodingSchemeBuilder value(String... dataCoding) {
+<span class="fc" id="L328">		Collections.addAll(valueProps, dataCoding);</span>
+<span class="fc" id="L329">		return this;</span>
+	}
+
+	/**
+	 * Use the same Data Coding Scheme value for all messages.
+	 * 
+	 * &lt;p&gt;
+	 * If several properties are already set using {@link #value(String...)},
+	 * then the Data Coding Scheme value is appended.
+	 * 
+	 * For example,
+	 * 
+	 * &lt;pre&gt;
+	 * {@code 
+	 * .value(&quot;${custom.property.high-priority}&quot;)
+	 * .value((byte) 0x10)
+	 * }
+	 * &lt;/pre&gt;
+	 * 
+	 * If &quot;custom.property.high-priority&quot; property doesn't exist, then
+	 * {@code .value((byte) 0x10)} is used. If &quot;custom.property.high-priority&quot;
+	 * property exists, then the value of &quot;custom.property.high-priority&quot; is
+	 * used.
+	 * 
+	 * &lt;pre&gt;
+	 * {@code 
+	 * .value((byte) 0x10)
+	 * .value(&quot;${custom.property.high-priority}&quot;)
+	 * }
+	 * &lt;/pre&gt;
+	 * 
+	 * The value of {@code .value((byte) 0x10)} is always used.
+	 * 
+	 * @param dataCoding
+	 *            the Data Coding Scheme value to use for all messages
+	 * @return this instance for fluent chaining
+	 */
+	public DataCodingSchemeBuilder value(byte dataCoding) {
+<span class="nc" id="L367">		Collections.addAll(valueProps, String.valueOf(dataCoding));</span>
+<span class="nc" id="L368">		return this;</span>
+	}
+
+	/**
+	 * Register a custom strategy to determine Data Coding Scheme value.
+	 * 
+	 * &lt;p&gt;
+	 * Automatic behavior (see {@link #auto(String...)} is still active but
+	 * custom strategy is executed first. As the custom
+	 * {@link DataCodingProvider} can return {@code null}, the automatic
+	 * behavior is executed in that case.
+	 * 
+	 * &lt;p&gt;
+	 * If {@code null} value is provided, custom strategy is disabled.
+	 * 
+	 * @param custom
+	 *            the Strategy to determine Data Coding Scheme value.
+	 * @return this instance for fluent chaining
+	 */
+	public DataCodingSchemeBuilder custom(DataCodingProvider custom) {
+<span class="nc" id="L388">		this.custom = custom;</span>
+<span class="nc" id="L389">		return this;</span>
+	}
+
+	@Override
+	public DataCodingProvider build() {
+<span class="fc" id="L394">		PropertyResolver propertyResolver = environmentBuilder.build();</span>
+<span class="fc" id="L395">		Byte dataCodingValue = BuilderUtils.evaluate(valueProps, propertyResolver, Byte.class);</span>
+<span class="pc bpc" id="L396" title="1 of 2 branches missed.">		if (dataCodingValue != null) {</span>
+<span class="nc" id="L397">			return new FixedByteValueDataCodingProvider(dataCodingValue);</span>
+		}
+<span class="fc" id="L399">		FirstSupportingDataCodingProvider firstSupporting = new FirstSupportingDataCodingProvider();</span>
+<span class="pc bpc" id="L400" title="1 of 2 branches missed.">		if (custom != null) {</span>
+<span class="nc" id="L401">			firstSupporting.register(custom);</span>
+		}
+<span class="fc" id="L403">		Boolean auto = evaluate(autoProps, propertyResolver, Boolean.class);</span>
+<span class="pc bpc" id="L404" title="2 of 4 branches missed.">		if (auto != null &amp;&amp; auto) {</span>
+<span class="fc" id="L405">			registerAuto(propertyResolver, firstSupporting);</span>
+		}
+<span class="fc" id="L407">		return firstSupporting;</span>
+	}
+
+	private void registerAuto(PropertyResolver propertyResolver, FirstSupportingDataCodingProvider firstSupporting) {
+<span class="fc" id="L411">		Byte interfaceVersion = interfaceVersionProvider.apply(propertyResolver);</span>
+<span class="pc bpc" id="L412" title="1 of 2 branches missed.">		if (interfaceVersion == SmppConstants.VERSION_3_3) {</span>
+<span class="nc" id="L413">			firstSupporting.register(new CharsetMapToGeneralGroupDataCodingProvider());</span>
+<span class="nc" id="L414">			return;</span>
+		}
+		// 3.4+
+<span class="fc" id="L417">		firstSupporting.register(new CharsetMapToCharacterEncodingGroupDataCodingProvider());</span>
+<span class="fc" id="L418">	}</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

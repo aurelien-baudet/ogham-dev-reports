@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>CharsetBuilder.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">reporting</a> &gt; <a href="../index.html" class="el_bundle">ogham-sms-cloudhopper</a> &gt; <a href="index.source.html" class="el_package">fr.sii.ogham.sms.builder.cloudhopper</a> &gt; <span class="el_source">CharsetBuilder.java</span></div><h1>CharsetBuilder.java</h1><pre class="source lang-java linenums">package fr.sii.ogham.sms.builder.cloudhopper;
+
+import static fr.sii.ogham.core.util.BuilderUtils.evaluate;
+
+import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.List;
+
+import fr.sii.ogham.core.builder.AbstractParent;
+import fr.sii.ogham.core.builder.Builder;
+import fr.sii.ogham.core.builder.charset.CharsetDetectorBuilder;
+import fr.sii.ogham.core.builder.charset.SimpleCharsetDetectorBuilder;
+import fr.sii.ogham.core.builder.env.EnvironmentBuilder;
+import fr.sii.ogham.core.charset.CharsetDetector;
+import fr.sii.ogham.core.env.PropertyResolver;
+import fr.sii.ogham.core.exception.builder.BuildException;
+import fr.sii.ogham.sms.encoder.Encoder;
+import fr.sii.ogham.sms.exception.message.EncodingException;
+import fr.sii.ogham.sms.sender.impl.cloudhopper.charset.CloudhopperCharsetHandler;
+import fr.sii.ogham.sms.sender.impl.cloudhopper.charset.MapCloudhopperCharsetHandler;
+
+/**
+ * Configures how Cloudhopper will handle charset encoding for SMS messages.
+ * Charsets defined by the SMPP protocol may be different from NIO charsets.
+ * 
+ * This builder configures detection of the NIO charset defined by the SMS
+ * content handle by the Java application.
+ * 
+ * This builder also configures how conversion from NIO charset to SMPP charset
+ * is handled.
+ * 
+ * @author Aurélien Baudet
+ * @deprecated use {@link EncoderBuilder} instead
+ */
+public class CharsetBuilder extends AbstractParent&lt;CloudhopperBuilder&gt; implements Builder&lt;CloudhopperCharsetHandler&gt; {
+	private final EnvironmentBuilder&lt;?&gt; environmentBuilder;
+	private final List&lt;CharsetMapping&gt; mappings;
+	private SimpleCharsetDetectorBuilder&lt;CharsetBuilder&gt; charsetDetectorBuilder;
+
+	/**
+	 * Initializes the builder with a parent builder. The parent builder is used
+	 * when calling {@link #and()} method. The {@link EnvironmentBuilder} is
+	 * used to evaluate properties when {@link #build()} method is called.
+	 * 
+	 * @param parent
+	 *            the parent builder
+	 * @param environmentBuilder
+	 *            the configuration for property resolution and evaluation
+	 */
+	public CharsetBuilder(CloudhopperBuilder parent, EnvironmentBuilder&lt;?&gt; environmentBuilder) {
+<span class="fc" id="L51">		super(parent);</span>
+<span class="fc" id="L52">		this.environmentBuilder = environmentBuilder;</span>
+<span class="fc" id="L53">		mappings = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L54">	}</span>
+
+	/**
+	 * Configures NIO charset detection (see {@link Charset}). Charset detection
+	 * is needed to detect the encoding of the SMS content used by the Java
+	 * application. This encoding will then be used to be converted by a charset
+	 * that is supported by the SMPP protocol.
+	 * 
+	 * @return the builder to configure charset detection
+	 */
+	public CharsetDetectorBuilder&lt;CharsetBuilder&gt; detector() {
+<span class="pc bpc" id="L65" title="1 of 2 branches missed.">		if (charsetDetectorBuilder == null) {</span>
+<span class="fc" id="L66">			charsetDetectorBuilder = new SimpleCharsetDetectorBuilder&lt;&gt;(this, environmentBuilder);</span>
+		}
+<span class="fc" id="L68">		return charsetDetectorBuilder;</span>
+	}
+
+	/**
+	 * Registers a charset conversion. Conversion is required by Cloudhopper in
+	 * order to use a charset supported by the SMPP protocol.
+	 * 
+	 * You can register several charset conversions.
+	 * 
+	 * @param nioCharsetName
+	 *            the charset used by the Java application
+	 * @param cloudhopperCharset
+	 *            the charset supported by the SMPP protocol
+	 * @return this instance for fluent chaining
+	 */
+	public CharsetBuilder convert(String nioCharsetName, String cloudhopperCharset) {
+<span class="fc" id="L84">		mappings.add(new CharsetMapping(nioCharsetName, cloudhopperCharset));</span>
+<span class="fc" id="L85">		return this;</span>
+	}
+
+	/**
+	 * @deprecated charset handling is now handled by {@link Encoder}
+	 */
+	@Override
+	public CloudhopperCharsetHandler build() {
+<span class="nc" id="L93">		PropertyResolver propertyResolver = environmentBuilder.build();</span>
+<span class="nc" id="L94">		CharsetDetector charsetDetector = charsetDetectorBuilder.build();</span>
+<span class="nc" id="L95">		MapCloudhopperCharsetHandler charsetHandler = new MapCloudhopperCharsetHandler(charsetDetector);</span>
+<span class="nc" id="L96">		List&lt;String&gt; registered = new ArrayList&lt;&gt;();</span>
+<span class="nc bnc" id="L97" title="All 2 branches missed.">		for (CharsetMapping mapping : mappings) {</span>
+<span class="nc" id="L98">			addCharset(propertyResolver, charsetHandler, mapping, registered);</span>
+<span class="nc" id="L99">		}</span>
+<span class="nc" id="L100">		return charsetHandler;</span>
+	}
+
+	private void addCharset(PropertyResolver propertyResolver, MapCloudhopperCharsetHandler charsetHandler, CharsetMapping mapping, List&lt;String&gt; registered) {
+		try {
+<span class="nc" id="L105">			String nioCharset = evaluate(mapping.getNioCharset(), propertyResolver, String.class);</span>
+<span class="nc" id="L106">			String cloudhopperCharset = evaluate(mapping.getCloudhopperCharset(), propertyResolver, String.class);</span>
+<span class="nc bnc" id="L107" title="All 6 branches missed.">			if (nioCharset != null &amp;&amp; cloudhopperCharset != null &amp;&amp; !registered.contains(nioCharset)) {</span>
+<span class="nc" id="L108">				charsetHandler.addCharset(nioCharset, cloudhopperCharset);</span>
+<span class="nc" id="L109">				registered.add(nioCharset);</span>
+			}
+<span class="nc" id="L111">		} catch (EncodingException e) {</span>
+<span class="nc" id="L112">			throw new BuildException(&quot;Unable to build default charset handler&quot;, e);</span>
+<span class="nc" id="L113">		}</span>
+<span class="nc" id="L114">	}</span>
+
+	private static class CharsetMapping {
+		private final String nioCharset;
+		private final String cloudhopperCharset;
+
+		public CharsetMapping(String nioCharset, String cloudhopperCharset) {
+<span class="fc" id="L121">			super();</span>
+<span class="fc" id="L122">			this.nioCharset = nioCharset;</span>
+<span class="fc" id="L123">			this.cloudhopperCharset = cloudhopperCharset;</span>
+<span class="fc" id="L124">		}</span>
+
+		public String getNioCharset() {
+<span class="nc" id="L127">			return nioCharset;</span>
+		}
+
+		public String getCloudhopperCharset() {
+<span class="nc" id="L131">			return cloudhopperCharset;</span>
+		}
+	}
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>
