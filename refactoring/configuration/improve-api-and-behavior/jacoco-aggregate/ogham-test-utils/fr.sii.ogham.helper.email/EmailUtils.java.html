@@ -1,0 +1,283 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>EmailUtils.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">reporting</a> &gt; <a href="../index.html" class="el_bundle">ogham-test-utils</a> &gt; <a href="index.source.html" class="el_package">fr.sii.ogham.helper.email</a> &gt; <span class="el_source">EmailUtils.java</span></div><h1>EmailUtils.java</h1><pre class="source lang-java linenums">package fr.sii.ogham.helper.email;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Predicate;
+import java.util.regex.Pattern;
+
+import javax.mail.BodyPart;
+import javax.mail.MessagingException;
+import javax.mail.Multipart;
+import javax.mail.Part;
+
+import org.apache.commons.io.IOUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+public class EmailUtils {
+<span class="fc" id="L21">	private static final Logger LOG = LoggerFactory.getLogger(EmailUtils.class);</span>
+<span class="fc" id="L22">	private static final Pattern TEXT_OR_HTML_MIMETYPES = Pattern.compile(&quot;^((text/)|(application/x?html)).*&quot;, Pattern.CASE_INSENSITIVE);</span>
+	public static final String ATTACHMENT_DISPOSITION = &quot;attachment&quot;;
+	public static final String INLINE_DISPOSITION = &quot;inline&quot;;
+
+	/**
+	 * Retrieve the main part of the message (recursively):
+	 * &lt;ul&gt;
+	 * &lt;li&gt;The part of the message when it contains only one part&lt;/li&gt;
+	 * &lt;li&gt;The part with text or HTML mimetype if only one part with one of that
+	 * mimetype&lt;/li&gt;
+	 * &lt;li&gt;The second part with text or HTML mimetype if there are two text or
+	 * HTML parts&lt;/li&gt;
+	 * &lt;/ul&gt;
+	 * 
+	 * @param actualEmail
+	 *            the message
+	 * @return the body of the message
+	 * @throws MessagingException
+	 *             when message can't be read
+	 */
+	public static Part getBodyPart(Part actualEmail) throws MessagingException {
+<span class="fc" id="L43">		List&lt;Part&gt; bodyParts = getTextualParts(actualEmail);</span>
+		// if no textual part, it may mean that the body is not textual
+<span class="fc bfc" id="L45" title="All 2 branches covered.">		if (bodyParts.isEmpty()) {</span>
+<span class="fc" id="L46">			List&lt;Part&gt; all = getBodyParts(actualEmail, (bp) -&gt; true);</span>
+<span class="fc bfc" id="L47" title="All 2 branches covered.">			return all.size() == 1 ? all.get(0) : all.get(1);</span>
+		}
+		// if only one part matching =&gt; not Multipart with alternative =&gt; take
+		// the first one
+		// if several matching parts =&gt; alternative + main content =&gt; the second
+		// is the main
+<span class="fc bfc" id="L53" title="All 2 branches covered.">		return bodyParts.size() == 1 ? bodyParts.get(0) : bodyParts.get(1);</span>
+	}
+
+	/**
+	 * Retrieve the alternative part of the message (recursively). The
+	 * alternative is useful when sending HTML email that may be unreadable on
+	 * some email clients. For example, a smartphone will display the 2 or 3
+	 * first lines as a summary. Many smartphones will take the HTML message
+	 * as-is and will display HTML tags instead of content of email. Alternative
+	 * is used to provide a textual visualization of the message that will be
+	 * readable by any system.
+	 * 
+	 * &lt;p&gt;
+	 * The alternative of the message is either:
+	 * &lt;ul&gt;
+	 * &lt;li&gt;null if there is only one part&lt;/li&gt;
+	 * &lt;li&gt;null if there is only one text or HTML part&lt;/li&gt;
+	 * &lt;li&gt;the first part if there are more than one text or HTML part&lt;/li&gt;
+	 * &lt;/ul&gt;
+	 * 
+	 * @param actualEmail
+	 *            the message
+	 * @return the alternative part of the message if exists, null otherwise
+	 * @throws MessagingException
+	 *             when message can't be read
+	 */
+	public static Part getAlternativePart(Part actualEmail) throws MessagingException {
+<span class="fc" id="L80">		List&lt;Part&gt; bodyParts = getTextualParts(actualEmail);</span>
+<span class="fc bfc" id="L81" title="All 2 branches covered.">		if (bodyParts.size() &lt; 2) {</span>
+<span class="fc" id="L82">			return null;</span>
+		}
+<span class="fc" id="L84">		return bodyParts.get(0);</span>
+	}
+
+	/**
+	 * Get the whole list of &quot;textual&quot; parts (text or HTML mimetypes).
+	 * 
+	 * @param actualEmail
+	 *            the message
+	 * @return the list of &quot;textual&quot; parts
+	 * @throws MessagingException
+	 *             when message can't be read
+	 */
+	public static List&lt;Part&gt; getTextualParts(Part actualEmail) throws MessagingException {
+<span class="fc" id="L97">		return getBodyParts(actualEmail, EmailUtils::isTextualContent);</span>
+	}
+
+	/**
+	 * Get the content as byte array of a particular part.
+	 * 
+	 * @param part
+	 *            the part
+	 * @return the content
+	 * @throws IOException
+	 *             when part can't be read
+	 * @throws MessagingException
+	 *             when message can&quot;t be read
+	 */
+	public static byte[] getContent(Part part) throws IOException, MessagingException {
+<span class="fc" id="L112">		InputStream stream = part.getInputStream();</span>
+<span class="fc" id="L113">		ByteArrayOutputStream baos = new ByteArrayOutputStream();</span>
+<span class="fc" id="L114">		IOUtils.copy(stream, baos);</span>
+<span class="fc" id="L115">		return baos.toByteArray();</span>
+	}
+
+	/**
+	 * Get a particular attachment (found using exact filename field).
+	 * 
+	 * @param multipart
+	 *            the email that contains several parts
+	 * @param filename
+	 *            the name of the attachment to find
+	 * @return the found attachment or null
+	 * @throws MessagingException
+	 *             when message can't be read
+	 */
+	public static BodyPart getAttachment(Multipart multipart, final String filename) throws MessagingException {
+<span class="nc" id="L130">		return getAttachment(multipart, new FileNamePredicate(filename));</span>
+	}
+
+	/**
+	 * Get a particular attachment (found using provided predicate). If several
+	 * attachments match the predicate, only the first one is retrieved.
+	 * 
+	 * @param multipart
+	 *            the email that contains several parts
+	 * @param filter
+	 *            the predicate used to find the attachment
+	 * @return the found attachment or null
+	 * @throws MessagingException
+	 *             when message can't be read
+	 */
+	public static BodyPart getAttachment(Multipart multipart, Predicate&lt;Part&gt; filter) throws MessagingException {
+<span class="nc" id="L146">		List&lt;BodyPart&gt; attachments = getAttachments(multipart, filter);</span>
+<span class="nc bnc" id="L147" title="All 2 branches missed.">		return attachments.isEmpty() ? null : attachments.get(0);</span>
+	}
+
+	/**
+	 * Get a list of direct attachments that match the provided predicate.
+	 * 
+	 * @param multipart
+	 *            the email that contains several parts
+	 * @param filter
+	 *            the predicate used to find the attachments
+	 * @return the found attachments or empty list
+	 * @throws MessagingException
+	 *             when message can't be read
+	 */
+	public static List&lt;BodyPart&gt; getAttachments(Multipart multipart, Predicate&lt;Part&gt; filter) throws MessagingException {
+<span class="nc" id="L162">		List&lt;BodyPart&gt; found = new ArrayList&lt;&gt;();</span>
+<span class="nc bnc" id="L163" title="All 2 branches missed.">		for (int i = 0; i &lt; multipart.getCount(); i++) {</span>
+<span class="nc" id="L164">			BodyPart bodyPart = multipart.getBodyPart(i);</span>
+<span class="nc bnc" id="L165" title="All 2 branches missed.">			if (filter.test(bodyPart)) {</span>
+<span class="nc" id="L166">				found.add(bodyPart);</span>
+			}
+		}
+<span class="nc" id="L169">		return found;</span>
+	}
+
+	/**
+	 * Get the whole list of attachments (recursively).
+	 * 
+	 * @param message
+	 *            the email that contains several parts
+	 * @return the found attachments or empty list
+	 * @throws MessagingException
+	 *             when message can't be read
+	 */
+	public static List&lt;BodyPart&gt; getAttachments(Part message) throws MessagingException {
+<span class="fc" id="L182">		return getAttachments(message, new DefaultAttachmentPredicate());</span>
+	}
+
+	/**
+	 * Get the whole list of attachments.
+	 * 
+	 * @param message
+	 *            the email that contains several parts
+	 * @param filter
+	 *            filter the parts to keep only some attachments. If filter
+	 *            returns true then the attachment is added to the list.
+	 * @param &lt;T&gt;
+	 *            type of part
+	 * @return the found attachments or empty list
+	 * @throws MessagingException
+	 *             when message can't be read
+	 */
+	public static &lt;T extends Part&gt; List&lt;T&gt; getAttachments(Part message, Predicate&lt;Part&gt; filter) throws MessagingException {
+<span class="fc" id="L200">		List&lt;T&gt; attachments = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L201">		findBodyParts(message, filter, attachments);</span>
+<span class="fc" id="L202">		return attachments;</span>
+	}
+
+	/**
+	 * Attachments may be everywhere in the message hierarchy. The default
+	 * filter skips any body part that is either text/plain or text/html. All
+	 * other parts are considered attachments (even if related to HTML message
+	 * like images).
+	 * 
+	 * @author Aurélien Baudet
+	 */
+<span class="fc" id="L213">	public static class DefaultAttachmentPredicate implements Predicate&lt;Part&gt; {</span>
+
+		@Override
+		public boolean test(Part p) {
+<span class="pc bpc" id="L217" title="1 of 4 branches missed.">			return !isTextualContent(p) &amp;&amp; !isMultipart(p);</span>
+		}
+
+	}
+
+	private static &lt;T extends Part&gt; List&lt;T&gt; getBodyParts(Part actualEmail, Predicate&lt;Part&gt; filter) throws MessagingException {
+<span class="fc" id="L223">		List&lt;T&gt; founds = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L224">		findBodyParts(actualEmail, filter, founds);</span>
+<span class="fc" id="L225">		return founds;</span>
+	}
+
+	private static &lt;T extends Part&gt; void findBodyParts(Part actualEmail, Predicate&lt;Part&gt; filter, List&lt;T&gt; founds) throws MessagingException {
+<span class="fc" id="L229">		LOG.trace(&quot;---------------------------&quot;);</span>
+<span class="fc" id="L230">		findBodyParts(actualEmail, filter, founds, &quot;&quot;);</span>
+<span class="fc" id="L231">	}</span>
+
+	@SuppressWarnings(&quot;unchecked&quot;)
+	private static &lt;T extends Part&gt; void findBodyParts(Part actualEmail, Predicate&lt;Part&gt; filter, List&lt;T&gt; founds, String indent) throws MessagingException {
+		try {
+<span class="fc" id="L236">			Object content = actualEmail.getContent();</span>
+<span class="pc bpc" id="L237" title="1 of 2 branches missed.">			if (content instanceof Multipart) {</span>
+<span class="fc" id="L238">				Multipart mp = (Multipart) content;</span>
+<span class="fc" id="L239">				LOG.trace(&quot;{}find {}&quot;, indent, mp.getContentType());</span>
+<span class="fc bfc" id="L240" title="All 2 branches covered.">				for (int i = 0; i &lt; mp.getCount(); i++) {</span>
+<span class="fc" id="L241">					BodyPart part = mp.getBodyPart(i);</span>
+<span class="fc bfc" id="L242" title="All 2 branches covered.">					if (isMultipart(part)) {</span>
+<span class="fc" id="L243">						findBodyParts(part, filter, founds, indent + &quot;   &quot;);</span>
+<span class="fc bfc" id="L244" title="All 2 branches covered.">					} else if (filter.test(part)) {</span>
+<span class="fc" id="L245">						LOG.trace(&quot;{}add {}&quot;, indent + &quot;   &quot;, part.getContentType());</span>
+<span class="fc" id="L246">						founds.add((T) part);</span>
+					}
+				}
+			}
+<span class="nc" id="L250">		} catch (IOException e) {</span>
+<span class="nc" id="L251">			throw new MessagingException(&quot;Failed to access content of the mail&quot;, e);</span>
+<span class="fc" id="L252">		}</span>
+<span class="fc" id="L253">	}</span>
+
+	private static boolean isMultipart(Part part) {
+		try {
+<span class="fc" id="L257">			return part.isMimeType(&quot;multipart/*&quot;);</span>
+<span class="nc" id="L258">		} catch (MessagingException e) {</span>
+<span class="nc" id="L259">			throw new MessagingRuntimeException(&quot;Failed to retrieve Content-Type of part&quot;, e);</span>
+		}
+	}
+
+	private static boolean isTextualContent(Part part) {
+		try {
+<span class="fc" id="L265">			return TEXT_OR_HTML_MIMETYPES.matcher(part.getContentType()).matches();</span>
+<span class="nc" id="L266">		} catch (MessagingException e) {</span>
+<span class="nc" id="L267">			throw new MessagingRuntimeException(&quot;Failed to retrieve Content-Type of part&quot;, e);</span>
+		}
+	}
+
+	private EmailUtils() {
+		super();
+	}
+
+	private static class MessagingRuntimeException extends RuntimeException {
+		private static final long serialVersionUID = 1L;
+
+		public MessagingRuntimeException(String message, Throwable cause) {
+<span class="nc" id="L279">			super(message, cause);</span>
+<span class="nc" id="L280">		}</span>
+	}
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

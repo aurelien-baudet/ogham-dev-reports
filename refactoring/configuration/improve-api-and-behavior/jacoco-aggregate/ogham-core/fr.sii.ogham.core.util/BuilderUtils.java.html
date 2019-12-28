@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>BuilderUtils.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">reporting</a> &gt; <a href="../index.html" class="el_bundle">ogham-core</a> &gt; <a href="index.source.html" class="el_package">fr.sii.ogham.core.util</a> &gt; <span class="el_source">BuilderUtils.java</span></div><h1>BuilderUtils.java</h1><pre class="source lang-java linenums">package fr.sii.ogham.core.util;
+
+import java.util.List;
+import java.util.Properties;
+
+import fr.sii.ogham.core.builder.Builder;
+import fr.sii.ogham.core.convert.Converter;
+import fr.sii.ogham.core.convert.DefaultConverter;
+import fr.sii.ogham.core.env.JavaPropertiesResolver;
+import fr.sii.ogham.core.env.PropertyResolver;
+
+/**
+ * Helper class for {@link Builder} implementations. It separates the builder
+ * implementations from the environment.
+ * 
+ * @author Aurélien Baudet
+ * @see Builder
+ */
+public final class BuilderUtils {
+	private static Converter converter;
+
+	/**
+	 * Provide the default properties. For now, it provides only
+	 * {@link System#getProperties()}. But according to the environment or the
+	 * future of the module, properties may come from other source.
+	 * 
+	 * @return the default properties
+	 */
+	public static Properties getDefaultProperties() {
+<span class="fc" id="L30">		return System.getProperties();</span>
+	}
+
+	/**
+	 * Create the {@link PropertyResolver} that handles {@link Properties}.
+	 * 
+	 * @param properties
+	 *            the properties
+	 * @return the property resolver
+	 */
+	public static JavaPropertiesResolver getDefaultPropertyResolver(Properties properties) {
+<span class="nc" id="L41">		return new JavaPropertiesResolver(properties, getConverter());</span>
+	}
+
+	/**
+	 * If the property value is an expression ({@code &quot;${property.key}&quot;}), then
+	 * it is evaluated to get the value of &quot;property.key&quot;. If the value is not
+	 * an expression, the value is returned and converted to the result class.
+	 * 
+	 * @param &lt;T&gt;
+	 *            the type of the resulting property
+	 * @param property
+	 *            the property that may be an expression
+	 * @param propertyResolver
+	 *            the property resolver used to find property value (if it is an
+	 *            expression)
+	 * @param resultClass
+	 *            the result class
+	 * @return the resulting value of the expression, the value or null
+	 */
+	public static &lt;T&gt; T evaluate(String property, PropertyResolver propertyResolver, Class&lt;T&gt; resultClass) {
+<span class="pc bpc" id="L61" title="1 of 2 branches missed.">		if (isExpression(property)) {</span>
+<span class="fc" id="L62">			return propertyResolver.getProperty(getPropertyKey(property), resultClass);</span>
+		}
+<span class="nc" id="L64">		return getConverter().convert(property, resultClass);</span>
+	}
+
+	/**
+	 * Evaluate a list of properties that may contain expressions. It internally
+	 * calls {@link #evaluate(String, PropertyResolver, Class)}. It tries on
+	 * first property in the list. If {@code null} value is returned then the
+	 * next property is tried and so on until one property returns a non-null
+	 * value.
+	 * 
+	 * &lt;p&gt;
+	 * If all properties return null, it returns null.
+	 * 
+	 * @param &lt;T&gt;
+	 *            the type of resulting value
+	 * @param properties
+	 *            the list of properties to try in sequence
+	 * @param propertyResolver
+	 *            the property resolver used to find property value (if it is an
+	 *            expression)
+	 * @param resultClass
+	 *            the result class
+	 * @return the resulting value or null
+	 */
+	public static &lt;T&gt; T evaluate(List&lt;String&gt; properties, PropertyResolver propertyResolver, Class&lt;T&gt; resultClass) {
+<span class="pc bpc" id="L89" title="1 of 2 branches missed.">		if (properties == null) {</span>
+<span class="nc" id="L90">			return null;</span>
+		}
+<span class="fc bfc" id="L92" title="All 2 branches covered.">		for (String prop : properties) {</span>
+<span class="fc" id="L93">			T value = evaluate(prop, propertyResolver, resultClass);</span>
+<span class="fc bfc" id="L94" title="All 2 branches covered.">			if (value != null) {</span>
+<span class="fc" id="L95">				return value;</span>
+			}
+<span class="fc" id="L97">		}</span>
+<span class="fc" id="L98">		return null;</span>
+	}
+
+	/**
+	 * Get the property of inside the expression
+	 * 
+	 * @param expression
+	 *            the property expression
+	 * @return the property key
+	 */
+	public static String getPropertyKey(String expression) {
+<span class="fc" id="L109">		return expression.substring(2, expression.length() - 1);</span>
+	}
+
+	/**
+	 * Indicates if the property is the form of an expression
+	 * (&quot;${property.key}&quot;) or not.
+	 * 
+	 * @param property
+	 *            the property that may be an expression
+	 * @return true if it is an expression, false otherwise
+	 */
+	public static boolean isExpression(String property) {
+<span class="pc bpc" id="L121" title="2 of 6 branches missed.">		return property != null &amp;&amp; property.startsWith(&quot;${&quot;) &amp;&amp; property.endsWith(&quot;}&quot;);</span>
+	}
+
+	/**
+	 * Change the converter used by ByulderUtils
+	 * 
+	 * @param converter
+	 *            the new converter
+	 */
+	public static void setConverter(Converter converter) {
+<span class="nc" id="L131">		BuilderUtils.converter = converter;</span>
+<span class="nc" id="L132">	}</span>
+
+	private static Converter getConverter() {
+<span class="nc bnc" id="L135" title="All 2 branches missed.">		if (converter == null) {</span>
+<span class="nc" id="L136">			converter = new DefaultConverter();</span>
+		}
+<span class="nc" id="L138">		return converter;</span>
+	}
+
+	private BuilderUtils() {
+		super();
+	}
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>
