@@ -113,11 +113,12 @@ public class ConfigurationValueBuilderHelper&lt;P, V&gt; extends AbstractParent&
 	}
 
 	@Override
+	@SuppressWarnings(&quot;squid:S3553&quot;)
 	public ConfigurationValueBuilderHelper&lt;P, V&gt; value(Optional&lt;V&gt; optionalValue) {
-<span class="fc bfc" id="L117" title="All 2 branches covered.">		if (optionalValue.isPresent()) {</span>
-<span class="fc" id="L118">			this.optionalValue = optionalValue;</span>
+<span class="fc bfc" id="L118" title="All 2 branches covered.">		if (optionalValue.isPresent()) {</span>
+<span class="fc" id="L119">			this.optionalValue = optionalValue;</span>
 		}
-<span class="fc" id="L120">		return this;</span>
+<span class="fc" id="L121">		return this;</span>
 	}
 
 	/**
@@ -166,8 +167,8 @@ public class ConfigurationValueBuilderHelper&lt;P, V&gt; extends AbstractParent&
 	 *            the value set by the developer in its own code
 	 */
 	public void setValue(V value) {
-<span class="fc" id="L169">		this.value = value;</span>
-<span class="fc" id="L170">	}</span>
+<span class="fc" id="L170">		this.value = value;</span>
+<span class="fc" id="L171">	}</span>
 
 	/**
 	 * Get the final value. The first non-null value is returned:
@@ -189,17 +190,17 @@ public class ConfigurationValueBuilderHelper&lt;P, V&gt; extends AbstractParent&
 	 * @return the value
 	 */
 	public V getValue(PropertyResolver propertyResolver) {
-<span class="fc bfc" id="L192" title="All 2 branches covered.">		if (value != null) {</span>
-<span class="fc" id="L193">			return value;</span>
+<span class="fc bfc" id="L193" title="All 2 branches covered.">		if (value != null) {</span>
+<span class="fc" id="L194">			return value;</span>
 		}
-<span class="fc bfc" id="L195" title="All 2 branches covered.">		if (optionalValue.isPresent()) {</span>
-<span class="fc" id="L196">			return optionalValue.get();</span>
+<span class="fc bfc" id="L196" title="All 2 branches covered.">		if (optionalValue.isPresent()) {</span>
+<span class="fc" id="L197">			return optionalValue.get();</span>
 		}
-<span class="fc" id="L198">		V prop = BuilderUtils.evaluate(properties, propertyResolver, valueClass);</span>
-<span class="fc bfc" id="L199" title="All 2 branches covered.">		if (prop != null) {</span>
-<span class="fc" id="L200">			return prop;</span>
+<span class="fc" id="L199">		V prop = BuilderUtils.evaluate(properties, propertyResolver, valueClass);</span>
+<span class="fc bfc" id="L200" title="All 2 branches covered.">		if (prop != null) {</span>
+<span class="fc" id="L201">			return prop;</span>
 		}
-<span class="fc" id="L202">		return defaultValue;</span>
+<span class="fc" id="L203">		return defaultValue;</span>
 	}
 
 	/**
@@ -224,11 +225,11 @@ public class ConfigurationValueBuilderHelper&lt;P, V&gt; extends AbstractParent&
 	 * @return the value
 	 */
 	public V getValue(PropertyResolver propertyResolver, V defaultValue) {
-<span class="fc" id="L227">		V configuredValue = getValue(propertyResolver);</span>
-<span class="fc bfc" id="L228" title="All 2 branches covered.">		if (configuredValue != null) {</span>
-<span class="fc" id="L229">			return configuredValue;</span>
+<span class="fc" id="L228">		V configuredValue = getValue(propertyResolver);</span>
+<span class="fc bfc" id="L229" title="All 2 branches covered.">		if (configuredValue != null) {</span>
+<span class="fc" id="L230">			return configuredValue;</span>
 		}
-<span class="fc" id="L231">		return defaultValue;</span>
+<span class="fc" id="L232">		return defaultValue;</span>
 	}
 
 	/**
@@ -237,7 +238,7 @@ public class ConfigurationValueBuilderHelper&lt;P, V&gt; extends AbstractParent&
 	 * @return true if there is a value, default value or at least one property
 	 */
 	public boolean hasValueOrProperties() {
-<span class="nc bnc" id="L240" title="All 6 branches missed.">		return value != null || !properties.isEmpty() || defaultValue != null;</span>
+<span class="nc bnc" id="L241" title="All 6 branches missed.">		return value != null || !properties.isEmpty() || defaultValue != null;</span>
 	}
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

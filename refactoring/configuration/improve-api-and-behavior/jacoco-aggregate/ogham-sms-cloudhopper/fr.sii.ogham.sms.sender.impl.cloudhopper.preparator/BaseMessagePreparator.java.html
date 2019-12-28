@@ -100,11 +100,9 @@ public abstract class BaseMessagePreparator implements MessagePreparator {
 		try {
 <span class="fc" id="L101">			return createMessages(message);</span>
 <span class="nc" id="L102">		} catch (PhoneNumberTranslatorException | SmppInvalidArgumentException | DataCodingException e) {</span>
-<span class="nc" id="L103">			LOG.error(&quot;Failed to prepare messages&quot;, e);</span>
-<span class="nc" id="L104">			throw new MessagePreparationException(&quot;Failed to prepare messages&quot;, message, e);</span>
-<span class="nc" id="L105">		} catch (SplitMessageException e) {</span>
-<span class="nc" id="L106">			LOG.error(&quot;Failed to split SMPP message before sending it&quot;, e);</span>
-<span class="nc" id="L107">			throw new MessagePreparationException(&quot;Failed to split SMPP message before sending it&quot;, message, e);</span>
+<span class="nc" id="L103">			throw new MessagePreparationException(&quot;Failed to prepare messages&quot;, message, e);</span>
+<span class="nc" id="L104">		} catch (SplitMessageException e) {</span>
+<span class="nc" id="L105">			throw new MessagePreparationException(&quot;Failed to split SMPP message before sending it&quot;, message, e);</span>
 		}
 	}
 
@@ -123,57 +121,56 @@ public abstract class BaseMessagePreparator implements MessagePreparator {
 	protected abstract void fill(Sms originalMessage, SubmitSm submit, Segment part) throws MessagePreparationException;
 
 	private List&lt;SubmitSm&gt; createMessages(Sms message) throws SmppInvalidArgumentException, PhoneNumberTranslatorException, SplitMessageException, DataCodingException, MessagePreparationException {
-<span class="fc" id="L126">		List&lt;SubmitSm&gt; messages = new ArrayList&lt;&gt;();</span>
-<span class="fc bfc" id="L127" title="All 2 branches covered.">		for (Recipient recipient : message.getRecipients()) {</span>
-<span class="fc" id="L128">			messages.addAll(createMessages(message, recipient));</span>
-<span class="fc" id="L129">		}</span>
-<span class="fc" id="L130">		return messages;</span>
+<span class="fc" id="L124">		List&lt;SubmitSm&gt; messages = new ArrayList&lt;&gt;();</span>
+<span class="fc bfc" id="L125" title="All 2 branches covered.">		for (Recipient recipient : message.getRecipients()) {</span>
+<span class="fc" id="L126">			messages.addAll(createMessages(message, recipient));</span>
+<span class="fc" id="L127">		}</span>
+<span class="fc" id="L128">		return messages;</span>
 	}
 
 	private List&lt;SubmitSm&gt; createMessages(Sms message, Recipient recipient)
 			throws SmppInvalidArgumentException, PhoneNumberTranslatorException, SplitMessageException, DataCodingException, MessagePreparationException {
-<span class="fc" id="L135">		List&lt;SubmitSm&gt; messages = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L133">		List&lt;SubmitSm&gt; messages = new ArrayList&lt;&gt;();</span>
 
-<span class="fc" id="L137">		List&lt;Segment&gt; parts = messageSplitter.split(message.getContent().toString());</span>
-<span class="fc bfc" id="L138" title="All 2 branches covered.">		if (parts.size() &lt;= 1) {</span>
-<span class="fc" id="L139">			addSubmit(message, recipient, messages, parts.get(0));</span>
-<span class="fc" id="L140">			return messages;</span>
+<span class="fc" id="L135">		List&lt;Segment&gt; parts = messageSplitter.split(message.getContent().toString());</span>
+<span class="fc bfc" id="L136" title="All 2 branches covered.">		if (parts.size() &lt;= 1) {</span>
+<span class="fc" id="L137">			addSubmit(message, recipient, messages, parts.get(0));</span>
+<span class="fc" id="L138">			return messages;</span>
 		}
 
-<span class="fc" id="L143">		LOG.debug(&quot;Content split into {} parts&quot;, parts.size());</span>
-<span class="fc bfc" id="L144" title="All 2 branches covered.">		for (Segment part : parts) {</span>
-<span class="fc" id="L145">			addEsmClassSubmit(message, recipient, messages, part);</span>
-<span class="fc" id="L146">		}</span>
-<span class="fc" id="L147">		return messages;</span>
+<span class="fc" id="L141">		LOG.debug(&quot;Content split into {} parts&quot;, parts.size());</span>
+<span class="fc bfc" id="L142" title="All 2 branches covered.">		for (Segment part : parts) {</span>
+<span class="fc" id="L143">			addEsmClassSubmit(message, recipient, messages, part);</span>
+<span class="fc" id="L144">		}</span>
+<span class="fc" id="L145">		return messages;</span>
 	}
 
 	private void addEsmClassSubmit(Sms message, Recipient recipient, List&lt;SubmitSm&gt; messages, Segment part)
 			throws SmppInvalidArgumentException, PhoneNumberTranslatorException, DataCodingException, MessagePreparationException {
-<span class="fc" id="L152">		SubmitSm submit = createMessage(message, recipient, part);</span>
-<span class="fc" id="L153">		submit.setEsmClass(ESM_CLASS_UDHI_MASK);</span>
-<span class="fc" id="L154">		messages.add(submit);</span>
-<span class="fc" id="L155">	}</span>
+<span class="fc" id="L150">		SubmitSm submit = createMessage(message, recipient, part);</span>
+<span class="fc" id="L151">		submit.setEsmClass(ESM_CLASS_UDHI_MASK);</span>
+<span class="fc" id="L152">		messages.add(submit);</span>
+<span class="fc" id="L153">	}</span>
 
 	private void addSubmit(Sms message, Recipient recipient, List&lt;SubmitSm&gt; messages, Segment part)
 			throws SmppInvalidArgumentException, PhoneNumberTranslatorException, DataCodingException, MessagePreparationException {
-<span class="fc" id="L159">		SubmitSm submit = createMessage(message, recipient, part);</span>
-<span class="fc" id="L160">		messages.add(submit);</span>
-<span class="fc" id="L161">	}</span>
+<span class="fc" id="L157">		SubmitSm submit = createMessage(message, recipient, part);</span>
+<span class="fc" id="L158">		messages.add(submit);</span>
+<span class="fc" id="L159">	}</span>
 
-	private SubmitSm createMessage(Sms message, Recipient recipient, Segment part)
-			throws SmppInvalidArgumentException, PhoneNumberTranslatorException, DataCodingException, MessagePreparationException {
-<span class="fc" id="L165">		SubmitSm submit = new SubmitSm();</span>
-<span class="fc" id="L166">		submit.setSourceAddress(toAddress(message.getFrom().getPhoneNumber()));</span>
-<span class="fc" id="L167">		submit.setDestAddress(toAddress(recipient.getPhoneNumber()));</span>
+	private SubmitSm createMessage(Sms message, Recipient recipient, Segment part) throws PhoneNumberTranslatorException, DataCodingException, MessagePreparationException {
+<span class="fc" id="L162">		SubmitSm submit = new SubmitSm();</span>
+<span class="fc" id="L163">		submit.setSourceAddress(toAddress(message.getFrom().getPhoneNumber()));</span>
+<span class="fc" id="L164">		submit.setDestAddress(toAddress(recipient.getPhoneNumber()));</span>
 
-<span class="pc bpc" id="L169" title="1 of 2 branches missed.">		if (part instanceof EncodedSegment) {</span>
-<span class="fc" id="L170">			Encoded encoded = ((EncodedSegment) part).getEncoded();</span>
-<span class="fc" id="L171">			submit.setDataCoding(dataCodingProvider.provide(encoded).getByteValue());</span>
+<span class="pc bpc" id="L166" title="1 of 2 branches missed.">		if (part instanceof EncodedSegment) {</span>
+<span class="fc" id="L167">			Encoded encoded = ((EncodedSegment) part).getEncoded();</span>
+<span class="fc" id="L168">			submit.setDataCoding(dataCodingProvider.provide(encoded).getByteValue());</span>
 		}
 
-<span class="fc" id="L174">		fill(message, submit, part);</span>
+<span class="fc" id="L171">		fill(message, submit, part);</span>
 
-<span class="fc" id="L176">		return submit;</span>
+<span class="fc" id="L173">		return submit;</span>
 	}
 
 	/**
@@ -188,16 +185,16 @@ public abstract class BaseMessagePreparator implements MessagePreparator {
 	private Address toAddress(PhoneNumber phoneNumber) throws PhoneNumberTranslatorException {
 		AddressedPhoneNumber addressedPhoneNumber;
 
-<span class="fc bfc" id="L191" title="All 2 branches covered.">		if (phoneNumber instanceof AddressedPhoneNumber) {</span>
-<span class="fc" id="L192">			addressedPhoneNumber = (AddressedPhoneNumber) phoneNumber;</span>
-<span class="pc bpc" id="L193" title="1 of 2 branches missed.">		} else if (phoneNumberTranslator != null) {</span>
-<span class="fc" id="L194">			LOG.warn(&quot;Fallback addressing policy used for PhoneNumber '{}'. You might decorate your sender with a PhoneNumberTranslatorSender.&quot;, phoneNumber);</span>
-<span class="fc" id="L195">			addressedPhoneNumber = phoneNumberTranslator.translate(phoneNumber);</span>
+<span class="fc bfc" id="L188" title="All 2 branches covered.">		if (phoneNumber instanceof AddressedPhoneNumber) {</span>
+<span class="fc" id="L189">			addressedPhoneNumber = (AddressedPhoneNumber) phoneNumber;</span>
+<span class="pc bpc" id="L190" title="1 of 2 branches missed.">		} else if (phoneNumberTranslator != null) {</span>
+<span class="fc" id="L191">			LOG.warn(&quot;Fallback addressing policy used for PhoneNumber '{}'. You might decorate your sender with a PhoneNumberTranslatorSender.&quot;, phoneNumber);</span>
+<span class="fc" id="L192">			addressedPhoneNumber = phoneNumberTranslator.translate(phoneNumber);</span>
 		} else {
-<span class="nc" id="L197">			throw new IllegalStateException(&quot;Must provide addressing policy with the phone number or with a fallback phone number translator.&quot;);</span>
+<span class="nc" id="L194">			throw new IllegalStateException(&quot;Must provide addressing policy with the phone number or with a fallback phone number translator.&quot;);</span>
 		}
-<span class="fc" id="L199">		LOG.debug(&quot;Addressing policy applied on {} &quot;, addressedPhoneNumber);</span>
-<span class="fc" id="L200">		return new Address(addressedPhoneNumber.getTon().value(), addressedPhoneNumber.getNpi().value(), addressedPhoneNumber.getNumber());</span>
+<span class="fc" id="L196">		LOG.debug(&quot;Addressing policy applied on {} &quot;, addressedPhoneNumber);</span>
+<span class="fc" id="L197">		return new Address(addressedPhoneNumber.getTon().value(), addressedPhoneNumber.getNpi().value(), addressedPhoneNumber.getNumber());</span>
 	}
 
 }

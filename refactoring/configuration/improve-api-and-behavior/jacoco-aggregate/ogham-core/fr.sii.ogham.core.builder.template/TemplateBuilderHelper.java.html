@@ -301,35 +301,36 @@ public class TemplateBuilderHelper&lt;P&gt; {
 <span class="fc" id="L301">		return variantResolver;</span>
 	}
 
+	@SuppressWarnings(&quot;squid:S5411&quot;)
 	private VariantResolver buildDefaultVariantResolver() {
-<span class="pc bpc" id="L305" title="1 of 2 branches missed.">		if (missingResolver != null) {</span>
-<span class="nc" id="L306">			return missingResolver;</span>
+<span class="pc bpc" id="L306" title="1 of 2 branches missed.">		if (missingResolver != null) {</span>
+<span class="nc" id="L307">			return missingResolver;</span>
 		}
-<span class="fc" id="L308">		PropertyResolver propertyResolver = environmentBuilder.build();</span>
-<span class="pc bpc" id="L309" title="1 of 2 branches missed.">		if (missingVariantFailValueBuilder.getValue(propertyResolver, false)) {</span>
-<span class="nc" id="L310">			return new FailIfNotFoundVariantResolver();</span>
+<span class="fc" id="L309">		PropertyResolver propertyResolver = environmentBuilder.build();</span>
+<span class="pc bpc" id="L310" title="1 of 2 branches missed.">		if (missingVariantFailValueBuilder.getValue(propertyResolver, false)) {</span>
+<span class="nc" id="L311">			return new FailIfNotFoundVariantResolver();</span>
 		}
-<span class="fc" id="L312">		FailIfNotFoundWithTestedPathsVariantResolver fail = new FailIfNotFoundWithTestedPathsVariantResolver();</span>
-<span class="fc bfc" id="L313" title="All 2 branches covered.">		for (Builder&lt;? extends TemplateParser&gt; builder : templateBuilders) {</span>
-<span class="pc bpc" id="L314" title="1 of 2 branches missed.">			if (builder instanceof VariantBuilder) {</span>
-<span class="fc" id="L315">				fail.addVariantResolver(((VariantBuilder&lt;?&gt;) builder).buildVariant());</span>
+<span class="fc" id="L313">		FailIfNotFoundWithTestedPathsVariantResolver fail = new FailIfNotFoundWithTestedPathsVariantResolver();</span>
+<span class="fc bfc" id="L314" title="All 2 branches covered.">		for (Builder&lt;? extends TemplateParser&gt; builder : templateBuilders) {</span>
+<span class="pc bpc" id="L315" title="1 of 2 branches missed.">			if (builder instanceof VariantBuilder) {</span>
+<span class="fc" id="L316">				fail.addVariantResolver(((VariantBuilder&lt;?&gt;) builder).buildVariant());</span>
 			}
-<span class="fc" id="L317">		}</span>
-<span class="fc" id="L318">		return fail;</span>
+<span class="fc" id="L318">		}</span>
+<span class="fc" id="L319">		return fail;</span>
 	}
 
 	private List&lt;TemplateImplementation&gt; buildTemplateParserImpls() {
-<span class="fc" id="L322">		List&lt;TemplateImplementation&gt; impls = new ArrayList&lt;&gt;();</span>
-<span class="fc bfc" id="L323" title="All 2 branches covered.">		for (Builder&lt;? extends TemplateParser&gt; builder : templateBuilders) {</span>
+<span class="fc" id="L323">		List&lt;TemplateImplementation&gt; impls = new ArrayList&lt;&gt;();</span>
+<span class="fc bfc" id="L324" title="All 2 branches covered.">		for (Builder&lt;? extends TemplateParser&gt; builder : templateBuilders) {</span>
 			TemplateEngineDetector detector;
-<span class="pc bpc" id="L325" title="1 of 2 branches missed.">			if (builder instanceof DetectorBuilder) {</span>
-<span class="fc" id="L326">				detector = ((DetectorBuilder&lt;?&gt;) builder).buildDetector();</span>
+<span class="pc bpc" id="L326" title="1 of 2 branches missed.">			if (builder instanceof DetectorBuilder) {</span>
+<span class="fc" id="L327">				detector = ((DetectorBuilder&lt;?&gt;) builder).buildDetector();</span>
 			} else {
-<span class="nc" id="L328">				detector = new FixedEngineDetector(true);</span>
+<span class="nc" id="L329">				detector = new FixedEngineDetector(true);</span>
 			}
-<span class="fc" id="L330">			impls.add(new TemplateImplementation(detector, builder.build()));</span>
-<span class="fc" id="L331">		}</span>
-<span class="fc" id="L332">		return impls;</span>
+<span class="fc" id="L331">			impls.add(new TemplateImplementation(detector, builder.build()));</span>
+<span class="fc" id="L332">		}</span>
+<span class="fc" id="L333">		return impls;</span>
 	}
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

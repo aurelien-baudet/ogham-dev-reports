@@ -78,11 +78,9 @@ public final class BeanUtils {
 	 * @param bean
 	 *            the bean to convert into a map
 	 * @return the bean as map
-	 * @throws BeanException
-	 *             when the conversion has failed
 	 */
-	public static Map&lt;String, Object&gt; convert(Object bean) throws BeanException {
-<span class="fc" id="L85">		return new MapBeanReadWrapper(bean);</span>
+	public static Map&lt;String, Object&gt; convert(Object bean) {
+<span class="fc" id="L83">		return new MapBeanReadWrapper(bean);</span>
 	}
 
 	/**
@@ -126,14 +124,10 @@ public final class BeanUtils {
 	 *             when the bean couldn't be populated
 	 */
 	public static void populate(Object bean, Map&lt;String, Object&gt; values, Options options) throws BeanException {
-		try {
-<span class="fc bfc" id="L130" title="All 2 branches covered.">			for (Entry&lt;String, Object&gt; entry : values.entrySet()) {</span>
-<span class="fc" id="L131">				populate(bean, entry, options);</span>
-<span class="fc" id="L132">			}</span>
-<span class="nc" id="L133">		} catch (InvocationTargetException | IllegalAccessException e) {</span>
-<span class="nc" id="L134">			throw new BeanException(&quot;Failed to populate bean&quot;, bean, e);</span>
-<span class="fc" id="L135">		}</span>
-<span class="fc" id="L136">	}</span>
+<span class="fc bfc" id="L127" title="All 2 branches covered.">		for (Entry&lt;String, Object&gt; entry : values.entrySet()) {</span>
+<span class="fc" id="L128">			populate(bean, entry, options);</span>
+<span class="fc" id="L129">		}</span>
+<span class="fc" id="L130">	}</span>
 
 	/**
 	 * &lt;p&gt;
@@ -174,23 +168,23 @@ public final class BeanUtils {
 	 *            options used to
 	 * @throws BeanException
 	 *             when the bean couldn't be populated
-	 * @throws InvocationTargetException
-	 *             when the setter method can't be called
-	 * @throws IllegalAccessException
-	 *             when the field can't be accessed due to security restrictions
 	 */
-	public static void populate(Object bean, Entry&lt;String, Object&gt; entry, Options options) throws BeanException, IllegalAccessException, InvocationTargetException {
+	public static void populate(Object bean, Entry&lt;String, Object&gt; entry, Options options) throws BeanException {
 		try {
-<span class="fc" id="L184">			String property = org.apache.commons.beanutils.BeanUtils.getProperty(bean, entry.getKey());</span>
-<span class="fc bfc" id="L185" title="All 4 branches covered.">			if (options.isOverride() || property == null) {</span>
-<span class="fc" id="L186">				org.apache.commons.beanutils.BeanUtils.setProperty(bean, entry.getKey(), entry.getValue());</span>
+<span class="fc" id="L174">			String property = org.apache.commons.beanutils.BeanUtils.getProperty(bean, entry.getKey());</span>
+<span class="fc bfc" id="L175" title="All 4 branches covered.">			if (options.isOverride() || property == null) {</span>
+<span class="fc" id="L176">				org.apache.commons.beanutils.BeanUtils.setProperty(bean, entry.getKey(), entry.getValue());</span>
 			}
-<span class="fc" id="L188">		} catch (NestedNullException | NoSuchMethodException e) {</span>
-<span class="fc" id="L189">			handleUnknown(bean, options, entry, e);</span>
-<span class="fc" id="L190">		} catch (ConversionException e) {</span>
-<span class="nc" id="L191">			handleConversion(bean, options, entry, e);</span>
-<span class="fc" id="L192">		}</span>
-<span class="fc" id="L193">	}</span>
+<span class="fc" id="L178">		} catch (NestedNullException | NoSuchMethodException e) {</span>
+<span class="fc" id="L179">			handleUnknown(bean, options, entry, e);</span>
+<span class="fc" id="L180">		} catch (ConversionException e) {</span>
+<span class="nc" id="L181">			handleConversion(bean, options, entry, e);</span>
+<span class="nc" id="L182">		} catch (IllegalAccessException e) {</span>
+<span class="nc" id="L183">			throw new BeanException(&quot;Failed to populate bean due to security restrictions&quot;, bean, e);</span>
+<span class="nc" id="L184">		} catch (InvocationTargetException e) {</span>
+<span class="nc" id="L185">			throw new BeanException(&quot;Failed to populate bean due to invalid setter call&quot;, bean, e);</span>
+<span class="pc" id="L186">		}</span>
+<span class="fc" id="L187">	}</span>
 
 	/**
 	 * &lt;p&gt;
@@ -244,24 +238,24 @@ public final class BeanUtils {
 	 *             when the bean couldn't be populated
 	 */
 	public static void populate(Object bean, Map&lt;String, Object&gt; values) throws BeanException {
-<span class="nc" id="L247">		populate(bean, values, new Options(false, true));</span>
-<span class="nc" id="L248">	}</span>
+<span class="nc" id="L241">		populate(bean, values, new Options(false, true));</span>
+<span class="nc" id="L242">	}</span>
 
 	private static void handleUnknown(Object bean, Options options, Entry&lt;String, Object&gt; entry, Exception e) throws BeanException {
-<span class="fc bfc" id="L251" title="All 2 branches covered.">		if (options.isSkipUnknown()) {</span>
-<span class="fc" id="L252">			LOG.debug(&quot;skipping property {}: it doesn't exist or is not accessible&quot;, entry.getKey(), e);</span>
+<span class="fc bfc" id="L245" title="All 2 branches covered.">		if (options.isSkipUnknown()) {</span>
+<span class="fc" id="L246">			LOG.debug(&quot;skipping property {}: it doesn't exist or is not accessible&quot;, entry.getKey(), e);</span>
 		} else {
-<span class="fc" id="L254">			throw new BeanException(&quot;Failed to populate bean due to unknown property&quot;, bean, e);</span>
+<span class="fc" id="L248">			throw new BeanException(&quot;Failed to populate bean due to unknown property&quot;, bean, e);</span>
 		}
-<span class="fc" id="L256">	}</span>
+<span class="fc" id="L250">	}</span>
 
 	private static void handleConversion(Object bean, Options options, Entry&lt;String, Object&gt; entry, ConversionException e) throws BeanException {
-<span class="pc bpc" id="L259" title="1 of 2 branches missed.">		if (options.isSkipUnknown()) {</span>
-<span class="nc" id="L260">			LOG.debug(&quot;skipping property {}: can't convert value&quot;, entry.getKey(), e);</span>
+<span class="pc bpc" id="L253" title="1 of 2 branches missed.">		if (options.isSkipUnknown()) {</span>
+<span class="nc" id="L254">			LOG.debug(&quot;skipping property {}: can't convert value&quot;, entry.getKey(), e);</span>
 		} else {
-<span class="fc" id="L262">			throw new BeanException(&quot;Failed to populate bean due to conversion error&quot;, bean, e);</span>
+<span class="fc" id="L256">			throw new BeanException(&quot;Failed to populate bean due to conversion error&quot;, bean, e);</span>
 		}
-<span class="nc" id="L264">	}</span>
+<span class="nc" id="L258">	}</span>
 
 	public static class Options {
 		private boolean override;
@@ -269,17 +263,17 @@ public final class BeanUtils {
 		private boolean skipUnknown;
 
 		public Options(boolean override, boolean skipUnknown) {
-<span class="fc" id="L272">			super();</span>
-<span class="fc" id="L273">			this.override = override;</span>
-<span class="fc" id="L274">			this.skipUnknown = skipUnknown;</span>
-<span class="fc" id="L275">		}</span>
+<span class="fc" id="L266">			super();</span>
+<span class="fc" id="L267">			this.override = override;</span>
+<span class="fc" id="L268">			this.skipUnknown = skipUnknown;</span>
+<span class="fc" id="L269">		}</span>
 
 		public boolean isOverride() {
-<span class="fc" id="L278">			return override;</span>
+<span class="fc" id="L272">			return override;</span>
 		}
 
 		public boolean isSkipUnknown() {
-<span class="fc" id="L282">			return skipUnknown;</span>
+<span class="fc" id="L276">			return skipUnknown;</span>
 		}
 	}
 

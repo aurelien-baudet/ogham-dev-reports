@@ -384,31 +384,32 @@ public class DataCodingSchemeBuilder extends AbstractParent&lt;CloudhopperBuilde
 	}
 
 	@Override
+	@SuppressWarnings(&quot;squid:S5411&quot;)
 	public DataCodingProvider build() {
-<span class="fc" id="L388">		PropertyResolver propertyResolver = environmentBuilder.build();</span>
-<span class="fc" id="L389">		Byte dataCodingValue = dcsValueBuilder.getValue(propertyResolver);</span>
-<span class="pc bpc" id="L390" title="1 of 2 branches missed.">		if (dataCodingValue != null) {</span>
-<span class="nc" id="L391">			return new FixedByteValueDataCodingProvider(dataCodingValue);</span>
+<span class="fc" id="L389">		PropertyResolver propertyResolver = environmentBuilder.build();</span>
+<span class="fc" id="L390">		Byte dataCodingValue = dcsValueBuilder.getValue(propertyResolver);</span>
+<span class="pc bpc" id="L391" title="1 of 2 branches missed.">		if (dataCodingValue != null) {</span>
+<span class="nc" id="L392">			return new FixedByteValueDataCodingProvider(dataCodingValue);</span>
 		}
-<span class="fc" id="L393">		FirstSupportingDataCodingProvider firstSupporting = new FirstSupportingDataCodingProvider();</span>
-<span class="pc bpc" id="L394" title="1 of 2 branches missed.">		if (custom != null) {</span>
-<span class="nc" id="L395">			firstSupporting.register(custom);</span>
+<span class="fc" id="L394">		FirstSupportingDataCodingProvider firstSupporting = new FirstSupportingDataCodingProvider();</span>
+<span class="pc bpc" id="L395" title="1 of 2 branches missed.">		if (custom != null) {</span>
+<span class="nc" id="L396">			firstSupporting.register(custom);</span>
 		}
-<span class="pc bpc" id="L397" title="1 of 2 branches missed.">		if (autoValueBuilder.getValue(propertyResolver, false)) {</span>
-<span class="fc" id="L398">			registerAuto(propertyResolver, firstSupporting);</span>
+<span class="pc bpc" id="L398" title="1 of 2 branches missed.">		if (autoValueBuilder.getValue(propertyResolver, false)) {</span>
+<span class="fc" id="L399">			registerAuto(propertyResolver, firstSupporting);</span>
 		}
-<span class="fc" id="L400">		return firstSupporting;</span>
+<span class="fc" id="L401">		return firstSupporting;</span>
 	}
 
 	private void registerAuto(PropertyResolver propertyResolver, FirstSupportingDataCodingProvider firstSupporting) {
-<span class="fc" id="L404">		Byte interfaceVersion = interfaceVersionProvider.apply(propertyResolver);</span>
-<span class="pc bpc" id="L405" title="1 of 2 branches missed.">		if (interfaceVersion == SmppConstants.VERSION_3_3) {</span>
-<span class="nc" id="L406">			firstSupporting.register(new CharsetMapToGeneralGroupDataCodingProvider());</span>
-<span class="nc" id="L407">			return;</span>
+<span class="fc" id="L405">		Byte interfaceVersion = interfaceVersionProvider.apply(propertyResolver);</span>
+<span class="pc bpc" id="L406" title="1 of 2 branches missed.">		if (interfaceVersion == SmppConstants.VERSION_3_3) {</span>
+<span class="nc" id="L407">			firstSupporting.register(new CharsetMapToGeneralGroupDataCodingProvider());</span>
+<span class="nc" id="L408">			return;</span>
 		}
 		// 3.4+
-<span class="fc" id="L410">		firstSupporting.register(new CharsetMapToCharacterEncodingGroupDataCodingProvider());</span>
-<span class="fc" id="L411">	}</span>
+<span class="fc" id="L411">		firstSupporting.register(new CharsetMapToCharacterEncodingGroupDataCodingProvider());</span>
+<span class="fc" id="L412">	}</span>
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

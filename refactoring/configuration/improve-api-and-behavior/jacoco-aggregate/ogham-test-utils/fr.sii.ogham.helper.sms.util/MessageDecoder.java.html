@@ -47,25 +47,26 @@ public final class MessageDecoder {
 <span class="fc" id="L47">		return charset.decode(shortMessage);</span>
 	}
 
+	@SuppressWarnings(&quot;squid:S1168&quot;)
 	private static byte[] getMessageBytes(SubmitSm submitSm) {
-<span class="fc" id="L51">		byte[] shortMessage = submitSm.getShortMessage();</span>
-<span class="pc bpc" id="L52" title="1 of 4 branches missed.">		if (shortMessage != null &amp;&amp; shortMessage.length &gt; 0) {</span>
-<span class="fc" id="L53">			return shortMessage;</span>
+<span class="fc" id="L52">		byte[] shortMessage = submitSm.getShortMessage();</span>
+<span class="pc bpc" id="L53" title="1 of 4 branches missed.">		if (shortMessage != null &amp;&amp; shortMessage.length &gt; 0) {</span>
+<span class="fc" id="L54">			return shortMessage;</span>
 		}
-<span class="fc" id="L55">		OptionalParameter parameter = submitSm.getOptionalParameter(Tag.MESSAGE_PAYLOAD);</span>
-<span class="pc bpc" id="L56" title="1 of 2 branches missed.">		if (parameter != null) {</span>
-<span class="fc" id="L57">			return parameter.getValue();</span>
+<span class="fc" id="L56">		OptionalParameter parameter = submitSm.getOptionalParameter(Tag.MESSAGE_PAYLOAD);</span>
+<span class="pc bpc" id="L57" title="1 of 2 branches missed.">		if (parameter != null) {</span>
+<span class="fc" id="L58">			return parameter.getValue();</span>
 		}
-<span class="nc" id="L59">		return null;</span>
+<span class="nc" id="L60">		return null;</span>
 	}
 
 	private static Charset getCharset(Alphabet alphabet) {
 		// @formatter:off
-<span class="pc bpc" id="L64" title="2 of 5 branches missed.">		switch (alphabet) {</span>
-<span class="fc" id="L65">			case ALPHA_DEFAULT:						return CharsetUtil.CHARSET_GSM7;</span>
-<span class="fc" id="L66">			case ALPHA_8_BIT:						return CharsetUtil.CHARSET_GSM8;</span>
-<span class="fc" id="L67">			case ALPHA_UCS2:						return CharsetUtil.CHARSET_UCS_2;</span>
-<span class="nc" id="L68">			case ALPHA_LATIN1:						return CharsetUtil.CHARSET_ISO_8859_1;</span>
+<span class="pc bpc" id="L65" title="2 of 5 branches missed.">		switch (alphabet) {</span>
+<span class="fc" id="L66">			case ALPHA_DEFAULT:						return CharsetUtil.CHARSET_GSM7;</span>
+<span class="fc" id="L67">			case ALPHA_8_BIT:						return CharsetUtil.CHARSET_GSM8;</span>
+<span class="fc" id="L68">			case ALPHA_UCS2:						return CharsetUtil.CHARSET_UCS_2;</span>
+<span class="nc" id="L69">			case ALPHA_LATIN1:						return CharsetUtil.CHARSET_ISO_8859_1;</span>
 //			case ALPHA_IA5:							return CharsetUtil.;
 //			case ALPHA_CYRILLIC:					return CharsetUtil.;
 //			case ALPHA_ISO_2022_JP_MUSIC_CODES:		return CharsetUtil.;
@@ -75,7 +76,7 @@ public final class MessageDecoder {
 //			case ALPHA_LATIN_HEBREW:				return CharsetUtil.;
 //			case ALPHA_PICTOGRAM_ENCODING:			return CharsetUtil.;
 			default:
-<span class="nc" id="L78">				throw new IllegalStateException(&quot;The alphabet &quot; + alphabet.name() + &quot; can't be decoded because no charset implementation can handle it&quot;);</span>
+<span class="nc" id="L79">				throw new IllegalStateException(&quot;The alphabet &quot; + alphabet.name() + &quot; can't be decoded because no charset implementation can handle it&quot;);</span>
 		}
 		// @formatter:on
 	}

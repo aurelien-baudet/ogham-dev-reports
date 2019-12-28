@@ -21,6 +21,7 @@ import fr.sii.ogham.core.resource.resolver.ResourceResolver;
  *            The type of the helped instance. This is needed to have the right
  *            return type for fluent chaining
  */
+@SuppressWarnings(&quot;squid:S00119&quot;)
 public class ResourceResolutionBuilderHelper&lt;FLUENT extends ResourceResolutionBuilder&lt;FLUENT&gt;&gt; implements ResourceResolutionBuilder&lt;FLUENT&gt; {
 	private ClassPathResolutionBuilder&lt;FLUENT&gt; classPath;
 	private FileResolutionBuilder&lt;FLUENT&gt; file;
@@ -43,40 +44,40 @@ public class ResourceResolutionBuilderHelper&lt;FLUENT extends ResourceResolutio
 	 *            the configuration for property resolution
 	 */
 	public ResourceResolutionBuilderHelper(FLUENT fluent, EnvironmentBuilder&lt;?&gt; environmentBuilder) {
-<span class="fc" id="L46">		super();</span>
-<span class="fc" id="L47">		this.fluent = fluent;</span>
-<span class="fc" id="L48">		this.environmentBuilder = environmentBuilder;</span>
-<span class="fc" id="L49">		customResolvers = new ArrayList&lt;&gt;();</span>
-<span class="fc" id="L50">	}</span>
+<span class="fc" id="L47">		super();</span>
+<span class="fc" id="L48">		this.fluent = fluent;</span>
+<span class="fc" id="L49">		this.environmentBuilder = environmentBuilder;</span>
+<span class="fc" id="L50">		customResolvers = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L51">	}</span>
 
 	@Override
 	public ClassPathResolutionBuilder&lt;FLUENT&gt; classpath() {
-<span class="fc bfc" id="L54" title="All 2 branches covered.">		if (classPath == null) {</span>
-<span class="fc" id="L55">			classPath = new ClassPathResolutionBuilder&lt;&gt;(fluent, environmentBuilder);</span>
+<span class="fc bfc" id="L55" title="All 2 branches covered.">		if (classPath == null) {</span>
+<span class="fc" id="L56">			classPath = new ClassPathResolutionBuilder&lt;&gt;(fluent, environmentBuilder);</span>
 		}
-<span class="fc" id="L57">		return classPath;</span>
+<span class="fc" id="L58">		return classPath;</span>
 	}
 
 	@Override
 	public FileResolutionBuilder&lt;FLUENT&gt; file() {
-<span class="fc bfc" id="L62" title="All 2 branches covered.">		if (file == null) {</span>
-<span class="fc" id="L63">			file = new FileResolutionBuilder&lt;&gt;(fluent, environmentBuilder);</span>
+<span class="fc bfc" id="L63" title="All 2 branches covered.">		if (file == null) {</span>
+<span class="fc" id="L64">			file = new FileResolutionBuilder&lt;&gt;(fluent, environmentBuilder);</span>
 		}
-<span class="fc" id="L65">		return file;</span>
+<span class="fc" id="L66">		return file;</span>
 	}
 
 	@Override
 	public StringResolutionBuilder&lt;FLUENT&gt; string() {
-<span class="fc bfc" id="L70" title="All 2 branches covered.">		if (string == null) {</span>
-<span class="fc" id="L71">			string = new StringResolutionBuilder&lt;&gt;(fluent);</span>
+<span class="fc bfc" id="L71" title="All 2 branches covered.">		if (string == null) {</span>
+<span class="fc" id="L72">			string = new StringResolutionBuilder&lt;&gt;(fluent);</span>
 		}
-<span class="fc" id="L73">		return string;</span>
+<span class="fc" id="L74">		return string;</span>
 	}
 
 	@Override
 	public FLUENT resolver(ResourceResolver resolver) {
-<span class="nc" id="L78">		customResolvers.add(resolver);</span>
-<span class="nc" id="L79">		return fluent;</span>
+<span class="nc" id="L79">		customResolvers.add(resolver);</span>
+<span class="nc" id="L80">		return fluent;</span>
 	}
 
 	/**
@@ -85,11 +86,11 @@ public class ResourceResolutionBuilderHelper&lt;FLUENT extends ResourceResolutio
 	 * @return map of lookups indexed by lookup type.
 	 */
 	public Map&lt;String, List&lt;String&gt;&gt; getAllLookups() {
-<span class="fc" id="L88">		Map&lt;String, List&lt;String&gt;&gt; all = new HashMap&lt;&gt;();</span>
-<span class="fc" id="L89">		all.put(&quot;string&quot;, string.getLookups());</span>
-<span class="fc" id="L90">		all.put(&quot;file&quot;, file.getLookups());</span>
-<span class="fc" id="L91">		all.put(&quot;classpath&quot;, classPath.getLookups());</span>
-<span class="fc" id="L92">		return all;</span>
+<span class="fc" id="L89">		Map&lt;String, List&lt;String&gt;&gt; all = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L90">		all.put(&quot;string&quot;, string.getLookups());</span>
+<span class="fc" id="L91">		all.put(&quot;file&quot;, file.getLookups());</span>
+<span class="fc" id="L92">		all.put(&quot;classpath&quot;, classPath.getLookups());</span>
+<span class="fc" id="L93">		return all;</span>
 	}
 
 	/**
@@ -108,24 +109,24 @@ public class ResourceResolutionBuilderHelper&lt;FLUENT extends ResourceResolutio
 	 * @return the list of resource resolvers
 	 */
 	public List&lt;ResourceResolver&gt; buildResolvers() {
-<span class="fc" id="L111">		List&lt;ResourceResolver&gt; resolvers = new ArrayList&lt;&gt;();</span>
-<span class="fc" id="L112">		resolvers.addAll(customResolvers);</span>
+<span class="fc" id="L112">		List&lt;ResourceResolver&gt; resolvers = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L113">		resolvers.addAll(customResolvers);</span>
 		// ensure that default lookup is always the last registered
-<span class="fc" id="L114">		List&lt;ResolverHelper&gt; helpers = new ArrayList&lt;&gt;();</span>
-<span class="pc bpc" id="L115" title="1 of 2 branches missed.">		if (classPath != null) {</span>
-<span class="fc" id="L116">			helpers.add(new ResolverHelper(classPath.getLookups(), classPath));</span>
+<span class="fc" id="L115">		List&lt;ResolverHelper&gt; helpers = new ArrayList&lt;&gt;();</span>
+<span class="pc bpc" id="L116" title="1 of 2 branches missed.">		if (classPath != null) {</span>
+<span class="fc" id="L117">			helpers.add(new ResolverHelper(classPath.getLookups(), classPath));</span>
 		}
-<span class="pc bpc" id="L118" title="1 of 2 branches missed.">		if (file != null) {</span>
-<span class="fc" id="L119">			helpers.add(new ResolverHelper(file.getLookups(), file));</span>
+<span class="pc bpc" id="L119" title="1 of 2 branches missed.">		if (file != null) {</span>
+<span class="fc" id="L120">			helpers.add(new ResolverHelper(file.getLookups(), file));</span>
 		}
-<span class="pc bpc" id="L121" title="1 of 2 branches missed.">		if (string != null) {</span>
-<span class="fc" id="L122">			helpers.add(new ResolverHelper(string.getLookups(), string));</span>
+<span class="pc bpc" id="L122" title="1 of 2 branches missed.">		if (string != null) {</span>
+<span class="fc" id="L123">			helpers.add(new ResolverHelper(string.getLookups(), string));</span>
 		}
-<span class="fc" id="L124">		Collections.sort(helpers, new PrefixComparator());</span>
-<span class="fc bfc" id="L125" title="All 2 branches covered.">		for (ResolverHelper helper : helpers) {</span>
-<span class="fc" id="L126">			helper.register(resolvers);</span>
-<span class="fc" id="L127">		}</span>
-<span class="fc" id="L128">		return resolvers;</span>
+<span class="fc" id="L125">		Collections.sort(helpers, new PrefixComparator());</span>
+<span class="fc bfc" id="L126" title="All 2 branches covered.">		for (ResolverHelper helper : helpers) {</span>
+<span class="fc" id="L127">			helper.register(resolvers);</span>
+<span class="fc" id="L128">		}</span>
+<span class="fc" id="L129">		return resolvers;</span>
 	}
 
 	/**
@@ -138,21 +139,21 @@ public class ResourceResolutionBuilderHelper&lt;FLUENT extends ResourceResolutio
 	private static class PrefixComparator implements Comparator&lt;ResolverHelper&gt; {
 		@Override
 		public int compare(ResolverHelper o1, ResolverHelper o2) {
-<span class="fc" id="L141">			StringBuilder concat1 = new StringBuilder();</span>
-<span class="fc bfc" id="L142" title="All 2 branches covered.">			for (String prefix : o1.getPrefixes()) {</span>
-<span class="pc bpc" id="L143" title="1 of 2 branches missed.">				if (prefix.isEmpty()) {</span>
-<span class="nc" id="L144">					return 1;</span>
+<span class="fc" id="L142">			StringBuilder concat1 = new StringBuilder();</span>
+<span class="fc bfc" id="L143" title="All 2 branches covered.">			for (String prefix : o1.getPrefixes()) {</span>
+<span class="pc bpc" id="L144" title="1 of 2 branches missed.">				if (prefix.isEmpty()) {</span>
+<span class="nc" id="L145">					return 1;</span>
 				}
-<span class="fc" id="L146">				concat1.append(prefix);</span>
-<span class="fc" id="L147">			}</span>
-<span class="fc" id="L148">			StringBuilder concat2 = new StringBuilder();</span>
-<span class="fc bfc" id="L149" title="All 2 branches covered.">			for (String prefix : o2.getPrefixes()) {</span>
-<span class="fc bfc" id="L150" title="All 2 branches covered.">				if (prefix.isEmpty()) {</span>
-<span class="fc" id="L151">					return -1;</span>
+<span class="fc" id="L147">				concat1.append(prefix);</span>
+<span class="fc" id="L148">			}</span>
+<span class="fc" id="L149">			StringBuilder concat2 = new StringBuilder();</span>
+<span class="fc bfc" id="L150" title="All 2 branches covered.">			for (String prefix : o2.getPrefixes()) {</span>
+<span class="fc bfc" id="L151" title="All 2 branches covered.">				if (prefix.isEmpty()) {</span>
+<span class="fc" id="L152">					return -1;</span>
 				}
-<span class="fc" id="L153">				concat2.append(prefix);</span>
-<span class="fc" id="L154">			}</span>
-<span class="fc" id="L155">			return concat1.toString().compareTo(concat2.toString());</span>
+<span class="fc" id="L154">				concat2.append(prefix);</span>
+<span class="fc" id="L155">			}</span>
+<span class="fc" id="L156">			return concat1.toString().compareTo(concat2.toString());</span>
 		}
 
 	}
@@ -162,17 +163,17 @@ public class ResourceResolutionBuilderHelper&lt;FLUENT extends ResourceResolutio
 		private final Builder&lt;ResourceResolver&gt; builder;
 
 		public ResolverHelper(List&lt;String&gt; prefixes, Builder&lt;ResourceResolver&gt; builder) {
-<span class="fc" id="L165">			super();</span>
-<span class="fc" id="L166">			this.prefixes = prefixes;</span>
-<span class="fc" id="L167">			this.builder = builder;</span>
-<span class="fc" id="L168">		}</span>
+<span class="fc" id="L166">			super();</span>
+<span class="fc" id="L167">			this.prefixes = prefixes;</span>
+<span class="fc" id="L168">			this.builder = builder;</span>
+<span class="fc" id="L169">		}</span>
 
 		public void register(List&lt;ResourceResolver&gt; resolvers) {
-<span class="fc" id="L171">			resolvers.add(builder.build());</span>
-<span class="fc" id="L172">		}</span>
+<span class="fc" id="L172">			resolvers.add(builder.build());</span>
+<span class="fc" id="L173">		}</span>
 
 		public List&lt;String&gt; getPrefixes() {
-<span class="fc" id="L175">			return prefixes;</span>
+<span class="fc" id="L176">			return prefixes;</span>
 		}
 	}
 }

@@ -123,7 +123,7 @@ public final class SendGridV4Sender extends AbstractSpecializedSender&lt;Email&g
 <span class="nc" id="L123">		return interceptor.intercept(sendGridEmail, source);</span>
 	}
 
-	private Set&lt;String&gt; validate(final Email message) {
+	private static Set&lt;String&gt; validate(final Email message) {
 <span class="fc" id="L127">		final Set&lt;String&gt; violations = new HashSet&lt;&gt;();</span>
 
 <span class="pc bpc" id="L129" title="1 of 2 branches missed.">		if (message.getContent() == null) {</span>
@@ -175,18 +175,18 @@ public final class SendGridV4Sender extends AbstractSpecializedSender&lt;Email&g
 <span class="fc" id="L175">		return personalization;</span>
 	}
 
-	private void addRecipient(Personalization personalization, Recipient recipient) {
+	private static void addRecipient(Personalization personalization, Recipient recipient) {
 <span class="fc" id="L179">		final EmailAddress address = recipient.getAddress();</span>
 <span class="pc bpc" id="L180" title="3 of 4 branches missed.">		switch (recipient.getType()) {</span>
-		case TO:
-<span class="fc" id="L182">			personalization.addTo(new com.sendgrid.helpers.mail.objects.Email(address.getAddress(), address.getPersonal()));</span>
-<span class="fc" id="L183">			break;</span>
-		case CC:
-<span class="nc" id="L185">			personalization.addCc(new com.sendgrid.helpers.mail.objects.Email(address.getAddress(), address.getPersonal()));</span>
-<span class="nc" id="L186">			break;</span>
-		case BCC:
-<span class="nc" id="L188">			personalization.addBcc(new com.sendgrid.helpers.mail.objects.Email(address.getAddress(), address.getPersonal()));</span>
-			break;
+			case TO:
+<span class="fc" id="L182">				personalization.addTo(new com.sendgrid.helpers.mail.objects.Email(address.getAddress(), address.getPersonal()));</span>
+<span class="fc" id="L183">				break;</span>
+			case CC:
+<span class="nc" id="L185">				personalization.addCc(new com.sendgrid.helpers.mail.objects.Email(address.getAddress(), address.getPersonal()));</span>
+<span class="nc" id="L186">				break;</span>
+			case BCC:
+<span class="nc" id="L188">				personalization.addBcc(new com.sendgrid.helpers.mail.objects.Email(address.getAddress(), address.getPersonal()));</span>
+				break;
 		}
 <span class="fc" id="L191">	}</span>
 

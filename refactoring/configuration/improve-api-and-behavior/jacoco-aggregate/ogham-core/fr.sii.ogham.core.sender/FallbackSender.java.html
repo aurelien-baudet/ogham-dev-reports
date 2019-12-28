@@ -52,18 +52,19 @@ public class FallbackSender implements MessageSender {
 <span class="nc" id="L52">	}</span>
 
 	@Override
+	@SuppressWarnings(&quot;squid:S2221&quot;)
 	public void send(Message message) throws MessageException {
-<span class="nc bnc" id="L56" title="All 2 branches missed.">		for (MessageSender sender : senders) {</span>
+<span class="nc bnc" id="L57" title="All 2 branches missed.">		for (MessageSender sender : senders) {</span>
 			try {
-<span class="nc" id="L58">				LOG.debug(&quot;Try to send message {} using sender {}&quot;, summarize(message), sender);</span>
-<span class="nc" id="L59">				sender.send(message);</span>
-<span class="nc" id="L60">				LOG.debug(&quot;Message {} sent using sender {}&quot;, summarize(message), sender);</span>
-<span class="nc" id="L61">				return;</span>
-<span class="nc" id="L62">			} catch (Exception e) {</span>
-<span class="nc" id="L63">				LOG.debug(&quot;Message {} couldn't be sent using sender {}. Cause: {}&quot;, summarize(message), sender, e);</span>
+<span class="nc" id="L59">				LOG.debug(&quot;Try to send message {} using sender {}&quot;, summarize(message), sender);</span>
+<span class="nc" id="L60">				sender.send(message);</span>
+<span class="nc" id="L61">				LOG.debug(&quot;Message {} sent using sender {}&quot;, summarize(message), sender);</span>
+<span class="nc" id="L62">				return;</span>
+<span class="nc" id="L63">			} catch (Exception e) {</span>
+<span class="nc" id="L64">				LOG.debug(&quot;Message {} couldn't be sent using sender {}. Cause: {}&quot;, summarize(message), sender, e);</span>
 			}
-<span class="nc" id="L65">		}</span>
-<span class="nc" id="L66">		throw new MessageException(&quot;No sender could handle the message&quot;, message);</span>
+<span class="nc" id="L66">		}</span>
+<span class="nc" id="L67">		throw new MessageException(&quot;No sender could handle the message&quot;, message);</span>
 	}
 
 	/**
@@ -74,7 +75,7 @@ public class FallbackSender implements MessageSender {
 	 *            the sender to register
 	 */
 	public void addSender(MessageSender sender) {
-<span class="nc" id="L77">		senders.add(sender);</span>
-<span class="nc" id="L78">	}</span>
+<span class="nc" id="L78">		senders.add(sender);</span>
+<span class="nc" id="L79">	}</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

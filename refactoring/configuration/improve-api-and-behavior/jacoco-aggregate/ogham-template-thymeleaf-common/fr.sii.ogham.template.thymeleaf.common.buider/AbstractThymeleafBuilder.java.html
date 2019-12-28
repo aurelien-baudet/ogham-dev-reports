@@ -35,9 +35,10 @@ import fr.sii.ogham.template.thymeleaf.common.adapter.StringResolverAdapter;
 import fr.sii.ogham.template.thymeleaf.common.adapter.TemplateResolverAdapter;
 import fr.sii.ogham.template.thymeleaf.common.configure.AbstractDefaultThymeleafEmailConfigurer;
 
+@SuppressWarnings(&quot;squid:S00119&quot;)
 public abstract class AbstractThymeleafBuilder&lt;MYSELF extends AbstractThymeleafBuilder&lt;MYSELF, P, E&gt;, P, E extends ThymeleafEngineConfigBuilder&lt;MYSELF&gt;&gt; extends AbstractParent&lt;P&gt;
 		implements DetectorBuilder&lt;MYSELF&gt;, ResourceResolutionBuilder&lt;MYSELF&gt;, Builder&lt;TemplateParser&gt; {
-<span class="fc" id="L40">	private static final Logger LOG = LoggerFactory.getLogger(AbstractThymeleafBuilder.class);</span>
+<span class="fc" id="L41">	private static final Logger LOG = LoggerFactory.getLogger(AbstractThymeleafBuilder.class);</span>
 
 	protected final MYSELF myself;
 	protected EnvironmentBuilder&lt;MYSELF&gt; environmentBuilder;
@@ -49,22 +50,22 @@ public abstract class AbstractThymeleafBuilder&lt;MYSELF extends AbstractThymele
 	protected final List&lt;TemplateResolverAdapter&gt; customAdapters;
 
 	protected AbstractThymeleafBuilder(Class&lt;?&gt; selfType) {
-<span class="fc" id="L52">		this(selfType, null, null);</span>
-<span class="fc" id="L53">	}</span>
+<span class="fc" id="L53">		this(selfType, null, null);</span>
+<span class="fc" id="L54">	}</span>
 
 	@SuppressWarnings(&quot;unchecked&quot;)
 	protected AbstractThymeleafBuilder(Class&lt;?&gt; selfType, P parent, EnvironmentBuilder&lt;?&gt; environmentBuilder) {
-<span class="fc" id="L57">		super(parent);</span>
-<span class="fc" id="L58">		myself = (MYSELF) selfType.cast(this);</span>
-<span class="fc bfc" id="L59" title="All 2 branches covered.">		if (environmentBuilder != null) {</span>
-<span class="fc" id="L60">			environment(environmentBuilder);</span>
+<span class="fc" id="L58">		super(parent);</span>
+<span class="fc" id="L59">		myself = (MYSELF) selfType.cast(this);</span>
+<span class="fc bfc" id="L60" title="All 2 branches covered.">		if (environmentBuilder != null) {</span>
+<span class="fc" id="L61">			environment(environmentBuilder);</span>
 		}
-<span class="fc" id="L62">		customAdapters = new ArrayList&lt;&gt;();</span>
-<span class="fc" id="L63">	}</span>
+<span class="fc" id="L63">		customAdapters = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L64">	}</span>
 
 	protected AbstractThymeleafBuilder(P parent, EnvironmentBuilder&lt;?&gt; environmentBuilder) {
-<span class="nc" id="L66">		this(AbstractThymeleafBuilder.class, parent, environmentBuilder);</span>
-<span class="nc" id="L67">	}</span>
+<span class="nc" id="L67">		this(AbstractThymeleafBuilder.class, parent, environmentBuilder);</span>
+<span class="nc" id="L68">	}</span>
 
 	/**
 	 * Configures environment for the builder (and sub-builders). Environment
@@ -111,10 +112,10 @@ public abstract class AbstractThymeleafBuilder&lt;MYSELF extends AbstractThymele
 	 * @return the builder to configure properties handling
 	 */
 	public EnvironmentBuilder&lt;MYSELF&gt; environment() {
-<span class="pc bpc" id="L114" title="1 of 2 branches missed.">		if (environmentBuilder == null) {</span>
-<span class="fc" id="L115">			environmentBuilder = new SimpleEnvironmentBuilder&lt;&gt;(myself);</span>
+<span class="pc bpc" id="L115" title="1 of 2 branches missed.">		if (environmentBuilder == null) {</span>
+<span class="fc" id="L116">			environmentBuilder = new SimpleEnvironmentBuilder&lt;&gt;(myself);</span>
 		}
-<span class="fc" id="L117">		return environmentBuilder;</span>
+<span class="fc" id="L118">		return environmentBuilder;</span>
 	}
 
 	/**
@@ -137,8 +138,8 @@ public abstract class AbstractThymeleafBuilder&lt;MYSELF extends AbstractThymele
 	 * @return this instance for fluent chaining
 	 */
 	public MYSELF environment(EnvironmentBuilder&lt;?&gt; builder) {
-<span class="fc" id="L140">		environmentBuilder = new EnvironmentBuilderDelegate&lt;&gt;(myself, builder);</span>
-<span class="fc" id="L141">		return myself;</span>
+<span class="fc" id="L141">		environmentBuilder = new EnvironmentBuilderDelegate&lt;&gt;(myself, builder);</span>
+<span class="fc" id="L142">		return myself;</span>
 	}
 
 	/**
@@ -147,10 +148,10 @@ public abstract class AbstractThymeleafBuilder&lt;MYSELF extends AbstractThymele
 	 * @return the fluent builder for Thymeleaf engine
 	 */
 	public E engine() {
-<span class="nc bnc" id="L150" title="All 2 branches missed.">		if (engineBuilder == null) {</span>
-<span class="nc" id="L151">			engineBuilder = getThymeleafEngineConfigBuilder();</span>
+<span class="nc bnc" id="L151" title="All 2 branches missed.">		if (engineBuilder == null) {</span>
+<span class="nc" id="L152">			engineBuilder = getThymeleafEngineConfigBuilder();</span>
 		}
-<span class="nc" id="L153">		return engineBuilder;</span>
+<span class="nc" id="L154">		return engineBuilder;</span>
 	}
 
 	/**
@@ -166,8 +167,8 @@ public abstract class AbstractThymeleafBuilder&lt;MYSELF extends AbstractThymele
 	 * @return this instance for fluent chaining
 	 */
 	public MYSELF engine(TemplateEngine engine) {
-<span class="fc" id="L169">		this.engine = engine;</span>
-<span class="fc" id="L170">		return myself;</span>
+<span class="fc" id="L170">		this.engine = engine;</span>
+<span class="fc" id="L171">		return myself;</span>
 	}
 
 	/**
@@ -187,38 +188,38 @@ public abstract class AbstractThymeleafBuilder&lt;MYSELF extends AbstractThymele
 	 * @return this instance for fluent chaining
 	 */
 	public MYSELF contextConverter(ThymeleafContextConverter converter) {
-<span class="fc" id="L190">		this.contextConverter = converter;</span>
-<span class="fc" id="L191">		return myself;</span>
+<span class="fc" id="L191">		this.contextConverter = converter;</span>
+<span class="fc" id="L192">		return myself;</span>
 	}
 
 	@Override
 	public MYSELF detector(TemplateEngineDetector detector) {
-<span class="nc" id="L196">		this.detector = detector;</span>
-<span class="nc" id="L197">		return myself;</span>
+<span class="nc" id="L197">		this.detector = detector;</span>
+<span class="nc" id="L198">		return myself;</span>
 	}
 
 	@Override
 	public ClassPathResolutionBuilder&lt;MYSELF&gt; classpath() {
-<span class="fc" id="L202">		initResolutionBuilder();</span>
-<span class="fc" id="L203">		return resourceResolutionBuilderHelper.classpath();</span>
+<span class="fc" id="L203">		initResolutionBuilder();</span>
+<span class="fc" id="L204">		return resourceResolutionBuilderHelper.classpath();</span>
 	}
 
 	@Override
 	public FileResolutionBuilder&lt;MYSELF&gt; file() {
-<span class="fc" id="L208">		initResolutionBuilder();</span>
-<span class="fc" id="L209">		return resourceResolutionBuilderHelper.file();</span>
+<span class="fc" id="L209">		initResolutionBuilder();</span>
+<span class="fc" id="L210">		return resourceResolutionBuilderHelper.file();</span>
 	}
 
 	@Override
 	public StringResolutionBuilder&lt;MYSELF&gt; string() {
-<span class="fc" id="L214">		initResolutionBuilder();</span>
-<span class="fc" id="L215">		return resourceResolutionBuilderHelper.string();</span>
+<span class="fc" id="L215">		initResolutionBuilder();</span>
+<span class="fc" id="L216">		return resourceResolutionBuilderHelper.string();</span>
 	}
 
 	@Override
 	public MYSELF resolver(ResourceResolver resolver) {
-<span class="nc" id="L220">		initResolutionBuilder();</span>
-<span class="nc" id="L221">		return resourceResolutionBuilderHelper.resolver(resolver);</span>
+<span class="nc" id="L221">		initResolutionBuilder();</span>
+<span class="nc" id="L222">		return resourceResolutionBuilderHelper.resolver(resolver);</span>
 	}
 
 	/**
@@ -238,19 +239,19 @@ public abstract class AbstractThymeleafBuilder&lt;MYSELF extends AbstractThymele
 	 * @return this instance for fluent chaining
 	 */
 	public MYSELF resolverAdapter(TemplateResolverAdapter adapter) {
-<span class="nc" id="L241">		customAdapters.add(adapter);</span>
-<span class="nc" id="L242">		return myself;</span>
+<span class="nc" id="L242">		customAdapters.add(adapter);</span>
+<span class="nc" id="L243">		return myself;</span>
 	}
 
 	@Override
 	public TemplateParser build() {
-<span class="fc" id="L247">		LOG.info(&quot;Thymeleaf parser is registered&quot;);</span>
-<span class="fc" id="L248">		return new ThymeleafParser(buildEngine(), buildResolver(), buildContext());</span>
+<span class="fc" id="L248">		LOG.info(&quot;Thymeleaf parser is registered&quot;);</span>
+<span class="fc" id="L249">		return new ThymeleafParser(buildEngine(), buildResolver(), buildContext());</span>
 	}
 
 	@Override
 	public TemplateEngineDetector buildDetector() {
-<span class="pc bpc" id="L253" title="1 of 2 branches missed.">		return detector == null ? createTemplateDetector() : detector;</span>
+<span class="pc bpc" id="L254" title="1 of 2 branches missed.">		return detector == null ? createTemplateDetector() : detector;</span>
 	}
 
 	/**
@@ -259,23 +260,23 @@ public abstract class AbstractThymeleafBuilder&lt;MYSELF extends AbstractThymele
 	 * @return the resource resolver
 	 */
 	public FirstSupportingResourceResolver buildResolver() {
-<span class="fc" id="L262">		return new FirstSupportingResourceResolver(buildResolvers());</span>
+<span class="fc" id="L263">		return new FirstSupportingResourceResolver(buildResolvers());</span>
 	}
 
 	protected TemplateEngine buildEngine() {
 		TemplateEngine builtEngine;
-<span class="fc bfc" id="L267" title="All 2 branches covered.">		if (engine != null) {</span>
-<span class="fc" id="L268">			LOG.debug(&quot;Using custom Thymeleaf engine&quot;);</span>
-<span class="fc" id="L269">			builtEngine = engine;</span>
-<span class="pc bpc" id="L270" title="1 of 2 branches missed.">		} else if (engineBuilder != null) {</span>
-<span class="nc" id="L271">			LOG.debug(&quot;Using custom Thymeleaf engine built using engine()&quot;);</span>
-<span class="nc" id="L272">			builtEngine = engineBuilder.build();</span>
+<span class="fc bfc" id="L268" title="All 2 branches covered.">		if (engine != null) {</span>
+<span class="fc" id="L269">			LOG.debug(&quot;Using custom Thymeleaf engine&quot;);</span>
+<span class="fc" id="L270">			builtEngine = engine;</span>
+<span class="pc bpc" id="L271" title="1 of 2 branches missed.">		} else if (engineBuilder != null) {</span>
+<span class="nc" id="L272">			LOG.debug(&quot;Using custom Thymeleaf engine built using engine()&quot;);</span>
+<span class="nc" id="L273">			builtEngine = engineBuilder.build();</span>
 		} else {
-<span class="fc" id="L274">			LOG.debug(&quot;Using default Thymeleaf engine&quot;);</span>
-<span class="fc" id="L275">			builtEngine = new TemplateEngine();</span>
+<span class="fc" id="L275">			LOG.debug(&quot;Using default Thymeleaf engine&quot;);</span>
+<span class="fc" id="L276">			builtEngine = new TemplateEngine();</span>
 		}
-<span class="fc" id="L277">		builtEngine.addTemplateResolver(buildTemplateResolver(builtEngine));</span>
-<span class="fc" id="L278">		return builtEngine;</span>
+<span class="fc" id="L278">		builtEngine.addTemplateResolver(buildTemplateResolver(builtEngine));</span>
+<span class="fc" id="L279">		return builtEngine;</span>
 	}
 
 	protected abstract TemplateEngineDetector createTemplateDetector();
@@ -285,29 +286,29 @@ public abstract class AbstractThymeleafBuilder&lt;MYSELF extends AbstractThymele
 	protected abstract E getThymeleafEngineConfigBuilder();
 
 	protected ThymeleafContextConverter buildContext() {
-<span class="fc bfc" id="L288" title="All 2 branches covered.">		return contextConverter == null ? new SimpleThymeleafContextConverter() : contextConverter;</span>
+<span class="fc bfc" id="L289" title="All 2 branches covered.">		return contextConverter == null ? new SimpleThymeleafContextConverter() : contextConverter;</span>
 	}
 
 	private List&lt;ResourceResolver&gt; buildResolvers() {
-<span class="fc" id="L292">		return resourceResolutionBuilderHelper.buildResolvers();</span>
+<span class="fc" id="L293">		return resourceResolutionBuilderHelper.buildResolvers();</span>
 	}
 
 	protected FirstSupportingResolverAdapter buildAdapters() {
-<span class="fc" id="L296">		FirstSupportingResolverAdapter adapter = new FirstSupportingResolverAdapter();</span>
-<span class="pc bpc" id="L297" title="1 of 2 branches missed.">		for (TemplateResolverAdapter custom : customAdapters) {</span>
-<span class="nc" id="L298">			adapter.addAdapter(custom);</span>
-<span class="nc" id="L299">		}</span>
-<span class="fc" id="L300">		adapter.addAdapter(new ClassPathResolverAdapter());</span>
-<span class="fc" id="L301">		adapter.addAdapter(new FileResolverAdapter());</span>
-<span class="fc" id="L302">		adapter.addAdapter(new StringResolverAdapter());</span>
-<span class="fc" id="L303">		adapter.setOptions(new TemplateResolverOptions());</span>
-<span class="fc" id="L304">		return adapter;</span>
+<span class="fc" id="L297">		FirstSupportingResolverAdapter adapter = new FirstSupportingResolverAdapter();</span>
+<span class="pc bpc" id="L298" title="1 of 2 branches missed.">		for (TemplateResolverAdapter custom : customAdapters) {</span>
+<span class="nc" id="L299">			adapter.addAdapter(custom);</span>
+<span class="nc" id="L300">		}</span>
+<span class="fc" id="L301">		adapter.addAdapter(new ClassPathResolverAdapter());</span>
+<span class="fc" id="L302">		adapter.addAdapter(new FileResolverAdapter());</span>
+<span class="fc" id="L303">		adapter.addAdapter(new StringResolverAdapter());</span>
+<span class="fc" id="L304">		adapter.setOptions(new TemplateResolverOptions());</span>
+<span class="fc" id="L305">		return adapter;</span>
 	}
 
 	private void initResolutionBuilder() {
-<span class="fc bfc" id="L308" title="All 2 branches covered.">		if (resourceResolutionBuilderHelper == null) {</span>
-<span class="fc" id="L309">			resourceResolutionBuilderHelper = new ResourceResolutionBuilderHelper&lt;&gt;(myself, environmentBuilder);</span>
+<span class="fc bfc" id="L309" title="All 2 branches covered.">		if (resourceResolutionBuilderHelper == null) {</span>
+<span class="fc" id="L310">			resourceResolutionBuilderHelper = new ResourceResolutionBuilderHelper&lt;&gt;(myself, environmentBuilder);</span>
 		}
-<span class="fc" id="L311">	}</span>
+<span class="fc" id="L312">	}</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

@@ -35,31 +35,32 @@ public class StreamResourceHandler implements JavaMailAttachmentResourceHandler 
 <span class="fc" id="L35">	}</span>
 
 	@Override
+	@SuppressWarnings(&quot;squid:S1192&quot;)
 	public void setData(BodyPart part, NamedResource resource, Attachment attachment) throws AttachmentResourceHandlerException {
-<span class="fc" id="L39">		ByteResource streamResource = (ByteResource) resource;</span>
-<span class="fc" id="L40">		try (InputStream stream = streamResource.getInputStream()) {</span>
-<span class="fc" id="L41">			InputStream s = stream;</span>
+<span class="fc" id="L40">		ByteResource streamResource = (ByteResource) resource;</span>
+<span class="fc" id="L41">		try (InputStream stream = streamResource.getInputStream()) {</span>
+<span class="fc" id="L42">			InputStream s = stream;</span>
 			// stream is read twice, if stream can't handle reset =&gt; create a
 			// stream that is able to do it
-<span class="pc bpc" id="L44" title="1 of 2 branches missed.">			if (!stream.markSupported()) {</span>
-<span class="nc" id="L45">				s = new ByteArrayInputStream(IOUtils.toByteArray(stream));</span>
+<span class="pc bpc" id="L45" title="1 of 2 branches missed.">			if (!stream.markSupported()) {</span>
+<span class="nc" id="L46">				s = new ByteArrayInputStream(IOUtils.toByteArray(stream));</span>
 			}
 			// mark to reset at the start of the stream
-<span class="fc" id="L48">			s.mark(Integer.MAX_VALUE);</span>
+<span class="fc" id="L49">			s.mark(Integer.MAX_VALUE);</span>
 			// detect the mimetype
-<span class="fc" id="L50">			String mimetype = mimetypeProvider.detect(s).toString();</span>
+<span class="fc" id="L51">			String mimetype = mimetypeProvider.detect(s).toString();</span>
 			// reset the stream
-<span class="fc" id="L52">			s.reset();</span>
+<span class="fc" id="L53">			s.reset();</span>
 			// set the content
-<span class="fc" id="L54">			part.setDataHandler(new DataHandler(new ByteArrayDataSource(s, mimetype)));</span>
-<span class="nc" id="L55">		} catch (MimeTypeDetectionException e) {</span>
-<span class="nc" id="L56">			throw new AttachmentResourceHandlerException(&quot;Failed to attach &quot; + resource.getName() + &quot;. Mime type can't be detected&quot;, attachment, e);</span>
-<span class="nc" id="L57">		} catch (MessagingException e) {</span>
-<span class="nc" id="L58">			throw new AttachmentResourceHandlerException(&quot;Failed to attach &quot; + resource.getName(), attachment, e);</span>
-<span class="nc" id="L59">		} catch (IOException e) {</span>
-<span class="nc" id="L60">			throw new AttachmentResourceHandlerException(&quot;Failed to attach &quot; + resource.getName() + &quot;. Stream can't be read&quot;, attachment, e);</span>
-<span class="fc" id="L61">		}</span>
-<span class="fc" id="L62">	}</span>
+<span class="fc" id="L55">			part.setDataHandler(new DataHandler(new ByteArrayDataSource(s, mimetype)));</span>
+<span class="nc" id="L56">		} catch (MimeTypeDetectionException e) {</span>
+<span class="nc" id="L57">			throw new AttachmentResourceHandlerException(&quot;Failed to attach &quot; + resource.getName() + &quot;. Mime type can't be detected&quot;, attachment, e);</span>
+<span class="nc" id="L58">		} catch (MessagingException e) {</span>
+<span class="nc" id="L59">			throw new AttachmentResourceHandlerException(&quot;Failed to attach &quot; + resource.getName(), attachment, e);</span>
+<span class="nc" id="L60">		} catch (IOException e) {</span>
+<span class="nc" id="L61">			throw new AttachmentResourceHandlerException(&quot;Failed to attach &quot; + resource.getName() + &quot;. Stream can't be read&quot;, attachment, e);</span>
+<span class="fc" id="L62">		}</span>
+<span class="fc" id="L63">	}</span>
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

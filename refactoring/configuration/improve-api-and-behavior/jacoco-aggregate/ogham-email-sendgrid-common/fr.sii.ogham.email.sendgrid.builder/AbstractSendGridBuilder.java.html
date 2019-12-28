@@ -26,6 +26,7 @@ import fr.sii.ogham.core.builder.mimetype.MimetypeDetectionBuilderDelegate;
 import fr.sii.ogham.core.builder.mimetype.SimpleMimetypeDetectionBuilder;
 import fr.sii.ogham.email.sendgrid.sender.SendGridSender;
 
+@SuppressWarnings(&quot;squid:S00119&quot;)
 public abstract class AbstractSendGridBuilder&lt;MYSELF extends AbstractSendGridBuilder&lt;MYSELF, EmailBuilder&gt;, EmailBuilder&gt; extends AbstractParent&lt;EmailBuilder&gt; implements Builder&lt;SendGridSender&gt; {
 	protected final MYSELF myself;
 	protected EnvironmentBuilder&lt;MYSELF&gt; environmentBuilder;
@@ -35,28 +36,28 @@ public abstract class AbstractSendGridBuilder&lt;MYSELF extends AbstractSendGrid
 	protected CloseableHttpClient httpClient;
 
 	public AbstractSendGridBuilder(Class&lt;?&gt; selfType) {
-<span class="nc" id="L38">		this(selfType, null, null, null);</span>
-<span class="nc" id="L39">	}</span>
+<span class="nc" id="L39">		this(selfType, null, null, null);</span>
+<span class="nc" id="L40">	}</span>
 
 	@SuppressWarnings(&quot;unchecked&quot;)
 	protected AbstractSendGridBuilder(Class&lt;?&gt; selfType, EmailBuilder parent, EnvironmentBuilder&lt;?&gt; environmentBuilder, MimetypeDetectionBuilder&lt;?&gt; mimetypeBuilder) {
-<span class="fc" id="L43">		super(parent);</span>
-<span class="fc" id="L44">		myself = (MYSELF) selfType.cast(this);</span>
-<span class="fc" id="L45">		apiKeyValueBuilder = new ConfigurationValueBuilderHelper&lt;&gt;(myself, String.class);</span>
-<span class="fc" id="L46">		urlValueBuilder = new ConfigurationValueBuilderHelper&lt;&gt;(myself, URL.class);</span>
-<span class="pc bpc" id="L47" title="1 of 2 branches missed.">		if (environmentBuilder != null) {</span>
-<span class="nc" id="L48">			environment(environmentBuilder);</span>
+<span class="fc" id="L44">		super(parent);</span>
+<span class="fc" id="L45">		myself = (MYSELF) selfType.cast(this);</span>
+<span class="fc" id="L46">		apiKeyValueBuilder = new ConfigurationValueBuilderHelper&lt;&gt;(myself, String.class);</span>
+<span class="fc" id="L47">		urlValueBuilder = new ConfigurationValueBuilderHelper&lt;&gt;(myself, URL.class);</span>
+<span class="pc bpc" id="L48" title="1 of 2 branches missed.">		if (environmentBuilder != null) {</span>
+<span class="nc" id="L49">			environment(environmentBuilder);</span>
 		}
-<span class="pc bpc" id="L50" title="1 of 2 branches missed.">		if (mimetypeBuilder != null) {</span>
-<span class="nc" id="L51">			mimetype(mimetypeBuilder);</span>
+<span class="pc bpc" id="L51" title="1 of 2 branches missed.">		if (mimetypeBuilder != null) {</span>
+<span class="nc" id="L52">			mimetype(mimetypeBuilder);</span>
 		}
-<span class="fc" id="L53">	}</span>
+<span class="fc" id="L54">	}</span>
 
 	public AbstractSendGridBuilder(Class&lt;?&gt; selfType, EmailBuilder parent) {
-<span class="fc" id="L56">		this(selfType, parent, null, null);</span>
-<span class="fc" id="L57">		environment();</span>
-<span class="fc" id="L58">		mimetype();</span>
-<span class="fc" id="L59">	}</span>
+<span class="fc" id="L57">		this(selfType, parent, null, null);</span>
+<span class="fc" id="L58">		environment();</span>
+<span class="fc" id="L59">		mimetype();</span>
+<span class="fc" id="L60">	}</span>
 
 	/**
 	 * Set SendGrid &lt;a href=
@@ -95,8 +96,8 @@ public abstract class AbstractSendGridBuilder&lt;MYSELF extends AbstractSendGrid
 	 * @return this instance for fluent chaining
 	 */
 	public MYSELF apiKey(String apiKey) {
-<span class="fc" id="L98">		apiKeyValueBuilder.setValue(apiKey);</span>
-<span class="fc" id="L99">		return myself;</span>
+<span class="fc" id="L99">		apiKeyValueBuilder.setValue(apiKey);</span>
+<span class="fc" id="L100">		return myself;</span>
 	}
 
 	/**
@@ -138,7 +139,7 @@ public abstract class AbstractSendGridBuilder&lt;MYSELF extends AbstractSendGrid
 	 * @return the builder to configure property keys/default value
 	 */
 	public ConfigurationValueBuilder&lt;MYSELF, String&gt; apiKey() {
-<span class="fc" id="L141">		return apiKeyValueBuilder;</span>
+<span class="fc" id="L142">		return apiKeyValueBuilder;</span>
 	}
 
 	/**
@@ -339,8 +340,8 @@ public abstract class AbstractSendGridBuilder&lt;MYSELF extends AbstractSendGrid
 	 * @return this instance for fluent chaining
 	 */
 	public MYSELF url(URL url) {
-<span class="fc" id="L342">		urlValueBuilder.setValue(url);</span>
-<span class="fc" id="L343">		return myself;</span>
+<span class="fc" id="L343">		urlValueBuilder.setValue(url);</span>
+<span class="fc" id="L344">		return myself;</span>
 	}
 
 	/**
@@ -381,9 +382,9 @@ public abstract class AbstractSendGridBuilder&lt;MYSELF extends AbstractSendGrid
 	 */
 	public MYSELF url(String url) {
 		try {
-<span class="fc" id="L384">			return url(new URL(url));</span>
-<span class="nc" id="L385">		} catch (MalformedURLException e) {</span>
-<span class="nc" id="L386">			throw new IllegalArgumentException(&quot;Invalid URL &quot; + url, e);</span>
+<span class="fc" id="L385">			return url(new URL(url));</span>
+<span class="nc" id="L386">		} catch (MalformedURLException e) {</span>
+<span class="nc" id="L387">			throw new IllegalArgumentException(&quot;Invalid URL &quot; + url, e);</span>
 		}
 	}
 
@@ -424,7 +425,7 @@ public abstract class AbstractSendGridBuilder&lt;MYSELF extends AbstractSendGrid
 	 * @return the builder to configure property keys/default value
 	 */
 	public ConfigurationValueBuilder&lt;MYSELF, URL&gt; url() {
-<span class="nc" id="L427">		return urlValueBuilder;</span>
+<span class="nc" id="L428">		return urlValueBuilder;</span>
 	}
 
 	/**
@@ -445,8 +446,8 @@ public abstract class AbstractSendGridBuilder&lt;MYSELF extends AbstractSendGrid
 	 * @return this instance for fluent chaining
 	 */
 	public MYSELF httpClient(CloseableHttpClient httpClient) {
-<span class="nc" id="L448">		this.httpClient = httpClient;</span>
-<span class="nc" id="L449">		return myself;</span>
+<span class="nc" id="L449">		this.httpClient = httpClient;</span>
+<span class="nc" id="L450">		return myself;</span>
 	}
 
 	/**
@@ -498,10 +499,10 @@ public abstract class AbstractSendGridBuilder&lt;MYSELF extends AbstractSendGrid
 	 * @return the builder to configure mimetype detection
 	 */
 	public MimetypeDetectionBuilder&lt;MYSELF&gt; mimetype() {
-<span class="fc bfc" id="L501" title="All 2 branches covered.">		if (mimetypeBuilder == null) {</span>
-<span class="fc" id="L502">			mimetypeBuilder = new SimpleMimetypeDetectionBuilder&lt;&gt;(myself, environmentBuilder);</span>
+<span class="fc bfc" id="L502" title="All 2 branches covered.">		if (mimetypeBuilder == null) {</span>
+<span class="fc" id="L503">			mimetypeBuilder = new SimpleMimetypeDetectionBuilder&lt;&gt;(myself, environmentBuilder);</span>
 		}
-<span class="fc" id="L504">		return mimetypeBuilder;</span>
+<span class="fc" id="L505">		return mimetypeBuilder;</span>
 	}
 
 	/**
@@ -523,8 +524,8 @@ public abstract class AbstractSendGridBuilder&lt;MYSELF extends AbstractSendGrid
 	 * @return this instance for fluent chaining
 	 */
 	public MYSELF mimetype(MimetypeDetectionBuilder&lt;?&gt; builder) {
-<span class="fc" id="L526">		mimetypeBuilder = new MimetypeDetectionBuilderDelegate&lt;&gt;(myself, builder);</span>
-<span class="fc" id="L527">		return myself;</span>
+<span class="fc" id="L527">		mimetypeBuilder = new MimetypeDetectionBuilderDelegate&lt;&gt;(myself, builder);</span>
+<span class="fc" id="L528">		return myself;</span>
 	}
 
 	/**
@@ -572,10 +573,10 @@ public abstract class AbstractSendGridBuilder&lt;MYSELF extends AbstractSendGrid
 	 * @return the builder to configure properties handling
 	 */
 	public EnvironmentBuilder&lt;MYSELF&gt; environment() {
-<span class="pc bpc" id="L575" title="1 of 2 branches missed.">		if (environmentBuilder == null) {</span>
-<span class="fc" id="L576">			environmentBuilder = new SimpleEnvironmentBuilder&lt;&gt;(myself);</span>
+<span class="pc bpc" id="L576" title="1 of 2 branches missed.">		if (environmentBuilder == null) {</span>
+<span class="fc" id="L577">			environmentBuilder = new SimpleEnvironmentBuilder&lt;&gt;(myself);</span>
 		}
-<span class="fc" id="L578">		return environmentBuilder;</span>
+<span class="fc" id="L579">		return environmentBuilder;</span>
 	}
 
 	/**
@@ -597,8 +598,8 @@ public abstract class AbstractSendGridBuilder&lt;MYSELF extends AbstractSendGrid
 	 * @return this instance for fluent chaining
 	 */
 	public MYSELF environment(EnvironmentBuilder&lt;?&gt; builder) {
-<span class="fc" id="L600">		environmentBuilder = new EnvironmentBuilderDelegate&lt;&gt;(myself, builder);</span>
-<span class="fc" id="L601">		return myself;</span>
+<span class="fc" id="L601">		environmentBuilder = new EnvironmentBuilderDelegate&lt;&gt;(myself, builder);</span>
+<span class="fc" id="L602">		return myself;</span>
 	}
 
 }

@@ -87,7 +87,7 @@ public final class SendGridV2Sender extends AbstractSpecializedSender&lt;Email&g
 <span class="fc" id="L87">			LOG.debug(&quot;Preparing to send email using SendGrid: {}&quot;, summarize(message));</span>
 <span class="fc" id="L88">			final SendGrid.Email sgEmail = intercept(toSendGridEmail(message), message);</span>
 
-<span class="fc" id="L90">			LOG.debug(&quot;Sending email...&quot;, summarize(message));</span>
+<span class="fc" id="L90">			LOG.debug(&quot;Sending email...\n{}&quot;, summarize(message));</span>
 <span class="fc" id="L91">			LOG.trace(&quot;SendGrid email: {}&quot;, sgEmail);</span>
 <span class="fc" id="L92">			delegate.send(sgEmail);</span>
 <span class="fc" id="L93">			LOG.debug(&quot;Email has been successfully sent&quot;);</span>
@@ -107,7 +107,7 @@ public final class SendGridV2Sender extends AbstractSpecializedSender&lt;Email&g
 <span class="nc" id="L107">		return interceptor.intercept(sendGridEmail, source);</span>
 	}
 
-	private Set&lt;String&gt; validate(final Email message) {
+	private static Set&lt;String&gt; validate(final Email message) {
 <span class="fc" id="L111">		final Set&lt;String&gt; violations = new HashSet&lt;&gt;();</span>
 
 <span class="pc bpc" id="L113" title="1 of 2 branches missed.">		if (message.getContent() == null) {</span>
@@ -162,7 +162,7 @@ public final class SendGridV2Sender extends AbstractSpecializedSender&lt;Email&g
 <span class="fc" id="L162">		return ret;</span>
 	}
 
-	private void addAttachment(final SendGrid.Email ret, final Attachment attachment) throws AttachmentReadException {
+	private static void addAttachment(final SendGrid.Email ret, final Attachment attachment) throws AttachmentReadException {
 		try {
 <span class="fc" id="L167">			ret.addAttachment(attachment.getResource().getName(), attachment.getResource().getInputStream());</span>
 <span class="pc bpc" id="L168" title="1 of 2 branches missed.">			if (attachment.getContentId() != null) {</span>

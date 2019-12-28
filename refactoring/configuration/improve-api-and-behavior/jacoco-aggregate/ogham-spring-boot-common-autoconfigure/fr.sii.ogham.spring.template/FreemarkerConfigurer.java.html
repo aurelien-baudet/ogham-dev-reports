@@ -80,7 +80,9 @@ import freemarker.template.ObjectWrapper;
  *
  */
 public class FreemarkerConfigurer extends MessagingConfigurerAdapter implements SpringMessagingConfigurer {
-<span class="fc" id="L83">	private static final Logger LOG = LoggerFactory.getLogger(FreemarkerConfigurer.class);</span>
+	private static final int SPRING_CONFIGURER_PRIORITY_OFFSET = 1000;
+
+<span class="fc" id="L85">	private static final Logger LOG = LoggerFactory.getLogger(FreemarkerConfigurer.class);</span>
 
 	private final Configuration emailConfiguration;
 	private final Configuration smsConfiguration;
@@ -93,142 +95,142 @@ public class FreemarkerConfigurer extends MessagingConfigurerAdapter implements 
 
 	public FreemarkerConfigurer(Configuration emailConfiguration, Configuration smsConfiguration, OghamCommonTemplateProperties templateProperties, OghamEmailProperties emailProperties,
 			OghamSmsProperties smsProperties, FreeMarkerProperties springProperties, OghamFreemarkerProperties oghamFreemarkerProperties, ApplicationContext applicationContext) {
-<span class="fc" id="L96">		super();</span>
-<span class="fc" id="L97">		this.emailConfiguration = emailConfiguration;</span>
-<span class="fc" id="L98">		this.smsConfiguration = smsConfiguration;</span>
-<span class="fc" id="L99">		this.templateProperties = templateProperties;</span>
-<span class="fc" id="L100">		this.emailProperties = emailProperties;</span>
-<span class="fc" id="L101">		this.smsProperties = smsProperties;</span>
-<span class="fc" id="L102">		this.springProperties = springProperties;</span>
-<span class="fc" id="L103">		this.oghamFreemarkerProperties = oghamFreemarkerProperties;</span>
-<span class="fc" id="L104">		this.applicationContext = applicationContext;</span>
-<span class="fc" id="L105">	}</span>
+<span class="fc" id="L98">		super();</span>
+<span class="fc" id="L99">		this.emailConfiguration = emailConfiguration;</span>
+<span class="fc" id="L100">		this.smsConfiguration = smsConfiguration;</span>
+<span class="fc" id="L101">		this.templateProperties = templateProperties;</span>
+<span class="fc" id="L102">		this.emailProperties = emailProperties;</span>
+<span class="fc" id="L103">		this.smsProperties = smsProperties;</span>
+<span class="fc" id="L104">		this.springProperties = springProperties;</span>
+<span class="fc" id="L105">		this.oghamFreemarkerProperties = oghamFreemarkerProperties;</span>
+<span class="fc" id="L106">		this.applicationContext = applicationContext;</span>
+<span class="fc" id="L107">	}</span>
 
 	@Override
 	public void configure(MessagingBuilder builder) {
-<span class="fc" id="L109">		LOG.debug(&quot;[{}] apply configuration&quot;, this);</span>
+<span class="fc" id="L111">		LOG.debug(&quot;[{}] apply configuration&quot;, this);</span>
 		// use same environment as parent builder
-<span class="fc" id="L111">		builder.email().template(FreemarkerEmailBuilder.class).environment(builder.environment());</span>
-<span class="fc" id="L112">		builder.sms().template(FreemarkerSmsBuilder.class).environment(builder.environment());</span>
-<span class="fc" id="L113">		super.configure(builder);</span>
-<span class="fc" id="L114">	}</span>
+<span class="fc" id="L113">		builder.email().template(FreemarkerEmailBuilder.class).environment(builder.environment());</span>
+<span class="fc" id="L114">		builder.sms().template(FreemarkerSmsBuilder.class).environment(builder.environment());</span>
+<span class="fc" id="L115">		super.configure(builder);</span>
+<span class="fc" id="L116">	}</span>
 
 	@Override
 	public void configure(EmailBuilder emailBuilder) {
-<span class="fc" id="L118">		AbstractFreemarkerBuilder&lt;?, ?&gt; builder = emailBuilder.template(FreemarkerEmailBuilder.class);</span>
-<span class="fc" id="L119">		builder.configuration(emailConfiguration, true);</span>
+<span class="fc" id="L120">		AbstractFreemarkerBuilder&lt;?, ?&gt; builder = emailBuilder.template(FreemarkerEmailBuilder.class);</span>
+<span class="fc" id="L121">		builder.mergeConfiguration(emailConfiguration);</span>
 		// specific Ogham properties explicitly take precedence over Spring
 		// properties
-<span class="fc bfc" id="L122" title="All 2 branches covered.">		if (springProperties != null) {</span>
-<span class="fc" id="L123">			applySpringConfiguration(builder);</span>
+<span class="fc bfc" id="L124" title="All 2 branches covered.">		if (springProperties != null) {</span>
+<span class="fc" id="L125">			applySpringConfiguration(builder);</span>
 		}
-<span class="pc bpc" id="L125" title="1 of 2 branches missed.">		if (emailProperties != null) {</span>
-<span class="fc" id="L126">			applyOghamConfiguration(builder, emailProperties);</span>
+<span class="pc bpc" id="L127" title="1 of 2 branches missed.">		if (emailProperties != null) {</span>
+<span class="fc" id="L128">			applyOghamConfiguration(builder, emailProperties);</span>
 		}
-<span class="pc bpc" id="L128" title="1 of 2 branches missed.">		if (oghamFreemarkerProperties.isEnableSpringBeans()) {</span>
-<span class="fc" id="L129">			registerSpringBeans(builder, emailConfiguration);</span>
+<span class="pc bpc" id="L130" title="1 of 2 branches missed.">		if (oghamFreemarkerProperties.isEnableSpringBeans()) {</span>
+<span class="fc" id="L131">			registerSpringBeans(builder, emailConfiguration);</span>
 		}
-<span class="pc bpc" id="L131" title="1 of 2 branches missed.">		if (oghamFreemarkerProperties.isEnableStaticMethodAccess()) {</span>
-<span class="fc" id="L132">			registerStatics(builder, emailConfiguration);</span>
+<span class="pc bpc" id="L133" title="1 of 2 branches missed.">		if (oghamFreemarkerProperties.isEnableStaticMethodAccess()) {</span>
+<span class="fc" id="L134">			registerStatics(builder, emailConfiguration);</span>
 		}
-<span class="fc" id="L134">	}</span>
+<span class="fc" id="L136">	}</span>
 
 	@Override
 	public void configure(SmsBuilder smsBuilder) {
-<span class="fc" id="L138">		AbstractFreemarkerBuilder&lt;?, ?&gt; builder = smsBuilder.template(FreemarkerSmsBuilder.class);</span>
-<span class="fc" id="L139">		builder.configuration(smsConfiguration, true);</span>
+<span class="fc" id="L140">		AbstractFreemarkerBuilder&lt;?, ?&gt; builder = smsBuilder.template(FreemarkerSmsBuilder.class);</span>
+<span class="fc" id="L141">		builder.mergeConfiguration(smsConfiguration);</span>
 		// specific Ogham properties explicitly take precedence over Spring
 		// properties
-<span class="fc bfc" id="L142" title="All 2 branches covered.">		if (springProperties != null) {</span>
-<span class="fc" id="L143">			applySpringConfiguration(builder);</span>
+<span class="fc bfc" id="L144" title="All 2 branches covered.">		if (springProperties != null) {</span>
+<span class="fc" id="L145">			applySpringConfiguration(builder);</span>
 		}
-<span class="pc bpc" id="L145" title="1 of 2 branches missed.">		if (smsProperties != null) {</span>
-<span class="fc" id="L146">			applyOghamConfiguration(builder, smsProperties);</span>
+<span class="pc bpc" id="L147" title="1 of 2 branches missed.">		if (smsProperties != null) {</span>
+<span class="fc" id="L148">			applyOghamConfiguration(builder, smsProperties);</span>
 		}
-<span class="pc bpc" id="L148" title="1 of 2 branches missed.">		if (oghamFreemarkerProperties.isEnableSpringBeans()) {</span>
-<span class="fc" id="L149">			registerSpringBeans(builder, smsConfiguration);</span>
+<span class="pc bpc" id="L150" title="1 of 2 branches missed.">		if (oghamFreemarkerProperties.isEnableSpringBeans()) {</span>
+<span class="fc" id="L151">			registerSpringBeans(builder, smsConfiguration);</span>
 		}
-<span class="pc bpc" id="L151" title="1 of 2 branches missed.">		if (oghamFreemarkerProperties.isEnableStaticMethodAccess()) {</span>
-<span class="fc" id="L152">			registerStatics(builder, smsConfiguration);</span>
+<span class="pc bpc" id="L153" title="1 of 2 branches missed.">		if (oghamFreemarkerProperties.isEnableStaticMethodAccess()) {</span>
+<span class="fc" id="L154">			registerStatics(builder, smsConfiguration);</span>
 		}
-<span class="fc" id="L154">	}</span>
+<span class="fc" id="L156">	}</span>
 
 	@Override
 	public int getOrder() {
-<span class="fc" id="L158">		return FreemarkerConstants.DEFAULT_FREEMARKER_EMAIL_CONFIGURER_PRIORITY + 1000;</span>
+<span class="fc" id="L160">		return FreemarkerConstants.DEFAULT_FREEMARKER_EMAIL_CONFIGURER_PRIORITY + SPRING_CONFIGURER_PRIORITY_OFFSET;</span>
 	}
 
 	private void applyOghamConfiguration(AbstractFreemarkerBuilder&lt;?, ?&gt; builder, OghamTemplateProperties props) {
-<span class="fc" id="L162">		LOG.debug(&quot;[{}] apply ogham configuration properties to {}&quot;, this, builder);</span>
+<span class="fc" id="L164">		LOG.debug(&quot;[{}] apply ogham configuration properties to {}&quot;, this, builder);</span>
 		// @formatter:off
-<span class="fc" id="L164">		builder</span>
-<span class="fc" id="L165">			.classpath()</span>
-<span class="fc" id="L166">				.pathPrefix()</span>
-<span class="fc" id="L167">					.value(ofNullable(firstValue(props.getFreemarker().getClasspath().getPathPrefix(),</span>
-<span class="fc" id="L168">												props.getTemplate().getClasspath().getPathPrefix(),</span>
-<span class="fc" id="L169">												props.getFreemarker().getPathPrefix(),</span>
-<span class="fc" id="L170">												props.getTemplate().getPathPrefix(),</span>
-<span class="fc" id="L171">												templateProperties.getPathPrefix())))</span>
-<span class="fc" id="L172">					.and()</span>
-<span class="fc" id="L173">				.pathSuffix()</span>
-<span class="fc" id="L174">					.value(ofNullable(firstValue(props.getFreemarker().getClasspath().getPathSuffix(),</span>
-<span class="fc" id="L175">												props.getTemplate().getClasspath().getPathSuffix(),</span>
-<span class="fc" id="L176">												props.getFreemarker().getPathSuffix(),</span>
-<span class="fc" id="L177">												props.getTemplate().getPathSuffix(),</span>
-<span class="fc" id="L178">												templateProperties.getPathSuffix())))</span>
-<span class="fc" id="L179">					.and()</span>
-<span class="fc" id="L180">				.and()</span>
-<span class="fc" id="L181">			.file()</span>
-<span class="fc" id="L182">				.pathPrefix()</span>
-<span class="fc" id="L183">					.value(ofNullable(firstValue(props.getFreemarker().getFile().getPathPrefix(),</span>
-<span class="fc" id="L184">												props.getTemplate().getFile().getPathPrefix(),</span>
-<span class="fc" id="L185">												props.getFreemarker().getPathPrefix(),</span>
-<span class="fc" id="L186">												props.getTemplate().getPathPrefix(),</span>
-<span class="fc" id="L187">												templateProperties.getPathPrefix())))</span>
-<span class="fc" id="L188">					.and()</span>
-<span class="fc" id="L189">				.pathSuffix()</span>
-<span class="fc" id="L190">					.value(ofNullable(firstValue(props.getFreemarker().getFile().getPathSuffix(),</span>
-<span class="fc" id="L191">											props.getTemplate().getFile().getPathSuffix(),</span>
-<span class="fc" id="L192">											props.getFreemarker().getPathSuffix(),</span>
-<span class="fc" id="L193">											props.getTemplate().getPathSuffix(),</span>
-<span class="fc" id="L194">											templateProperties.getPathSuffix())));</span>
-<span class="fc" id="L195">		builder</span>
-<span class="fc" id="L196">			.configuration()</span>
-<span class="fc" id="L197">				.defaultEncoding().value(ofNullable(oghamFreemarkerProperties.getDefaultEncoding()));</span>
+<span class="fc" id="L166">		builder</span>
+<span class="fc" id="L167">			.classpath()</span>
+<span class="fc" id="L168">				.pathPrefix()</span>
+<span class="fc" id="L169">					.value(ofNullable(firstValue(props.getFreemarker().getClasspath().getPathPrefix(),</span>
+<span class="fc" id="L170">												props.getTemplate().getClasspath().getPathPrefix(),</span>
+<span class="fc" id="L171">												props.getFreemarker().getPathPrefix(),</span>
+<span class="fc" id="L172">												props.getTemplate().getPathPrefix(),</span>
+<span class="fc" id="L173">												templateProperties.getPathPrefix())))</span>
+<span class="fc" id="L174">					.and()</span>
+<span class="fc" id="L175">				.pathSuffix()</span>
+<span class="fc" id="L176">					.value(ofNullable(firstValue(props.getFreemarker().getClasspath().getPathSuffix(),</span>
+<span class="fc" id="L177">												props.getTemplate().getClasspath().getPathSuffix(),</span>
+<span class="fc" id="L178">												props.getFreemarker().getPathSuffix(),</span>
+<span class="fc" id="L179">												props.getTemplate().getPathSuffix(),</span>
+<span class="fc" id="L180">												templateProperties.getPathSuffix())))</span>
+<span class="fc" id="L181">					.and()</span>
+<span class="fc" id="L182">				.and()</span>
+<span class="fc" id="L183">			.file()</span>
+<span class="fc" id="L184">				.pathPrefix()</span>
+<span class="fc" id="L185">					.value(ofNullable(firstValue(props.getFreemarker().getFile().getPathPrefix(),</span>
+<span class="fc" id="L186">												props.getTemplate().getFile().getPathPrefix(),</span>
+<span class="fc" id="L187">												props.getFreemarker().getPathPrefix(),</span>
+<span class="fc" id="L188">												props.getTemplate().getPathPrefix(),</span>
+<span class="fc" id="L189">												templateProperties.getPathPrefix())))</span>
+<span class="fc" id="L190">					.and()</span>
+<span class="fc" id="L191">				.pathSuffix()</span>
+<span class="fc" id="L192">					.value(ofNullable(firstValue(props.getFreemarker().getFile().getPathSuffix(),</span>
+<span class="fc" id="L193">											props.getTemplate().getFile().getPathSuffix(),</span>
+<span class="fc" id="L194">											props.getFreemarker().getPathSuffix(),</span>
+<span class="fc" id="L195">											props.getTemplate().getPathSuffix(),</span>
+<span class="fc" id="L196">											templateProperties.getPathSuffix())));</span>
+<span class="fc" id="L197">		builder</span>
+<span class="fc" id="L198">			.configuration()</span>
+<span class="fc" id="L199">				.defaultEncoding().value(ofNullable(oghamFreemarkerProperties.getDefaultEncoding()));</span>
 		// @formatter:on
-<span class="fc" id="L199">	}</span>
+<span class="fc" id="L201">	}</span>
 
 	private void applySpringConfiguration(AbstractFreemarkerBuilder&lt;?, ?&gt; builder) {
-<span class="fc" id="L202">		LOG.debug(&quot;[{}] apply spring configuration properties to {}&quot;, this, builder);</span>
+<span class="fc" id="L204">		LOG.debug(&quot;[{}] apply spring configuration properties to {}&quot;, this, builder);</span>
 		// @formatter:off
-<span class="fc" id="L204">		builder</span>
-<span class="fc" id="L205">			.classpath()</span>
-<span class="fc" id="L206">				.pathPrefix().value(ofNullable(springProperties.getPrefix())).and()</span>
-<span class="fc" id="L207">				.pathSuffix().value(ofNullable(springProperties.getSuffix())).and()</span>
-<span class="fc" id="L208">				.and()</span>
-<span class="fc" id="L209">			.file()</span>
-<span class="fc" id="L210">				.pathPrefix().value(ofNullable(springProperties.getPrefix())).and()</span>
-<span class="fc" id="L211">				.pathSuffix().value(ofNullable(springProperties.getSuffix()));</span>
-<span class="fc" id="L212">		builder</span>
-<span class="fc" id="L213">			.configuration()</span>
-<span class="fc" id="L214">				.defaultEncoding().value(ofNullable(springProperties.getCharsetName()));</span>
+<span class="fc" id="L206">		builder</span>
+<span class="fc" id="L207">			.classpath()</span>
+<span class="fc" id="L208">				.pathPrefix().value(ofNullable(springProperties.getPrefix())).and()</span>
+<span class="fc" id="L209">				.pathSuffix().value(ofNullable(springProperties.getSuffix())).and()</span>
+<span class="fc" id="L210">				.and()</span>
+<span class="fc" id="L211">			.file()</span>
+<span class="fc" id="L212">				.pathPrefix().value(ofNullable(springProperties.getPrefix())).and()</span>
+<span class="fc" id="L213">				.pathSuffix().value(ofNullable(springProperties.getSuffix()));</span>
+<span class="fc" id="L214">		builder</span>
+<span class="fc" id="L215">			.configuration()</span>
+<span class="fc" id="L216">				.defaultEncoding().value(ofNullable(springProperties.getCharsetName()));</span>
 		// @formatter:on
-<span class="fc" id="L216">	}</span>
+<span class="fc" id="L218">	}</span>
 
 	private void registerSpringBeans(AbstractFreemarkerBuilder&lt;?, ?&gt; builder, Configuration configuration) {
-<span class="fc" id="L219">		builder.configuration().addSharedVariables(new SpringBeansTemplateHashModelEx(applicationContext, getBeansWrapper(configuration)));</span>
-<span class="fc" id="L220">	}</span>
+<span class="fc" id="L221">		builder.configuration().addSharedVariables(new SpringBeansTemplateHashModelEx(applicationContext, getBeansWrapper(configuration)));</span>
+<span class="fc" id="L222">	}</span>
 
 	private static BeansWrapper getBeansWrapper(Configuration configuration) {
-<span class="fc" id="L223">		ObjectWrapper objectWrapper = configuration.getObjectWrapper();</span>
-<span class="pc bpc" id="L224" title="1 of 2 branches missed.">		if (objectWrapper instanceof BeansWrapper) {</span>
-<span class="fc" id="L225">			return (BeansWrapper) objectWrapper;</span>
+<span class="fc" id="L225">		ObjectWrapper objectWrapper = configuration.getObjectWrapper();</span>
+<span class="pc bpc" id="L226" title="1 of 2 branches missed.">		if (objectWrapper instanceof BeansWrapper) {</span>
+<span class="fc" id="L227">			return (BeansWrapper) objectWrapper;</span>
 		}
-<span class="nc" id="L227">		return new BeansWrapperBuilder(configuration.getIncompatibleImprovements()).build();</span>
+<span class="nc" id="L229">		return new BeansWrapperBuilder(configuration.getIncompatibleImprovements()).build();</span>
 	}
 
 	private void registerStatics(AbstractFreemarkerBuilder&lt;?, ?&gt; builder, Configuration configuration) {
-<span class="fc" id="L231">		builder.configuration().addSharedVariable(oghamFreemarkerProperties.getStaticMethodAccessVariableName(), getBeansWrapper(configuration).getStaticModels());</span>
-<span class="fc" id="L232">	}</span>
+<span class="fc" id="L233">		builder.configuration().addSharedVariable(oghamFreemarkerProperties.getStaticMethodAccessVariableName(), getBeansWrapper(configuration).getStaticModels());</span>
+<span class="fc" id="L234">	}</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

@@ -56,8 +56,13 @@ public class TestLogger {
 	 *            the name of the test
 	 */
 	public void writeStart(String testName) {
-<span class="fc" id="L59">		LOG.info(&quot;\n{}\n{}\n{}&quot;, borderTop(DOUBLE), format(testName, DOUBLE), borderBottom(DOUBLE));</span>
-<span class="fc" id="L60">	}</span>
+		// @formatter:off
+<span class="fc" id="L60">		LOG.info(&quot;\n{}\n{}\n{}&quot;, </span>
+<span class="fc" id="L61">				borderTop(DOUBLE), </span>
+<span class="fc" id="L62">				format(testName, DOUBLE), </span>
+<span class="fc" id="L63">				borderBottom(DOUBLE));</span>
+		// @formatter:on
+<span class="fc" id="L65">	}</span>
 
 	/**
 	 * Write the name of the test and &quot;SUCCESS&quot; message. The name is boxed to
@@ -67,8 +72,15 @@ public class TestLogger {
 	 *            the name of the test
 	 */
 	public void writeSuccess(String testName) {
-<span class="fc" id="L70">		LOG.info(&quot;\n{}\n{}\n{}\n{}\n{}\r\n\r\n&quot;, borderTop(SINGLE), format(testName, SINGLE), borderMiddle(SINGLE), format(&quot;SUCCESS&quot;, SINGLE), borderBottom(SINGLE));</span>
-<span class="fc" id="L71">	}</span>
+		// @formatter:off
+<span class="fc" id="L76">		LOG.info(&quot;\n{}\n{}\n{}\n{}\n{}\r\n\r\n&quot;, </span>
+<span class="fc" id="L77">				borderTop(SINGLE), </span>
+<span class="fc" id="L78">				format(testName, SINGLE), </span>
+<span class="fc" id="L79">				borderMiddle(SINGLE), </span>
+<span class="fc" id="L80">				format(&quot;SUCCESS&quot;, SINGLE), </span>
+<span class="fc" id="L81">				borderBottom(SINGLE));</span>
+		// @formatter:on
+<span class="fc" id="L83">	}</span>
 
 	/**
 	 * Write the name of the test, &quot;FAILED&quot; message and failure information. The
@@ -80,51 +92,59 @@ public class TestLogger {
 	 *            the thrown exception
 	 */
 	public void writeFailure(String testName, Throwable e) {
-<span class="fc" id="L83">		LOG.error(&quot;Test failure:\r\n&quot;, e);</span>
-<span class="fc" id="L84">		LOG.error(&quot;\n{}\n{}\n{}\n{}\n{}\n{}\n{}\r\n\r\n&quot;, borderTop(SINGLE), format(testName, SINGLE), borderMiddle(SINGLE), format(&quot;FAILED&quot;, SINGLE), borderMiddle(SINGLE),</span>
-<span class="fc" id="L85">				format(e.getMessage(), SINGLE), borderBottom(SINGLE));</span>
-<span class="fc" id="L86">	}</span>
+<span class="fc" id="L95">		LOG.error(&quot;Test failure:\r\n&quot;, e);</span>
+		// @formatter:off
+<span class="fc" id="L97">		LOG.error(&quot;\n{}\n{}\n{}\n{}\n{}\n{}\n{}\r\n\r\n&quot;, </span>
+<span class="fc" id="L98">				borderTop(SINGLE), </span>
+<span class="fc" id="L99">				format(testName, SINGLE), </span>
+<span class="fc" id="L100">				borderMiddle(SINGLE), </span>
+<span class="fc" id="L101">				format(&quot;FAILED&quot;, SINGLE), </span>
+<span class="fc" id="L102">				borderMiddle(SINGLE),</span>
+<span class="fc" id="L103">				format(e.getMessage(), SINGLE), </span>
+<span class="fc" id="L104">				borderBottom(SINGLE));</span>
+		// @formatter:on
+<span class="fc" id="L106">	}</span>
 
 	private String borderTop(String[] characters) {
-<span class="fc" id="L89">		return TOP_LEFT.character(characters) + dashLine(HORIZONTAL.character(characters)) + TOP_RIGHT.character(characters);</span>
+<span class="fc" id="L109">		return TOP_LEFT.character(characters) + dashLine(HORIZONTAL.character(characters)) + TOP_RIGHT.character(characters);</span>
 	}
 
 	private String borderMiddle(String[] characters) {
-<span class="fc" id="L93">		return VERTICAL_LEFT.character(characters) + dashLine(HORIZONTAL.character(characters)) + VERTICAL_RIGHT.character(characters);</span>
+<span class="fc" id="L113">		return VERTICAL_LEFT.character(characters) + dashLine(HORIZONTAL.character(characters)) + VERTICAL_RIGHT.character(characters);</span>
 	}
 
 	private String borderBottom(String[] characters) {
-<span class="fc" id="L97">		return BOTTOM_LEFT.character(characters) + dashLine(HORIZONTAL.character(characters)) + BOTTOM_RIGHT.character(characters);</span>
+<span class="fc" id="L117">		return BOTTOM_LEFT.character(characters) + dashLine(HORIZONTAL.character(characters)) + BOTTOM_RIGHT.character(characters);</span>
 	}
 
 	private String dashLine(String character) {
-<span class="fc" id="L101">		return StringUtils.repeat(character, maxLength - 2);</span>
+<span class="fc" id="L121">		return StringUtils.repeat(character, maxLength - 2);</span>
 	}
 
 	private String format(String text, String[] characters) {
-<span class="fc" id="L105">		String vertical = VERTICAL.character(characters);</span>
-<span class="fc" id="L106">		StringJoiner joiner = new StringJoiner(vertical + &quot;\n&quot; + vertical, vertical, vertical);</span>
-<span class="fc bfc" id="L107" title="All 2 branches covered.">		for (String line : wrap(text)) {</span>
-<span class="fc" id="L108">			joiner.add(StringUtils.rightPad(line, maxLength - 2));</span>
-<span class="fc" id="L109">		}</span>
-<span class="fc" id="L110">		return joiner.toString();</span>
+<span class="fc" id="L125">		String vertical = VERTICAL.character(characters);</span>
+<span class="fc" id="L126">		StringJoiner joiner = new StringJoiner(vertical + &quot;\n&quot; + vertical, vertical, vertical);</span>
+<span class="fc bfc" id="L127" title="All 2 branches covered.">		for (String line : wrap(text)) {</span>
+<span class="fc" id="L128">			joiner.add(StringUtils.rightPad(line, maxLength - 2));</span>
+<span class="fc" id="L129">		}</span>
+<span class="fc" id="L130">		return joiner.toString();</span>
 	}
 
 	private List&lt;String&gt; wrap(String text) {
-<span class="fc" id="L114">		return Arrays.asList(WordUtils.wrap(text, maxLength - 3, &quot;\n&quot;, true).split(&quot;\n&quot;));</span>
+<span class="fc" id="L134">		return Arrays.asList(WordUtils.wrap(text, maxLength - 3, &quot;\n&quot;, true).split(&quot;\n&quot;));</span>
 	}
 
-<span class="fc" id="L117">	enum Characters {</span>
-<span class="fc" id="L118">		TOP_LEFT(0), TOP_RIGHT(1), BOTTOM_LEFT(2), BOTTOM_RIGHT(3), HORIZONTAL(4), VERTICAL(5), VERTICAL_LEFT(6), VERTICAL_RIGHT(7);</span>
+<span class="fc" id="L137">	enum Characters {</span>
+<span class="fc" id="L138">		TOP_LEFT(0), TOP_RIGHT(1), BOTTOM_LEFT(2), BOTTOM_RIGHT(3), HORIZONTAL(4), VERTICAL(5), VERTICAL_LEFT(6), VERTICAL_RIGHT(7);</span>
 
 		private final int pos;
 
-<span class="fc" id="L122">		Characters(int pos) {</span>
-<span class="fc" id="L123">			this.pos = pos;</span>
-<span class="fc" id="L124">		}</span>
+<span class="fc" id="L142">		Characters(int pos) {</span>
+<span class="fc" id="L143">			this.pos = pos;</span>
+<span class="fc" id="L144">		}</span>
 
 		public String character(String[] characters) {
-<span class="fc" id="L127">			return characters[pos];</span>
+<span class="fc" id="L147">			return characters[pos];</span>
 		}
 	}
 }

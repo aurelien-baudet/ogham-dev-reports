@@ -147,7 +147,7 @@ public class OvhSmsSender extends AbstractSpecializedSender&lt;Sms&gt; {
 	 *             generated exception to indicate that the message couldn't be
 	 *             sent
 	 */
-	private void handleResponse(Sms message, Response response) throws IOException, JsonProcessingException, MessageNotSentException {
+	private void handleResponse(Sms message, Response response) throws IOException, MessageNotSentException {
 <span class="fc bfc" id="L151" title="All 2 branches covered.">		if (response.getStatus().isSuccess()) {</span>
 <span class="fc" id="L152">			JsonNode json = mapper.readTree(response.getBody());</span>
 <span class="fc" id="L153">			int ovhStatus = json.get(&quot;status&quot;).asInt();</span>
@@ -179,7 +179,7 @@ public class OvhSmsSender extends AbstractSpecializedSender&lt;Sms&gt; {
 	 *            the message that contains the content to extract
 	 * @return the content formatted for OVH
 	 */
-	private String getContent(Sms message) {
+	private static String getContent(Sms message) {
 		// if a string contains \r\n, only \r is kept
 		// if there are \n without \r, those \n are converted to \r
 <span class="fc" id="L185">		return message.getContent().toString().replaceAll(&quot;(\r)?\n&quot;, &quot;\r&quot;);</span>
@@ -210,28 +210,27 @@ public class OvhSmsSender extends AbstractSpecializedSender&lt;Sms&gt; {
 	 * @param phoneNumber
 	 *            the phone number to transform
 	 * @return the international phone number
-	 * @throws PhoneNumberException
 	 */
-	private static String toInternational(PhoneNumber phoneNumber) throws PhoneNumberException {
-<span class="fc" id="L216">		String number = phoneNumber.getNumber();</span>
-<span class="fc bfc" id="L217" title="All 4 branches covered.">		if (number.startsWith(&quot;+&quot;) || number.length() == INTERNATIONAL_FORMAT_LENGTH) {</span>
-<span class="fc" id="L218">			return StringUtils.leftPad(number.replace(&quot;+&quot;, &quot;&quot;).replaceAll(&quot;\\s+&quot;, &quot;&quot;), INTERNATIONAL_FORMAT_LENGTH, '0');</span>
+	private static String toInternational(PhoneNumber phoneNumber) {
+<span class="fc" id="L215">		String number = phoneNumber.getNumber();</span>
+<span class="fc bfc" id="L216" title="All 4 branches covered.">		if (number.startsWith(&quot;+&quot;) || number.length() == INTERNATIONAL_FORMAT_LENGTH) {</span>
+<span class="fc" id="L217">			return StringUtils.leftPad(number.replace(&quot;+&quot;, &quot;&quot;).replaceAll(&quot;\\s+&quot;, &quot;&quot;), INTERNATIONAL_FORMAT_LENGTH, '0');</span>
 		} else {
-<span class="fc" id="L220">			throw new IllegalArgumentException(&quot;Invalid phone number. OVH only accepts international phone numbers. Please write the phone number with the country prefix. &quot;</span>
+<span class="fc" id="L219">			throw new IllegalArgumentException(&quot;Invalid phone number. OVH only accepts international phone numbers. Please write the phone number with the country prefix. &quot;</span>
 					+ &quot;For example, if the number is 0601020304 and it is a French number, then the international number is +33601020304&quot;);
 		}
 	}
 
 	public OvhAuthParams getAuthParams() {
-<span class="fc" id="L226">		return authParams;</span>
+<span class="fc" id="L225">		return authParams;</span>
 	}
 
 	public OvhOptions getOptions() {
-<span class="nc" id="L230">		return options;</span>
+<span class="nc" id="L229">		return options;</span>
 	}
 
 	public URL getUrl() {
-<span class="nc" id="L234">		return url;</span>
+<span class="nc" id="L233">		return url;</span>
 	}
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>
