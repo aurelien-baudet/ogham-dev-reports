@@ -1,0 +1,656 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>AssertEmail.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">reporting</a> &gt; <a href="../index.html" class="el_bundle">ogham-test-utils</a> &gt; <a href="index.source.html" class="el_package">fr.sii.ogham.helper.email</a> &gt; <span class="el_source">AssertEmail.java</span></div><h1>AssertEmail.java</h1><pre class="source lang-java linenums">package fr.sii.ogham.helper.email;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Pattern;
+
+import javax.mail.Address;
+import javax.mail.BodyPart;
+import javax.mail.Message;
+import javax.mail.Message.RecipientType;
+import javax.mail.MessagingException;
+import javax.mail.Multipart;
+import javax.mail.Part;
+
+import org.apache.commons.io.IOUtils;
+import org.junit.Assert;
+import org.junit.ComparisonFailure;
+
+import fr.sii.ogham.helper.html.AssertHtml;
+
+/**
+ * Utility class for checking if the received email content is as expected.
+ * 
+ * @author Aurélien Baudet
+ *
+ */
+@SuppressWarnings(&quot;squid:S1192&quot;)
+public final class AssertEmail {
+<span class="nc" id="L32">	private static final Pattern HTML_PATTERN = Pattern.compile(&quot;&lt;html&quot;, Pattern.CASE_INSENSITIVE);</span>
+<span class="nc" id="L33">	private static final Pattern TEXT_OR_HTML_MIMETYPES = Pattern.compile(&quot;^((text/)|(application/x?html)).*&quot;, Pattern.CASE_INSENSITIVE);</span>
+
+	/**
+	 * Assert that the fields of the received email are equal to the expected
+	 * values. The expected email contains several parts (several contents). The
+	 * received email should also have the equivalent parts. It will check that:
+	 * &lt;ul&gt;
+	 * &lt;li&gt;The received headers are respected (see
+	 * {@link #assertHeaders(ExpectedEmailHeader, Message)})&lt;/li&gt;
+	 * &lt;li&gt;The received message is a {@link Multipart} email&lt;/li&gt;
+	 * &lt;li&gt;The number of parts are equal&lt;/li&gt;
+	 * &lt;li&gt;Each received part body equals the expected one (order is important).
+	 * See {@link #assertBody(String, String, boolean)}&lt;/li&gt;
+	 * &lt;li&gt;Each received part Mime Type equals the expected one (order is
+	 * important). See {@link #assertMimetype(ExpectedContent, String)}&lt;/li&gt;
+	 * &lt;/ul&gt;
+	 * &lt;p&gt;
+	 * The checking of the body is done strictly (totally equal).
+	 * &lt;/p&gt;
+	 * 
+	 * @param expectedEmail
+	 *            all the fields with their expected values
+	 * @param actualEmail
+	 *            the received email
+	 * @throws MessagingException
+	 *             when accessing the received email fails
+	 * @throws IOException
+	 *             when reading the content of the email fails
+	 */
+	public static void assertEquals(ExpectedMultiPartEmail expectedEmail, Message actualEmail) throws MessagingException, IOException {
+<span class="nc" id="L63">		assertEquals(expectedEmail, actualEmail, true);</span>
+<span class="nc" id="L64">	}</span>
+
+	/**
+	 * &lt;p&gt;
+	 * Shortcut to simplify unit testing with GreenMail. See
+	 * {@link #assertEquals(ExpectedMultiPartEmail[], Message[])}.
+	 * &lt;/p&gt;
+	 * Assert that the fields of the received email are equal to the expected
+	 * values. The expected email contains several parts (several contents). The
+	 * received email should also have the equivalent parts. It will check that:
+	 * &lt;ul&gt;
+	 * &lt;li&gt;The received headers are respected (see
+	 * {@link #assertHeaders(ExpectedEmailHeader, Message)})&lt;/li&gt;
+	 * &lt;li&gt;The received message is a {@link Multipart} email&lt;/li&gt;
+	 * &lt;li&gt;The number of parts are equal&lt;/li&gt;
+	 * &lt;li&gt;Each received part body equals the expected one (order is important).
+	 * See {@link #assertBody(String, String, boolean)}&lt;/li&gt;
+	 * &lt;li&gt;Each received part Mime Type equals the expected one (order is
+	 * important). See {@link #assertMimetype(ExpectedContent, String)}&lt;/li&gt;
+	 * &lt;/ul&gt;
+	 * &lt;p&gt;
+	 * The checking of the body is done strictly (totally equal).
+	 * &lt;/p&gt;
+	 * 
+	 * @param expectedEmail
+	 *            all the fields with their expected values
+	 * @param actualEmails
+	 *            the received email
+	 * @throws MessagingException
+	 *             when accessing the received email fails
+	 * @throws IOException
+	 *             when reading the content of the email fails
+	 */
+	public static void assertEquals(ExpectedMultiPartEmail expectedEmail, Message[] actualEmails) throws MessagingException, IOException {
+<span class="nc" id="L98">		assertEquals(new ExpectedMultiPartEmail[] { expectedEmail }, actualEmails);</span>
+<span class="nc" id="L99">	}</span>
+
+	/**
+	 * Assert that each received email content respects the expected one. It
+	 * ensures that the number of received emails equals to the expected number.
+	 * Then for each email it calls
+	 * {@link #assertEquals(ExpectedMultiPartEmail, Message)} .
+	 * 
+	 * @param expectedEmails
+	 *            the list of expected emails
+	 * @param actualEmails
+	 *            the received emails
+	 * @throws MessagingException
+	 *             when accessing the received email fails
+	 * @throws IOException
+	 *             when reading the content of the email fails
+	 */
+	public static void assertEquals(ExpectedMultiPartEmail[] expectedEmails, Message[] actualEmails) throws MessagingException, IOException {
+<span class="nc" id="L117">		Assert.assertEquals(&quot;should have &quot; + expectedEmails.length + &quot; email&quot;, expectedEmails.length, actualEmails.length);</span>
+<span class="nc bnc" id="L118" title="All 2 branches missed.">		for (int i = 0; i &lt; expectedEmails.length; i++) {</span>
+<span class="nc" id="L119">			assertEquals(expectedEmails[i], actualEmails[i]);</span>
+		}
+<span class="nc" id="L121">	}</span>
+
+	/**
+	 * &lt;p&gt;
+	 * Shortcut to simplify unit testing with GreenMail. See
+	 * {@link #assertEquals(ExpectedEmail[], Message[])}.
+	 * &lt;/p&gt;
+	 * Assert that the fields of the received email are equal to the expected
+	 * values. The expected email contains only one part (only one content). It
+	 * will check that:
+	 * &lt;ul&gt;
+	 * &lt;li&gt;The received headers are respected (see
+	 * {@link #assertHeaders(ExpectedEmailHeader, Message)})&lt;/li&gt;
+	 * &lt;li&gt;The body equals the expected one (order is important). See
+	 * {@link #assertBody(String, String, boolean)}&lt;/li&gt;
+	 * &lt;li&gt;The Mime Type equals the expected one (order is important). See
+	 * {@link #assertMimetype(ExpectedContent, String)}&lt;/li&gt;
+	 * &lt;/ul&gt;
+	 * &lt;p&gt;
+	 * The checking of the body is done strictly (totally equal).
+	 * &lt;/p&gt;
+	 * 
+	 * 
+	 * @param expectedEmail
+	 *            all the fields with their expected values
+	 * @param actualEmails
+	 *            the received emails
+	 * @throws MessagingException
+	 *             when accessing the received email fails
+	 */
+	public static void assertEquals(ExpectedEmail expectedEmail, Message[] actualEmails) throws MessagingException {
+<span class="nc" id="L152">		assertEquals(new ExpectedEmail[] { expectedEmail }, actualEmails);</span>
+<span class="nc" id="L153">	}</span>
+
+	/**
+	 * Assert that each received email content respects the expected one. It
+	 * ensures that the number of received emails equals to the expected number.
+	 * Then for each email it calls
+	 * {@link #assertEquals(ExpectedEmail, Message)} .
+	 * 
+	 * @param expectedEmail
+	 *            the expected email
+	 * @param actualEmails
+	 *            the received emails
+	 * @throws MessagingException
+	 *             when accessing the received email fails
+	 */
+	public static void assertEquals(ExpectedEmail[] expectedEmail, Message[] actualEmails) throws MessagingException {
+<span class="nc" id="L169">		Assert.assertEquals(&quot;should have &quot; + expectedEmail.length + &quot; email&quot;, expectedEmail.length, actualEmails.length);</span>
+<span class="nc bnc" id="L170" title="All 2 branches missed.">		for (int i = 0; i &lt; expectedEmail.length; i++) {</span>
+<span class="nc" id="L171">			assertEquals(expectedEmail[i], actualEmails[i]);</span>
+		}
+<span class="nc" id="L173">	}</span>
+
+	/**
+	 * Assert that the fields of the received email are equal to the expected
+	 * values. The expected email contains only one part (only one content). It
+	 * will check that:
+	 * &lt;ul&gt;
+	 * &lt;li&gt;The received headers are respected (see
+	 * {@link #assertHeaders(ExpectedEmailHeader, Message)})&lt;/li&gt;
+	 * &lt;li&gt;The body equals the expected one (order is important). See
+	 * {@link #assertBody(String, String, boolean)}&lt;/li&gt;
+	 * &lt;li&gt;The Mime Type equals the expected one (order is important). See
+	 * {@link #assertMimetype(ExpectedContent, String)}&lt;/li&gt;
+	 * &lt;/ul&gt;
+	 * &lt;p&gt;
+	 * The checking of the body is done strictly (totally equal).
+	 * &lt;/p&gt;
+	 * 
+	 * @param expectedEmail
+	 *            all the fields with their expected values
+	 * @param actualEmail
+	 *            the received email
+	 * @throws MessagingException
+	 *             when accessing the received email fails
+	 */
+	public static void assertEquals(ExpectedEmail expectedEmail, Message actualEmail) throws MessagingException {
+<span class="nc" id="L199">		assertEquals(expectedEmail, actualEmail, true);</span>
+<span class="nc" id="L200">	}</span>
+
+	/**
+	 * Assert that the fields of the received email are equal to the expected
+	 * values. The expected email contains several parts (several contents). The
+	 * received email should also have the equivalent parts. It will check that:
+	 * &lt;ul&gt;
+	 * &lt;li&gt;The received headers are respected (see
+	 * {@link #assertHeaders(ExpectedEmailHeader, Message)})&lt;/li&gt;
+	 * &lt;li&gt;The received message is a {@link Multipart} email&lt;/li&gt;
+	 * &lt;li&gt;The number of parts are equal&lt;/li&gt;
+	 * &lt;li&gt;Each received part body equals the expected one (order is important).
+	 * See {@link #assertBody(String, String, boolean)}&lt;/li&gt;
+	 * &lt;li&gt;Each received part Mime Type equals the expected one (order is
+	 * important). See {@link #assertMimetype(ExpectedContent, String)}&lt;/li&gt;
+	 * &lt;/ul&gt;
+	 * &lt;p&gt;
+	 * The checking of the body ignores the new line characters.
+	 * &lt;/p&gt;
+	 * 
+	 * @param expectedEmail
+	 *            all the fields with their expected values
+	 * @param actualEmail
+	 *            the received email
+	 * @throws MessagingException
+	 *             when accessing the received email fails
+	 * @throws IOException
+	 *             when reading the content of the email fails
+	 */
+	public static void assertSimilar(ExpectedMultiPartEmail expectedEmail, Message actualEmail) throws MessagingException, IOException {
+<span class="nc" id="L230">		assertEquals(expectedEmail, actualEmail, false);</span>
+<span class="nc" id="L231">	}</span>
+
+	/**
+	 * &lt;p&gt;
+	 * Shortcut to simplify unit testing with GreenMail. See
+	 * {@link #assertSimilar(ExpectedMultiPartEmail[], Message[])}.
+	 * &lt;/p&gt;
+	 * Assert that the fields of the received email are equal to the expected
+	 * values. The expected email contains several parts (several contents). The
+	 * received email should also have the equivalent parts. It will check that:
+	 * &lt;ul&gt;
+	 * &lt;li&gt;The received headers are respected (see
+	 * {@link #assertHeaders(ExpectedEmailHeader, Message)})&lt;/li&gt;
+	 * &lt;li&gt;The received message is a {@link Multipart} email&lt;/li&gt;
+	 * &lt;li&gt;The number of parts are equal&lt;/li&gt;
+	 * &lt;li&gt;Each received part body equals the expected one (order is important).
+	 * See {@link #assertBody(String, String, boolean)}&lt;/li&gt;
+	 * &lt;li&gt;Each received part Mime Type equals the expected one (order is
+	 * important). See {@link #assertMimetype(ExpectedContent, String)}&lt;/li&gt;
+	 * &lt;/ul&gt;
+	 * &lt;p&gt;
+	 * The checking of the body ignores the new line characters.
+	 * &lt;/p&gt;
+	 * 
+	 * @param expectedEmail
+	 *            all the fields with their expected values
+	 * @param actualEmails
+	 *            the received email
+	 * @throws MessagingException
+	 *             when accessing the received email fails
+	 * @throws IOException
+	 *             when reading the content of the email fails
+	 */
+	public static void assertSimilar(ExpectedMultiPartEmail expectedEmail, Message[] actualEmails) throws MessagingException, IOException {
+<span class="nc" id="L265">		assertSimilar(new ExpectedMultiPartEmail[] { expectedEmail }, actualEmails);</span>
+<span class="nc" id="L266">	}</span>
+
+	/**
+	 * Assert that each received email content respects the expected one. It
+	 * ensures that the number of received emails equals to the expected number.
+	 * Then for each email it calls
+	 * {@link #assertSimilar(ExpectedMultiPartEmail, Message)} .
+	 * 
+	 * @param expectedEmails
+	 *            the list of expected emails
+	 * @param actualEmails
+	 *            the received emails
+	 * @throws MessagingException
+	 *             when accessing the received email fails
+	 * @throws IOException
+	 *             when reading the content of the email fails
+	 */
+	public static void assertSimilar(ExpectedMultiPartEmail[] expectedEmails, Message[] actualEmails) throws MessagingException, IOException {
+<span class="nc" id="L284">		Assert.assertEquals(&quot;should have &quot; + expectedEmails.length + &quot; email&quot;, expectedEmails.length, actualEmails.length);</span>
+<span class="nc bnc" id="L285" title="All 2 branches missed.">		for (int i = 0; i &lt; expectedEmails.length; i++) {</span>
+<span class="nc" id="L286">			assertSimilar(expectedEmails[i], actualEmails[i]);</span>
+		}
+<span class="nc" id="L288">	}</span>
+
+	/**
+	 * &lt;p&gt;
+	 * Shortcut to simplify unit testing with GreenMail. See
+	 * {@link #assertSimilar(ExpectedEmail[], Message[])}.
+	 * &lt;/p&gt;
+	 * Assert that the fields of the received email are equal to the expected
+	 * values. The expected email contains only one part (only one content). It
+	 * will check that:
+	 * &lt;ul&gt;
+	 * &lt;li&gt;The received headers are respected (see
+	 * {@link #assertHeaders(ExpectedEmailHeader, Message)})&lt;/li&gt;
+	 * &lt;li&gt;The body equals the expected one (order is important). See
+	 * {@link #assertBody(String, String, boolean)}&lt;/li&gt;
+	 * &lt;li&gt;The Mime Type equals the expected one (order is important). See
+	 * {@link #assertMimetype(ExpectedContent, String)}&lt;/li&gt;
+	 * &lt;/ul&gt;
+	 * &lt;p&gt;
+	 * The checking of the body ignores the new line characters.
+	 * &lt;/p&gt;
+	 * 
+	 * 
+	 * @param expectedEmail
+	 *            all the fields with their expected values
+	 * @param actualEmails
+	 *            the received emails
+	 * @throws MessagingException
+	 *             when accessing the received email fails
+	 */
+	public static void assertSimilar(ExpectedEmail expectedEmail, Message[] actualEmails) throws MessagingException {
+<span class="nc" id="L319">		assertSimilar(new ExpectedEmail[] { expectedEmail }, actualEmails);</span>
+<span class="nc" id="L320">	}</span>
+
+	/**
+	 * Assert that each received email content respects the expected one. It
+	 * ensures that the number of received emails equals to the expected number.
+	 * Then for each email it calls
+	 * {@link #assertSimilar(ExpectedEmail, Message)} .
+	 * 
+	 * @param expectedEmail
+	 *            the expected email
+	 * @param actualEmails
+	 *            the received emails
+	 * @throws MessagingException
+	 *             when accessing the received email fails
+	 */
+	public static void assertSimilar(ExpectedEmail[] expectedEmail, Message[] actualEmails) throws MessagingException {
+<span class="nc" id="L336">		Assert.assertEquals(&quot;should have &quot; + expectedEmail.length + &quot; email&quot;, expectedEmail.length, actualEmails.length);</span>
+<span class="nc bnc" id="L337" title="All 2 branches missed.">		for (int i = 0; i &lt; expectedEmail.length; i++) {</span>
+<span class="nc" id="L338">			assertSimilar(expectedEmail[i], actualEmails[i]);</span>
+		}
+<span class="nc" id="L340">	}</span>
+
+	/**
+	 * Assert that the fields of the received email are equal to the expected
+	 * values. The expected email contains only one part (only one content). It
+	 * will check that:
+	 * &lt;ul&gt;
+	 * &lt;li&gt;The received headers are respected (see
+	 * {@link #assertHeaders(ExpectedEmailHeader, Message)})&lt;/li&gt;
+	 * &lt;li&gt;The body equals the expected one (order is important). See
+	 * {@link #assertBody(String, String, boolean)}&lt;/li&gt;
+	 * &lt;li&gt;The Mime Type equals the expected one (order is important). See
+	 * {@link #assertMimetype(ExpectedContent, String)}&lt;/li&gt;
+	 * &lt;/ul&gt;
+	 * &lt;p&gt;
+	 * The checking of the body ignores the new line characters.
+	 * &lt;/p&gt;
+	 * 
+	 * @param expectedEmail
+	 *            all the fields with their expected values
+	 * @param actualEmail
+	 *            the received email
+	 * @throws MessagingException
+	 *             when accessing the received email fails
+	 */
+	public static void assertSimilar(ExpectedEmail expectedEmail, Message actualEmail) throws MessagingException {
+<span class="nc" id="L366">		assertEquals(expectedEmail, actualEmail, false);</span>
+<span class="nc" id="L367">	}</span>
+
+	/**
+	 * Assert that the fields of the received email are equal to the expected
+	 * values. The expected email contains several parts (several contents). The
+	 * received email should also have the equivalent parts. It will check that:
+	 * &lt;ul&gt;
+	 * &lt;li&gt;The received headers are respected (see
+	 * {@link #assertHeaders(ExpectedEmailHeader, Message)})&lt;/li&gt;
+	 * &lt;li&gt;The received message is a {@link Multipart} email&lt;/li&gt;
+	 * &lt;li&gt;The number of parts are equal&lt;/li&gt;
+	 * &lt;li&gt;Each received part body equals the expected one (order is important).
+	 * See {@link #assertBody(String, String, boolean)}&lt;/li&gt;
+	 * &lt;li&gt;Each received part Mime Type equals the expected one (order is
+	 * important). See {@link #assertMimetype(ExpectedContent, String)}&lt;/li&gt;
+	 * &lt;/ul&gt;
+	 * &lt;p&gt;
+	 * The checking of the body may be done either strictly (totally equal) or
+	 * not (new line characters are ignored).
+	 * &lt;/p&gt;
+	 * 
+	 * @param expectedEmail
+	 *            all the fields with their expected values
+	 * @param actualEmail
+	 *            the received email
+	 * @param strict
+	 *            true for strict checking (totally equals) or false to ignore
+	 *            new line characters in body contents
+	 * @throws MessagingException
+	 *             when accessing the received email fails
+	 * @throws IOException
+	 *             when reading the content of the email fails
+	 */
+	public static void assertEquals(ExpectedMultiPartEmail expectedEmail, Message actualEmail, boolean strict) throws MessagingException, IOException {
+<span class="nc" id="L401">		assertHeaders(expectedEmail, actualEmail);</span>
+<span class="nc" id="L402">		Object content = actualEmail.getContent();</span>
+<span class="nc" id="L403">		Assert.assertTrue(&quot;should be multipart message&quot;, content instanceof Multipart);</span>
+<span class="nc" id="L404">		List&lt;Part&gt; bodyParts = getBodyParts(actualEmail);</span>
+<span class="nc" id="L405">		Assert.assertEquals(&quot;should have &quot; + expectedEmail.getExpectedContents().length + &quot; parts&quot;, expectedEmail.getExpectedContents().length, bodyParts.size());</span>
+<span class="nc bnc" id="L406" title="All 2 branches missed.">		for (int i = 0; i &lt; expectedEmail.getExpectedContents().length; i++) {</span>
+<span class="nc" id="L407">			assertBody(expectedEmail.getExpectedContents()[i].getBody(), bodyParts.get(i).getContent().toString(), strict);</span>
+<span class="nc" id="L408">			assertMimetype(expectedEmail.getExpectedContents()[i], bodyParts.get(i).getContentType());</span>
+		}
+<span class="nc" id="L410">	}</span>
+
+	/**
+	 * Assert that the fields of the received email are equal to the expected
+	 * values. The expected email contains only one part (only one content). It
+	 * will check that:
+	 * &lt;ul&gt;
+	 * &lt;li&gt;The received headers are respected (see
+	 * {@link #assertHeaders(ExpectedEmailHeader, Message)})&lt;/li&gt;
+	 * &lt;li&gt;The body equals the expected one (order is important). See
+	 * {@link #assertBody(String, String, boolean)}&lt;/li&gt;
+	 * &lt;li&gt;The Mime Type equals the expected one (order is important). See
+	 * {@link #assertMimetype(ExpectedContent, String)}&lt;/li&gt;
+	 * &lt;/ul&gt;
+	 * &lt;p&gt;
+	 * The checking of the body may be done either strictly (totally equal) or
+	 * not (new line characters are ignored).
+	 * &lt;/p&gt;
+	 * 
+	 * @param expectedEmail
+	 *            all the fields with their expected values
+	 * @param actualEmail
+	 *            the received email
+	 * @param strict
+	 *            true for strict checking (totally equals) or false to ignore
+	 *            new line characters in body contents
+	 * @throws MessagingException
+	 *             when accessing the received email fails
+	 */
+	public static void assertEquals(ExpectedEmail expectedEmail, Message actualEmail, boolean strict) throws MessagingException {
+<span class="nc" id="L440">		assertHeaders(expectedEmail, actualEmail);</span>
+<span class="nc" id="L441">		assertBody(expectedEmail.getExpectedContent().getBody(), getBody(actualEmail), strict);</span>
+<span class="nc" id="L442">		assertMimetype(expectedEmail.getExpectedContent(), getBodyMimetype(actualEmail));</span>
+<span class="nc" id="L443">	}</span>
+
+	/**
+	 * Checks that the received Mime Type for the message is like the expected
+	 * Mime Type. The expected Mime Type is a regular expression.
+	 * 
+	 * @param expectedContent
+	 *            the expected email content that contains the expected Mime
+	 *            Type as regular expression
+	 * @param actualEmail
+	 *            the received email to check
+	 * @throws MessagingException
+	 *             when accessing the received email fails
+	 */
+	public static void assertMimetype(ExpectedContent expectedContent, Message actualEmail) throws MessagingException {
+<span class="nc" id="L458">		assertMimetype(expectedContent, actualEmail.getContentType());</span>
+<span class="nc" id="L459">	}</span>
+
+	/**
+	 * Checks that the received Mime Type for the message is like the expected
+	 * Mime Type. The expected Mime Type is a regular expression.
+	 * 
+	 * @param expectedContent
+	 *            the expected email content that contains the expected Mime
+	 *            Type as regular expression
+	 * @param contentType
+	 *            the received email Mime Type
+	 * @throws MessagingException
+	 *             when accessing the received email fails
+	 */
+	public static void assertMimetype(ExpectedContent expectedContent, String contentType) throws MessagingException {
+<span class="nc" id="L474">		Assert.assertTrue(&quot;mimetype should be &quot; + expectedContent.getMimetype() + &quot; instead of &quot; + contentType, expectedContent.getMimetype().matcher(contentType).matches());</span>
+<span class="nc" id="L475">	}</span>
+
+	/**
+	 * Checks if the received body equals the expected body. It handles HTML
+	 * content and pure text content.
+	 * &lt;p&gt;
+	 * For text, the check can be done either strictly (totally equal) or not
+	 * (ignore new lines).
+	 * &lt;/p&gt;
+	 * &lt;p&gt;
+	 * For HTML, the string content is parsed and DOM trees are compared. The
+	 * comparison can be done either strictly (DOM trees are totally equals,
+	 * attributes are in the same order) or not (attributes can be in any
+	 * order).
+	 * &lt;/p&gt;
+	 * 
+	 * @param expectedBody
+	 *            the expected content as string
+	 * @param actualBody
+	 *            the received content as string
+	 * @param strict
+	 *            true for strict checking (totally equals) or false to ignore
+	 *            new line characters
+	 */
+	public static void assertBody(String expectedBody, String actualBody, boolean strict) {
+<span class="nc bnc" id="L500" title="All 2 branches missed.">		if (isHtml(expectedBody)) {</span>
+<span class="nc bnc" id="L501" title="All 2 branches missed.">			if (strict) {</span>
+<span class="nc" id="L502">				AssertHtml.assertIdentical(expectedBody, actualBody);</span>
+			} else {
+<span class="nc" id="L504">				AssertHtml.assertSimilar(expectedBody, actualBody);</span>
+			}
+		} else {
+<span class="nc bnc" id="L507" title="All 6 branches missed.">			if(strict ? !expectedBody.equals(actualBody) : !sanitize(expectedBody).equals(sanitize(actualBody))) {</span>
+<span class="nc" id="L508">				throw new ComparisonFailure(&quot;body should be '&quot; + expectedBody + &quot;'&quot;, expectedBody, actualBody);</span>
+			}
+		}
+<span class="nc" id="L511">	}</span>
+
+	/**
+	 * Checks if the received headers corresponds to the expected header values.
+	 * It checks if:
+	 * &lt;ul&gt;
+	 * &lt;li&gt;The received subject equals the expected subject&lt;/li&gt;
+	 * &lt;li&gt;The email sender address equals the expected sender address&lt;/li&gt;
+	 * &lt;li&gt;The total number of recipients equals the total number of expected
+	 * recipients&lt;/li&gt;
+	 * &lt;li&gt;The number of &quot;to&quot; recipients equals the number of expected &quot;to&quot;
+	 * recipients&lt;/li&gt;
+	 * &lt;li&gt;The number of &quot;cc&quot; recipients equals the number of expected &quot;cc&quot;
+	 * recipients&lt;/li&gt;
+	 * &lt;li&gt;The number of &quot;bcc&quot; recipients equals the number of expected &quot;bcc&quot;
+	 * recipients&lt;/li&gt;
+	 * &lt;li&gt;Each &quot;to&quot; recipient equals the expected &quot;to&quot; recipient value&lt;/li&gt;
+	 * &lt;li&gt;Each &quot;cc&quot; recipient equals the expected &quot;cc&quot; recipient value&lt;/li&gt;
+	 * &lt;li&gt;Each &quot;bcc&quot; recipient equals the expected &quot;bcc&quot; recipient value&lt;/li&gt;
+	 * &lt;/ul&gt;
+	 * 
+	 * @param expectedEmail
+	 *            the expected header values
+	 * @param actualEmail
+	 *            the received header values
+	 * @throws MessagingException
+	 *             when accessing the received email fails
+	 */
+	public static void assertHeaders(ExpectedEmailHeader expectedEmail, Message actualEmail) throws MessagingException {
+<span class="nc" id="L540">		Assert.assertEquals(&quot;subject should be '&quot; + expectedEmail.getSubject() + &quot;'&quot;, expectedEmail.getSubject(), actualEmail.getSubject());</span>
+<span class="nc" id="L541">		Assert.assertEquals(&quot;should have only one from&quot;, 1, actualEmail.getFrom().length);</span>
+<span class="nc" id="L542">		Assert.assertEquals(&quot;from should be '&quot; + expectedEmail.getFrom() + &quot;'&quot;, expectedEmail.getFrom(), actualEmail.getFrom()[0].toString());</span>
+<span class="nc" id="L543">		int recipients = expectedEmail.getTo().size() + expectedEmail.getBcc().size() + expectedEmail.getCc().size();</span>
+<span class="nc" id="L544">		Assert.assertEquals(&quot;should have only &quot; + recipients + &quot; recipients&quot;, recipients, actualEmail.getAllRecipients().length);</span>
+<span class="nc" id="L545">		assertRecipients(expectedEmail.getTo(), actualEmail, RecipientType.TO);</span>
+<span class="nc" id="L546">		assertRecipients(expectedEmail.getCc(), actualEmail, RecipientType.CC);</span>
+<span class="nc" id="L547">		assertRecipients(expectedEmail.getBcc(), actualEmail, RecipientType.BCC);</span>
+<span class="nc" id="L548">	}</span>
+
+	/**
+	 * Checks if the received headers corresponds to the expected header values.
+	 * It checks if:
+	 * &lt;ul&gt;
+	 * &lt;li&gt;The number of recipients of the provided type equals the number of
+	 * expected recipients of the provided type&lt;/li&gt;
+	 * &lt;li&gt;Each recipient of the provided type equals the expected recipient
+	 * value of the provided type&lt;/li&gt;
+	 * &lt;/ul&gt;
+	 * 
+	 * @param expectedRecipients
+	 *            the list of recipient string values
+	 * @param actualEmail
+	 *            the received header values
+	 * @param recipientType
+	 *            the type of the recipient to compare
+	 * @throws MessagingException
+	 *             when accessing the received email fails
+	 */
+	public static void assertRecipients(List&lt;String&gt; expectedRecipients, Message actualEmail, RecipientType recipientType) throws MessagingException {
+<span class="nc" id="L570">		Address[] actualRecipients = actualEmail.getRecipients(recipientType);</span>
+<span class="nc bnc" id="L571" title="All 2 branches missed.">		if (expectedRecipients.isEmpty()) {</span>
+<span class="nc bnc" id="L572" title="All 4 branches missed.">			Assert.assertTrue(&quot;should have no recipients &quot; + recipientType, actualRecipients == null || actualRecipients.length == 0);</span>
+		} else {
+<span class="nc" id="L574">			Assert.assertEquals(&quot;should have only &quot; + expectedRecipients.size() + &quot; &quot; + recipientType, expectedRecipients.size(), actualRecipients.length);</span>
+<span class="nc bnc" id="L575" title="All 2 branches missed.">			for (int i = 0; i &lt; expectedRecipients.size(); i++) {</span>
+<span class="nc" id="L576">				Assert.assertEquals(recipientType + &quot;[&quot; + i + &quot;] should be '&quot; + expectedRecipients.get(i) + &quot;'&quot;, expectedRecipients.get(i), actualRecipients[i].toString());</span>
+			}
+		}
+<span class="nc" id="L579">	}</span>
+
+	/**
+	 * Remove new lines from the string.
+	 * 
+	 * @param str
+	 *            the string to sanitize
+	 * @return the sanitized string
+	 */
+	private static String sanitize(String str) {
+<span class="nc" id="L589">		return str.replaceAll(&quot;\r|\n&quot;, &quot;&quot;);</span>
+	}
+
+	private static Part getBodyPart(Part actualEmail) throws MessagingException {
+<span class="nc" id="L593">		List&lt;Part&gt; bodyParts = getBodyParts(actualEmail);</span>
+<span class="nc bnc" id="L594" title="All 2 branches missed.">		if(bodyParts.isEmpty()) {</span>
+<span class="nc" id="L595">			throw new IllegalStateException(&quot;Expected at least one body part but none found&quot;);</span>
+		}
+<span class="nc" id="L597">		return bodyParts.get(0);</span>
+	}
+
+	private static List&lt;Part&gt; getBodyParts(Part actualEmail) throws MessagingException {
+<span class="nc" id="L601">		List&lt;Part&gt; founds = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L602">		getBodyParts(actualEmail, founds);</span>
+<span class="nc" id="L603">		return founds;</span>
+	}
+	
+	private static void getBodyParts(Part actualEmail, List&lt;Part&gt; founds) throws MessagingException {
+		try {
+<span class="nc" id="L608">			Object content = actualEmail.getContent();</span>
+<span class="nc bnc" id="L609" title="All 2 branches missed.">			if (content instanceof Multipart) {</span>
+<span class="nc" id="L610">				Multipart mp = (Multipart) content;</span>
+<span class="nc bnc" id="L611" title="All 2 branches missed.">				for(int i=0 ; i&lt;mp.getCount() ; i++) {</span>
+<span class="nc" id="L612">					addPart(founds, mp, i);</span>
+				}
+			}
+<span class="nc" id="L615">		} catch (IOException e) {</span>
+<span class="nc" id="L616">			throw new MessagingException(&quot;Failed to access content of the mail&quot;, e);</span>
+<span class="nc" id="L617">		}</span>
+<span class="nc" id="L618">	}</span>
+
+	private static void addPart(List&lt;Part&gt; founds, Multipart mp, int i) throws MessagingException {
+<span class="nc" id="L621">		BodyPart part = mp.getBodyPart(i);</span>
+<span class="nc bnc" id="L622" title="All 2 branches missed.">		if(part.getContentType().startsWith(&quot;multipart/&quot;)) {</span>
+<span class="nc" id="L623">			getBodyParts(part, founds);</span>
+<span class="nc bnc" id="L624" title="All 2 branches missed.">		} else if(TEXT_OR_HTML_MIMETYPES.matcher(part.getContentType()).matches()){</span>
+<span class="nc" id="L625">			founds.add(part);</span>
+		}
+<span class="nc" id="L627">	}</span>
+
+	private static String getBody(Part actualEmail) throws MessagingException {
+		try {
+<span class="nc" id="L631">			Object content = getBodyPart(actualEmail).getContent();</span>
+<span class="nc bnc" id="L632" title="All 2 branches missed.">			if(content instanceof String) {</span>
+<span class="nc" id="L633">				return (String) content;</span>
+<span class="nc bnc" id="L634" title="All 2 branches missed.">			} else if(content instanceof InputStream) {</span>
+<span class="nc" id="L635">				return IOUtils.toString((InputStream) content, Charset.defaultCharset());</span>
+			} else {
+<span class="nc" id="L637">				return content.toString();</span>
+			}
+<span class="nc" id="L639">		} catch (IOException e) {</span>
+<span class="nc" id="L640">			throw new MessagingException(&quot;Failed to access content of the mail&quot;, e);</span>
+		}
+	}
+
+	private static String getBodyMimetype(Part actualEmail) throws MessagingException {
+<span class="nc" id="L645">		return getBodyPart(actualEmail).getContentType();</span>
+	}
+	
+	private static boolean isHtml(String expectedBody) {
+<span class="nc" id="L649">		return HTML_PATTERN.matcher(expectedBody).find();</span>
+	}
+	
+	private AssertEmail() {
+		super();
+	}
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>SpringWebThymeleafContextConverter.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">reporting</a> &gt; <a href="../index.html" class="el_bundle">ogham-spring-boot-common-autoconfigure</a> &gt; <a href="index.source.html" class="el_package">fr.sii.ogham.spring.template.thymeleaf</a> &gt; <span class="el_source">SpringWebThymeleafContextConverter.java</span></div><h1>SpringWebThymeleafContextConverter.java</h1><pre class="source lang-java linenums">package fr.sii.ogham.spring.template.thymeleaf;
+
+import java.lang.reflect.Field;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.context.ApplicationContext;
+import org.springframework.expression.EvaluationContext;
+import org.springframework.web.servlet.View;
+import org.springframework.web.servlet.support.RequestContext;
+import org.springframework.web.servlet.view.AbstractTemplateView;
+import org.thymeleaf.context.IContext;
+
+import fr.sii.ogham.core.exception.template.ContextException;
+import fr.sii.ogham.template.thymeleaf.common.ThymeleafContextConverter;
+
+/**
+ * Specific context converter for Spring that registers static variables and
+ * {@link EvaluationContext} for SpEL expressions.
+ * 
+ * The aim is to provide the same support as if user was using Spring in web
+ * context (access to Spring beans from templates, be able to use static
+ * variables, ...).
+ * 
+ * @author Aurélien Baudet
+ *
+ */
+public class SpringWebThymeleafContextConverter implements ThymeleafContextConverter {
+	private final ThymeleafContextConverter delegate;
+	private final String springRequestContextVariableName;
+	private final ApplicationContext applicationContext;
+	private final WebContextProvider webContextProvider;
+	private final ThymeleafRequestContextWrapper thymeleafRequestContextWrapper;
+	private final ThymeleafWebContextProvider thymeleafWebContextProvider;
+	private final ContextMerger contextMerger;
+
+	public SpringWebThymeleafContextConverter(ThymeleafContextConverter delegate, String springRequestContextVariableName, ApplicationContext applicationContext, WebContextProvider webContextProvider,
+			ThymeleafRequestContextWrapper thymeleafRequestContextWrapper, ThymeleafWebContextProvider thymeleafWebContextProvider, ContextMerger contextMerger) {
+<span class="nc" id="L44">		super();</span>
+<span class="nc" id="L45">		this.delegate = delegate;</span>
+<span class="nc" id="L46">		this.springRequestContextVariableName = springRequestContextVariableName;</span>
+<span class="nc" id="L47">		this.applicationContext = applicationContext;</span>
+<span class="nc" id="L48">		this.webContextProvider = webContextProvider;</span>
+<span class="nc" id="L49">		this.thymeleafRequestContextWrapper = thymeleafRequestContextWrapper;</span>
+<span class="nc" id="L50">		this.thymeleafWebContextProvider = thymeleafWebContextProvider;</span>
+<span class="nc" id="L51">		this.contextMerger = contextMerger;</span>
+<span class="nc" id="L52">	}</span>
+
+	/*
+	 * If this is not null, we are using Spring 3.1+ and there is the
+	 * possibility to automatically add @PathVariable's to models. This will be
+	 * computed at class initialization time.
+	 */
+	private static final String pathVariablesSelector;
+
+	static {
+
+		/*
+		 * Compute whether we can obtain @PathVariable's from the request and
+		 * add them automatically to the model (Spring 3.1+)
+		 */
+
+<span class="nc" id="L68">		String pathVariablesSelectorValue = null;</span>
+		try {
+			// We are looking for the value of the View.PATH_VARIABLES constant,
+			// which is a String
+<span class="nc" id="L72">			final Field pathVariablesField = View.class.getDeclaredField(&quot;PATH_VARIABLES&quot;);</span>
+<span class="nc" id="L73">			pathVariablesSelectorValue = (String) pathVariablesField.get(null);</span>
+<span class="nc" id="L74">		} catch (final NoSuchFieldException | IllegalAccessException ignored) {</span>
+<span class="nc" id="L75">			pathVariablesSelectorValue = null;</span>
+<span class="nc" id="L76">		}</span>
+<span class="nc" id="L77">		pathVariablesSelector = pathVariablesSelectorValue;</span>
+<span class="nc" id="L78">	}</span>
+
+	@Override
+	public IContext convert(fr.sii.ogham.core.template.context.Context context) throws ContextException {
+<span class="nc" id="L82">		IContext base = delegate.convert(context);</span>
+
+		// partially borrowed from org.thymeleaf.spring5.view.ThymeleafView
+<span class="nc" id="L85">		final Map&lt;String, Object&gt; springModel = new HashMap&lt;&gt;(30);</span>
+
+<span class="nc" id="L87">		HttpServletRequest request = webContextProvider.getRequest(context);</span>
+<span class="nc" id="L88">		HttpServletResponse response = webContextProvider.getResponse(context);</span>
+<span class="nc" id="L89">		ServletContext servletContext = webContextProvider.getServletContext(context);</span>
+
+<span class="nc bnc" id="L91" title="All 2 branches missed.">		if (pathVariablesSelector != null) {</span>
+			@SuppressWarnings(&quot;unchecked&quot;)
+<span class="nc" id="L93">			final Map&lt;String, Object&gt; pathVars = (Map&lt;String, Object&gt;) request.getAttribute(pathVariablesSelector);</span>
+<span class="nc bnc" id="L94" title="All 2 branches missed.">			if (pathVars != null) {</span>
+<span class="nc" id="L95">				springModel.putAll(pathVars);</span>
+			}
+		}
+
+<span class="nc" id="L99">		final RequestContext requestContext = new RequestContext(request, response, servletContext, springModel);</span>
+
+		// For compatibility with ThymeleafView
+<span class="nc" id="L102">		addRequestContextAsVariable(springModel, springRequestContextVariableName, requestContext);</span>
+		// For compatibility with AbstractTemplateView
+<span class="nc" id="L104">		addRequestContextAsVariable(springModel, AbstractTemplateView.SPRING_MACRO_REQUEST_CONTEXT_ATTRIBUTE, requestContext);</span>
+
+<span class="nc" id="L106">		thymeleafRequestContextWrapper.wrapAndRegister(requestContext, request, response, servletContext, springModel);</span>
+
+<span class="nc" id="L108">		return contextMerger.merge(thymeleafWebContextProvider.getWebContext(context, base, request, response, servletContext, applicationContext, springModel), base);</span>
+	}
+
+	protected static void addRequestContextAsVariable(final Map&lt;String, Object&gt; model, final String variableName, final RequestContext requestContext) throws ContextException {
+
+<span class="nc bnc" id="L113" title="All 2 branches missed.">		if (model.containsKey(variableName)) {</span>
+<span class="nc" id="L114">			throw new ContextException(new ServletException(&quot;Cannot expose request context in model attribute '&quot; + variableName + &quot;' because of an existing model object of the same name&quot;));</span>
+		}
+<span class="nc" id="L116">		model.put(variableName, requestContext);</span>
+
+<span class="nc" id="L118">	}</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

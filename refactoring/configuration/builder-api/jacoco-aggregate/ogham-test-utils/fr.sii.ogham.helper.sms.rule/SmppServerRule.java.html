@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>SmppServerRule.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">reporting</a> &gt; <a href="../index.html" class="el_bundle">ogham-test-utils</a> &gt; <a href="index.source.html" class="el_package">fr.sii.ogham.helper.sms.rule</a> &gt; <span class="el_source">SmppServerRule.java</span></div><h1>SmppServerRule.java</h1><pre class="source lang-java linenums">package fr.sii.ogham.helper.sms.rule;
+
+import java.util.Collections;
+import java.util.List;
+
+import org.junit.Rule;
+import org.junit.rules.TestRule;
+import org.junit.runner.Description;
+import org.junit.runners.model.Statement;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import fr.sii.ogham.helper.sms.rule.config.ServerConfig;
+import fr.sii.ogham.helper.sms.rule.config.SimulatorConfiguration;
+import fr.sii.ogham.helper.sms.rule.config.annotation.SmppServerConfig;
+
+/**
+ * JUnit {@link Rule} for starting a local SMPP server for integration tests.
+ * 
+ * &lt;p&gt;
+ * The rule starts the server before every test, execute the test and stops the
+ * server.
+ * &lt;/p&gt;
+ * &lt;p&gt;
+ * The server stores the received messages (raw messages). These messages are
+ * available in testing through {@link #getReceivedMessages()}.
+ * &lt;/p&gt;
+ * 
+ * @param &lt;M&gt;
+ *            The type of the received messages
+ * 
+ * @author Aurélien Baudet
+ *
+ */
+public abstract class SmppServerRule&lt;M&gt; implements TestRule {
+<span class="nc" id="L36">	private static final Logger LOG = LoggerFactory.getLogger(SmppServerRule.class);</span>
+
+	/**
+	 * The default port used by the server if none is specified
+	 */
+	public static final int DEFAULT_PORT = 8056;
+
+	/**
+	 * The server port
+	 */
+	private int port;
+	/**
+	 * The configuration to control how server should behave
+	 */
+	private final ServerConfig builder;
+	/**
+	 * The server simulator
+	 */
+	private SmppServerSimulator&lt;M&gt; server;
+
+	/**
+	 * Initializes with the port to use for the SMPP server
+	 * 
+	 * @param port
+	 *            the port for server
+	 * @param builder
+	 *            the configuration for the server
+	 */
+	public SmppServerRule(int port, ServerConfig builder) {
+<span class="nc" id="L65">		super();</span>
+<span class="nc" id="L66">		this.port = port;</span>
+<span class="nc" id="L67">		this.builder = builder;</span>
+<span class="nc" id="L68">	}</span>
+
+	@Override
+	public Statement apply(final Statement base, final Description description) {
+<span class="nc" id="L72">		SmppServerConfig config = description.getAnnotation(SmppServerConfig.class);</span>
+<span class="nc" id="L73">		this.server = initServer(builder.annotationConfig(config).build());</span>
+<span class="nc" id="L74">		return new StartServerStatement(base);</span>
+	}
+
+	/**
+	 * Get the port used by the server.
+	 * 
+	 * @return the port used by the server
+	 */
+	public int getPort() {
+<span class="nc" id="L83">		return port;</span>
+	}
+
+	/**
+	 * Provide the list of received messages during the execution of the test.
+	 * 
+	 * @return the list of received messages
+	 */
+	public List&lt;M&gt; getReceivedMessages() {
+<span class="nc bnc" id="L92" title="All 2 branches missed.">		if (server == null) {</span>
+<span class="nc" id="L93">			return Collections.emptyList();</span>
+		}
+<span class="nc" id="L95">		return server.getReceivedMessages();</span>
+	}
+
+	/**
+	 * Initialize the server with the ready to use configuration.
+	 * 
+	 * @param simulatorConfiguration
+	 *            the configuration to apply to the server
+	 * @return the server instance
+	 */
+	protected abstract SmppServerSimulator&lt;M&gt; initServer(SimulatorConfiguration simulatorConfiguration);
+
+	private final class StartServerStatement extends Statement {
+		private final Statement base;
+
+<span class="nc" id="L110">		private StartServerStatement(Statement base) {</span>
+<span class="nc" id="L111">			this.base = base;</span>
+<span class="nc" id="L112">		}</span>
+
+		@Override
+		public void evaluate() throws Throwable {
+<span class="nc" id="L116">			LOG.info(&quot;starting SMPP server on port {}...&quot;, getPort());</span>
+<span class="nc" id="L117">			server.start();</span>
+<span class="nc" id="L118">			LOG.info(&quot;SMPP server started on port {}&quot;, getPort());</span>
+			try {
+<span class="nc" id="L120">				base.evaluate();</span>
+			} finally {
+<span class="nc" id="L122">				LOG.info(&quot;stopping SMPP server...&quot;);</span>
+<span class="nc" id="L123">				server.stop();</span>
+<span class="nc" id="L124">				LOG.info(&quot;SMPP server stopped&quot;);</span>
+			}
+<span class="nc" id="L126">		}</span>
+	}
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>
