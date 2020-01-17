@@ -35,7 +35,7 @@ import fr.sii.ogham.template.exception.VariantResolutionException;
  *
  */
 public class TemplateContentTranslator implements ContentTranslator {
-<span class="nc" id="L38">	private static final Logger LOG = LoggerFactory.getLogger(TemplateContentTranslator.class);</span>
+<span class="fc" id="L38">	private static final Logger LOG = LoggerFactory.getLogger(TemplateContentTranslator.class);</span>
 
 	/**
 	 * The parser to use for finding, loading and evaluating the template
@@ -48,50 +48,50 @@ public class TemplateContentTranslator implements ContentTranslator {
 	private final VariantResolver variantResolver;
 
 	public TemplateContentTranslator(TemplateParser parser) {
-<span class="nc" id="L51">		this(parser, null);</span>
-<span class="nc" id="L52">	}</span>
+<span class="fc" id="L51">		this(parser, null);</span>
+<span class="fc" id="L52">	}</span>
 
 	public TemplateContentTranslator(TemplateParser parser, VariantResolver variantResolver) {
-<span class="nc" id="L55">		super();</span>
-<span class="nc" id="L56">		this.parser = parser;</span>
-<span class="nc" id="L57">		this.variantResolver = variantResolver;</span>
-<span class="nc" id="L58">	}</span>
+<span class="fc" id="L55">		super();</span>
+<span class="fc" id="L56">		this.parser = parser;</span>
+<span class="fc" id="L57">		this.variantResolver = variantResolver;</span>
+<span class="fc" id="L58">	}</span>
 
 	@Override
 	public Content translate(Content content) throws ContentTranslatorException {
-<span class="nc bnc" id="L62" title="All 2 branches missed.">		if (!(content instanceof TemplateContent)) {</span>
-<span class="nc" id="L63">			LOG.trace(&quot;Not a TemplateContent =&gt; skip it&quot;);</span>
-<span class="nc" id="L64">			return content;</span>
+<span class="fc bfc" id="L62" title="All 2 branches covered.">		if (!(content instanceof TemplateContent)) {</span>
+<span class="fc" id="L63">			LOG.trace(&quot;Not a TemplateContent =&gt; skip it&quot;);</span>
+<span class="fc" id="L64">			return content;</span>
 		}
 		try {
-<span class="nc" id="L67">			TemplateContent template = (TemplateContent) content;</span>
-<span class="nc" id="L68">			ResourcePath realPath = getRealPath(template);</span>
-<span class="nc bnc" id="L69" title="All 2 branches missed.">			if (realPath == null) {</span>
+<span class="fc" id="L67">			TemplateContent template = (TemplateContent) content;</span>
+<span class="fc" id="L68">			ResourcePath realPath = getRealPath(template);</span>
+<span class="pc bpc" id="L69" title="1 of 2 branches missed.">			if (realPath == null) {</span>
 <span class="nc" id="L70">				LOG.debug(&quot;No template found for {}&quot;, template.getPath());</span>
 <span class="nc" id="L71">				throw new TemplateNotFoundException(&quot;Template not found for &quot; + template.getPath().getOriginalPath());</span>
 			}
-<span class="nc" id="L73">			Context ctx = template.getContext();</span>
-<span class="nc" id="L74">			LOG.info(&quot;Parse template {} using context {}&quot;, realPath, ctx);</span>
-<span class="nc" id="L75">			LOG.debug(&quot;Parse template content {} using {}&quot;, template, parser);</span>
-<span class="nc" id="L76">			return parser.parse(realPath, ctx);</span>
-<span class="nc" id="L77">		} catch (TemplateVariantNotFoundException e) {</span>
-<span class="nc" id="L78">			LOG.debug(&quot;No template found for {} after trying to load from {}&quot;, e.getTemplatePath(), e.getResolvedPaths());</span>
-<span class="nc" id="L79">			throw new TemplateNotFoundException(&quot;Template not found for &quot; + e.getTemplatePath().getOriginalPath() + &quot; after trying to load from &quot; + e.getResolvedPaths(), e);</span>
-<span class="nc" id="L80">		} catch (ParseException e) {</span>
-<span class="nc" id="L81">			throw new TemplateParsingFailedException(&quot;failed to translate templated content&quot;, e);</span>
+<span class="fc" id="L73">			Context ctx = template.getContext();</span>
+<span class="fc" id="L74">			LOG.info(&quot;Parse template {} using context {}&quot;, realPath, ctx);</span>
+<span class="fc" id="L75">			LOG.debug(&quot;Parse template content {} using {}&quot;, template, parser);</span>
+<span class="fc" id="L76">			return parser.parse(realPath, ctx);</span>
+<span class="fc" id="L77">		} catch (TemplateVariantNotFoundException e) {</span>
+<span class="fc" id="L78">			LOG.debug(&quot;No template found for {} after trying to load from {}&quot;, e.getTemplatePath(), e.getResolvedPaths());</span>
+<span class="fc" id="L79">			throw new TemplateNotFoundException(&quot;Template not found for &quot; + e.getTemplatePath().getOriginalPath() + &quot; after trying to load from &quot; + e.getResolvedPaths(), e);</span>
+<span class="fc" id="L80">		} catch (ParseException e) {</span>
+<span class="fc" id="L81">			throw new TemplateParsingFailedException(&quot;failed to translate templated content&quot;, e);</span>
 		}
 	}
 
 	private ResourcePath getRealPath(TemplateContent template) throws VariantResolutionException {
-<span class="nc bnc" id="L86" title="All 2 branches missed.">		if (variantResolver == null) {</span>
-<span class="nc" id="L87">			return template.getPath();</span>
+<span class="fc bfc" id="L86" title="All 2 branches covered.">		if (variantResolver == null) {</span>
+<span class="fc" id="L87">			return template.getPath();</span>
 		}
-<span class="nc" id="L89">		return variantResolver.getRealPath(template);</span>
+<span class="fc" id="L89">		return variantResolver.getRealPath(template);</span>
 	}
 
 	@Override
 	public String toString() {
-<span class="nc" id="L94">		return &quot;TemplateContentTranslator&quot;;</span>
+<span class="fc" id="L94">		return &quot;TemplateContentTranslator&quot;;</span>
 	}
 
 }

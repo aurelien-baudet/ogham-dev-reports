@@ -26,60 +26,60 @@ public class RequiredPropertyAnnotationProvider&lt;T&gt; implements ConditionPro
 	private final PropertyResolver propertyResolver;
 
 	public RequiredPropertyAnnotationProvider(PropertyResolver propertyResolver) {
-<span class="nc" id="L29">		super();</span>
-<span class="nc" id="L30">		this.propertyResolver = propertyResolver;</span>
-<span class="nc" id="L31">	}</span>
+<span class="fc" id="L29">		super();</span>
+<span class="fc" id="L30">		this.propertyResolver = propertyResolver;</span>
+<span class="fc" id="L31">	}</span>
 
 	@Override
 	public Condition&lt;T&gt; provide(RequiredProperty annotation) {
-<span class="nc bnc" id="L35" title="All 2 branches missed.">		if (annotation == null) {</span>
-<span class="nc" id="L36">			return alwaysTrue();</span>
+<span class="fc bfc" id="L35" title="All 2 branches covered.">		if (annotation == null) {</span>
+<span class="fc" id="L36">			return alwaysTrue();</span>
 		} else {
-<span class="nc" id="L38">			FluentCondition&lt;T&gt; mainCondition = exists(annotation);</span>
-<span class="nc bnc" id="L39" title="All 2 branches missed.">			if (!annotation.is().isEmpty()) {</span>
-<span class="nc" id="L40">				mainCondition = mainCondition.and(matchesValue(annotation));</span>
+<span class="fc" id="L38">			FluentCondition&lt;T&gt; mainCondition = exists(annotation);</span>
+<span class="fc bfc" id="L39" title="All 2 branches covered.">			if (!annotation.is().isEmpty()) {</span>
+<span class="fc" id="L40">				mainCondition = mainCondition.and(matchesValue(annotation));</span>
 			}
-<span class="nc bnc" id="L42" title="All 2 branches missed.">			if (!annotation.pattern().isEmpty()) {</span>
-<span class="nc" id="L43">				mainCondition = mainCondition.and(matchesPattern(annotation));</span>
+<span class="fc bfc" id="L42" title="All 2 branches covered.">			if (!annotation.pattern().isEmpty()) {</span>
+<span class="fc" id="L43">				mainCondition = mainCondition.and(matchesPattern(annotation));</span>
 			}
-<span class="nc bnc" id="L45" title="All 2 branches missed.">			for (String excludeValue : annotation.excludes()) {</span>
-<span class="nc" id="L46">				mainCondition = mainCondition.and(not(matchesExcludes(annotation, excludeValue)));</span>
+<span class="fc bfc" id="L45" title="All 2 branches covered.">			for (String excludeValue : annotation.excludes()) {</span>
+<span class="fc" id="L46">				mainCondition = mainCondition.and(not(matchesExcludes(annotation, excludeValue)));</span>
 			}
-<span class="nc" id="L48">			return mainCondition;</span>
+<span class="fc" id="L48">			return mainCondition;</span>
 		}
 	}
 
 	private FluentCondition&lt;T&gt; exists(RequiredProperty annotation) {
-<span class="nc" id="L53">		FluentCondition&lt;T&gt; condition = requiredProperty(propertyResolver, annotation.value());</span>
-<span class="nc bnc" id="L54" title="All 2 branches missed.">		for (String alternative : annotation.alternatives()) {</span>
-<span class="nc" id="L55">			condition = condition.or(Conditions.&lt;T&gt; requiredProperty(propertyResolver, alternative));</span>
+<span class="fc" id="L53">		FluentCondition&lt;T&gt; condition = requiredProperty(propertyResolver, annotation.value());</span>
+<span class="fc bfc" id="L54" title="All 2 branches covered.">		for (String alternative : annotation.alternatives()) {</span>
+<span class="fc" id="L55">			condition = condition.or(Conditions.&lt;T&gt; requiredProperty(propertyResolver, alternative));</span>
 		}
-<span class="nc" id="L57">		return condition;</span>
+<span class="fc" id="L57">		return condition;</span>
 	}
 
 	private FluentCondition&lt;T&gt; matchesValue(RequiredProperty annotation) {
-<span class="nc" id="L61">		FluentCondition&lt;T&gt; condition = requiredPropertyValue(propertyResolver, annotation.value(), annotation.is());</span>
-<span class="nc bnc" id="L62" title="All 2 branches missed.">		for (String alternative : annotation.alternatives()) {</span>
-<span class="nc" id="L63">			condition = condition.or(Conditions.&lt;T&gt; requiredPropertyValue(propertyResolver, alternative, annotation.is()));</span>
+<span class="fc" id="L61">		FluentCondition&lt;T&gt; condition = requiredPropertyValue(propertyResolver, annotation.value(), annotation.is());</span>
+<span class="fc bfc" id="L62" title="All 2 branches covered.">		for (String alternative : annotation.alternatives()) {</span>
+<span class="fc" id="L63">			condition = condition.or(Conditions.&lt;T&gt; requiredPropertyValue(propertyResolver, alternative, annotation.is()));</span>
 		}
-<span class="nc" id="L65">		return condition;</span>
+<span class="fc" id="L65">		return condition;</span>
 	}
 
 	private FluentCondition&lt;T&gt; matchesPattern(RequiredProperty annotation) {
-<span class="nc" id="L69">		Pattern pattern = Pattern.compile(annotation.pattern(), annotation.flags());</span>
-<span class="nc" id="L70">		FluentCondition&lt;T&gt; condition = requiredPropertyValue(propertyResolver, annotation.value(), pattern);</span>
-<span class="nc bnc" id="L71" title="All 2 branches missed.">		for (String alternative : annotation.alternatives()) {</span>
-<span class="nc" id="L72">			condition = condition.or(Conditions.&lt;T&gt; requiredPropertyValue(propertyResolver, alternative, pattern));</span>
+<span class="fc" id="L69">		Pattern pattern = Pattern.compile(annotation.pattern(), annotation.flags());</span>
+<span class="fc" id="L70">		FluentCondition&lt;T&gt; condition = requiredPropertyValue(propertyResolver, annotation.value(), pattern);</span>
+<span class="fc bfc" id="L71" title="All 2 branches covered.">		for (String alternative : annotation.alternatives()) {</span>
+<span class="fc" id="L72">			condition = condition.or(Conditions.&lt;T&gt; requiredPropertyValue(propertyResolver, alternative, pattern));</span>
 		}
-<span class="nc" id="L74">		return condition;</span>
+<span class="fc" id="L74">		return condition;</span>
 	}
 
 	private FluentCondition&lt;T&gt; matchesExcludes(RequiredProperty annotation, String excludeValue) {
-<span class="nc" id="L78">		FluentCondition&lt;T&gt; condition = requiredPropertyValue(propertyResolver, annotation.value(), excludeValue);</span>
-<span class="nc bnc" id="L79" title="All 2 branches missed.">		for (String alternative : annotation.alternatives()) {</span>
-<span class="nc" id="L80">			condition = condition.or(Conditions.&lt;T&gt; requiredPropertyValue(propertyResolver, alternative, excludeValue));</span>
+<span class="fc" id="L78">		FluentCondition&lt;T&gt; condition = requiredPropertyValue(propertyResolver, annotation.value(), excludeValue);</span>
+<span class="fc bfc" id="L79" title="All 2 branches covered.">		for (String alternative : annotation.alternatives()) {</span>
+<span class="fc" id="L80">			condition = condition.or(Conditions.&lt;T&gt; requiredPropertyValue(propertyResolver, alternative, excludeValue));</span>
 		}
-<span class="nc" id="L82">		return condition;</span>
+<span class="fc" id="L82">		return condition;</span>
 	}
 
 }

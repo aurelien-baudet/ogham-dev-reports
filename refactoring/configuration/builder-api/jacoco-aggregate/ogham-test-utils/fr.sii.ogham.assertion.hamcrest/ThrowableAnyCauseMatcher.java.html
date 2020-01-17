@@ -15,45 +15,45 @@ public class ThrowableAnyCauseMatcher&lt;T extends Throwable&gt; extends TypeSaf
 	private final Matcher&lt;? extends Throwable&gt; causeFinder;
 	private final Matcher&lt;? extends Throwable&gt; causeMatcher;
 
-<span class="nc" id="L18">	public ThrowableAnyCauseMatcher(Matcher&lt;? extends Throwable&gt; causeFinder, Matcher&lt;? extends Throwable&gt; causeMatcher) {</span>
-<span class="nc" id="L19">		this.causeFinder = causeFinder;</span>
-<span class="nc" id="L20">		this.causeMatcher = causeMatcher;</span>
-<span class="nc" id="L21">	}</span>
+<span class="fc" id="L18">	public ThrowableAnyCauseMatcher(Matcher&lt;? extends Throwable&gt; causeFinder, Matcher&lt;? extends Throwable&gt; causeMatcher) {</span>
+<span class="fc" id="L19">		this.causeFinder = causeFinder;</span>
+<span class="fc" id="L20">		this.causeMatcher = causeMatcher;</span>
+<span class="fc" id="L21">	}</span>
 
 	public void describeTo(Description description) {
-<span class="nc" id="L24">		description.appendText(&quot;exception with cause matching &quot;);</span>
-<span class="nc" id="L25">		description.appendDescriptionOf(causeFinder);</span>
-<span class="nc" id="L26">		description.appendText(&quot; and matched cause &quot;);</span>
-<span class="nc" id="L27">		description.appendDescriptionOf(causeMatcher);</span>
-<span class="nc" id="L28">	}</span>
+<span class="fc" id="L24">		description.appendText(&quot;exception with cause matching &quot;);</span>
+<span class="fc" id="L25">		description.appendDescriptionOf(causeFinder);</span>
+<span class="fc" id="L26">		description.appendText(&quot; and matched cause &quot;);</span>
+<span class="fc" id="L27">		description.appendDescriptionOf(causeMatcher);</span>
+<span class="fc" id="L28">	}</span>
 
 	@Override
 	protected boolean matchesSafely(T item) {
-<span class="nc" id="L32">		Throwable cause = item;</span>
-<span class="nc bnc" id="L33" title="All 2 branches missed.">		while (cause != null) {</span>
-<span class="nc bnc" id="L34" title="All 2 branches missed.">			if (causeFinder.matches(cause)) {</span>
-<span class="nc" id="L35">				return causeMatcher.matches(cause);</span>
+<span class="fc" id="L32">		Throwable cause = item;</span>
+<span class="fc bfc" id="L33" title="All 2 branches covered.">		while (cause != null) {</span>
+<span class="fc bfc" id="L34" title="All 2 branches covered.">			if (causeFinder.matches(cause)) {</span>
+<span class="fc" id="L35">				return causeMatcher.matches(cause);</span>
 			}
-<span class="nc" id="L37">			cause = cause.getCause();</span>
+<span class="fc" id="L37">			cause = cause.getCause();</span>
 		}
-<span class="nc" id="L39">		return false;</span>
+<span class="fc" id="L39">		return false;</span>
 	}
 
 	@Override
 	protected void describeMismatchSafely(T item, Description description) {
-<span class="nc" id="L44">		Throwable cause = item;</span>
-<span class="nc bnc" id="L45" title="All 2 branches missed.">		while (cause != null) {</span>
-<span class="nc bnc" id="L46" title="All 2 branches missed.">			if (causeFinder.matches(cause)) {</span>
-<span class="nc" id="L47">				break;</span>
+<span class="fc" id="L44">		Throwable cause = item;</span>
+<span class="fc bfc" id="L45" title="All 2 branches covered.">		while (cause != null) {</span>
+<span class="fc bfc" id="L46" title="All 2 branches covered.">			if (causeFinder.matches(cause)) {</span>
+<span class="fc" id="L47">				break;</span>
 			}
-<span class="nc" id="L49">			cause = cause.getCause();</span>
+<span class="fc" id="L49">			cause = cause.getCause();</span>
 		}
-<span class="nc bnc" id="L51" title="All 2 branches missed.">		if (cause == null) {</span>
-<span class="nc" id="L52">			description.appendText(&quot;was not found in exception stack&quot;);</span>
+<span class="fc bfc" id="L51" title="All 2 branches covered.">		if (cause == null) {</span>
+<span class="fc" id="L52">			description.appendText(&quot;was not found in exception stack&quot;);</span>
 		} else {
-<span class="nc" id="L54">			causeMatcher.describeMismatch(cause, description);</span>
+<span class="fc" id="L54">			causeMatcher.describeMismatch(cause, description);</span>
 		}
-<span class="nc" id="L56">	}</span>
+<span class="fc" id="L56">	}</span>
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

@@ -11,14 +11,14 @@ import org.slf4j.LoggerFactory;
  *
  */
 public class SimpleClasspathHelper implements ClasspathHelper {
-<span class="nc" id="L14">	private static final Logger LOG = LoggerFactory.getLogger(SimpleClasspathHelper.class);</span>
+<span class="fc" id="L14">	private static final Logger LOG = LoggerFactory.getLogger(SimpleClasspathHelper.class);</span>
 	
 	private ClassLoader classLoader;
 	
 	public SimpleClasspathHelper() {
-<span class="nc" id="L19">		super();</span>
-<span class="nc" id="L20">		classLoader = null;</span>
-<span class="nc" id="L21">	}</span>
+<span class="fc" id="L19">		super();</span>
+<span class="fc" id="L20">		classLoader = null;</span>
+<span class="fc" id="L21">	}</span>
 
 	/**
 	 * Test if the class name is defined in the classpath.
@@ -28,53 +28,53 @@ public class SimpleClasspathHelper implements ClasspathHelper {
 	 * @return true if the class exists in the classpath, false otherwise
 	 */
 	public boolean exists(String className) {
-<span class="nc bnc" id="L31" title="All 2 branches missed.">		if(this.classLoader!=null) {</span>
-<span class="nc bnc" id="L32" title="All 2 branches missed.">			if(exists(className, this.classLoader)) {</span>
-<span class="nc" id="L33">				LOG.debug(&quot;class {} found using class specific class loader&quot;, className);</span>
-<span class="nc" id="L34">				return true;</span>
+<span class="fc bfc" id="L31" title="All 2 branches covered.">		if(this.classLoader!=null) {</span>
+<span class="fc bfc" id="L32" title="All 2 branches covered.">			if(exists(className, this.classLoader)) {</span>
+<span class="fc" id="L33">				LOG.debug(&quot;class {} found using class specific class loader&quot;, className);</span>
+<span class="fc" id="L34">				return true;</span>
 			}
-<span class="nc" id="L36">			return false;</span>
+<span class="fc" id="L36">			return false;</span>
 		}
-<span class="nc bnc" id="L38" title="All 2 branches missed.">		if(existsWithDefaultClassLoader(className)) {</span>
-<span class="nc" id="L39">			LOG.debug(&quot;class {} found using default class loader&quot;, className);</span>
-<span class="nc" id="L40">			return true;</span>
+<span class="fc bfc" id="L38" title="All 2 branches covered.">		if(existsWithDefaultClassLoader(className)) {</span>
+<span class="fc" id="L39">			LOG.debug(&quot;class {} found using default class loader&quot;, className);</span>
+<span class="fc" id="L40">			return true;</span>
 		}
-<span class="nc bnc" id="L42" title="All 2 branches missed.">		if(exists(className, Thread.currentThread().getContextClassLoader())) {</span>
+<span class="pc bpc" id="L42" title="1 of 2 branches missed.">		if(exists(className, Thread.currentThread().getContextClassLoader())) {</span>
 <span class="nc" id="L43">			LOG.debug(&quot;class {} found using class loader of current thread&quot;, className);</span>
 <span class="nc" id="L44">			return true;</span>
 		}
-<span class="nc bnc" id="L46" title="All 2 branches missed.">		if(exists(className, getClass().getClassLoader())) {</span>
+<span class="pc bpc" id="L46" title="1 of 2 branches missed.">		if(exists(className, getClass().getClassLoader())) {</span>
 <span class="nc" id="L47">			LOG.debug(&quot;class {} found using class loader of current class&quot;, className);</span>
 <span class="nc" id="L48">			return true;</span>
 		}
-<span class="nc" id="L50">		return false;</span>
+<span class="fc" id="L50">		return false;</span>
 	}
 
 	private static boolean existsWithDefaultClassLoader(String className) {
 		try {
-<span class="nc" id="L55">			Class.forName(className);</span>
-<span class="nc" id="L56">			return true;</span>
-<span class="nc" id="L57">		} catch (ClassNotFoundException e) {</span>
-<span class="nc" id="L58">			LOG.debug(&quot;Class {} not found&quot;, className);</span>
-<span class="nc" id="L59">			LOG.trace(&quot;Cause:&quot;, e);</span>
-<span class="nc" id="L60">			return false;</span>
+<span class="fc" id="L55">			Class.forName(className);</span>
+<span class="fc" id="L56">			return true;</span>
+<span class="fc" id="L57">		} catch (ClassNotFoundException e) {</span>
+<span class="fc" id="L58">			LOG.debug(&quot;Class {} not found&quot;, className);</span>
+<span class="fc" id="L59">			LOG.trace(&quot;Cause:&quot;, e);</span>
+<span class="fc" id="L60">			return false;</span>
 		}
 	}
 
 	private static boolean exists(String className, ClassLoader classLoader) {
 		try {
-<span class="nc" id="L66">			Class.forName(className, false, classLoader);</span>
-<span class="nc" id="L67">			return true;</span>
-<span class="nc" id="L68">		} catch (ClassNotFoundException e) {</span>
-<span class="nc" id="L69">			LOG.debug(&quot;Class {} not found&quot;, className);</span>
-<span class="nc" id="L70">			LOG.trace(&quot;Cause:&quot;, e);</span>
-<span class="nc" id="L71">			return false;</span>
+<span class="fc" id="L66">			Class.forName(className, false, classLoader);</span>
+<span class="fc" id="L67">			return true;</span>
+<span class="fc" id="L68">		} catch (ClassNotFoundException e) {</span>
+<span class="fc" id="L69">			LOG.debug(&quot;Class {} not found&quot;, className);</span>
+<span class="fc" id="L70">			LOG.trace(&quot;Cause:&quot;, e);</span>
+<span class="fc" id="L71">			return false;</span>
 		}
 	}
 
 	public void setClassLoader(ClassLoader classLoader) {
-<span class="nc" id="L76">		this.classLoader = classLoader;</span>
-<span class="nc" id="L77">	}</span>
+<span class="fc" id="L76">		this.classLoader = classLoader;</span>
+<span class="fc" id="L77">	}</span>
 
 	public void resetClassLoader() {
 <span class="nc" id="L80">		this.classLoader = null;</span>

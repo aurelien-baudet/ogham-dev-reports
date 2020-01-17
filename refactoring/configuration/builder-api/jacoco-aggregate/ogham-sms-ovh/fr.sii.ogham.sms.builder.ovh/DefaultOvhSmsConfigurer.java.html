@@ -71,40 +71,40 @@ import fr.sii.ogham.sms.sender.impl.ovh.SmsCoding;
  *
  */
 public final class DefaultOvhSmsConfigurer {
-<span class="nc" id="L74">	private static final Logger LOG = LoggerFactory.getLogger(DefaultOvhSmsConfigurer.class);</span>
+<span class="fc" id="L74">	private static final Logger LOG = LoggerFactory.getLogger(DefaultOvhSmsConfigurer.class);</span>
 
 	@ConfigurerFor(targetedBuilder = &quot;standard&quot;, priority = DEFAULT_OVHSMS_CONFIGURER_PRIORITY, phase = AFTER_INIT)
-<span class="nc" id="L77">	public static class EnvironmentPropagator implements MessagingConfigurer {</span>
+<span class="fc" id="L77">	public static class EnvironmentPropagator implements MessagingConfigurer {</span>
 		@Override
 		public void configure(MessagingBuilder msgBuilder) {
-<span class="nc" id="L80">			OvhSmsBuilder builder = msgBuilder.sms().sender(OvhSmsBuilder.class);</span>
+<span class="fc" id="L80">			OvhSmsBuilder builder = msgBuilder.sms().sender(OvhSmsBuilder.class);</span>
 			// use same environment as parent builder
-<span class="nc" id="L82">			builder.environment(msgBuilder.environment());</span>
-<span class="nc" id="L83">		}</span>
+<span class="fc" id="L82">			builder.environment(msgBuilder.environment());</span>
+<span class="fc" id="L83">		}</span>
 	}
 	
 	@ConfigurerFor(targetedBuilder = &quot;standard&quot;, priority = DEFAULT_OVHSMS_CONFIGURER_PRIORITY)
-<span class="nc" id="L87">	public static class OvhSmsConfigurer implements MessagingConfigurer {</span>
+<span class="fc" id="L87">	public static class OvhSmsConfigurer implements MessagingConfigurer {</span>
 		@Override
 		public void configure(MessagingBuilder msgBuilder) {
-<span class="nc" id="L90">			LOG.debug(&quot;[{}] apply configuration&quot;, this);</span>
-<span class="nc" id="L91">			OvhSmsBuilder builder = msgBuilder.sms().sender(OvhSmsBuilder.class);</span>
+<span class="fc" id="L90">			LOG.debug(&quot;[{}] apply configuration&quot;, this);</span>
+<span class="fc" id="L91">			OvhSmsBuilder builder = msgBuilder.sms().sender(OvhSmsBuilder.class);</span>
 			// @formatter:off
-<span class="nc" id="L93">			builder</span>
-<span class="nc" id="L94">				.url().properties(&quot;${ogham.sms.ovh.url}&quot;).defaultValue(overrideIfNotSet(defaultUrl())).and()</span>
-<span class="nc" id="L95">				.account().properties(&quot;${ogham.sms.ovh.account}&quot;).and()</span>
-<span class="nc" id="L96">				.login().properties(&quot;${ogham.sms.ovh.login}&quot;).and()</span>
-<span class="nc" id="L97">				.password().properties(&quot;${ogham.sms.ovh.password}&quot;).and()</span>
-<span class="nc" id="L98">				.options()</span>
-<span class="nc" id="L99">					.noStop().properties(&quot;${ogham.sms.ovh.no-stop}&quot;).defaultValue(overrideIfNotSet(true)).and()</span>
-<span class="nc" id="L100">					.smsCoding().properties(&quot;${ogham.sms.ovh.sms-coding}&quot;).and()</span>
-<span class="nc" id="L101">					.tag().properties(&quot;${ogham.sms.ovh.tag}&quot;);</span>
+<span class="fc" id="L93">			builder</span>
+<span class="fc" id="L94">				.url().properties(&quot;${ogham.sms.ovh.url}&quot;).defaultValue(overrideIfNotSet(defaultUrl())).and()</span>
+<span class="fc" id="L95">				.account().properties(&quot;${ogham.sms.ovh.account}&quot;).and()</span>
+<span class="fc" id="L96">				.login().properties(&quot;${ogham.sms.ovh.login}&quot;).and()</span>
+<span class="fc" id="L97">				.password().properties(&quot;${ogham.sms.ovh.password}&quot;).and()</span>
+<span class="fc" id="L98">				.options()</span>
+<span class="fc" id="L99">					.noStop().properties(&quot;${ogham.sms.ovh.no-stop}&quot;).defaultValue(overrideIfNotSet(true)).and()</span>
+<span class="fc" id="L100">					.smsCoding().properties(&quot;${ogham.sms.ovh.sms-coding}&quot;).and()</span>
+<span class="fc" id="L101">					.tag().properties(&quot;${ogham.sms.ovh.tag}&quot;);</span>
 			// @formatter:on
-<span class="nc" id="L103">		}</span>
+<span class="fc" id="L103">		}</span>
 	
 		private static URL defaultUrl() {
 			try {
-<span class="nc" id="L107">				return new URL(&quot;https://www.ovh.com/cgi-bin/sms/http2sms.cgi&quot;);</span>
+<span class="fc" id="L107">				return new URL(&quot;https://www.ovh.com/cgi-bin/sms/http2sms.cgi&quot;);</span>
 <span class="nc" id="L108">			} catch (MalformedURLException e) {</span>
 				// can never be thrown
 <span class="nc" id="L110">				return null;</span>

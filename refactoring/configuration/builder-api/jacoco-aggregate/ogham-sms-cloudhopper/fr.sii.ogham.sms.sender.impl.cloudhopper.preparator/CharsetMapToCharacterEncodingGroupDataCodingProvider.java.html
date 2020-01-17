@@ -73,22 +73,22 @@ public class CharsetMapToCharacterEncodingGroupDataCodingProvider implements Dat
 	 *            {@link DataCodingProvider}(s) being executed.
 	 */
 	public CharsetMapToCharacterEncodingGroupDataCodingProvider(boolean failIfUnknown) {
-<span class="nc" id="L76">		super();</span>
-<span class="nc" id="L77">		this.failIfUnknown = failIfUnknown;</span>
-<span class="nc" id="L78">		this.alphabetIndexedByCharsetName = defaultMap();</span>
-<span class="nc" id="L79">	}</span>
+<span class="fc" id="L76">		super();</span>
+<span class="fc" id="L77">		this.failIfUnknown = failIfUnknown;</span>
+<span class="fc" id="L78">		this.alphabetIndexedByCharsetName = defaultMap();</span>
+<span class="fc" id="L79">	}</span>
 
 	@Override
 	public DataCoding provide(Encoded encoded) throws DataCodingException {
-<span class="nc" id="L83">		NamedCharset charset = NamedCharset.from(encoded.getCharsetName());</span>
-<span class="nc" id="L84">		Byte encoding = alphabetIndexedByCharsetName.get(charset.getCharsetName());</span>
-<span class="nc bnc" id="L85" title="All 2 branches missed.">		if (encoding == null) {</span>
-<span class="nc bnc" id="L86" title="All 2 branches missed.">			if (failIfUnknown) {</span>
-<span class="nc" id="L87">				throw new UnsupportedCharsetException(encoded.getCharsetName() + &quot; charset not supported for Character Encoding Group Data Coding Scheme&quot;, encoded);</span>
+<span class="fc" id="L83">		NamedCharset charset = NamedCharset.from(encoded.getCharsetName());</span>
+<span class="fc" id="L84">		Byte encoding = alphabetIndexedByCharsetName.get(charset.getCharsetName());</span>
+<span class="fc bfc" id="L85" title="All 2 branches covered.">		if (encoding == null) {</span>
+<span class="fc bfc" id="L86" title="All 2 branches covered.">			if (failIfUnknown) {</span>
+<span class="fc" id="L87">				throw new UnsupportedCharsetException(encoded.getCharsetName() + &quot; charset not supported for Character Encoding Group Data Coding Scheme&quot;, encoded);</span>
 			}
-<span class="nc" id="L89">			return null;</span>
+<span class="fc" id="L89">			return null;</span>
 		}
-<span class="nc" id="L91">		return DataCoding.createCharacterEncodingGroup(encoding);</span>
+<span class="fc" id="L91">		return DataCoding.createCharacterEncodingGroup(encoding);</span>
 	}
 
 	/**
@@ -113,17 +113,17 @@ public class CharsetMapToCharacterEncodingGroupDataCodingProvider implements Dat
 	 * @return the mapping
 	 */
 	public static Map&lt;String, Byte&gt; defaultMap() {
-<span class="nc" id="L116">		Map&lt;String, Byte&gt; map = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L116">		Map&lt;String, Byte&gt; map = new HashMap&lt;&gt;();</span>
 		// @formatter:off
-<span class="nc" id="L118">		map.put(NAME_GSM, 			CHAR_ENC_8BIT);</span>
-<span class="nc" id="L119">		map.put(NAME_GSM8, 			CHAR_ENC_8BIT);</span>
+<span class="fc" id="L118">		map.put(NAME_GSM, 			CHAR_ENC_8BIT);</span>
+<span class="fc" id="L119">		map.put(NAME_GSM8, 			CHAR_ENC_8BIT);</span>
 		// SMPP v3.3 defines 0 for GSM 7-bit packed.
 		// Since SMPP v3.4, meaning of DCS=0 is ambiguous...
 		// But it is the only possible value for GSM 7-bit packed 
-<span class="nc" id="L123">		map.put(NAME_GSM7, 			CHAR_ENC_DEFAULT);</span>
-<span class="nc" id="L124">		map.put(NAME_PACKED_GSM, 	CHAR_ENC_DEFAULT);</span>
-<span class="nc" id="L125">		map.put(NAME_ISO_8859_1, 	CHAR_ENC_LATIN1);</span>
-<span class="nc" id="L126">		map.put(NAME_UCS_2, 		CHAR_ENC_UCS2);</span>
+<span class="fc" id="L123">		map.put(NAME_GSM7, 			CHAR_ENC_DEFAULT);</span>
+<span class="fc" id="L124">		map.put(NAME_PACKED_GSM, 	CHAR_ENC_DEFAULT);</span>
+<span class="fc" id="L125">		map.put(NAME_ISO_8859_1, 	CHAR_ENC_LATIN1);</span>
+<span class="fc" id="L126">		map.put(NAME_UCS_2, 		CHAR_ENC_UCS2);</span>
 		// TODO: if other charset are used =&gt; which data coding values to use ? Where to find the information ???
 //		map.put(CharsetUtil.NAME_AIRWIDE_GSM, DataCoding.);
 //		map.put(CharsetUtil.NAME_AIRWIDE_IA5, DataCoding.);
@@ -154,7 +154,7 @@ public class CharsetMapToCharacterEncodingGroupDataCodingProvider implements Dat
 //		map.put(CharsetUtil., 		DataCoding.CHAR_ENC_RSRVD3);
 //		map.put(CharsetUtil.NAME_UCS_2, 		DataCoding.CHAR_ENC_UCS2);
 		// @formatter:on
-<span class="nc" id="L157">		return Collections.unmodifiableMap(map);</span>
+<span class="fc" id="L157">		return Collections.unmodifiableMap(map);</span>
 	}
 
 }

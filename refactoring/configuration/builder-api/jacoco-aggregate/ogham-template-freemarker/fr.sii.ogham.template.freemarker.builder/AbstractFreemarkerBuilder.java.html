@@ -45,7 +45,7 @@ import freemarker.template.TemplateExceptionHandler;
 @SuppressWarnings(&quot;squid:S00119&quot;)
 public abstract class AbstractFreemarkerBuilder&lt;MYSELF extends AbstractFreemarkerBuilder&lt;MYSELF, P&gt;, P&gt; extends AbstractParent&lt;P&gt;
 		implements DetectorBuilder&lt;MYSELF&gt;, ResourceResolutionBuilder&lt;MYSELF&gt;, Builder&lt;TemplateParser&gt; {
-<span class="nc" id="L48">	private static final Logger LOG = LoggerFactory.getLogger(AbstractFreemarkerBuilder.class);</span>
+<span class="fc" id="L48">	private static final Logger LOG = LoggerFactory.getLogger(AbstractFreemarkerBuilder.class);</span>
 
 	protected MYSELF myself;
 	protected EnvironmentBuilder&lt;MYSELF&gt; environmentBuilder;
@@ -57,18 +57,18 @@ public abstract class AbstractFreemarkerBuilder&lt;MYSELF extends AbstractFreema
 	private ClassLoader classLoader;
 
 	protected AbstractFreemarkerBuilder(Class&lt;?&gt; selfType) {
-<span class="nc" id="L60">		this(selfType, null, null);</span>
-<span class="nc" id="L61">	}</span>
+<span class="fc" id="L60">		this(selfType, null, null);</span>
+<span class="fc" id="L61">	}</span>
 
 	@SuppressWarnings(&quot;unchecked&quot;)
 	protected AbstractFreemarkerBuilder(Class&lt;?&gt; selfType, P parent, EnvironmentBuilder&lt;?&gt; environmentBuilder) {
-<span class="nc" id="L65">		super(parent);</span>
-<span class="nc" id="L66">		myself = (MYSELF) selfType.cast(this);</span>
-<span class="nc bnc" id="L67" title="All 2 branches missed.">		if (environmentBuilder != null) {</span>
-<span class="nc" id="L68">			environment(environmentBuilder);</span>
+<span class="fc" id="L65">		super(parent);</span>
+<span class="fc" id="L66">		myself = (MYSELF) selfType.cast(this);</span>
+<span class="fc bfc" id="L67" title="All 2 branches covered.">		if (environmentBuilder != null) {</span>
+<span class="fc" id="L68">			environment(environmentBuilder);</span>
 		}
-<span class="nc" id="L70">		customAdapters = new ArrayList&lt;&gt;();</span>
-<span class="nc" id="L71">	}</span>
+<span class="fc" id="L70">		customAdapters = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L71">	}</span>
 
 	/**
 	 * Configures environment for the builder (and sub-builders). Environment
@@ -115,10 +115,10 @@ public abstract class AbstractFreemarkerBuilder&lt;MYSELF extends AbstractFreema
 	 * @return the builder to configure properties handling
 	 */
 	public EnvironmentBuilder&lt;MYSELF&gt; environment() {
-<span class="nc bnc" id="L118" title="All 2 branches missed.">		if (environmentBuilder == null) {</span>
-<span class="nc" id="L119">			environmentBuilder = new SimpleEnvironmentBuilder&lt;&gt;(myself);</span>
+<span class="pc bpc" id="L118" title="1 of 2 branches missed.">		if (environmentBuilder == null) {</span>
+<span class="fc" id="L119">			environmentBuilder = new SimpleEnvironmentBuilder&lt;&gt;(myself);</span>
 		}
-<span class="nc" id="L121">		return environmentBuilder;</span>
+<span class="fc" id="L121">		return environmentBuilder;</span>
 	}
 
 	/**
@@ -141,8 +141,8 @@ public abstract class AbstractFreemarkerBuilder&lt;MYSELF extends AbstractFreema
 	 * @return this instance for fluent chaining
 	 */
 	public MYSELF environment(EnvironmentBuilder&lt;?&gt; builder) {
-<span class="nc" id="L144">		environmentBuilder = new EnvironmentBuilderDelegate&lt;&gt;(myself, builder);</span>
-<span class="nc" id="L145">		return myself;</span>
+<span class="fc" id="L144">		environmentBuilder = new EnvironmentBuilderDelegate&lt;&gt;(myself, builder);</span>
+<span class="fc" id="L145">		return myself;</span>
 	}
 
 	@Override
@@ -153,20 +153,20 @@ public abstract class AbstractFreemarkerBuilder&lt;MYSELF extends AbstractFreema
 
 	@Override
 	public ClassPathResolutionBuilder&lt;MYSELF&gt; classpath() {
-<span class="nc" id="L156">		initResolutionBuilder();</span>
-<span class="nc" id="L157">		return resourceResolutionBuilderHelper.classpath();</span>
+<span class="fc" id="L156">		initResolutionBuilder();</span>
+<span class="fc" id="L157">		return resourceResolutionBuilderHelper.classpath();</span>
 	}
 
 	@Override
 	public FileResolutionBuilder&lt;MYSELF&gt; file() {
-<span class="nc" id="L162">		initResolutionBuilder();</span>
-<span class="nc" id="L163">		return resourceResolutionBuilderHelper.file();</span>
+<span class="fc" id="L162">		initResolutionBuilder();</span>
+<span class="fc" id="L163">		return resourceResolutionBuilderHelper.file();</span>
 	}
 
 	@Override
 	public StringResolutionBuilder&lt;MYSELF&gt; string() {
-<span class="nc" id="L168">		initResolutionBuilder();</span>
-<span class="nc" id="L169">		return resourceResolutionBuilderHelper.string();</span>
+<span class="fc" id="L168">		initResolutionBuilder();</span>
+<span class="fc" id="L169">		return resourceResolutionBuilderHelper.string();</span>
 	}
 
 	@Override
@@ -202,10 +202,10 @@ public abstract class AbstractFreemarkerBuilder&lt;MYSELF extends AbstractFreema
 	 * @return the fluent builder for Freemarker configuration object
 	 */
 	public FreemarkerConfigurationBuilder&lt;MYSELF&gt; configuration() {
-<span class="nc bnc" id="L205" title="All 2 branches missed.">		if (configurationBuilder == null) {</span>
-<span class="nc" id="L206">			configurationBuilder = new FreemarkerConfigurationBuilder&lt;&gt;(myself, environmentBuilder);</span>
+<span class="fc bfc" id="L205" title="All 2 branches covered.">		if (configurationBuilder == null) {</span>
+<span class="fc" id="L206">			configurationBuilder = new FreemarkerConfigurationBuilder&lt;&gt;(myself, environmentBuilder);</span>
 		}
-<span class="nc" id="L208">		return configurationBuilder;</span>
+<span class="fc" id="L208">		return configurationBuilder;</span>
 	}
 
 	/**
@@ -243,8 +243,8 @@ public abstract class AbstractFreemarkerBuilder&lt;MYSELF extends AbstractFreema
 	 * @return this instance for fluent chaining
 	 */
 	public MYSELF mergeConfiguration(Configuration configuration) {
-<span class="nc" id="L246">		configuration().base(configuration);</span>
-<span class="nc" id="L247">		return myself;</span>
+<span class="fc" id="L246">		configuration().base(configuration);</span>
+<span class="fc" id="L247">		return myself;</span>
 	}
 
 	/**
@@ -270,21 +270,21 @@ public abstract class AbstractFreemarkerBuilder&lt;MYSELF extends AbstractFreema
 
 	@Override
 	public TemplateParser build() {
-<span class="nc" id="L273">		LOG.info(&quot;Freemarker parser is registered&quot;);</span>
-<span class="nc" id="L274">		return new FreeMarkerParser(buildConfiguration(), buildResolver());</span>
+<span class="fc" id="L273">		LOG.info(&quot;Freemarker parser is registered&quot;);</span>
+<span class="fc" id="L274">		return new FreeMarkerParser(buildConfiguration(), buildResolver());</span>
 	}
 
 	@Override
 	public TemplateEngineDetector buildDetector() {
-<span class="nc bnc" id="L279" title="All 2 branches missed.">		return detector == null ? buildDefaultDetector() : detector;</span>
+<span class="pc bpc" id="L279" title="1 of 2 branches missed.">		return detector == null ? buildDefaultDetector() : detector;</span>
 	}
 
 	private TemplateEngineDetector buildDefaultDetector() {
-<span class="nc" id="L283">		FirstSupportingResourceResolver resolver = buildResolver();</span>
-<span class="nc" id="L284">		OrTemplateDetector or = new OrTemplateDetector();</span>
-<span class="nc" id="L285">		or.addDetector(new FreeMarkerTemplateDetector(resolver, &quot;.ftl&quot;));</span>
-<span class="nc" id="L286">		or.addDetector(new SimpleResourceEngineDetector(resolver, new FixedEngineDetector(true)));</span>
-<span class="nc" id="L287">		return or;</span>
+<span class="fc" id="L283">		FirstSupportingResourceResolver resolver = buildResolver();</span>
+<span class="fc" id="L284">		OrTemplateDetector or = new OrTemplateDetector();</span>
+<span class="fc" id="L285">		or.addDetector(new FreeMarkerTemplateDetector(resolver, &quot;.ftl&quot;));</span>
+<span class="fc" id="L286">		or.addDetector(new SimpleResourceEngineDetector(resolver, new FixedEngineDetector(true)));</span>
+<span class="fc" id="L287">		return or;</span>
 	}
 
 	/**
@@ -293,48 +293,48 @@ public abstract class AbstractFreemarkerBuilder&lt;MYSELF extends AbstractFreema
 	 * @return the resource resolver
 	 */
 	public FirstSupportingResourceResolver buildResolver() {
-<span class="nc" id="L296">		return new FirstSupportingResourceResolver(buildResolvers());</span>
+<span class="fc" id="L296">		return new FirstSupportingResourceResolver(buildResolvers());</span>
 	}
 
 	private Configuration buildConfiguration() {
 		Configuration builtConfiguration;
-<span class="nc bnc" id="L301" title="All 2 branches missed.">		if (this.configuration != null) {</span>
+<span class="pc bpc" id="L301" title="1 of 2 branches missed.">		if (this.configuration != null) {</span>
 <span class="nc" id="L302">			builtConfiguration = this.configuration;</span>
-<span class="nc bnc" id="L303" title="All 2 branches missed.">		} else if (configurationBuilder != null) {</span>
-<span class="nc" id="L304">			builtConfiguration = configurationBuilder.build();</span>
+<span class="fc bfc" id="L303" title="All 2 branches covered.">		} else if (configurationBuilder != null) {</span>
+<span class="fc" id="L304">			builtConfiguration = configurationBuilder.build();</span>
 		} else {
-<span class="nc" id="L306">			builtConfiguration = new Configuration(DEFAULT_INCOMPATIBLE_IMPROVEMENTS);</span>
-<span class="nc" id="L307">			builtConfiguration.setDefaultEncoding(&quot;UTF-8&quot;);</span>
-<span class="nc" id="L308">			builtConfiguration.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);</span>
+<span class="fc" id="L306">			builtConfiguration = new Configuration(DEFAULT_INCOMPATIBLE_IMPROVEMENTS);</span>
+<span class="fc" id="L307">			builtConfiguration.setDefaultEncoding(&quot;UTF-8&quot;);</span>
+<span class="fc" id="L308">			builtConfiguration.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);</span>
 		}
-<span class="nc" id="L310">		FirstSupportingResourceResolver builtResolver = buildResolver();</span>
-<span class="nc" id="L311">		FirstSupportingResolverAdapter builtAdapter = buildAdapter();</span>
-<span class="nc" id="L312">		builtConfiguration.setTemplateLoader(new FreeMarkerFirstSupportingTemplateLoader(builtResolver, builtAdapter));</span>
-<span class="nc" id="L313">		builtConfiguration.setTemplateLookupStrategy(new SkipLocaleForStringContentTemplateLookupStrategy(builtConfiguration.getTemplateLookupStrategy(), builtResolver, builtAdapter));</span>
-<span class="nc" id="L314">		return builtConfiguration;</span>
+<span class="fc" id="L310">		FirstSupportingResourceResolver builtResolver = buildResolver();</span>
+<span class="fc" id="L311">		FirstSupportingResolverAdapter builtAdapter = buildAdapter();</span>
+<span class="fc" id="L312">		builtConfiguration.setTemplateLoader(new FreeMarkerFirstSupportingTemplateLoader(builtResolver, builtAdapter));</span>
+<span class="fc" id="L313">		builtConfiguration.setTemplateLookupStrategy(new SkipLocaleForStringContentTemplateLookupStrategy(builtConfiguration.getTemplateLookupStrategy(), builtResolver, builtAdapter));</span>
+<span class="fc" id="L314">		return builtConfiguration;</span>
 	}
 
 	protected List&lt;ResourceResolver&gt; buildResolvers() {
-<span class="nc" id="L318">		initResolutionBuilder();</span>
-<span class="nc" id="L319">		return resourceResolutionBuilderHelper.buildResolvers();</span>
+<span class="fc" id="L318">		initResolutionBuilder();</span>
+<span class="fc" id="L319">		return resourceResolutionBuilderHelper.buildResolvers();</span>
 	}
 
 	protected FirstSupportingResolverAdapter buildAdapter() {
-<span class="nc" id="L323">		FirstSupportingResolverAdapter adapter = new FirstSupportingResolverAdapter();</span>
-<span class="nc bnc" id="L324" title="All 2 branches missed.">		for (TemplateLoaderAdapter custom : customAdapters) {</span>
+<span class="fc" id="L323">		FirstSupportingResolverAdapter adapter = new FirstSupportingResolverAdapter();</span>
+<span class="pc bpc" id="L324" title="1 of 2 branches missed.">		for (TemplateLoaderAdapter custom : customAdapters) {</span>
 <span class="nc" id="L325">			adapter.addAdapter(custom);</span>
 <span class="nc" id="L326">		}</span>
-<span class="nc" id="L327">		adapter.addAdapter(new ClassPathResolverAdapter(classLoader));</span>
-<span class="nc" id="L328">		adapter.addAdapter(new FileResolverAdapter());</span>
-<span class="nc" id="L329">		adapter.addAdapter(new StringResolverAdapter());</span>
-<span class="nc" id="L330">		adapter.setOptions(new TemplateLoaderOptions());</span>
-<span class="nc" id="L331">		return adapter;</span>
+<span class="fc" id="L327">		adapter.addAdapter(new ClassPathResolverAdapter(classLoader));</span>
+<span class="fc" id="L328">		adapter.addAdapter(new FileResolverAdapter());</span>
+<span class="fc" id="L329">		adapter.addAdapter(new StringResolverAdapter());</span>
+<span class="fc" id="L330">		adapter.setOptions(new TemplateLoaderOptions());</span>
+<span class="fc" id="L331">		return adapter;</span>
 	}
 
 	private void initResolutionBuilder() {
-<span class="nc bnc" id="L335" title="All 2 branches missed.">		if (resourceResolutionBuilderHelper == null) {</span>
-<span class="nc" id="L336">			resourceResolutionBuilderHelper = new ResourceResolutionBuilderHelper&lt;&gt;(myself, environmentBuilder);</span>
+<span class="fc bfc" id="L335" title="All 2 branches covered.">		if (resourceResolutionBuilderHelper == null) {</span>
+<span class="fc" id="L336">			resourceResolutionBuilderHelper = new ResourceResolutionBuilderHelper&lt;&gt;(myself, environmentBuilder);</span>
 		}
-<span class="nc" id="L338">	}</span>
+<span class="fc" id="L338">	}</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

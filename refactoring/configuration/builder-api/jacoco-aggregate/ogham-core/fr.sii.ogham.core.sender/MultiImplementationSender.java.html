@@ -32,7 +32,7 @@ import fr.sii.ogham.core.message.Message;
  * @see Condition
  */
 public class MultiImplementationSender&lt;M extends Message&gt; implements ConditionalSender {
-<span class="nc" id="L35">	private static final Logger LOG = LoggerFactory.getLogger(MultiImplementationSender.class);</span>
+<span class="fc" id="L35">	private static final Logger LOG = LoggerFactory.getLogger(MultiImplementationSender.class);</span>
 
 	/**
 	 * The list of possible implementations indexed by the associated condition
@@ -48,8 +48,8 @@ public class MultiImplementationSender&lt;M extends Message&gt; implements Condi
 	 * Initialize with no registered implementation.
 	 */
 	public MultiImplementationSender() {
-<span class="nc" id="L51">		this(new ArrayList&lt;Implementation&gt;());</span>
-<span class="nc" id="L52">	}</span>
+<span class="fc" id="L51">		this(new ArrayList&lt;Implementation&gt;());</span>
+<span class="fc" id="L52">	}</span>
 
 	/**
 	 * Initialize with one implementation.
@@ -73,9 +73,9 @@ public class MultiImplementationSender&lt;M extends Message&gt; implements Condi
 	 *            that indicates if the implementation is eligible at runtime
 	 */
 	public MultiImplementationSender(List&lt;Implementation&gt; implementations) {
-<span class="nc" id="L76">		super();</span>
-<span class="nc" id="L77">		this.implementations = implementations;</span>
-<span class="nc" id="L78">	}</span>
+<span class="fc" id="L76">		super();</span>
+<span class="fc" id="L77">		this.implementations = implementations;</span>
+<span class="fc" id="L78">	}</span>
 
 	/**
 	 * Register a new possible implementation with the associated condition. The
@@ -90,48 +90,48 @@ public class MultiImplementationSender&lt;M extends Message&gt; implements Condi
 	 * @return this instance for fluent chaining
 	 */
 	public final MultiImplementationSender&lt;M&gt; addImplementation(Condition&lt;Message&gt; condition, MessageSender implementation) {
-<span class="nc" id="L93">		implementations.add(new Implementation(condition, implementation));</span>
-<span class="nc" id="L94">		return this;</span>
+<span class="fc" id="L93">		implementations.add(new Implementation(condition, implementation));</span>
+<span class="fc" id="L94">		return this;</span>
 	}
 
 	@Override
 	public boolean supports(Message message) {
-<span class="nc" id="L99">		sender = null;</span>
-<span class="nc" id="L100">		boolean supports = message.getClass().isAssignableFrom(getManagedClass());</span>
-<span class="nc bnc" id="L101" title="All 2 branches missed.">		if (supports) {</span>
-<span class="nc" id="L102">			LOG.debug(&quot;Can handle the message type {}. Is there any implementation available to send it ?&quot;, message.getClass());</span>
-<span class="nc bnc" id="L103" title="All 2 branches missed.">			for (Implementation impl : implementations) {</span>
-<span class="nc bnc" id="L104" title="All 2 branches missed.">				if (impl.getCondition().accept(message)) {</span>
-<span class="nc" id="L105">					sender = impl.getSender();</span>
-<span class="nc" id="L106">					break;</span>
+<span class="fc" id="L99">		sender = null;</span>
+<span class="fc" id="L100">		boolean supports = message.getClass().isAssignableFrom(getManagedClass());</span>
+<span class="fc bfc" id="L101" title="All 2 branches covered.">		if (supports) {</span>
+<span class="fc" id="L102">			LOG.debug(&quot;Can handle the message type {}. Is there any implementation available to send it ?&quot;, message.getClass());</span>
+<span class="fc bfc" id="L103" title="All 2 branches covered.">			for (Implementation impl : implementations) {</span>
+<span class="fc bfc" id="L104" title="All 2 branches covered.">				if (impl.getCondition().accept(message)) {</span>
+<span class="fc" id="L105">					sender = impl.getSender();</span>
+<span class="fc" id="L106">					break;</span>
 				}
-<span class="nc" id="L108">			}</span>
-<span class="nc bnc" id="L109" title="All 2 branches missed.">			if (sender != null) {</span>
-<span class="nc" id="L110">				LOG.debug(&quot;The implementation {} can handle the message {}&quot;, sender, summarize(message));</span>
+<span class="fc" id="L108">			}</span>
+<span class="fc bfc" id="L109" title="All 2 branches covered.">			if (sender != null) {</span>
+<span class="fc" id="L110">				LOG.debug(&quot;The implementation {} can handle the message {}&quot;, sender, summarize(message));</span>
 			}
 		} else {
-<span class="nc" id="L113">			LOG.debug(&quot;Can't handle the message type {}&quot;, message.getClass());</span>
+<span class="fc" id="L113">			LOG.debug(&quot;Can't handle the message type {}&quot;, message.getClass());</span>
 		}
-<span class="nc bnc" id="L115" title="All 4 branches missed.">		return supports &amp;&amp; sender != null;</span>
+<span class="fc bfc" id="L115" title="All 4 branches covered.">		return supports &amp;&amp; sender != null;</span>
 	}
 
 	@SuppressWarnings(&quot;unchecked&quot;)
 	private Class&lt;M&gt; getManagedClass() {
-<span class="nc" id="L120">		Type genericSuperclass = getClass().getGenericSuperclass();</span>
-<span class="nc bnc" id="L121" title="All 2 branches missed.">		if (genericSuperclass instanceof ParameterizedType) {</span>
-<span class="nc" id="L122">			return (Class&lt;M&gt;) ((ParameterizedType) genericSuperclass).getActualTypeArguments()[0];</span>
+<span class="fc" id="L120">		Type genericSuperclass = getClass().getGenericSuperclass();</span>
+<span class="pc bpc" id="L121" title="1 of 2 branches missed.">		if (genericSuperclass instanceof ParameterizedType) {</span>
+<span class="fc" id="L122">			return (Class&lt;M&gt;) ((ParameterizedType) genericSuperclass).getActualTypeArguments()[0];</span>
 		}
 <span class="nc" id="L124">		return null;</span>
 	}
 
 	@Override
 	public void send(Message message) throws MessageException {
-<span class="nc" id="L129">		LOG.debug(&quot;Sending message {} using {} implementation&quot;, summarize(message), sender);</span>
-<span class="nc" id="L130">		sender.send(message);</span>
-<span class="nc" id="L131">	}</span>
+<span class="fc" id="L129">		LOG.debug(&quot;Sending message {} using {} implementation&quot;, summarize(message), sender);</span>
+<span class="fc" id="L130">		sender.send(message);</span>
+<span class="fc" id="L131">	}</span>
 
 	public List&lt;Implementation&gt; getImplementations() {
-<span class="nc" id="L134">		return implementations;</span>
+<span class="fc" id="L134">		return implementations;</span>
 	}
 
 	public MessageSender getSender() {
@@ -143,17 +143,17 @@ public class MultiImplementationSender&lt;M extends Message&gt; implements Condi
 		private final MessageSender sender;
 
 		public Implementation(Condition&lt;Message&gt; condition, MessageSender sender) {
-<span class="nc" id="L146">			super();</span>
-<span class="nc" id="L147">			this.condition = condition;</span>
-<span class="nc" id="L148">			this.sender = sender;</span>
-<span class="nc" id="L149">		}</span>
+<span class="fc" id="L146">			super();</span>
+<span class="fc" id="L147">			this.condition = condition;</span>
+<span class="fc" id="L148">			this.sender = sender;</span>
+<span class="fc" id="L149">		}</span>
 
 		public Condition&lt;Message&gt; getCondition() {
-<span class="nc" id="L152">			return condition;</span>
+<span class="fc" id="L152">			return condition;</span>
 		}
 
 		public MessageSender getSender() {
-<span class="nc" id="L156">			return sender;</span>
+<span class="fc" id="L156">			return sender;</span>
 		}
 	}
 }

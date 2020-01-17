@@ -19,7 +19,7 @@ import fr.sii.ogham.core.template.detector.TemplateEngineDetector;
  *
  */
 public class FreeMarkerTemplateDetector implements TemplateEngineDetector {
-<span class="nc" id="L22">	private static final Logger LOG = LoggerFactory.getLogger(FreeMarkerTemplateDetector.class);</span>
+<span class="fc" id="L22">	private static final Logger LOG = LoggerFactory.getLogger(FreeMarkerTemplateDetector.class);</span>
 
 	private static final String FREEMARKER_TEMPLATE_EXTENSION = &quot;.ftl&quot;;
 
@@ -32,43 +32,43 @@ public class FreeMarkerTemplateDetector implements TemplateEngineDetector {
 	private String[] extensions;
 
 	public FreeMarkerTemplateDetector(ResourceResolver resolver) {
-<span class="nc" id="L35">		this(resolver, FREEMARKER_TEMPLATE_EXTENSION);</span>
-<span class="nc" id="L36">	}</span>
+<span class="fc" id="L35">		this(resolver, FREEMARKER_TEMPLATE_EXTENSION);</span>
+<span class="fc" id="L36">	}</span>
 
 	public FreeMarkerTemplateDetector(ResourceResolver resolver, String... extensions) {
-<span class="nc" id="L39">		super();</span>
-<span class="nc" id="L40">		this.resolver = resolver;</span>
-<span class="nc" id="L41">		this.extensions = extensions;</span>
-<span class="nc" id="L42">	}</span>
+<span class="fc" id="L39">		super();</span>
+<span class="fc" id="L40">		this.resolver = resolver;</span>
+<span class="fc" id="L41">		this.extensions = extensions;</span>
+<span class="fc" id="L42">	}</span>
 
 	@Override
 	public boolean canParse(ResourcePath templatePath, Context ctx) throws EngineDetectionException {
-<span class="nc" id="L46">		LOG.debug(&quot;Checking if FreeMarker can handle the template {}&quot;, templatePath);</span>
+<span class="fc" id="L46">		LOG.debug(&quot;Checking if FreeMarker can handle the template {}&quot;, templatePath);</span>
 
-<span class="nc" id="L48">		ResolvedPath resolvedTemplatePath = resolver.resolve(templatePath);</span>
-<span class="nc bnc" id="L49" title="All 2 branches missed.">		if (resolvedTemplatePath == null) {</span>
+<span class="fc" id="L48">		ResolvedPath resolvedTemplatePath = resolver.resolve(templatePath);</span>
+<span class="pc bpc" id="L49" title="1 of 2 branches missed.">		if (resolvedTemplatePath == null) {</span>
 <span class="nc" id="L50">			return false;</span>
 		}
 
-<span class="nc bnc" id="L53" title="All 2 branches missed.">		for (String extension : extensions) {</span>
-<span class="nc bnc" id="L54" title="All 4 branches missed.">			if (resolvedTemplatePath.getResolvedPath().endsWith(extension) &amp;&amp; exists(resolvedTemplatePath)) {</span>
-<span class="nc" id="L55">				LOG.debug(&quot;The template {} ends with {}. FreeMarker can be used&quot;, templatePath, extension);</span>
-<span class="nc" id="L56">				return true;</span>
+<span class="fc bfc" id="L53" title="All 2 branches covered.">		for (String extension : extensions) {</span>
+<span class="fc bfc" id="L54" title="All 4 branches covered.">			if (resolvedTemplatePath.getResolvedPath().endsWith(extension) &amp;&amp; exists(resolvedTemplatePath)) {</span>
+<span class="fc" id="L55">				LOG.debug(&quot;The template {} ends with {}. FreeMarker can be used&quot;, templatePath, extension);</span>
+<span class="fc" id="L56">				return true;</span>
 			}
 		}
 
-<span class="nc" id="L60">		LOG.debug(&quot;The template {} doesn't end with any of {}. FreeMarker can't be used&quot;, templatePath, extensions);</span>
-<span class="nc" id="L61">		return false;</span>
+<span class="fc" id="L60">		LOG.debug(&quot;The template {} doesn't end with any of {}. FreeMarker can't be used&quot;, templatePath, extensions);</span>
+<span class="fc" id="L61">		return false;</span>
 
 	}
 
 	@SuppressWarnings(&quot;squid:S1166&quot;)
 	private boolean exists(ResolvedPath resolvedTemplatePath) {
 		try {
-<span class="nc" id="L68">			resolver.getResource(resolvedTemplatePath);</span>
-<span class="nc" id="L69">			return true;</span>
-<span class="nc" id="L70">		} catch(ResourceResolutionException e) {</span>
-<span class="nc" id="L71">			return false;</span>
+<span class="fc" id="L68">			resolver.getResource(resolvedTemplatePath);</span>
+<span class="fc" id="L69">			return true;</span>
+<span class="fc" id="L70">		} catch(ResourceResolutionException e) {</span>
+<span class="fc" id="L71">			return false;</span>
 		}
 	}
 

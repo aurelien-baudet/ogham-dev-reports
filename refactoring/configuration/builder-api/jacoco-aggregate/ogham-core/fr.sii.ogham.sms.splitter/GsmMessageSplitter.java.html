@@ -310,8 +310,8 @@ public class GsmMessageSplitter implements MessageSplitter {
 	 *            generates reference numbers
 	 */
 	public GsmMessageSplitter(Encoder encoder, SegmentSizes segmentSizes, ReferenceNumberGenerator referenceNumberGenerator) {
-<span class="nc" id="L313">		this(encoder, segmentSizes, referenceNumberGenerator, String::length);</span>
-<span class="nc" id="L314">	}</span>
+<span class="fc" id="L313">		this(encoder, segmentSizes, referenceNumberGenerator, String::length);</span>
+<span class="fc" id="L314">	}</span>
 
 	/**
 	 * The splitter uses the {@link Encoder} to encode each segment.
@@ -340,144 +340,144 @@ public class GsmMessageSplitter implements MessageSplitter {
 	 *            character tables for example)
 	 */
 	public GsmMessageSplitter(Encoder encoder, SegmentSizes segmentSizes, ReferenceNumberGenerator referenceNumberGenerator, LengthCounter lengthCounter) {
-<span class="nc" id="L343">		super();</span>
-<span class="nc" id="L344">		this.encoder = encoder;</span>
-<span class="nc" id="L345">		this.segmentSizes = segmentSizes;</span>
-<span class="nc" id="L346">		this.referenceNumberGenerator = referenceNumberGenerator;</span>
-<span class="nc" id="L347">		this.lengthCounter = lengthCounter;</span>
-<span class="nc" id="L348">	}</span>
+<span class="fc" id="L343">		super();</span>
+<span class="fc" id="L344">		this.encoder = encoder;</span>
+<span class="fc" id="L345">		this.segmentSizes = segmentSizes;</span>
+<span class="fc" id="L346">		this.referenceNumberGenerator = referenceNumberGenerator;</span>
+<span class="fc" id="L347">		this.lengthCounter = lengthCounter;</span>
+<span class="fc" id="L348">	}</span>
 
 	@Override
 	public List&lt;Segment&gt; split(String message) throws SplitMessageException {
-<span class="nc" id="L352">		int messageLength = lengthCounter.count(message);</span>
-<span class="nc bnc" id="L353" title="All 2 branches missed.">		if (messageLength &lt;= segmentSizes.getMaximumStringLengthToFitInASingleSegment()) {</span>
-<span class="nc" id="L354">			return asList(singleSegment(message));</span>
+<span class="fc" id="L352">		int messageLength = lengthCounter.count(message);</span>
+<span class="fc bfc" id="L353" title="All 2 branches covered.">		if (messageLength &lt;= segmentSizes.getMaximumStringLengthToFitInASingleSegment()) {</span>
+<span class="fc" id="L354">			return asList(singleSegment(message));</span>
 		}
 
 		// generate new reference number
-<span class="nc" id="L358">		byte[] referenceNumber = generateReferenceNumber(message);</span>
-<span class="nc" id="L359">		int maximumStringLengthPerSegment = computeMaximumStringLengthPerSegment(referenceNumber);</span>
+<span class="fc" id="L358">		byte[] referenceNumber = generateReferenceNumber(message);</span>
+<span class="fc" id="L359">		int maximumStringLengthPerSegment = computeMaximumStringLengthPerSegment(referenceNumber);</span>
 
 		// split into several messages
-<span class="nc" id="L362">		int numberOfSegments = (int) Math.ceil(messageLength / (double) maximumStringLengthPerSegment);</span>
-<span class="nc bnc" id="L363" title="All 2 branches missed.">		if (numberOfSegments &gt; MAXIMUM_SEGMENTS) {</span>
+<span class="fc" id="L362">		int numberOfSegments = (int) Math.ceil(messageLength / (double) maximumStringLengthPerSegment);</span>
+<span class="pc bpc" id="L363" title="1 of 2 branches missed.">		if (numberOfSegments &gt; MAXIMUM_SEGMENTS) {</span>
 <span class="nc" id="L364">			throw new SplitMessageException(&quot;Can't split the message because the number of segments is greater than 255&quot;, message);</span>
 		}
 
 		// prepare list for all of the msg segments
-<span class="nc" id="L368">		List&lt;Segment&gt; segments = new ArrayList&lt;&gt;(numberOfSegments);</span>
+<span class="fc" id="L368">		List&lt;Segment&gt; segments = new ArrayList&lt;&gt;(numberOfSegments);</span>
 
-<span class="nc" id="L370">		int start = 0;</span>
-<span class="nc bnc" id="L371" title="All 2 branches missed.">		for (int i = 0; i &lt; numberOfSegments; i++) {</span>
-<span class="nc" id="L372">			String part = cutToFitInSegment(start, message, maximumStringLengthPerSegment);</span>
-<span class="nc" id="L373">			segments.add(segmentWithHeader(message, part, numberOfSegments, i + 1, referenceNumber));</span>
-<span class="nc" id="L374">			start += part.length();</span>
+<span class="fc" id="L370">		int start = 0;</span>
+<span class="fc bfc" id="L371" title="All 2 branches covered.">		for (int i = 0; i &lt; numberOfSegments; i++) {</span>
+<span class="fc" id="L372">			String part = cutToFitInSegment(start, message, maximumStringLengthPerSegment);</span>
+<span class="fc" id="L373">			segments.add(segmentWithHeader(message, part, numberOfSegments, i + 1, referenceNumber));</span>
+<span class="fc" id="L374">			start += part.length();</span>
 		}
-<span class="nc" id="L376">		return segments;</span>
+<span class="fc" id="L376">		return segments;</span>
 	}
 
 	private byte[] generateReferenceNumber(String message) throws SplitMessageException {
 		try {
-<span class="nc" id="L381">			byte[] referenceNumber = referenceNumberGenerator.generateReferenceNumber();</span>
-<span class="nc bnc" id="L382" title="All 4 branches missed.">			if (referenceNumber == null || referenceNumber.length == 0) {</span>
+<span class="fc" id="L381">			byte[] referenceNumber = referenceNumberGenerator.generateReferenceNumber();</span>
+<span class="pc bpc" id="L382" title="2 of 4 branches missed.">			if (referenceNumber == null || referenceNumber.length == 0) {</span>
 <span class="nc" id="L383">				throw new InvalidReferenceNumberException(&quot;Generated reference number byte array can't be null or empty&quot;, referenceNumber);</span>
 			}
-<span class="nc bnc" id="L385" title="All 2 branches missed.">			if (referenceNumber.length &gt; 2) {</span>
+<span class="pc bpc" id="L385" title="1 of 2 branches missed.">			if (referenceNumber.length &gt; 2) {</span>
 <span class="nc" id="L386">				throw new InvalidReferenceNumberException(GsmMessageSplitter.class.getSimpleName() + &quot; only support one byte or two byte reference number length&quot;, referenceNumber);</span>
 			}
-<span class="nc" id="L388">			return referenceNumber;</span>
+<span class="fc" id="L388">			return referenceNumber;</span>
 <span class="nc" id="L389">		} catch (ReferenceNumberGenerationException e) {</span>
 <span class="nc" id="L390">			throw new SplitMessageException(&quot;Failed to split message due to reference number generation failure&quot;, message, e);</span>
 		}
 	}
 
 	private String cutToFitInSegment(int start, String message, int maximumStringLengthPerSegment) {
-<span class="nc" id="L395">		int end = start + maximumStringLengthPerSegment;</span>
-<span class="nc" id="L396">		String part = message.substring(start, Math.min(message.length(), end));</span>
-<span class="nc" id="L397">		int lengthOfPart = lengthCounter.count(part);</span>
-<span class="nc bnc" id="L398" title="All 6 branches missed.">		while (lengthOfPart &gt; maximumStringLengthPerSegment &amp;&amp; end &gt; start &amp;&amp; end &gt; 0) {</span>
-<span class="nc" id="L399">			end--;</span>
-<span class="nc" id="L400">			part = message.substring(start, Math.min(message.length(), end));</span>
-<span class="nc" id="L401">			lengthOfPart = lengthCounter.count(part);</span>
+<span class="fc" id="L395">		int end = start + maximumStringLengthPerSegment;</span>
+<span class="fc" id="L396">		String part = message.substring(start, Math.min(message.length(), end));</span>
+<span class="fc" id="L397">		int lengthOfPart = lengthCounter.count(part);</span>
+<span class="pc bpc" id="L398" title="2 of 6 branches missed.">		while (lengthOfPart &gt; maximumStringLengthPerSegment &amp;&amp; end &gt; start &amp;&amp; end &gt; 0) {</span>
+<span class="fc" id="L399">			end--;</span>
+<span class="fc" id="L400">			part = message.substring(start, Math.min(message.length(), end));</span>
+<span class="fc" id="L401">			lengthOfPart = lengthCounter.count(part);</span>
 		}
-<span class="nc" id="L403">		return part;</span>
+<span class="fc" id="L403">		return part;</span>
 	}
 
 	private Segment segmentWithHeader(String wholeMessage, String part, int numberOfSegments, int segmentNumber, byte[] referenceNumber) throws SplitMessageException {
 		try {
-<span class="nc" id="L408">			int headerSize = headerSize(referenceNumber);</span>
-<span class="nc" id="L409">			byte[] header = new byte[headerSize];</span>
+<span class="fc" id="L408">			int headerSize = headerSize(referenceNumber);</span>
+<span class="fc" id="L409">			byte[] header = new byte[headerSize];</span>
 
-<span class="nc bnc" id="L411" title="All 2 branches missed.">			if (referenceNumber.length == 1) {</span>
+<span class="fc bfc" id="L411" title="All 2 branches covered.">			if (referenceNumber.length == 1) {</span>
 				// Field 1 (1 octet): Length of User Data Header, in this case
 				// 05.
-<span class="nc" id="L414">				header[0] = UDHIE_HEADER_LENGTH_ONE_BYTE_REFERENCE_NUMBER;</span>
+<span class="fc" id="L414">				header[0] = UDHIE_HEADER_LENGTH_ONE_BYTE_REFERENCE_NUMBER;</span>
 				// Field 2 (1 octet): Information Element Identifier, equal to
 				// 00 (Concatenated short messages, 8-bit reference number)
-<span class="nc" id="L417">				header[1] = UDHIE_IDENTIFIER_SAR_ONE_BYTE_REFERENCE_NUMBER;</span>
+<span class="fc" id="L417">				header[1] = UDHIE_IDENTIFIER_SAR_ONE_BYTE_REFERENCE_NUMBER;</span>
 				// Field 3 (1 octet): Length of the header, excluding the first
 				// two fields; equal to 03 for one byte reference number
-<span class="nc" id="L420">				header[2] = UDHIE_SAR_LENGTH_ONE_BYTE_REFERENCE_NUMBER;</span>
+<span class="fc" id="L420">				header[2] = UDHIE_SAR_LENGTH_ONE_BYTE_REFERENCE_NUMBER;</span>
 				// Field 4 (1 octet): 00-FF, CSMS reference number, must be same
 				// for all the SMS parts in the CSMS.
-<span class="nc" id="L423">				header[3] = referenceNumber[0];</span>
+<span class="fc" id="L423">				header[3] = referenceNumber[0];</span>
 				// Field 5 (1 octet): 00-FF, total number of parts. The value
 				// shall remain constant for every short message which makes up
 				// the concatenated short message. If the value is zero then the
 				// receiving entity shall ignore the whole information element
-<span class="nc" id="L428">				header[4] = (byte) numberOfSegments;</span>
+<span class="fc" id="L428">				header[4] = (byte) numberOfSegments;</span>
 				// Field 6 (1 octet): 00-FF, this part's number in the sequence.
 				// The value shall start at 1 and increment for every short
 				// message which makes up the concatenated short message. If the
 				// value is zero or greater than the value in Field 5 then the
 				// receiving entity shall ignore the whole information element.
 				// [ETSI Specification: GSM 03.40 Version 5.3.0: July 1996]
-<span class="nc" id="L435">				header[5] = (byte) segmentNumber;</span>
+<span class="fc" id="L435">				header[5] = (byte) segmentNumber;</span>
 			} else {
 				// Field 1 (1 octet): Length of User Data Header, in this case
 				// 06.
-<span class="nc" id="L439">				header[0] = UDHIE_HEADER_LENGTH_TWO_BYTES_REFERENCE_NUMBER;</span>
+<span class="fc" id="L439">				header[0] = UDHIE_HEADER_LENGTH_TWO_BYTES_REFERENCE_NUMBER;</span>
 				// Field 2 (1 octet): Information Element Identifier, equal to
 				// 08 (Concatenated short messages, 16-bit reference number)
-<span class="nc" id="L442">				header[1] = UDHIE_IDENTIFIER_SAR_TWO_BYTES_REFERENCE_NUMBER;</span>
+<span class="fc" id="L442">				header[1] = UDHIE_IDENTIFIER_SAR_TWO_BYTES_REFERENCE_NUMBER;</span>
 				// Field 3 (1 octet): Length of the header, excluding the first
 				// two fields; equal to 04 for one byte reference number
-<span class="nc" id="L445">				header[2] = UDHIE_SAR_LENGTH_TWO_BYTES_REFERENCE_NUMBER;</span>
+<span class="fc" id="L445">				header[2] = UDHIE_SAR_LENGTH_TWO_BYTES_REFERENCE_NUMBER;</span>
 				// Field 4 (2 octets): 0000-FFFF, CSMS reference number, must be
 				// same for all the SMS parts in the CSMS.
-<span class="nc" id="L448">				header[3] = referenceNumber[0];</span>
-<span class="nc" id="L449">				header[4] = referenceNumber[1];</span>
+<span class="fc" id="L448">				header[3] = referenceNumber[0];</span>
+<span class="fc" id="L449">				header[4] = referenceNumber[1];</span>
 				// Field 6 (1 octet): 00-FF, total number of parts. The value
 				// shall remain constant for every short message which makes up
 				// the concatenated short message. If the value is zero then the
 				// receiving entity shall ignore the whole information element
-<span class="nc" id="L454">				header[5] = (byte) numberOfSegments;</span>
+<span class="fc" id="L454">				header[5] = (byte) numberOfSegments;</span>
 				// Field 7 (1 octet): 00-FF, this part's number in the sequence.
 				// The value shall start at 1 and increment for every short
 				// message which makes up the concatenated short message. If the
 				// value is zero or greater than the value in Field 5 then the
 				// receiving entity shall ignore the whole information element.
 				// [ETSI Specification: GSM 03.40 Version 5.3.0: July 1996]
-<span class="nc" id="L461">				header[6] = (byte) segmentNumber;</span>
+<span class="fc" id="L461">				header[6] = (byte) segmentNumber;</span>
 			}
 
-<span class="nc" id="L464">			return new EncodedSegment(new EncodedWithHeader(header, encoder.encode(part)));</span>
+<span class="fc" id="L464">			return new EncodedSegment(new EncodedWithHeader(header, encoder.encode(part)));</span>
 <span class="nc" id="L465">		} catch (EncodingException e) {</span>
 <span class="nc" id="L466">			throw new SplitMessageException(&quot;Failed to generate segment for &quot; + part + &quot; (segment &quot; + segmentNumber + &quot;/&quot; + numberOfSegments + &quot;) due to encoding error&quot;, wholeMessage, e);</span>
 		}
 	}
 
 	private int computeMaximumStringLengthPerSegment(byte[] referenceNumber) {
-<span class="nc" id="L471">		return (int) Math.floor((MAXIMUM_BYTES_PER_MESSAGE - headerSize(referenceNumber)) * segmentSizes.getMaximumStringLengthToFitInASingleSegment() / (double) MAXIMUM_BYTES_PER_MESSAGE);</span>
+<span class="fc" id="L471">		return (int) Math.floor((MAXIMUM_BYTES_PER_MESSAGE - headerSize(referenceNumber)) * segmentSizes.getMaximumStringLengthToFitInASingleSegment() / (double) MAXIMUM_BYTES_PER_MESSAGE);</span>
 	}
 
 	private static int headerSize(byte[] referenceNumber) {
-<span class="nc bnc" id="L475" title="All 2 branches missed.">		return referenceNumber.length == 1 ? USER_DATA_HEADER_SIZE_ONE_BYTE_REFERENCE_NUMBER : USER_DATA_HEADER_SIZE_TWO_BYTES_REFERENCE_NUMBER;</span>
+<span class="fc bfc" id="L475" title="All 2 branches covered.">		return referenceNumber.length == 1 ? USER_DATA_HEADER_SIZE_ONE_BYTE_REFERENCE_NUMBER : USER_DATA_HEADER_SIZE_TWO_BYTES_REFERENCE_NUMBER;</span>
 	}
 
 	private Segment singleSegment(String message) throws SplitMessageException {
 		try {
-<span class="nc" id="L480">			return new EncodedSegment(encoder.encode(message));</span>
+<span class="fc" id="L480">			return new EncodedSegment(encoder.encode(message));</span>
 <span class="nc" id="L481">		} catch (EncodingException e) {</span>
 <span class="nc" id="L482">			throw new SplitMessageException(&quot;Failed to generate single segment for &quot; + message + &quot; due to encoding error&quot;, message, e);</span>
 		}

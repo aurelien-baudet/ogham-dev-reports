@@ -30,9 +30,9 @@ public class SimpleReplaceMimetypeBuilder&lt;P&gt; extends AbstractParent&lt;P&g
 	 *            the parent instance
 	 */
 	public SimpleReplaceMimetypeBuilder(P parent) {
-<span class="nc" id="L33">		super(parent);</span>
-<span class="nc" id="L34">		delegates = new ArrayList&lt;&gt;();</span>
-<span class="nc" id="L35">	}</span>
+<span class="fc" id="L33">		super(parent);</span>
+<span class="fc" id="L34">		delegates = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L35">	}</span>
 
 	@Override
 	public ReplaceMimetypeBuilder&lt;P&gt; contains(String contains, String replacement) {
@@ -48,8 +48,8 @@ public class SimpleReplaceMimetypeBuilder&lt;P&gt; extends AbstractParent&lt;P&g
 
 	@Override
 	public ReplaceMimetypeBuilder&lt;P&gt; pattern(String matchingPattern, String replacement) {
-<span class="nc" id="L51">		delegates.add(new PatternReplacement(Pattern.compile(matchingPattern), replacement));</span>
-<span class="nc" id="L52">		return this;</span>
+<span class="fc" id="L51">		delegates.add(new PatternReplacement(Pattern.compile(matchingPattern), replacement));</span>
+<span class="fc" id="L52">		return this;</span>
 	}
 
 	@Override
@@ -60,11 +60,11 @@ public class SimpleReplaceMimetypeBuilder&lt;P&gt; extends AbstractParent&lt;P&g
 
 	@Override
 	public MimetypeReplacer build() {
-<span class="nc" id="L63">		List&lt;MimetypeReplacer&gt; replacers = new ArrayList&lt;&gt;();</span>
-<span class="nc bnc" id="L64" title="All 2 branches missed.">		for (Builder&lt;MimetypeReplacer&gt; builder : delegates) {</span>
-<span class="nc" id="L65">			replacers.add(builder.build());</span>
-<span class="nc" id="L66">		}</span>
-<span class="nc" id="L67">		return new FirstMatchingMimetypeReplacer(replacers);</span>
+<span class="fc" id="L63">		List&lt;MimetypeReplacer&gt; replacers = new ArrayList&lt;&gt;();</span>
+<span class="fc bfc" id="L64" title="All 2 branches covered.">		for (Builder&lt;MimetypeReplacer&gt; builder : delegates) {</span>
+<span class="fc" id="L65">			replacers.add(builder.build());</span>
+<span class="fc" id="L66">		}</span>
+<span class="fc" id="L67">		return new FirstMatchingMimetypeReplacer(replacers);</span>
 	}
 
 	private static class PatternReplacement implements Builder&lt;MimetypeReplacer&gt; {
@@ -72,14 +72,14 @@ public class SimpleReplaceMimetypeBuilder&lt;P&gt; extends AbstractParent&lt;P&g
 		private final String replacement;
 
 		public PatternReplacement(Pattern pattern, String replacement) {
-<span class="nc" id="L75">			super();</span>
-<span class="nc" id="L76">			this.pattern = pattern;</span>
-<span class="nc" id="L77">			this.replacement = replacement;</span>
-<span class="nc" id="L78">		}</span>
+<span class="fc" id="L75">			super();</span>
+<span class="fc" id="L76">			this.pattern = pattern;</span>
+<span class="fc" id="L77">			this.replacement = replacement;</span>
+<span class="fc" id="L78">		}</span>
 
 		@Override
 		public MimetypeReplacer build() {
-<span class="nc" id="L82">			return new PatternMimetypeReplacer(pattern, replacement);</span>
+<span class="fc" id="L82">			return new PatternMimetypeReplacer(pattern, replacement);</span>
 		}
 
 	}

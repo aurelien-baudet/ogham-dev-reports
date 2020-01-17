@@ -50,8 +50,8 @@ public class FixedDelayRetry implements RetryStrategy {
 	 *            the delay between two attempts
 	 */
 	public FixedDelayRetry(int maxRetries, long delay) {
-<span class="nc" id="L53">		this(maxRetries, delay, System::currentTimeMillis);</span>
-<span class="nc" id="L54">	}</span>
+<span class="fc" id="L53">		this(maxRetries, delay, System::currentTimeMillis);</span>
+<span class="fc" id="L54">	}</span>
 
 	/**
 	 * Initializes with the maximum attempts and the delay between each attempt.
@@ -64,26 +64,26 @@ public class FixedDelayRetry implements RetryStrategy {
 	 *            a custom implementation used to provide current timestamp
 	 */
 	public FixedDelayRetry(int maxRetries, long delay, LongSupplier currentTimeSupplier) {
-<span class="nc" id="L67">		super();</span>
-<span class="nc" id="L68">		this.maxRetries = maxRetries;</span>
-<span class="nc" id="L69">		this.delay = delay;</span>
-<span class="nc" id="L70">		this.currentTimeSupplier = currentTimeSupplier;</span>
-<span class="nc" id="L71">		retries = maxRetries;</span>
-<span class="nc" id="L72">	}</span>
+<span class="fc" id="L67">		super();</span>
+<span class="fc" id="L68">		this.maxRetries = maxRetries;</span>
+<span class="fc" id="L69">		this.delay = delay;</span>
+<span class="fc" id="L70">		this.currentTimeSupplier = currentTimeSupplier;</span>
+<span class="fc" id="L71">		retries = maxRetries;</span>
+<span class="fc" id="L72">	}</span>
 
 	@Override
 	public boolean terminated() {
-<span class="nc bnc" id="L76" title="All 2 branches missed.">		return retries &lt;= 0;</span>
+<span class="fc bfc" id="L76" title="All 2 branches covered.">		return retries &lt;= 0;</span>
 	}
 
 	@Override
 	public long nextDate() {
-<span class="nc" id="L81">		retries--;</span>
-<span class="nc" id="L82">		return currentTimeSupplier.getAsLong() + delay;</span>
+<span class="fc" id="L81">		retries--;</span>
+<span class="fc" id="L82">		return currentTimeSupplier.getAsLong() + delay;</span>
 	}
 
 	public int getRemainingRetries() {
-<span class="nc" id="L86">		return retries;</span>
+<span class="fc" id="L86">		return retries;</span>
 	}
 
 	public int getMaxRetries() {

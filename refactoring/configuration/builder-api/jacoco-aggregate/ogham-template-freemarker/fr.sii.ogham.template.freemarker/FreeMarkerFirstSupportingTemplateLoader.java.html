@@ -40,23 +40,23 @@ public class FreeMarkerFirstSupportingTemplateLoader implements TemplateLoader {
 	private FirstSupportingResolverAdapter resolverAdapter;
 
 	public FreeMarkerFirstSupportingTemplateLoader(FirstSupportingResourceResolver resolver, FirstSupportingResolverAdapter resolverAdapter) {
-<span class="nc" id="L43">		super();</span>
-<span class="nc" id="L44">		this.resolver = resolver;</span>
-<span class="nc" id="L45">		this.resolverAdapter = resolverAdapter;</span>
-<span class="nc" id="L46">	}</span>
+<span class="fc" id="L43">		super();</span>
+<span class="fc" id="L44">		this.resolver = resolver;</span>
+<span class="fc" id="L45">		this.resolverAdapter = resolverAdapter;</span>
+<span class="fc" id="L46">	}</span>
 
 	@Override
 	public Object findTemplateSource(String unresolvedTemplateName) throws IOException {
-<span class="nc" id="L50">		ResourceResolver supportingResolver = resolver.getSupportingResolver(new UnresolvedPath(unresolvedTemplateName));</span>
+<span class="fc" id="L50">		ResourceResolver supportingResolver = resolver.getSupportingResolver(new UnresolvedPath(unresolvedTemplateName));</span>
 		TemplateLoader templateLoader;
 		try {
-<span class="nc" id="L53">			templateLoader = resolverAdapter.adapt(supportingResolver);</span>
-<span class="nc" id="L54">			String resolvedPath = supportingResolver.resolve(new UnresolvedPath(unresolvedTemplateName)).getResolvedPath();</span>
-<span class="nc" id="L55">			Object source = templateLoader.findTemplateSource(resolvedPath);</span>
-<span class="nc bnc" id="L56" title="All 2 branches missed.">			return source == null ? null : new AdaptedSource(source, templateLoader);</span>
+<span class="fc" id="L53">			templateLoader = resolverAdapter.adapt(supportingResolver);</span>
+<span class="fc" id="L54">			String resolvedPath = supportingResolver.resolve(new UnresolvedPath(unresolvedTemplateName)).getResolvedPath();</span>
+<span class="fc" id="L55">			Object source = templateLoader.findTemplateSource(resolvedPath);</span>
+<span class="fc bfc" id="L56" title="All 2 branches covered.">			return source == null ? null : new AdaptedSource(source, templateLoader);</span>
 
-<span class="nc" id="L58">		} catch (NoResolverAdapterException e) {</span>
-<span class="nc" id="L59">			throw new ResolverAdapterNotFoundException(&quot;Unable to find template source cause no adapter supporting template name '&quot; + unresolvedTemplateName + &quot;' was found. &quot;, e);</span>
+<span class="fc" id="L58">		} catch (NoResolverAdapterException e) {</span>
+<span class="fc" id="L59">			throw new ResolverAdapterNotFoundException(&quot;Unable to find template source cause no adapter supporting template name '&quot; + unresolvedTemplateName + &quot;' was found. &quot;, e);</span>
 <span class="nc" id="L60">		} catch (ResolverAdapterConfigurationException e) {</span>
 <span class="nc" id="L61">			throw new ResolverAdapterNotFoundException(&quot;Unable to find template source because of invalid adapter configuration for template name '&quot; + unresolvedTemplateName + &quot;'. &quot;, e);</span>
 <span class="nc" id="L62">		} catch (ResolverAdapterException e) {</span>
@@ -66,18 +66,18 @@ public class FreeMarkerFirstSupportingTemplateLoader implements TemplateLoader {
 
 	@Override
 	public long getLastModified(Object templateSource) {
-<span class="nc" id="L69">		return ((AdaptedSource) templateSource).getLastModified();</span>
+<span class="fc" id="L69">		return ((AdaptedSource) templateSource).getLastModified();</span>
 	}
 
 	@Override
 	public Reader getReader(Object templateSource, String encoding) throws IOException {
-<span class="nc" id="L74">		return ((AdaptedSource) templateSource).getReader(encoding);</span>
+<span class="fc" id="L74">		return ((AdaptedSource) templateSource).getReader(encoding);</span>
 	}
 
 	@Override
 	public void closeTemplateSource(Object templateSource) throws IOException {
-<span class="nc" id="L79">		((AdaptedSource) templateSource).close();</span>
-<span class="nc" id="L80">	}</span>
+<span class="fc" id="L79">		((AdaptedSource) templateSource).close();</span>
+<span class="fc" id="L80">	}</span>
 
 	/**
 	 * @see MultiTemplateLoader.MultiSource
@@ -87,22 +87,22 @@ public class FreeMarkerFirstSupportingTemplateLoader implements TemplateLoader {
 		private final Object source;
 		private final TemplateLoader loader;
 
-<span class="nc" id="L90">		AdaptedSource(Object source, TemplateLoader loader) {</span>
-<span class="nc" id="L91">			this.source = source;</span>
-<span class="nc" id="L92">			this.loader = loader;</span>
-<span class="nc" id="L93">		}</span>
+<span class="fc" id="L90">		AdaptedSource(Object source, TemplateLoader loader) {</span>
+<span class="fc" id="L91">			this.source = source;</span>
+<span class="fc" id="L92">			this.loader = loader;</span>
+<span class="fc" id="L93">		}</span>
 
 		long getLastModified() {
-<span class="nc" id="L96">			return loader.getLastModified(source);</span>
+<span class="fc" id="L96">			return loader.getLastModified(source);</span>
 		}
 
 		Reader getReader(String encoding) throws IOException {
-<span class="nc" id="L100">			return loader.getReader(source, encoding);</span>
+<span class="fc" id="L100">			return loader.getReader(source, encoding);</span>
 		}
 
 		void close() throws IOException {
-<span class="nc" id="L104">			loader.closeTemplateSource(source);</span>
-<span class="nc" id="L105">		}</span>
+<span class="fc" id="L104">			loader.closeTemplateSource(source);</span>
+<span class="fc" id="L105">		}</span>
 
 		Object getWrappedSource() {
 <span class="nc" id="L108">			return source;</span>
@@ -124,7 +124,7 @@ public class FreeMarkerFirstSupportingTemplateLoader implements TemplateLoader {
 
 		@Override
 		public String toString() {
-<span class="nc" id="L127">			return source.toString();</span>
+<span class="fc" id="L127">			return source.toString();</span>
 		}
 	}
 }

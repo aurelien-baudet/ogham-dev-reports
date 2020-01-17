@@ -41,45 +41,45 @@ public class JSMPPServerSimulator extends ServerResponseDeliveryAdapter implemen
 	private static final int BIND_THREAD_POOL_SIZE = 5;
 	private static final int RECEIPT_THREAD_POOL_SIZE = 100;
 
-<span class="nc" id="L44">	private static final Logger LOG = LoggerFactory.getLogger(JSMPPServerSimulator.class);</span>
+<span class="fc" id="L44">	private static final Logger LOG = LoggerFactory.getLogger(JSMPPServerSimulator.class);</span>
 
 	private ExecutorService execService;
-<span class="nc" id="L47">	private final ExecutorService execServiceDelReceipt = Executors.newFixedThreadPool(RECEIPT_THREAD_POOL_SIZE);</span>
-<span class="nc" id="L48">	private final MessageIDGenerator messageIDGenerator = new RandomMessageIDGenerator();</span>
+<span class="fc" id="L47">	private final ExecutorService execServiceDelReceipt = Executors.newFixedThreadPool(RECEIPT_THREAD_POOL_SIZE);</span>
+<span class="fc" id="L48">	private final MessageIDGenerator messageIDGenerator = new RandomMessageIDGenerator();</span>
 	private int port;
 	private boolean stopped;
-<span class="nc" id="L51">	private List&lt;SubmitSm&gt; receivedMessages = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L51">	private List&lt;SubmitSm&gt; receivedMessages = new ArrayList&lt;&gt;();</span>
 	private SMPPServerSessionListener sessionListener;
 	private SMPPServerSession serverSession;
-<span class="nc" id="L54">	private final Object startupMonitor = new Object();</span>
-<span class="nc" id="L55">	private volatile boolean running = false;</span>
+<span class="fc" id="L54">	private final Object startupMonitor = new Object();</span>
+<span class="fc" id="L55">	private volatile boolean running = false;</span>
 	private final SimulatorConfiguration config;
 
-<span class="nc" id="L58">	public JSMPPServerSimulator(int port, SimulatorConfiguration config) {</span>
-<span class="nc" id="L59">		this.port = port;</span>
-<span class="nc" id="L60">		this.config = config;</span>
-<span class="nc" id="L61">	}</span>
+<span class="fc" id="L58">	public JSMPPServerSimulator(int port, SimulatorConfiguration config) {</span>
+<span class="fc" id="L59">		this.port = port;</span>
+<span class="fc" id="L60">		this.config = config;</span>
+<span class="fc" id="L61">	}</span>
 
 	public void run() {
 		try {
-<span class="nc bnc" id="L65" title="All 2 branches missed.">			if (!stopped) {</span>
-<span class="nc" id="L66">				sessionListener = createServerSessionListener();</span>
-<span class="nc" id="L67">				execService = Executors.newFixedThreadPool(BIND_THREAD_POOL_SIZE);</span>
-<span class="nc" id="L68">				running = true;</span>
-<span class="nc" id="L69">				LOG.info(&quot;Listening on port {}&quot;, port);</span>
-<span class="nc" id="L70">				synchronized (startupMonitor) {</span>
-<span class="nc" id="L71">					startupMonitor.notifyAll();</span>
-<span class="nc" id="L72">				}</span>
+<span class="pc bpc" id="L65" title="1 of 2 branches missed.">			if (!stopped) {</span>
+<span class="fc" id="L66">				sessionListener = createServerSessionListener();</span>
+<span class="fc" id="L67">				execService = Executors.newFixedThreadPool(BIND_THREAD_POOL_SIZE);</span>
+<span class="fc" id="L68">				running = true;</span>
+<span class="fc" id="L69">				LOG.info(&quot;Listening on port {}&quot;, port);</span>
+<span class="fc" id="L70">				synchronized (startupMonitor) {</span>
+<span class="fc" id="L71">					startupMonitor.notifyAll();</span>
+<span class="fc" id="L72">				}</span>
 			}
-<span class="nc bnc" id="L74" title="All 2 branches missed.">			while (!stopped) {</span>
-<span class="nc" id="L75">				serverSession = sessionListener.accept();</span>
-<span class="nc" id="L76">				LOG.info(&quot;Accepting connection for session {}&quot;, serverSession.getSessionId());</span>
-<span class="nc" id="L77">				serverSession.setMessageReceiverListener(this);</span>
-<span class="nc" id="L78">				serverSession.setResponseDeliveryListener(this);</span>
-<span class="nc" id="L79">				execService.execute(new WaitBindTask(serverSession, config.getCredentials()));</span>
+<span class="fc bfc" id="L74" title="All 2 branches covered.">			while (!stopped) {</span>
+<span class="fc" id="L75">				serverSession = sessionListener.accept();</span>
+<span class="fc" id="L76">				LOG.info(&quot;Accepting connection for session {}&quot;, serverSession.getSessionId());</span>
+<span class="fc" id="L77">				serverSession.setMessageReceiverListener(this);</span>
+<span class="fc" id="L78">				serverSession.setResponseDeliveryListener(this);</span>
+<span class="fc" id="L79">				execService.execute(new WaitBindTask(serverSession, config.getCredentials()));</span>
 			}
-<span class="nc" id="L81">		} catch (IOException e) {</span>
-<span class="nc bnc" id="L82" title="All 2 branches missed.">			if (!stopped) { // NOSONAR</span>
+<span class="fc" id="L81">		} catch (IOException e) {</span>
+<span class="pc bpc" id="L82" title="1 of 2 branches missed.">			if (!stopped) { // NOSONAR</span>
 <span class="nc" id="L83">				LOG.error(&quot;Failed to initialize SMPP server simulator&quot;, e);</span>
 <span class="nc" id="L84">				close();</span>
 			}
@@ -88,60 +88,60 @@ public class JSMPPServerSimulator extends ServerResponseDeliveryAdapter implemen
 			// to start.
 			// Otherwise will run into startup timeout, see
 			// #waitTillRunning(long).
-<span class="nc" id="L91">			synchronized (startupMonitor) {</span>
-<span class="nc" id="L92">				startupMonitor.notifyAll();</span>
-<span class="nc" id="L93">			}</span>
+<span class="fc" id="L91">			synchronized (startupMonitor) {</span>
+<span class="fc" id="L92">				startupMonitor.notifyAll();</span>
+<span class="fc" id="L93">			}</span>
 		}
-<span class="nc" id="L95">	}</span>
+<span class="fc" id="L95">	}</span>
 
 	private SMPPServerSessionListener createServerSessionListener() throws IOException {
-<span class="nc" id="L98">		return new ConfigurableSMPPServerSessionListener(port, config.getServerDelays());</span>
+<span class="fc" id="L98">		return new ConfigurableSMPPServerSessionListener(port, config.getServerDelays());</span>
 	}
 
 	public synchronized void reset() {
-<span class="nc" id="L102">		stopped = false;</span>
-<span class="nc" id="L103">		receivedMessages.clear();</span>
-<span class="nc" id="L104">	}</span>
+<span class="fc" id="L102">		stopped = false;</span>
+<span class="fc" id="L103">		receivedMessages.clear();</span>
+<span class="fc" id="L104">	}</span>
 
 	public synchronized void stop() {
-<span class="nc" id="L107">		LOG.info(&quot;Stopping SMPP simulator&quot;);</span>
-<span class="nc" id="L108">		running = false;</span>
-<span class="nc" id="L109">		stopped = true;</span>
-<span class="nc bnc" id="L110" title="All 2 branches missed.">		if (execService != null) {</span>
-<span class="nc" id="L111">			execService.shutdownNow();</span>
-<span class="nc" id="L112">			execService = null;</span>
+<span class="fc" id="L107">		LOG.info(&quot;Stopping SMPP simulator&quot;);</span>
+<span class="fc" id="L108">		running = false;</span>
+<span class="fc" id="L109">		stopped = true;</span>
+<span class="pc bpc" id="L110" title="1 of 2 branches missed.">		if (execService != null) {</span>
+<span class="fc" id="L111">			execService.shutdownNow();</span>
+<span class="fc" id="L112">			execService = null;</span>
 		}
-<span class="nc" id="L114">		close();</span>
-<span class="nc" id="L115">		LOG.info(&quot;SMPP simulator stopped&quot;);</span>
-<span class="nc" id="L116">	}</span>
+<span class="fc" id="L114">		close();</span>
+<span class="fc" id="L115">		LOG.info(&quot;SMPP simulator stopped&quot;);</span>
+<span class="fc" id="L116">	}</span>
 
 	private void close() {
-<span class="nc bnc" id="L119" title="All 2 branches missed.">		if (serverSession != null) {</span>
-<span class="nc" id="L120">			serverSession.close();</span>
-<span class="nc" id="L121">			serverSession = null;</span>
+<span class="fc bfc" id="L119" title="All 2 branches covered.">		if (serverSession != null) {</span>
+<span class="fc" id="L120">			serverSession.close();</span>
+<span class="fc" id="L121">			serverSession = null;</span>
 		}
-<span class="nc bnc" id="L123" title="All 2 branches missed.">		if (sessionListener != null) {</span>
+<span class="pc bpc" id="L123" title="1 of 2 branches missed.">		if (sessionListener != null) {</span>
 			try {
-<span class="nc" id="L125">				sessionListener.close();</span>
-<span class="nc" id="L126">				sessionListener = null;</span>
+<span class="fc" id="L125">				sessionListener.close();</span>
+<span class="fc" id="L126">				sessionListener = null;</span>
 <span class="nc" id="L127">			} catch (IOException e) {</span>
 				// nothing to do
 <span class="nc" id="L129">				LOG.trace(&quot;Failed to close session listener&quot;, e);</span>
-<span class="nc" id="L130">			}</span>
+<span class="fc" id="L130">			}</span>
 		}
-<span class="nc" id="L132">	}</span>
+<span class="fc" id="L132">	}</span>
 
 	public boolean waitTillRunning(long timeoutInMs) throws InterruptedException {
-<span class="nc" id="L135">		long t = System.currentTimeMillis();</span>
-<span class="nc" id="L136">		synchronized (startupMonitor) {</span>
+<span class="fc" id="L135">		long t = System.currentTimeMillis();</span>
+<span class="fc" id="L136">		synchronized (startupMonitor) {</span>
 			// Loop to avoid spurious wake ups, see
 			// https://www.securecoding.cert.org/confluence/display/java/THI03-J.+Always+invoke+wait%28%29+and+await%28%29+methods+inside+a+loop
-<span class="nc bnc" id="L139" title="All 4 branches missed.">			while (!running &amp;&amp; System.currentTimeMillis() - t &lt; timeoutInMs) {</span>
-<span class="nc" id="L140">				startupMonitor.wait(timeoutInMs);</span>
+<span class="pc bpc" id="L139" title="1 of 4 branches missed.">			while (!running &amp;&amp; System.currentTimeMillis() - t &lt; timeoutInMs) {</span>
+<span class="fc" id="L140">				startupMonitor.wait(timeoutInMs);</span>
 			}
-<span class="nc" id="L142">		}</span>
+<span class="fc" id="L142">		}</span>
 
-<span class="nc" id="L144">		return running;</span>
+<span class="fc" id="L144">		return running;</span>
 	}
 
 	public QuerySmResult onAcceptQuerySm(QuerySm querySm, SMPPServerSession source) throws ProcessRequestException {
@@ -150,21 +150,21 @@ public class JSMPPServerSimulator extends ServerResponseDeliveryAdapter implemen
 	}
 
 	public MessageId onAcceptSubmitSm(SubmitSm submitSm, SMPPServerSession source) throws ProcessRequestException {
-<span class="nc" id="L153">		MessageId messageId = messageIDGenerator.newMessageId();</span>
-<span class="nc bnc" id="L154" title="All 2 branches missed.">		if (LOG.isDebugEnabled()) {</span>
-<span class="nc" id="L155">			LOG.debug(&quot;Receiving submit_sm '{}', and return message id {}&quot;, decode(new SubmitSmAdapter(submitSm)), messageId);</span>
+<span class="fc" id="L153">		MessageId messageId = messageIDGenerator.newMessageId();</span>
+<span class="fc bfc" id="L154" title="All 2 branches covered.">		if (LOG.isDebugEnabled()) {</span>
+<span class="fc" id="L155">			LOG.debug(&quot;Receiving submit_sm '{}', and return message id {}&quot;, decode(new SubmitSmAdapter(submitSm)), messageId);</span>
 		}
-<span class="nc" id="L157">		receivedMessages.add(submitSm);</span>
-<span class="nc bnc" id="L158" title="All 4 branches missed.">		if (SMSCDeliveryReceipt.DEFAULT.containedIn(submitSm.getRegisteredDelivery()) || SMSCDeliveryReceipt.SUCCESS_FAILURE.containedIn(submitSm.getRegisteredDelivery())) {</span>
-<span class="nc" id="L159">			execServiceDelReceipt.execute(new DeliveryReceiptTask(source, submitSm, messageId));</span>
+<span class="fc" id="L157">		receivedMessages.add(submitSm);</span>
+<span class="pc bpc" id="L158" title="3 of 4 branches missed.">		if (SMSCDeliveryReceipt.DEFAULT.containedIn(submitSm.getRegisteredDelivery()) || SMSCDeliveryReceipt.SUCCESS_FAILURE.containedIn(submitSm.getRegisteredDelivery())) {</span>
+<span class="fc" id="L159">			execServiceDelReceipt.execute(new DeliveryReceiptTask(source, submitSm, messageId));</span>
 		}
-<span class="nc" id="L161">		return messageId;</span>
+<span class="fc" id="L161">		return messageId;</span>
 	}
 
 	@Override
 	public void onSubmitSmRespSent(MessageId messageId, SMPPServerSession source) {
-<span class="nc" id="L166">		LOG.debug(&quot;submit_sm_resp with message_id {} has been sent&quot;, messageId);</span>
-<span class="nc" id="L167">	}</span>
+<span class="fc" id="L166">		LOG.debug(&quot;submit_sm_resp with message_id {} has been sent&quot;, messageId);</span>
+<span class="fc" id="L167">	}</span>
 
 	public SubmitMultiResult onAcceptSubmitMulti(SubmitMulti submitMulti, SMPPServerSession source) throws ProcessRequestException {
 <span class="nc" id="L170">		MessageId messageId = messageIDGenerator.newMessageId();</span>
@@ -194,7 +194,7 @@ public class JSMPPServerSimulator extends ServerResponseDeliveryAdapter implemen
 <span class="nc" id="L194">	}</span>
 
 	public List&lt;SubmitSm&gt; getReceivedMessages() {
-<span class="nc" id="L197">		return receivedMessages;</span>
+<span class="fc" id="L197">		return receivedMessages;</span>
 	}
 
 	public int getPort() {

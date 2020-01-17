@@ -34,7 +34,7 @@ import fr.sii.ogham.sms.sender.impl.cloudhopper.preparator.MessagePreparator;
  * @author Aurélien Baudet
  */
 public class CloudhopperSMPPSender extends AbstractSpecializedSender&lt;Sms&gt; {
-<span class="nc" id="L37">	private static final Logger LOG = LoggerFactory.getLogger(CloudhopperSMPPSender.class);</span>
+<span class="fc" id="L37">	private static final Logger LOG = LoggerFactory.getLogger(CloudhopperSMPPSender.class);</span>
 
 	/** Configuration to bind an SmppSession as an ESME to an SMSC. */
 	private final SmppSessionConfiguration smppSessionConfiguration;
@@ -88,13 +88,13 @@ public class CloudhopperSMPPSender extends AbstractSpecializedSender&lt;Sms&gt; 
 	 */
 	public CloudhopperSMPPSender(SmppSessionConfiguration smppSessionConfiguration, CloudhopperOptions options, MessagePreparator messagePreparator, SmppClientSupplier clientSupplier,
 			SmppSessionHandlerSupplier smppSessionHandlerSupplier) {
-<span class="nc" id="L91">		super();</span>
-<span class="nc" id="L92">		this.smppSessionConfiguration = smppSessionConfiguration;</span>
-<span class="nc" id="L93">		this.options = options;</span>
-<span class="nc" id="L94">		this.messagePreparator = messagePreparator;</span>
-<span class="nc" id="L95">		this.clientSupplier = clientSupplier;</span>
-<span class="nc" id="L96">		this.smppSessionHandlerSupplier = smppSessionHandlerSupplier;</span>
-<span class="nc" id="L97">	}</span>
+<span class="fc" id="L91">		super();</span>
+<span class="fc" id="L92">		this.smppSessionConfiguration = smppSessionConfiguration;</span>
+<span class="fc" id="L93">		this.options = options;</span>
+<span class="fc" id="L94">		this.messagePreparator = messagePreparator;</span>
+<span class="fc" id="L95">		this.clientSupplier = clientSupplier;</span>
+<span class="fc" id="L96">		this.smppSessionHandlerSupplier = smppSessionHandlerSupplier;</span>
+<span class="fc" id="L97">	}</span>
 
 	/**
 	 * Initializes a CloudhopperSMPPSender with SMPP session configuration and
@@ -118,77 +118,77 @@ public class CloudhopperSMPPSender extends AbstractSpecializedSender&lt;Sms&gt; 
 	@Override
 	public void send(Sms message) throws MessageException {
 		try {
-<span class="nc" id="L121">			LOG.debug(&quot;Creating a new SMPP session...&quot;);</span>
-<span class="nc" id="L122">			SmppSession session = connectOrReuseSession();</span>
-<span class="nc" id="L123">			LOG.info(&quot;SMPP session bounded&quot;);</span>
-<span class="nc" id="L124">			send(message, session);</span>
+<span class="fc" id="L121">			LOG.debug(&quot;Creating a new SMPP session...&quot;);</span>
+<span class="fc" id="L122">			SmppSession session = connectOrReuseSession();</span>
+<span class="fc" id="L123">			LOG.info(&quot;SMPP session bounded&quot;);</span>
+<span class="fc" id="L124">			send(message, session);</span>
 <span class="nc" id="L125">		} catch (RetryExecutionInterruptedException e) {</span>
 <span class="nc" id="L126">			Thread.currentThread().interrupt();</span>
 <span class="nc" id="L127">			throw new MessageException(&quot;Failed to initialize SMPP session (interrupted)&quot;, message, e);</span>
-<span class="nc" id="L128">		} catch (MaximumAttemptsReachedException e) {</span>
-<span class="nc" id="L129">			throw new MessageException(&quot;Failed to initialize SMPP session after maximum retries reached&quot;, message, e);</span>
+<span class="fc" id="L128">		} catch (MaximumAttemptsReachedException e) {</span>
+<span class="fc" id="L129">			throw new MessageException(&quot;Failed to initialize SMPP session after maximum retries reached&quot;, message, e);</span>
 <span class="nc" id="L130">		} catch (RetryException e) {</span>
 <span class="nc" id="L131">			throw new MessageException(&quot;Failed to initialize SMPP session&quot;, message, e);</span>
 		} finally {
-<span class="nc" id="L133">			clean();</span>
+<span class="fc" id="L133">			clean();</span>
 		}
-<span class="nc" id="L135">	}</span>
+<span class="fc" id="L135">	}</span>
 
 	private SmppSession connectOrReuseSession() throws RetryException {
 		// if no client or always use a new client =&gt; create a new instance
-<span class="nc bnc" id="L139" title="All 4 branches missed.">		if (currentClient == null || !options.isKeepSession()) {</span>
-<span class="nc" id="L140">			LOG.debug(&quot;Requesting a new SmppClient instance&quot;);</span>
-<span class="nc" id="L141">			currentClient = clientSupplier.get();</span>
+<span class="pc bpc" id="L139" title="1 of 4 branches missed.">		if (currentClient == null || !options.isKeepSession()) {</span>
+<span class="fc" id="L140">			LOG.debug(&quot;Requesting a new SmppClient instance&quot;);</span>
+<span class="fc" id="L141">			currentClient = clientSupplier.get();</span>
 		}
 		// if no session or always use a new session =&gt; connect to force a new
 		// session
-<span class="nc bnc" id="L145" title="All 4 branches missed.">		if (currentSession == null || !options.isKeepSession()) {</span>
-<span class="nc" id="L146">			LOG.debug(&quot;Requesting a new SMPP session&quot;);</span>
-<span class="nc" id="L147">			currentSession = connect(currentClient);</span>
+<span class="pc bpc" id="L145" title="1 of 4 branches missed.">		if (currentSession == null || !options.isKeepSession()) {</span>
+<span class="fc" id="L146">			LOG.debug(&quot;Requesting a new SMPP session&quot;);</span>
+<span class="fc" id="L147">			currentSession = connect(currentClient);</span>
 		}
-<span class="nc" id="L149">		return currentSession;</span>
+<span class="fc" id="L149">		return currentSession;</span>
 	}
 
 	private void clean() {
 		// do not close and destroy anything if session should stay open
-<span class="nc bnc" id="L154" title="All 2 branches missed.">		if (options.isKeepSession()) {</span>
-<span class="nc" id="L155">			LOG.debug(&quot;Keep current SMPP session open&quot;);</span>
-<span class="nc" id="L156">			return;</span>
+<span class="fc bfc" id="L154" title="All 2 branches covered.">		if (options.isKeepSession()) {</span>
+<span class="fc" id="L155">			LOG.debug(&quot;Keep current SMPP session open&quot;);</span>
+<span class="fc" id="L156">			return;</span>
 		}
-<span class="nc bnc" id="L158" title="All 2 branches missed.">		if (currentSession != null) {</span>
-<span class="nc" id="L159">			LOG.debug(&quot;Closing SMPP session&quot;);</span>
-<span class="nc" id="L160">			currentSession.unbind(options.getUnbindTimeout());</span>
-<span class="nc" id="L161">			currentSession.close();</span>
-<span class="nc" id="L162">			currentSession.destroy();</span>
-<span class="nc" id="L163">			currentSession = null;</span>
+<span class="fc bfc" id="L158" title="All 2 branches covered.">		if (currentSession != null) {</span>
+<span class="fc" id="L159">			LOG.debug(&quot;Closing SMPP session&quot;);</span>
+<span class="fc" id="L160">			currentSession.unbind(options.getUnbindTimeout());</span>
+<span class="fc" id="L161">			currentSession.close();</span>
+<span class="fc" id="L162">			currentSession.destroy();</span>
+<span class="fc" id="L163">			currentSession = null;</span>
 		}
-<span class="nc" id="L165">		LOG.debug(&quot;Destroying SMPP client&quot;);</span>
-<span class="nc" id="L166">		currentClient.destroy();</span>
-<span class="nc" id="L167">		currentClient = null;</span>
-<span class="nc" id="L168">	}</span>
+<span class="fc" id="L165">		LOG.debug(&quot;Destroying SMPP client&quot;);</span>
+<span class="fc" id="L166">		currentClient.destroy();</span>
+<span class="fc" id="L167">		currentClient = null;</span>
+<span class="fc" id="L168">	}</span>
 
 	private void send(Sms message, SmppSession session) throws MessageException {
 		try {
-<span class="nc bnc" id="L172" title="All 2 branches missed.">			for (SubmitSm msg : messagePreparator.prepareMessages(message)) {</span>
-<span class="nc" id="L173">				session.submit(msg, options.getResponseTimeout());</span>
-<span class="nc" id="L174">			}</span>
-<span class="nc" id="L175">		} catch (RecoverablePduException | UnrecoverablePduException | SmppTimeoutException | SmppChannelException e) {</span>
-<span class="nc" id="L176">			throw new MessageException(&quot;Failed to send SMPP message&quot;, message, e);</span>
+<span class="fc bfc" id="L172" title="All 2 branches covered.">			for (SubmitSm msg : messagePreparator.prepareMessages(message)) {</span>
+<span class="fc" id="L173">				session.submit(msg, options.getResponseTimeout());</span>
+<span class="fc" id="L174">			}</span>
+<span class="fc" id="L175">		} catch (RecoverablePduException | UnrecoverablePduException | SmppTimeoutException | SmppChannelException e) {</span>
+<span class="fc" id="L176">			throw new MessageException(&quot;Failed to send SMPP message&quot;, message, e);</span>
 <span class="nc" id="L177">		} catch (InterruptedException e) {</span>
 <span class="nc" id="L178">			Thread.currentThread().interrupt();</span>
 <span class="nc" id="L179">			throw new MessageException(&quot;Failed to send SMPP message (interrupted)&quot;, message, e);</span>
-<span class="nc" id="L180">		}</span>
-<span class="nc" id="L181">	}</span>
+<span class="fc" id="L180">		}</span>
+<span class="fc" id="L181">	}</span>
 
 	private SmppSession connect(final SmppClient client) throws RetryException {
-<span class="nc" id="L184">		RetryExecutor retry = options.getConnectRetry();</span>
-<span class="nc" id="L185">		return retry.execute(new NamedCallable&lt;&gt;(&quot;Connection to SMPP server&quot;, () -&gt; client.bind(smppSessionConfiguration, smppSessionHandlerSupplier.get())));</span>
+<span class="fc" id="L184">		RetryExecutor retry = options.getConnectRetry();</span>
+<span class="fc" id="L185">		return retry.execute(new NamedCallable&lt;&gt;(&quot;Connection to SMPP server&quot;, () -&gt; client.bind(smppSessionConfiguration, smppSessionHandlerSupplier.get())));</span>
 
 	}
 
 	@Override
 	public String toString() {
-<span class="nc" id="L191">		return &quot;CloudhopperSMPPSender&quot;;</span>
+<span class="fc" id="L191">		return &quot;CloudhopperSMPPSender&quot;;</span>
 	}
 
 	/**
@@ -197,7 +197,7 @@ public class CloudhopperSMPPSender extends AbstractSpecializedSender&lt;Sms&gt; 
 	 * @return the SMPP session configuration
 	 */
 	public SmppSessionConfiguration getSmppSessionConfiguration() {
-<span class="nc" id="L200">		return smppSessionConfiguration;</span>
+<span class="fc" id="L200">		return smppSessionConfiguration;</span>
 	}
 
 	/**

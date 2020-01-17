@@ -37,8 +37,8 @@ public class FieldAccessor&lt;T&gt; implements Accessor&lt;T&gt; {
 	 *            the name of the property
 	 */
 	public FieldAccessor(Object bean, String name) {
-<span class="nc" id="L40">		this(bean, name, true);</span>
-<span class="nc" id="L41">	}</span>
+<span class="fc" id="L40">		this(bean, name, true);</span>
+<span class="fc" id="L41">	}</span>
 
 	/**
 	 * Use reflection to access the bean property named by &lt;code&gt;name&lt;/code&gt;
@@ -55,34 +55,34 @@ public class FieldAccessor&lt;T&gt; implements Accessor&lt;T&gt; {
 	 *            make the field accessible if not
 	 */
 	public FieldAccessor(Object bean, String name, boolean makeAccessible) {
-<span class="nc" id="L58">		super();</span>
-<span class="nc" id="L59">		this.bean = bean;</span>
-<span class="nc" id="L60">		this.name = name;</span>
-<span class="nc" id="L61">		this.makeAccessible = makeAccessible;</span>
-<span class="nc" id="L62">	}</span>
+<span class="fc" id="L58">		super();</span>
+<span class="fc" id="L59">		this.bean = bean;</span>
+<span class="fc" id="L60">		this.name = name;</span>
+<span class="fc" id="L61">		this.makeAccessible = makeAccessible;</span>
+<span class="fc" id="L62">	}</span>
 
 	@Override
 	@SuppressWarnings(&quot;unchecked&quot;)
 	public T getValue() {
 		try {
-<span class="nc bnc" id="L68" title="All 2 branches missed.">			if (field == null) {</span>
-<span class="nc" id="L69">				initField();</span>
+<span class="pc bpc" id="L68" title="1 of 2 branches missed.">			if (field == null) {</span>
+<span class="fc" id="L69">				initField();</span>
 			}
-<span class="nc" id="L71">			return (T) field.get(bean);</span>
-<span class="nc" id="L72">		} catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException | ClassCastException e) {</span>
-<span class="nc" id="L73">			throw new InvalidPropertyException(&quot;Failed to get value for property '&quot; + name + &quot;' on bean '&quot; + getClassName() + &quot;'&quot;, bean, name, e);</span>
+<span class="fc" id="L71">			return (T) field.get(bean);</span>
+<span class="fc" id="L72">		} catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException | ClassCastException e) {</span>
+<span class="fc" id="L73">			throw new InvalidPropertyException(&quot;Failed to get value for property '&quot; + name + &quot;' on bean '&quot; + getClassName() + &quot;'&quot;, bean, name, e);</span>
 		}
 	}
 
 	private void initField() throws NoSuchFieldException {
-<span class="nc" id="L78">		field = bean.getClass().getDeclaredField(name);</span>
-<span class="nc bnc" id="L79" title="All 4 branches missed.">		if (makeAccessible &amp;&amp; !field.isAccessible()) {</span>
-<span class="nc" id="L80">			field.setAccessible(true);</span>
+<span class="fc" id="L78">		field = bean.getClass().getDeclaredField(name);</span>
+<span class="pc bpc" id="L79" title="1 of 4 branches missed.">		if (makeAccessible &amp;&amp; !field.isAccessible()) {</span>
+<span class="fc" id="L80">			field.setAccessible(true);</span>
 		}
-<span class="nc" id="L82">	}</span>
+<span class="fc" id="L82">	}</span>
 
 	private String getClassName() {
-<span class="nc bnc" id="L85" title="All 2 branches missed.">		return bean == null ? &quot;null&quot; : bean.getClass().getName();</span>
+<span class="pc bpc" id="L85" title="1 of 2 branches missed.">		return bean == null ? &quot;null&quot; : bean.getClass().getName();</span>
 	}
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

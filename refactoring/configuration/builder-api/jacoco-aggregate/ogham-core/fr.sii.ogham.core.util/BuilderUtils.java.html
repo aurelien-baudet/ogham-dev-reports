@@ -34,7 +34,7 @@ public final class BuilderUtils {
 	 * @return the default properties
 	 */
 	public static Properties getDefaultProperties() {
-<span class="nc" id="L37">		return System.getProperties();</span>
+<span class="fc" id="L37">		return System.getProperties();</span>
 	}
 
 	/**
@@ -65,8 +65,8 @@ public final class BuilderUtils {
 	 * @return the resulting value of the expression, the value or null
 	 */
 	public static &lt;T&gt; T evaluate(String property, PropertyResolver propertyResolver, Class&lt;T&gt; resultClass) {
-<span class="nc bnc" id="L68" title="All 2 branches missed.">		if (isExpression(property)) {</span>
-<span class="nc" id="L69">			return propertyResolver.getProperty(getPropertyKey(property), resultClass);</span>
+<span class="pc bpc" id="L68" title="1 of 2 branches missed.">		if (isExpression(property)) {</span>
+<span class="fc" id="L69">			return propertyResolver.getProperty(getPropertyKey(property), resultClass);</span>
 		}
 <span class="nc" id="L71">		return getConverter().convert(property, resultClass);</span>
 	}
@@ -93,16 +93,16 @@ public final class BuilderUtils {
 	 * @return the resulting value or null
 	 */
 	public static &lt;T&gt; T evaluate(List&lt;String&gt; properties, PropertyResolver propertyResolver, Class&lt;T&gt; resultClass) {
-<span class="nc bnc" id="L96" title="All 2 branches missed.">		if (properties == null) {</span>
+<span class="pc bpc" id="L96" title="1 of 2 branches missed.">		if (properties == null) {</span>
 <span class="nc" id="L97">			return null;</span>
 		}
-<span class="nc bnc" id="L99" title="All 2 branches missed.">		for (String prop : properties) {</span>
-<span class="nc" id="L100">			T value = evaluate(prop, propertyResolver, resultClass);</span>
-<span class="nc bnc" id="L101" title="All 2 branches missed.">			if (value != null) {</span>
-<span class="nc" id="L102">				return value;</span>
+<span class="fc bfc" id="L99" title="All 2 branches covered.">		for (String prop : properties) {</span>
+<span class="fc" id="L100">			T value = evaluate(prop, propertyResolver, resultClass);</span>
+<span class="fc bfc" id="L101" title="All 2 branches covered.">			if (value != null) {</span>
+<span class="fc" id="L102">				return value;</span>
 			}
-<span class="nc" id="L104">		}</span>
-<span class="nc" id="L105">		return null;</span>
+<span class="fc" id="L104">		}</span>
+<span class="fc" id="L105">		return null;</span>
 	}
 
 	/**
@@ -113,7 +113,7 @@ public final class BuilderUtils {
 	 * @return the property key
 	 */
 	public static String getPropertyKey(String expression) {
-<span class="nc" id="L116">		return expression.substring(2, expression.length() - 1);</span>
+<span class="fc" id="L116">		return expression.substring(2, expression.length() - 1);</span>
 	}
 
 	/**
@@ -125,7 +125,7 @@ public final class BuilderUtils {
 	 * @return true if it is an expression, false otherwise
 	 */
 	public static boolean isExpression(String property) {
-<span class="nc bnc" id="L128" title="All 6 branches missed.">		return property != null &amp;&amp; property.startsWith(&quot;${&quot;) &amp;&amp; property.endsWith(&quot;}&quot;);</span>
+<span class="pc bpc" id="L128" title="2 of 6 branches missed.">		return property != null &amp;&amp; property.startsWith(&quot;${&quot;) &amp;&amp; property.endsWith(&quot;}&quot;);</span>
 	}
 
 	/**
@@ -220,40 +220,40 @@ public final class BuilderUtils {
 	@SuppressWarnings(&quot;squid:RedundantThrowsDeclarationCheck&quot;)
 	public static &lt;T, B extends Builder&lt;? extends T&gt;, P&gt; B instantiateBuilder(Class&lt;B&gt; builderClass, P parent, EnvironmentBuilder&lt;?&gt; environmentBuilder) throws BuildException {
 		try {
-<span class="nc" id="L223">			return instantiate(builderClass, parent, environmentBuilder);</span>
-<span class="nc" id="L224">		} catch (InstantiationException | IllegalAccessException | InvocationTargetException | SecurityException | IllegalArgumentException e) {</span>
-<span class="nc" id="L225">			throw new BuildException(&quot;Can't instantiate builder from class &quot; + builderClass.getSimpleName(), e);</span>
+<span class="fc" id="L223">			return instantiate(builderClass, parent, environmentBuilder);</span>
+<span class="fc" id="L224">		} catch (InstantiationException | IllegalAccessException | InvocationTargetException | SecurityException | IllegalArgumentException e) {</span>
+<span class="fc" id="L225">			throw new BuildException(&quot;Can't instantiate builder from class &quot; + builderClass.getSimpleName(), e);</span>
 		}
 	}
 
 	private static &lt;T, B extends Builder&lt;? extends T&gt;, P&gt; B instantiate(Class&lt;B&gt; builderClass, P parent, EnvironmentBuilder&lt;?&gt; environmentBuilder)
 			throws InstantiationException, IllegalAccessException, InvocationTargetException {
 		try {
-<span class="nc" id="L232">			return builderClass.getConstructor(parent.getClass(), EnvironmentBuilder.class).newInstance(parent, environmentBuilder);</span>
-<span class="nc" id="L233">		} catch (NoSuchMethodException e) {</span>
+<span class="fc" id="L232">			return builderClass.getConstructor(parent.getClass(), EnvironmentBuilder.class).newInstance(parent, environmentBuilder);</span>
+<span class="fc" id="L233">		} catch (NoSuchMethodException e) {</span>
 			// skip
 		}
 		try {
-<span class="nc" id="L237">			return builderClass.getConstructor(parent.getClass()).newInstance(parent);</span>
-<span class="nc" id="L238">		} catch (NoSuchMethodException e) {</span>
+<span class="fc" id="L237">			return builderClass.getConstructor(parent.getClass()).newInstance(parent);</span>
+<span class="fc" id="L238">		} catch (NoSuchMethodException e) {</span>
 			// skip
 		}
 		try {
 <span class="nc" id="L242">			return builderClass.getConstructor(EnvironmentBuilder.class).newInstance(environmentBuilder);</span>
-<span class="nc" id="L243">		} catch (NoSuchMethodException e) {</span>
+<span class="fc" id="L243">		} catch (NoSuchMethodException e) {</span>
 			// skip
 		}
 		try {
-<span class="nc" id="L247">			return builderClass.getConstructor().newInstance();</span>
-<span class="nc" id="L248">		} catch (NoSuchMethodException e) {</span>
+<span class="fc" id="L247">			return builderClass.getConstructor().newInstance();</span>
+<span class="fc" id="L248">		} catch (NoSuchMethodException e) {</span>
 			// skip
 		}
-<span class="nc" id="L251">		StringJoiner joiner = new StringJoiner(&quot;\n- &quot;, &quot;\n- &quot;, &quot;\n&quot;);</span>
-<span class="nc" id="L252">		joiner.add(&quot;constructor(&quot; + parent.getClass().getName() + &quot;, &quot; + EnvironmentBuilder.class.getName() + &quot;)\n   if you want fluent chaining and inherit current environment variable evaluation&quot;);</span>
-<span class="nc" id="L253">		joiner.add(&quot;constructor(&quot; + parent.getClass().getName() + &quot;)\n   if you want fluent chaining&quot;);</span>
-<span class="nc" id="L254">		joiner.add(&quot;constructor(&quot; + EnvironmentBuilder.class.getName() + &quot;)\n   if you don't want fluent chaining but inherit current environment variable evaluation&quot;);</span>
-<span class="nc" id="L255">		joiner.add(&quot;constructor()\n   if you don't want fluent chaining and inherit current environment variable evaluation&quot;);</span>
-<span class="nc" id="L256">		throw new BuildException(&quot;No matching constructor found. The builder implementation must provide one of following constructors:&quot; + joiner.toString());</span>
+<span class="fc" id="L251">		StringJoiner joiner = new StringJoiner(&quot;\n- &quot;, &quot;\n- &quot;, &quot;\n&quot;);</span>
+<span class="fc" id="L252">		joiner.add(&quot;constructor(&quot; + parent.getClass().getName() + &quot;, &quot; + EnvironmentBuilder.class.getName() + &quot;)\n   if you want fluent chaining and inherit current environment variable evaluation&quot;);</span>
+<span class="fc" id="L253">		joiner.add(&quot;constructor(&quot; + parent.getClass().getName() + &quot;)\n   if you want fluent chaining&quot;);</span>
+<span class="fc" id="L254">		joiner.add(&quot;constructor(&quot; + EnvironmentBuilder.class.getName() + &quot;)\n   if you don't want fluent chaining but inherit current environment variable evaluation&quot;);</span>
+<span class="fc" id="L255">		joiner.add(&quot;constructor()\n   if you don't want fluent chaining and inherit current environment variable evaluation&quot;);</span>
+<span class="fc" id="L256">		throw new BuildException(&quot;No matching constructor found. The builder implementation must provide one of following constructors:&quot; + joiner.toString());</span>
 	}
 
 	private static Converter getConverter() {

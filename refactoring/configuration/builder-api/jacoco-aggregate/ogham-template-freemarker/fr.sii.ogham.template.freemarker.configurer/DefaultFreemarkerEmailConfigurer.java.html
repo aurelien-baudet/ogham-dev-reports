@@ -124,18 +124,18 @@ import freemarker.template.TemplateExceptionHandler;
  *
  */
 public final class DefaultFreemarkerEmailConfigurer {
-<span class="nc" id="L127">	private static final Logger LOG = LoggerFactory.getLogger(DefaultFreemarkerEmailConfigurer.class);</span>
+<span class="fc" id="L127">	private static final Logger LOG = LoggerFactory.getLogger(DefaultFreemarkerEmailConfigurer.class);</span>
 	
 	@ConfigurerFor(targetedBuilder = { &quot;minimal&quot;, &quot;standard&quot; }, priority = DEFAULT_FREEMARKER_EMAIL_CONFIGURER_PRIORITY, phase = AFTER_INIT)
-<span class="nc" id="L130">	public static class EnvironmentPropagator implements MessagingConfigurer {</span>
+<span class="fc" id="L130">	public static class EnvironmentPropagator implements MessagingConfigurer {</span>
 		@Override
 		public void configure(MessagingBuilder msgBuilder) {
-<span class="nc bnc" id="L133" title="All 2 branches missed.">			if (canUseFreemaker()) {</span>
-<span class="nc" id="L134">				FreemarkerEmailBuilder builder = msgBuilder.email().template(FreemarkerEmailBuilder.class);</span>
+<span class="fc bfc" id="L133" title="All 2 branches covered.">			if (canUseFreemaker()) {</span>
+<span class="fc" id="L134">				FreemarkerEmailBuilder builder = msgBuilder.email().template(FreemarkerEmailBuilder.class);</span>
 				// use same environment as parent builder
-<span class="nc" id="L136">				builder.environment(msgBuilder.environment());</span>
+<span class="fc" id="L136">				builder.environment(msgBuilder.environment());</span>
 			}
-<span class="nc" id="L138">		}</span>
+<span class="fc" id="L138">		}</span>
 	}
 
 	@ConfigurerFor(targetedBuilder = { &quot;minimal&quot;, &quot;standard&quot; }, priority = DEFAULT_FREEMARKER_EMAIL_CONFIGURER_PRIORITY)
@@ -143,75 +143,75 @@ public final class DefaultFreemarkerEmailConfigurer {
 		private final MessagingConfigurerAdapter delegate;
 
 		public FreemakerConfigurer() {
-<span class="nc" id="L146">			this(new DefaultMessagingConfigurer());</span>
-<span class="nc" id="L147">		}</span>
+<span class="fc" id="L146">			this(new DefaultMessagingConfigurer());</span>
+<span class="fc" id="L147">		}</span>
 
 		public FreemakerConfigurer(MessagingConfigurerAdapter delegate) {
-<span class="nc" id="L150">			super();</span>
-<span class="nc" id="L151">			this.delegate = delegate;</span>
-<span class="nc" id="L152">		}</span>
+<span class="fc" id="L150">			super();</span>
+<span class="fc" id="L151">			this.delegate = delegate;</span>
+<span class="fc" id="L152">		}</span>
 		
 		@Override
 		public void configure(MessagingBuilder msgBuilder) {
-<span class="nc bnc" id="L156" title="All 2 branches missed.">			if (!canUseFreemaker()) {</span>
-<span class="nc" id="L157">				LOG.debug(&quot;[{}] skip configuration&quot;, this);</span>
-<span class="nc" id="L158">				return;</span>
+<span class="fc bfc" id="L156" title="All 2 branches covered.">			if (!canUseFreemaker()) {</span>
+<span class="fc" id="L157">				LOG.debug(&quot;[{}] skip configuration&quot;, this);</span>
+<span class="fc" id="L158">				return;</span>
 			}
-<span class="nc" id="L160">			LOG.debug(&quot;[{}] apply configuration&quot;, this);</span>
-<span class="nc" id="L161">			FreemarkerEmailBuilder builder = msgBuilder.email().template(FreemarkerEmailBuilder.class);</span>
+<span class="fc" id="L160">			LOG.debug(&quot;[{}] apply configuration&quot;, this);</span>
+<span class="fc" id="L161">			FreemarkerEmailBuilder builder = msgBuilder.email().template(FreemarkerEmailBuilder.class);</span>
 			// apply default resource resolution configuration
-<span class="nc bnc" id="L163" title="All 2 branches missed.">			if (delegate != null) {</span>
-<span class="nc" id="L164">				delegate.configure(builder);</span>
+<span class="pc bpc" id="L163" title="1 of 2 branches missed.">			if (delegate != null) {</span>
+<span class="fc" id="L164">				delegate.configure(builder);</span>
 			}
 			// @formatter:off
-<span class="nc" id="L167">			builder</span>
-<span class="nc" id="L168">				.classpath()</span>
-<span class="nc" id="L169">					.pathPrefix()</span>
-<span class="nc" id="L170">						.properties(&quot;${ogham.email.freemarker.classpath.path-prefix}&quot;, </span>
+<span class="fc" id="L167">			builder</span>
+<span class="fc" id="L168">				.classpath()</span>
+<span class="fc" id="L169">					.pathPrefix()</span>
+<span class="fc" id="L170">						.properties(&quot;${ogham.email.freemarker.classpath.path-prefix}&quot;, </span>
 									&quot;${ogham.email.template.classpath.path-prefix}&quot;, 
 									&quot;${ogham.email.freemarker.path-prefix}&quot;, 
 									&quot;${ogham.email.template.path-prefix}&quot;, 
 									&quot;${ogham.template.path-prefix}&quot;)
-<span class="nc" id="L175">						.and()</span>
-<span class="nc" id="L176">					.pathSuffix()</span>
-<span class="nc" id="L177">						.properties(&quot;${ogham.email.freemarker.classpath.path-suffix}&quot;, </span>
+<span class="fc" id="L175">						.and()</span>
+<span class="fc" id="L176">					.pathSuffix()</span>
+<span class="fc" id="L177">						.properties(&quot;${ogham.email.freemarker.classpath.path-suffix}&quot;, </span>
 									&quot;${ogham.email.template.classpath.path-suffix}&quot;, 
 									&quot;${ogham.email.freemarker.path-suffix}&quot;, 
 									&quot;${ogham.email.template.path-suffix}&quot;, 
 									&quot;${ogham.template.path-suffix}&quot;)
-<span class="nc" id="L182">						.and()</span>
-<span class="nc" id="L183">					.and()</span>
-<span class="nc" id="L184">				.file()</span>
-<span class="nc" id="L185">					.pathPrefix()</span>
-<span class="nc" id="L186">						.properties(&quot;${ogham.email.freemarker.file.path-prefix}&quot;, </span>
+<span class="fc" id="L182">						.and()</span>
+<span class="fc" id="L183">					.and()</span>
+<span class="fc" id="L184">				.file()</span>
+<span class="fc" id="L185">					.pathPrefix()</span>
+<span class="fc" id="L186">						.properties(&quot;${ogham.email.freemarker.file.path-prefix}&quot;, </span>
 									&quot;${ogham.email.template.file.path-prefix}&quot;, 
 									&quot;${ogham.email.freemarker.path-prefix}&quot;, 
 									&quot;${ogham.email.template.path-prefix}&quot;, 
 									&quot;${ogham.template.path-prefix}&quot;)
-<span class="nc" id="L191">						.and()</span>
-<span class="nc" id="L192">					.pathSuffix()</span>
-<span class="nc" id="L193">						.properties(&quot;${ogham.email.freemarker.file.path-suffix}&quot;, </span>
+<span class="fc" id="L191">						.and()</span>
+<span class="fc" id="L192">					.pathSuffix()</span>
+<span class="fc" id="L193">						.properties(&quot;${ogham.email.freemarker.file.path-suffix}&quot;, </span>
 									&quot;${ogham.email.template.file.path-suffix}&quot;, 
 									&quot;${ogham.email.freemarker.path-suffix}&quot;, 
 									&quot;${ogham.email.template.path-suffix}&quot;, 
 									&quot;${ogham.template.path-suffix}&quot;)
-<span class="nc" id="L198">						.and()</span>
-<span class="nc" id="L199">					.and()</span>
-<span class="nc" id="L200">				.string()</span>
-<span class="nc" id="L201">					.and()</span>
-<span class="nc" id="L202">				.variant(EmailVariant.HTML, &quot;html.ftl&quot;)</span>
-<span class="nc" id="L203">				.variant(EmailVariant.TEXT, &quot;txt.ftl&quot;)</span>
-<span class="nc" id="L204">				.configuration()</span>
-<span class="nc" id="L205">					.defaultEncoding().properties(&quot;${ogham.freemarker.default-encoding}&quot;).defaultValue(overrideIfNotSet(&quot;UTF-8&quot;)).and()</span>
-<span class="nc" id="L206">					.templateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER)</span>
-<span class="nc" id="L207">					.enableStaticMethodAccess().properties(&quot;${ogham.freemarker.enable-static-method-access}&quot;).defaultValue(overrideIfNotSet(true)).and()</span>
-<span class="nc" id="L208">					.staticMethodAccessVariableName().properties(&quot;${ogham.freemarker.static-method-access-variable-name}&quot;).defaultValue(overrideIfNotSet(&quot;statics&quot;));</span>
+<span class="fc" id="L198">						.and()</span>
+<span class="fc" id="L199">					.and()</span>
+<span class="fc" id="L200">				.string()</span>
+<span class="fc" id="L201">					.and()</span>
+<span class="fc" id="L202">				.variant(EmailVariant.HTML, &quot;html.ftl&quot;)</span>
+<span class="fc" id="L203">				.variant(EmailVariant.TEXT, &quot;txt.ftl&quot;)</span>
+<span class="fc" id="L204">				.configuration()</span>
+<span class="fc" id="L205">					.defaultEncoding().properties(&quot;${ogham.freemarker.default-encoding}&quot;).defaultValue(overrideIfNotSet(&quot;UTF-8&quot;)).and()</span>
+<span class="fc" id="L206">					.templateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER)</span>
+<span class="fc" id="L207">					.enableStaticMethodAccess().properties(&quot;${ogham.freemarker.enable-static-method-access}&quot;).defaultValue(overrideIfNotSet(true)).and()</span>
+<span class="fc" id="L208">					.staticMethodAccessVariableName().properties(&quot;${ogham.freemarker.static-method-access-variable-name}&quot;).defaultValue(overrideIfNotSet(&quot;statics&quot;));</span>
 			// @formatter:on
-<span class="nc" id="L210">		}</span>
+<span class="fc" id="L210">		}</span>
 	}
 	
 	private static boolean canUseFreemaker() {
-<span class="nc bnc" id="L214" title="All 4 branches missed.">		return ClasspathUtils.exists(&quot;freemarker.template.Configuration&quot;) &amp;&amp; ClasspathUtils.exists(&quot;freemarker.template.Template&quot;);</span>
+<span class="pc bpc" id="L214" title="1 of 4 branches missed.">		return ClasspathUtils.exists(&quot;freemarker.template.Configuration&quot;) &amp;&amp; ClasspathUtils.exists(&quot;freemarker.template.Template&quot;);</span>
 	}
 
 	private DefaultFreemarkerEmailConfigurer() {

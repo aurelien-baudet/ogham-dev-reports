@@ -50,7 +50,7 @@ import fr.sii.ogham.sms.util.http.Response;
  *
  */
 public class OvhSmsSender extends AbstractSpecializedSender&lt;Sms&gt; {
-<span class="nc" id="L53">	private static final Logger LOG = LoggerFactory.getLogger(OvhSmsSender.class);</span>
+<span class="fc" id="L53">	private static final Logger LOG = LoggerFactory.getLogger(OvhSmsSender.class);</span>
 	private static final String CONTENT_TYPE = &quot;application/json&quot;;
 	private static final String RESPONSE_TYPE = &quot;contentType&quot;;
 	private static final String MESSAGE = &quot;message&quot;;
@@ -60,7 +60,7 @@ public class OvhSmsSender extends AbstractSpecializedSender&lt;Sms&gt; {
 	private static final String RECIPIENTS_SEPARATOR = &quot;,&quot;;
 	private static final int OK_STATUS = 200;
 	private static final int INTERNATIONAL_FORMAT_LENGTH = 13;
-<span class="nc" id="L63">	private static final Pattern SPACES = Pattern.compile(&quot;\\s+&quot;);</span>
+<span class="fc" id="L63">	private static final Pattern SPACES = Pattern.compile(&quot;\\s+&quot;);</span>
 
 	/**
 	 * The authentication parameters
@@ -89,48 +89,48 @@ public class OvhSmsSender extends AbstractSpecializedSender&lt;Sms&gt; {
 	private final SmsCodingDetector smsCodingDetector;
 
 	public OvhSmsSender(URL url, OvhAuthParams authParams, OvhOptions options, SmsCodingDetector smsCodingDetector) {
-<span class="nc" id="L92">		super();</span>
-<span class="nc" id="L93">		this.url = url;</span>
-<span class="nc" id="L94">		this.authParams = authParams;</span>
-<span class="nc" id="L95">		this.options = options;</span>
-<span class="nc" id="L96">		this.smsCodingDetector = smsCodingDetector;</span>
-<span class="nc" id="L97">		this.mapper = new ObjectMapper();</span>
-<span class="nc" id="L98">	}</span>
+<span class="fc" id="L92">		super();</span>
+<span class="fc" id="L93">		this.url = url;</span>
+<span class="fc" id="L94">		this.authParams = authParams;</span>
+<span class="fc" id="L95">		this.options = options;</span>
+<span class="fc" id="L96">		this.smsCodingDetector = smsCodingDetector;</span>
+<span class="fc" id="L97">		this.mapper = new ObjectMapper();</span>
+<span class="fc" id="L98">	}</span>
 
 	@Override
 	public void send(Sms message) throws MessageException {
 		try {
-<span class="nc" id="L103">			String text = getContent(message);</span>
+<span class="fc" id="L103">			String text = getContent(message);</span>
 			// @formatter:off
-<span class="nc" id="L105">			Response response = HttpUtils.get(url.toString(), authParams, options,</span>
-<span class="nc" id="L106">									new Parameter(SMS_CODING, getSmsCodingValue(text)),</span>
+<span class="fc" id="L105">			Response response = HttpUtils.get(url.toString(), authParams, options,</span>
+<span class="fc" id="L106">									new Parameter(SMS_CODING, getSmsCodingValue(text)),</span>
 									new Parameter(RESPONSE_TYPE, CONTENT_TYPE),
 									// convert phone number to international format
-<span class="nc" id="L109">									new Parameter(FROM, toInternational(message.getFrom().getPhoneNumber())),</span>
-<span class="nc" id="L110">									new Parameter(TO, StringUtils.join(convert(message.getRecipients()), RECIPIENTS_SEPARATOR)),</span>
+<span class="fc" id="L109">									new Parameter(FROM, toInternational(message.getFrom().getPhoneNumber())),</span>
+<span class="fc" id="L110">									new Parameter(TO, StringUtils.join(convert(message.getRecipients()), RECIPIENTS_SEPARATOR)),</span>
 									// TODO: manage long messages: how to do ??
 									new Parameter(MESSAGE, text));
 			// @formatter:on
-<span class="nc" id="L114">			handleResponse(message, response);</span>
+<span class="fc" id="L114">			handleResponse(message, response);</span>
 <span class="nc" id="L115">		} catch (IOException e) {</span>
 <span class="nc" id="L116">			throw new MessageException(&quot;Failed to read response when sending SMS through OVH&quot;, message, e);</span>
 <span class="nc" id="L117">		} catch (HttpException e) {</span>
 <span class="nc" id="L118">			throw new MessageException(&quot;Failed to send SMS through OVH&quot;, message, e);</span>
 <span class="nc" id="L119">		} catch (PhoneNumberException e) {</span>
 <span class="nc" id="L120">			throw new MessageException(&quot;Failed to send SMS through OVH (invalid phone number)&quot;, message, e);</span>
-<span class="nc" id="L121">		}</span>
-<span class="nc" id="L122">	}</span>
+<span class="fc" id="L121">		}</span>
+<span class="fc" id="L122">	}</span>
 
 	private Integer getSmsCodingValue(String message) {
-<span class="nc" id="L125">		SmsCoding smsCoding = getSmsCoding(message);</span>
-<span class="nc bnc" id="L126" title="All 2 branches missed.">		return smsCoding == null ? null : smsCoding.getValue();</span>
+<span class="fc" id="L125">		SmsCoding smsCoding = getSmsCoding(message);</span>
+<span class="pc bpc" id="L126" title="1 of 2 branches missed.">		return smsCoding == null ? null : smsCoding.getValue();</span>
 	}
 
 	private SmsCoding getSmsCoding(String message) {
-<span class="nc bnc" id="L130" title="All 2 branches missed.">		if (options.getSmsCoding() != null) {</span>
+<span class="pc bpc" id="L130" title="1 of 2 branches missed.">		if (options.getSmsCoding() != null) {</span>
 <span class="nc" id="L131">			return options.getSmsCoding();</span>
 		}
-<span class="nc" id="L133">		return smsCodingDetector.detect(message);</span>
+<span class="fc" id="L133">		return smsCodingDetector.detect(message);</span>
 	}
 
 	/**
@@ -150,28 +150,28 @@ public class OvhSmsSender extends AbstractSpecializedSender&lt;Sms&gt; {
 	 *             sent
 	 */
 	private void handleResponse(Sms message, Response response) throws IOException, MessageNotSentException {
-<span class="nc bnc" id="L153" title="All 2 branches missed.">		if (response.getStatus().isSuccess()) {</span>
-<span class="nc" id="L154">			JsonNode json = mapper.readTree(response.getBody());</span>
-<span class="nc" id="L155">			int ovhStatus = json.get(&quot;status&quot;).asInt();</span>
+<span class="fc bfc" id="L153" title="All 2 branches covered.">		if (response.getStatus().isSuccess()) {</span>
+<span class="fc" id="L154">			JsonNode json = mapper.readTree(response.getBody());</span>
+<span class="fc" id="L155">			int ovhStatus = json.get(&quot;status&quot;).asInt();</span>
 			// 100 &lt;= ovh status &lt; 200 ====&gt; OK -&gt; just log response
 			// 200 &lt;= ovh status ====&gt; KO -&gt; throw an exception
-<span class="nc bnc" id="L158" title="All 2 branches missed.">			if (ovhStatus &gt;= OK_STATUS) {</span>
-<span class="nc" id="L159">				LOG.error(&quot;SMS failed to be sent through OVH&quot;);</span>
-<span class="nc" id="L160">				LOG.debug(&quot;Sent SMS: {}&quot;, message);</span>
-<span class="nc" id="L161">				LOG.debug(&quot;Response status {}&quot;, response.getStatus());</span>
-<span class="nc" id="L162">				LOG.debug(&quot;Response body {}&quot;, response.getBody());</span>
-<span class="nc" id="L163">				throw new MessageNotSentException(&quot;SMS couldn't be sent through OVH: &quot; + json.get(MESSAGE).asText(), message);</span>
+<span class="fc bfc" id="L158" title="All 2 branches covered.">			if (ovhStatus &gt;= OK_STATUS) {</span>
+<span class="fc" id="L159">				LOG.error(&quot;SMS failed to be sent through OVH&quot;);</span>
+<span class="fc" id="L160">				LOG.debug(&quot;Sent SMS: {}&quot;, message);</span>
+<span class="fc" id="L161">				LOG.debug(&quot;Response status {}&quot;, response.getStatus());</span>
+<span class="fc" id="L162">				LOG.debug(&quot;Response body {}&quot;, response.getBody());</span>
+<span class="fc" id="L163">				throw new MessageNotSentException(&quot;SMS couldn't be sent through OVH: &quot; + json.get(MESSAGE).asText(), message);</span>
 			} else {
-<span class="nc" id="L165">				LOG.info(&quot;SMS successfully sent through OVH&quot;);</span>
-<span class="nc" id="L166">				LOG.debug(&quot;Sent SMS: {}&quot;, message);</span>
-<span class="nc" id="L167">				LOG.debug(&quot;Response: {}&quot;, response.getBody());</span>
+<span class="fc" id="L165">				LOG.info(&quot;SMS successfully sent through OVH&quot;);</span>
+<span class="fc" id="L166">				LOG.debug(&quot;Sent SMS: {}&quot;, message);</span>
+<span class="fc" id="L167">				LOG.debug(&quot;Response: {}&quot;, response.getBody());</span>
 			}
-<span class="nc" id="L169">		} else {</span>
-<span class="nc" id="L170">			LOG.error(&quot;Response status {}&quot;, response.getStatus());</span>
-<span class="nc" id="L171">			LOG.error(&quot;Response body {}&quot;, response.getBody());</span>
-<span class="nc" id="L172">			throw new MessageNotSentException(&quot;SMS couldn't be sent. Response status is &quot; + response.getStatus(), message);</span>
+<span class="fc" id="L169">		} else {</span>
+<span class="fc" id="L170">			LOG.error(&quot;Response status {}&quot;, response.getStatus());</span>
+<span class="fc" id="L171">			LOG.error(&quot;Response body {}&quot;, response.getBody());</span>
+<span class="fc" id="L172">			throw new MessageNotSentException(&quot;SMS couldn't be sent. Response status is &quot; + response.getStatus(), message);</span>
 		}
-<span class="nc" id="L174">	}</span>
+<span class="fc" id="L174">	}</span>
 
 	/**
 	 * Get the content of the SMS and apply some transformations on it to be
@@ -184,7 +184,7 @@ public class OvhSmsSender extends AbstractSpecializedSender&lt;Sms&gt; {
 	private static String getContent(Sms message) {
 		// if a string contains \r\n, only \r is kept
 		// if there are \n without \r, those \n are converted to \r
-<span class="nc" id="L187">		return message.getContent().toString().replaceAll(&quot;(\r)?\n&quot;, &quot;\r&quot;);</span>
+<span class="fc" id="L187">		return message.getContent().toString().replaceAll(&quot;(\r)?\n&quot;, &quot;\r&quot;);</span>
 	}
 
 	/**
@@ -198,12 +198,12 @@ public class OvhSmsSender extends AbstractSpecializedSender&lt;Sms&gt; {
 	 *             when phone number can't be handled by OVH
 	 */
 	private static List&lt;String&gt; convert(List&lt;Recipient&gt; recipients) throws PhoneNumberException {
-<span class="nc" id="L201">		List&lt;String&gt; tos = new ArrayList&lt;&gt;(recipients.size());</span>
+<span class="fc" id="L201">		List&lt;String&gt; tos = new ArrayList&lt;&gt;(recipients.size());</span>
 		// convert phone numbers to international format
-<span class="nc bnc" id="L203" title="All 2 branches missed.">		for (Recipient recipient : recipients) {</span>
-<span class="nc" id="L204">			tos.add(toInternational(recipient.getPhoneNumber()));</span>
-<span class="nc" id="L205">		}</span>
-<span class="nc" id="L206">		return tos;</span>
+<span class="fc bfc" id="L203" title="All 2 branches covered.">		for (Recipient recipient : recipients) {</span>
+<span class="fc" id="L204">			tos.add(toInternational(recipient.getPhoneNumber()));</span>
+<span class="fc" id="L205">		}</span>
+<span class="fc" id="L206">		return tos;</span>
 	}
 
 	/**
@@ -217,11 +217,11 @@ public class OvhSmsSender extends AbstractSpecializedSender&lt;Sms&gt; {
 	 *             when phone number can't be handled by OVH
 	 */
 	private static String toInternational(PhoneNumber phoneNumber) throws PhoneNumberException {
-<span class="nc" id="L220">		String number = phoneNumber.getNumber();</span>
-<span class="nc bnc" id="L221" title="All 4 branches missed.">		if (number.startsWith(&quot;+&quot;) || number.length() == INTERNATIONAL_FORMAT_LENGTH) {</span>
-<span class="nc" id="L222">			String withoutPlus = number.replace(&quot;+&quot;, &quot;&quot;);</span>
-<span class="nc" id="L223">			String withoutSpaces = SPACES.matcher(withoutPlus).replaceAll(&quot;&quot;);</span>
-<span class="nc" id="L224">			return StringUtils.leftPad(withoutSpaces, INTERNATIONAL_FORMAT_LENGTH, '0');</span>
+<span class="fc" id="L220">		String number = phoneNumber.getNumber();</span>
+<span class="pc bpc" id="L221" title="1 of 4 branches missed.">		if (number.startsWith(&quot;+&quot;) || number.length() == INTERNATIONAL_FORMAT_LENGTH) {</span>
+<span class="fc" id="L222">			String withoutPlus = number.replace(&quot;+&quot;, &quot;&quot;);</span>
+<span class="fc" id="L223">			String withoutSpaces = SPACES.matcher(withoutPlus).replaceAll(&quot;&quot;);</span>
+<span class="fc" id="L224">			return StringUtils.leftPad(withoutSpaces, INTERNATIONAL_FORMAT_LENGTH, '0');</span>
 		} else {
 <span class="nc" id="L226">			throw new PhoneNumberException(&quot;Invalid phone number. OVH only accepts international phone numbers. Please write the phone number with the country prefix. &quot;</span>
 					+ &quot;For example, if the number is 0601020304 and it is a French number, then the international number is +33601020304&quot;);
@@ -229,7 +229,7 @@ public class OvhSmsSender extends AbstractSpecializedSender&lt;Sms&gt; {
 	}
 
 	public OvhAuthParams getAuthParams() {
-<span class="nc" id="L232">		return authParams;</span>
+<span class="fc" id="L232">		return authParams;</span>
 	}
 
 	public OvhOptions getOptions() {

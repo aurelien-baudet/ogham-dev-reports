@@ -27,33 +27,33 @@ import fr.sii.ogham.core.resource.path.ResourcePath;
  */
 public class ClassPathResolver extends AbstractPrefixedLookupPathResolver implements RelativisableResourceResolver {
 
-<span class="nc" id="L30">	private static final Logger LOG = LoggerFactory.getLogger(ClassPathResolver.class);</span>
+<span class="fc" id="L30">	private static final Logger LOG = LoggerFactory.getLogger(ClassPathResolver.class);</span>
 
 	public ClassPathResolver(List&lt;String&gt; lookups) {
-<span class="nc" id="L33">		super(lookups);</span>
-<span class="nc" id="L34">	}</span>
+<span class="fc" id="L33">		super(lookups);</span>
+<span class="fc" id="L34">	}</span>
 
 	public ClassPathResolver(String... lookups) {
-<span class="nc" id="L37">		super(lookups);</span>
-<span class="nc" id="L38">	}</span>
+<span class="fc" id="L37">		super(lookups);</span>
+<span class="fc" id="L38">	}</span>
 
 	@Override
 	public Resource getResource(ResourcePath path) throws ResourceResolutionException {
-<span class="nc" id="L42">		ResolvedPath resourcePath = resolve(path);</span>
-<span class="nc" id="L43">		return getResource(resourcePath);</span>
+<span class="fc" id="L42">		ResolvedPath resourcePath = resolve(path);</span>
+<span class="fc" id="L43">		return getResource(resourcePath);</span>
 	}
 
 	@Override
 	protected Resource getResource(ResolvedPath resourcePath) throws ResourceResolutionException {
 		try {
-<span class="nc" id="L49">			LOG.debug(&quot;Loading resource {} from classpath...&quot;, resourcePath);</span>
-<span class="nc" id="L50">			String resolvedPath = resourcePath.getResolvedPath();</span>
-<span class="nc bnc" id="L51" title="All 2 branches missed.">			InputStream stream = getClass().getClassLoader().getResourceAsStream(resolvedPath.startsWith(&quot;/&quot;) ? resolvedPath.substring(1) : resolvedPath);</span>
-<span class="nc bnc" id="L52" title="All 2 branches missed.">			if (stream == null) {</span>
-<span class="nc" id="L53">				throw new ResourceResolutionException(&quot;Resource &quot; + resolvedPath + &quot; not found in the classpath&quot;, resourcePath);</span>
+<span class="fc" id="L49">			LOG.debug(&quot;Loading resource {} from classpath...&quot;, resourcePath);</span>
+<span class="fc" id="L50">			String resolvedPath = resourcePath.getResolvedPath();</span>
+<span class="fc bfc" id="L51" title="All 2 branches covered.">			InputStream stream = getClass().getClassLoader().getResourceAsStream(resolvedPath.startsWith(&quot;/&quot;) ? resolvedPath.substring(1) : resolvedPath);</span>
+<span class="fc bfc" id="L52" title="All 2 branches covered.">			if (stream == null) {</span>
+<span class="fc" id="L53">				throw new ResourceResolutionException(&quot;Resource &quot; + resolvedPath + &quot; not found in the classpath&quot;, resourcePath);</span>
 			}
-<span class="nc" id="L55">			LOG.debug(&quot;Resource {} available in the classpath...&quot;, resourcePath);</span>
-<span class="nc" id="L56">			return new ByteResource(extractName(resolvedPath), stream);</span>
+<span class="fc" id="L55">			LOG.debug(&quot;Resource {} available in the classpath...&quot;, resourcePath);</span>
+<span class="fc" id="L56">			return new ByteResource(extractName(resolvedPath), stream);</span>
 <span class="nc" id="L57">		} catch (IOException e) {</span>
 <span class="nc" id="L58">			throw new ResourceResolutionException(&quot;The resource &quot; + resourcePath.getOriginalPath() + &quot; is not readable&quot;, resourcePath, e);</span>
 		}
@@ -61,27 +61,27 @@ public class ClassPathResolver extends AbstractPrefixedLookupPathResolver implem
 
 	private static String extractName(String path) {
 		String name;
-<span class="nc" id="L64">		int lastSlashIdx = path.lastIndexOf('/');</span>
-<span class="nc bnc" id="L65" title="All 2 branches missed.">		if (lastSlashIdx &gt;= 0) {</span>
-<span class="nc" id="L66">			name = path.substring(lastSlashIdx + 1);</span>
+<span class="fc" id="L64">		int lastSlashIdx = path.lastIndexOf('/');</span>
+<span class="pc bpc" id="L65" title="1 of 2 branches missed.">		if (lastSlashIdx &gt;= 0) {</span>
+<span class="fc" id="L66">			name = path.substring(lastSlashIdx + 1);</span>
 		} else {
 <span class="nc" id="L68">			name = path;</span>
 		}
-<span class="nc" id="L70">		return name;</span>
+<span class="fc" id="L70">		return name;</span>
 	}
 
 
 	@Override
 	public boolean isAbsolute(ResourcePath path) {
-<span class="nc" id="L76">		ResolvedPath resourcePath = resolve(path);</span>
-<span class="nc" id="L77">		return resourcePath.getResolvedPath().startsWith(&quot;/&quot;);</span>
+<span class="fc" id="L76">		ResolvedPath resourcePath = resolve(path);</span>
+<span class="fc" id="L77">		return resourcePath.getResolvedPath().startsWith(&quot;/&quot;);</span>
 	}
 
 	@Override
 	public ResolvedPath resolve(ResourcePath relativePath, String prefixPath, String suffixPath) {
-<span class="nc" id="L82">		ResolvedPath resourcePath = resolve(relativePath);</span>
-<span class="nc" id="L83">		String lookup = getLookup(relativePath);</span>
-<span class="nc" id="L84">		return new ResolvedResourcePath(relativePath, lookup, prefixPath + resourcePath.getResolvedPath() + suffixPath);</span>
+<span class="fc" id="L82">		ResolvedPath resourcePath = resolve(relativePath);</span>
+<span class="fc" id="L83">		String lookup = getLookup(relativePath);</span>
+<span class="fc" id="L84">		return new ResolvedResourcePath(relativePath, lookup, prefixPath + resourcePath.getResolvedPath() + suffixPath);</span>
 	}
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

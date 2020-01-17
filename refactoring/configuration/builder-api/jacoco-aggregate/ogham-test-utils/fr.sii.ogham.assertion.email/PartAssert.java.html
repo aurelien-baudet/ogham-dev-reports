@@ -31,9 +31,9 @@ public class PartAssert&lt;P&gt; extends HasParent&lt;P&gt; {
 <span class="nc" id="L31">	}</span>
 
 	public PartAssert(List&lt;PartWithContext&gt; actual, P parent) {
-<span class="nc" id="L34">		super(parent);</span>
-<span class="nc" id="L35">		this.actual = actual;</span>
-<span class="nc" id="L36">	}</span>
+<span class="fc" id="L34">		super(parent);</span>
+<span class="fc" id="L35">		this.actual = actual;</span>
+<span class="fc" id="L36">	}</span>
 
 	/**
 	 * Make assertions on the string content of a part (body, alternative or
@@ -61,7 +61,7 @@ public class PartAssert&lt;P&gt; extends HasParent&lt;P&gt; {
 	 * @return the fluent API for chaining assertions on received message(s)
 	 */
 	public PartAssert&lt;P&gt; contentAsString(Matcher&lt;String&gt; matcher) {
-<span class="nc" id="L64">		return contentAsString(matcher, StandardCharsets.UTF_8);</span>
+<span class="fc" id="L64">		return contentAsString(matcher, StandardCharsets.UTF_8);</span>
 	}
 
 	/**
@@ -92,12 +92,12 @@ public class PartAssert&lt;P&gt; extends HasParent&lt;P&gt; {
 	 */
 	public PartAssert&lt;P&gt; contentAsString(Matcher&lt;String&gt; matcher, Charset charset) {
 		try {
-<span class="nc" id="L95">			String message = charset.name() + &quot; content of ${partName} of message ${messageIndex}&quot;;</span>
-<span class="nc bnc" id="L96" title="All 2 branches missed.">			for (PartWithContext partWithContext : actual) {</span>
-<span class="nc" id="L97">				Part part = partWithContext.getPart();</span>
-<span class="nc bnc" id="L98" title="All 2 branches missed.">				assertThat(part == null ? null : IOUtils.toString(getContent(part), charset.name()), usingContext(message, partWithContext, matcher));</span>
-<span class="nc" id="L99">			}</span>
-<span class="nc" id="L100">			return this;</span>
+<span class="fc" id="L95">			String message = charset.name() + &quot; content of ${partName} of message ${messageIndex}&quot;;</span>
+<span class="fc bfc" id="L96" title="All 2 branches covered.">			for (PartWithContext partWithContext : actual) {</span>
+<span class="fc" id="L97">				Part part = partWithContext.getPart();</span>
+<span class="pc bpc" id="L98" title="1 of 2 branches missed.">				assertThat(part == null ? null : IOUtils.toString(getContent(part), charset.name()), usingContext(message, partWithContext, matcher));</span>
+<span class="fc" id="L99">			}</span>
+<span class="fc" id="L100">			return this;</span>
 <span class="nc" id="L101">		} catch (IOException | MessagingException e) {</span>
 <span class="nc" id="L102">			throw new AssertionError(&quot;Failed to get string content for part&quot;, e);</span>
 		}
@@ -129,12 +129,12 @@ public class PartAssert&lt;P&gt; extends HasParent&lt;P&gt; {
 	 */
 	public PartAssert&lt;P&gt; content(Matcher&lt;byte[]&gt; matcher) {
 		try {
-<span class="nc" id="L132">			String message = &quot;raw content of ${partName} of message ${messageIndex}&quot;;</span>
-<span class="nc bnc" id="L133" title="All 2 branches missed.">			for (PartWithContext partWithContext : actual) {</span>
-<span class="nc" id="L134">				Part part = partWithContext.getPart();</span>
-<span class="nc bnc" id="L135" title="All 2 branches missed.">				assertThat(part == null ? null : getContent(part), usingContext(message, partWithContext, matcher));</span>
-<span class="nc" id="L136">			}</span>
-<span class="nc" id="L137">			return this;</span>
+<span class="fc" id="L132">			String message = &quot;raw content of ${partName} of message ${messageIndex}&quot;;</span>
+<span class="fc bfc" id="L133" title="All 2 branches covered.">			for (PartWithContext partWithContext : actual) {</span>
+<span class="fc" id="L134">				Part part = partWithContext.getPart();</span>
+<span class="pc bpc" id="L135" title="1 of 2 branches missed.">				assertThat(part == null ? null : getContent(part), usingContext(message, partWithContext, matcher));</span>
+<span class="fc" id="L136">			}</span>
+<span class="fc" id="L137">			return this;</span>
 <span class="nc" id="L138">		} catch (IOException | MessagingException e) {</span>
 <span class="nc" id="L139">			throw new AssertionError(&quot;Failed to get content for part&quot;, e);</span>
 		}
@@ -166,12 +166,12 @@ public class PartAssert&lt;P&gt; extends HasParent&lt;P&gt; {
 	 */
 	public PartAssert&lt;P&gt; contentType(Matcher&lt;String&gt; matcher) {
 		try {
-<span class="nc" id="L169">			String message = &quot;content-type of ${partName} of message ${messageIndex}&quot;;</span>
-<span class="nc bnc" id="L170" title="All 2 branches missed.">			for (PartWithContext partWithContext : actual) {</span>
-<span class="nc" id="L171">				Part part = partWithContext.getPart();</span>
-<span class="nc bnc" id="L172" title="All 2 branches missed.">				assertThat(part == null ? null : part.getContentType(), usingContext(message, partWithContext, matcher));</span>
-<span class="nc" id="L173">			}</span>
-<span class="nc" id="L174">			return this;</span>
+<span class="fc" id="L169">			String message = &quot;content-type of ${partName} of message ${messageIndex}&quot;;</span>
+<span class="fc bfc" id="L170" title="All 2 branches covered.">			for (PartWithContext partWithContext : actual) {</span>
+<span class="fc" id="L171">				Part part = partWithContext.getPart();</span>
+<span class="pc bpc" id="L172" title="1 of 2 branches missed.">				assertThat(part == null ? null : part.getContentType(), usingContext(message, partWithContext, matcher));</span>
+<span class="fc" id="L173">			}</span>
+<span class="fc" id="L174">			return this;</span>
 <span class="nc" id="L175">		} catch (MessagingException e) {</span>
 <span class="nc" id="L176">			throw new AssertionError(&quot;Failed to get string content type for part&quot;, e);</span>
 		}
@@ -240,12 +240,12 @@ public class PartAssert&lt;P&gt; extends HasParent&lt;P&gt; {
 	 */
 	public PartAssert&lt;P&gt; disposition(Matcher&lt;String&gt; matcher) {
 		try {
-<span class="nc" id="L243">			String message = &quot;disposition of ${partName} of message ${messageIndex}&quot;;</span>
-<span class="nc bnc" id="L244" title="All 2 branches missed.">			for (PartWithContext partWithContext : actual) {</span>
-<span class="nc" id="L245">				Part part = partWithContext.getPart();</span>
-<span class="nc bnc" id="L246" title="All 2 branches missed.">				assertThat(part == null ? null : part.getDisposition(), usingContext(message, partWithContext, matcher));</span>
-<span class="nc" id="L247">			}</span>
-<span class="nc" id="L248">			return this;</span>
+<span class="fc" id="L243">			String message = &quot;disposition of ${partName} of message ${messageIndex}&quot;;</span>
+<span class="fc bfc" id="L244" title="All 2 branches covered.">			for (PartWithContext partWithContext : actual) {</span>
+<span class="fc" id="L245">				Part part = partWithContext.getPart();</span>
+<span class="pc bpc" id="L246" title="1 of 2 branches missed.">				assertThat(part == null ? null : part.getDisposition(), usingContext(message, partWithContext, matcher));</span>
+<span class="fc" id="L247">			}</span>
+<span class="fc" id="L248">			return this;</span>
 <span class="nc" id="L249">		} catch (MessagingException e) {</span>
 <span class="nc" id="L250">			throw new AssertionError(&quot;Failed to get disposition of part&quot;, e);</span>
 		}
@@ -277,12 +277,12 @@ public class PartAssert&lt;P&gt; extends HasParent&lt;P&gt; {
 	 */
 	public PartAssert&lt;P&gt; filename(Matcher&lt;String&gt; matcher) {
 		try {
-<span class="nc" id="L280">			String message = &quot;filename of ${partName} of message ${messageIndex}&quot;;</span>
-<span class="nc bnc" id="L281" title="All 2 branches missed.">			for (PartWithContext partWithContext : actual) {</span>
-<span class="nc" id="L282">				Part part = partWithContext.getPart();</span>
-<span class="nc bnc" id="L283" title="All 2 branches missed.">				assertThat(part == null ? null : part.getFileName(), usingContext(message, partWithContext, matcher));</span>
-<span class="nc" id="L284">			}</span>
-<span class="nc" id="L285">			return this;</span>
+<span class="fc" id="L280">			String message = &quot;filename of ${partName} of message ${messageIndex}&quot;;</span>
+<span class="fc bfc" id="L281" title="All 2 branches covered.">			for (PartWithContext partWithContext : actual) {</span>
+<span class="fc" id="L282">				Part part = partWithContext.getPart();</span>
+<span class="pc bpc" id="L283" title="1 of 2 branches missed.">				assertThat(part == null ? null : part.getFileName(), usingContext(message, partWithContext, matcher));</span>
+<span class="fc" id="L284">			}</span>
+<span class="fc" id="L285">			return this;</span>
 <span class="nc" id="L286">		} catch (MessagingException e) {</span>
 <span class="nc" id="L287">			throw new AssertionError(&quot;Failed to get filename of part&quot;, e);</span>
 		}

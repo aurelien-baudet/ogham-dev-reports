@@ -25,7 +25,7 @@ import fr.sii.ogham.core.resource.path.ResourcePath;
  * @see ResourceResolver
  */
 public class FirstSupportingResourceResolver implements ResourceResolver, ResourceResolverRegistry {
-<span class="nc" id="L28">	private static final Logger LOG = LoggerFactory.getLogger(FirstSupportingResourceResolver.class);</span>
+<span class="fc" id="L28">	private static final Logger LOG = LoggerFactory.getLogger(FirstSupportingResourceResolver.class);</span>
 
 	/**
 	 * The list of resolvers used to resolve the resource according to the
@@ -41,8 +41,8 @@ public class FirstSupportingResourceResolver implements ResourceResolver, Resour
 	 *            the resolvers to register
 	 */
 	public FirstSupportingResourceResolver(ResourceResolver... resolvers) {
-<span class="nc" id="L44">		this(new ArrayList&lt;&gt;(asList(resolvers)));</span>
-<span class="nc" id="L45">	}</span>
+<span class="fc" id="L44">		this(new ArrayList&lt;&gt;(asList(resolvers)));</span>
+<span class="fc" id="L45">	}</span>
 
 	/**
 	 * Initialize the decorator with the provided resource resolver
@@ -52,18 +52,18 @@ public class FirstSupportingResourceResolver implements ResourceResolver, Resour
 	 *            the resolvers to register
 	 */
 	public FirstSupportingResourceResolver(List&lt;ResourceResolver&gt; resolvers) {
-<span class="nc" id="L55">		super();</span>
-<span class="nc" id="L56">		this.resolvers = resolvers;</span>
-<span class="nc" id="L57">	}</span>
+<span class="fc" id="L55">		super();</span>
+<span class="fc" id="L56">		this.resolvers = resolvers;</span>
+<span class="fc" id="L57">	}</span>
 
 	@Override
 	public Resource getResource(ResourcePath path) throws ResourceResolutionException {
-<span class="nc" id="L61">		LOG.debug(&quot;Finding a resolver able to handle the lookup {}...&quot;, path);</span>
-<span class="nc" id="L62">		ResourceResolver supportingResolver = getSupportingResolver(path);</span>
-<span class="nc bnc" id="L63" title="All 2 branches missed.">		if (supportingResolver != null) {</span>
-<span class="nc" id="L64">			return supportingResolver.getResource(path);</span>
+<span class="fc" id="L61">		LOG.debug(&quot;Finding a resolver able to handle the lookup {}...&quot;, path);</span>
+<span class="fc" id="L62">		ResourceResolver supportingResolver = getSupportingResolver(path);</span>
+<span class="fc bfc" id="L63" title="All 2 branches covered.">		if (supportingResolver != null) {</span>
+<span class="fc" id="L64">			return supportingResolver.getResource(path);</span>
 		}
-<span class="nc" id="L66">		throw new NoResolverException(&quot;No resource resolver available to find resource &quot; + path.getOriginalPath(), path);</span>
+<span class="fc" id="L66">		throw new NoResolverException(&quot;No resource resolver available to find resource &quot; + path.getOriginalPath(), path);</span>
 	}
 
 	/**
@@ -81,7 +81,7 @@ public class FirstSupportingResourceResolver implements ResourceResolver, Resour
 
 	@Override
 	public boolean supports(ResourcePath path) {
-<span class="nc bnc" id="L84" title="All 2 branches missed.">		return getSupportingResolver(path) != null;</span>
+<span class="pc bpc" id="L84" title="1 of 2 branches missed.">		return getSupportingResolver(path) != null;</span>
 	}
 
 	/**
@@ -93,16 +93,16 @@ public class FirstSupportingResourceResolver implements ResourceResolver, Resour
 	 */
 	@Override
 	public ResourceResolver getSupportingResolver(ResourcePath path) {
-<span class="nc" id="L96">		LOG.debug(&quot;Finding resolver for resource {}...&quot;, path);</span>
-<span class="nc bnc" id="L97" title="All 2 branches missed.">		for (ResourceResolver resolver : resolvers) {</span>
-<span class="nc bnc" id="L98" title="All 2 branches missed.">			if (resolver.supports(path)) {</span>
-<span class="nc" id="L99">				LOG.debug(&quot;{} can handle resource {}&quot;, resolver, path);</span>
-<span class="nc" id="L100">				return resolver;</span>
+<span class="fc" id="L96">		LOG.debug(&quot;Finding resolver for resource {}...&quot;, path);</span>
+<span class="fc bfc" id="L97" title="All 2 branches covered.">		for (ResourceResolver resolver : resolvers) {</span>
+<span class="fc bfc" id="L98" title="All 2 branches covered.">			if (resolver.supports(path)) {</span>
+<span class="fc" id="L99">				LOG.debug(&quot;{} can handle resource {}&quot;, resolver, path);</span>
+<span class="fc" id="L100">				return resolver;</span>
 			}
-<span class="nc" id="L102">		}</span>
+<span class="fc" id="L102">		}</span>
 
-<span class="nc" id="L104">		LOG.debug(&quot;No resolver can handle path '{}'&quot;, path);</span>
-<span class="nc" id="L105">		return null;</span>
+<span class="fc" id="L104">		LOG.debug(&quot;No resolver can handle path '{}'&quot;, path);</span>
+<span class="fc" id="L105">		return null;</span>
 	}
 
 	@Override
@@ -112,9 +112,9 @@ public class FirstSupportingResourceResolver implements ResourceResolver, Resour
 
 	@Override
 	public ResolvedPath resolve(ResourcePath path) {
-<span class="nc" id="L115">		ResourceResolver supportingResolver = getSupportingResolver(path);</span>
-<span class="nc bnc" id="L116" title="All 2 branches missed.">		if (supportingResolver != null) {</span>
-<span class="nc" id="L117">			return supportingResolver.resolve(path);</span>
+<span class="fc" id="L115">		ResourceResolver supportingResolver = getSupportingResolver(path);</span>
+<span class="pc bpc" id="L116" title="1 of 2 branches missed.">		if (supportingResolver != null) {</span>
+<span class="fc" id="L117">			return supportingResolver.resolve(path);</span>
 		} else {
 <span class="nc" id="L119">			return null;</span>
 		}

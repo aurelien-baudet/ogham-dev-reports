@@ -21,25 +21,25 @@ public class FirstExistingResourceVariantResolver implements VariantResolver {
 	private VariantResolver defaultResolver;
 
 	public FirstExistingResourceVariantResolver(VariantResolver defaultResolver, VariantResolver... delegates) {
-<span class="nc" id="L24">		this(defaultResolver, new ArrayList&lt;&gt;(Arrays.asList(delegates)));</span>
-<span class="nc" id="L25">	}</span>
+<span class="fc" id="L24">		this(defaultResolver, new ArrayList&lt;&gt;(Arrays.asList(delegates)));</span>
+<span class="fc" id="L25">	}</span>
 
 	public FirstExistingResourceVariantResolver(VariantResolver defaultResolver, List&lt;VariantResolver&gt; delegates) {
-<span class="nc" id="L28">		super();</span>
-<span class="nc" id="L29">		this.defaultResolver = defaultResolver;</span>
-<span class="nc" id="L30">		this.delegates = delegates;</span>
-<span class="nc" id="L31">	}</span>
+<span class="fc" id="L28">		super();</span>
+<span class="fc" id="L29">		this.defaultResolver = defaultResolver;</span>
+<span class="fc" id="L30">		this.delegates = delegates;</span>
+<span class="fc" id="L31">	}</span>
 
 	@Override
 	public ResourcePath getRealPath(TemplateContent template) throws VariantResolutionException {
-<span class="nc bnc" id="L35" title="All 2 branches missed.">		if (!(template instanceof HasVariant)) {</span>
-<span class="nc" id="L36">			return template.getPath();</span>
+<span class="fc bfc" id="L35" title="All 2 branches covered.">		if (!(template instanceof HasVariant)) {</span>
+<span class="fc" id="L36">			return template.getPath();</span>
 		}
-<span class="nc bnc" id="L38" title="All 2 branches missed.">		for (VariantResolver delegate : delegates) {</span>
-<span class="nc bnc" id="L39" title="All 2 branches missed.">			if(delegate.variantExists(template)) {</span>
-<span class="nc" id="L40">				return delegate.getRealPath(template);</span>
+<span class="pc bpc" id="L38" title="1 of 2 branches missed.">		for (VariantResolver delegate : delegates) {</span>
+<span class="fc bfc" id="L39" title="All 2 branches covered.">			if(delegate.variantExists(template)) {</span>
+<span class="fc" id="L40">				return delegate.getRealPath(template);</span>
 			}
-<span class="nc" id="L42">		}</span>
+<span class="fc" id="L42">		}</span>
 <span class="nc" id="L43">		return defaultResolver.getRealPath(template);</span>
 	}
 
@@ -57,8 +57,8 @@ public class FirstExistingResourceVariantResolver implements VariantResolver {
 	}
 
 	public FirstExistingResourceVariantResolver addVariantResolver(VariantResolver variantResolver) {
-<span class="nc" id="L60">		delegates.add(variantResolver);</span>
-<span class="nc" id="L61">		return this;</span>
+<span class="fc" id="L60">		delegates.add(variantResolver);</span>
+<span class="fc" id="L61">		return this;</span>
 	}
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

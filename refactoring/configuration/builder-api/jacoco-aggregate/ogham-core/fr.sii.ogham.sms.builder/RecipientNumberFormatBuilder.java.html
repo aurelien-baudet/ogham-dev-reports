@@ -36,10 +36,10 @@ public class RecipientNumberFormatBuilder extends AbstractParent&lt;RecipientNum
 	 *            the configuration for property resolution and evaluation
 	 */
 	public RecipientNumberFormatBuilder(RecipientNumberBuilder parent, EnvironmentBuilder&lt;?&gt; environmentBuilder) {
-<span class="nc" id="L39">		super(parent);</span>
-<span class="nc" id="L40">		this.environmentBuilder = environmentBuilder;</span>
-<span class="nc" id="L41">		enableInternationalValueBuilder = new ConfigurationValueBuilderHelper&lt;&gt;(this, Boolean.class);</span>
-<span class="nc" id="L42">	}</span>
+<span class="fc" id="L39">		super(parent);</span>
+<span class="fc" id="L40">		this.environmentBuilder = environmentBuilder;</span>
+<span class="fc" id="L41">		enableInternationalValueBuilder = new ConfigurationValueBuilderHelper&lt;&gt;(this, Boolean.class);</span>
+<span class="fc" id="L42">	}</span>
 	
 	/**
 	 * Enable/disable international number conversion: if the sender starts with
@@ -77,8 +77,8 @@ public class RecipientNumberFormatBuilder extends AbstractParent&lt;RecipientNum
 	 * @return this instance for fluent chaining
 	 */
 	public RecipientNumberFormatBuilder internationalNumber(Boolean enable) {
-<span class="nc" id="L80">		enableInternationalValueBuilder.setValue(enable);</span>
-<span class="nc" id="L81">		return this;</span>
+<span class="fc" id="L80">		enableInternationalValueBuilder.setValue(enable);</span>
+<span class="fc" id="L81">		return this;</span>
 	}
 
 	
@@ -118,22 +118,22 @@ public class RecipientNumberFormatBuilder extends AbstractParent&lt;RecipientNum
 	 * @return the builder to configure property keys/default value
 	 */
 	public ConfigurationValueBuilder&lt;RecipientNumberFormatBuilder, Boolean&gt; internationalNumber() {
-<span class="nc" id="L121">		return enableInternationalValueBuilder;</span>
+<span class="fc" id="L121">		return enableInternationalValueBuilder;</span>
 	}
 
 	@Override
 	public PhoneNumberTranslator build() {
-<span class="nc" id="L126">		CompositePhoneNumberTranslator translator = new CompositePhoneNumberTranslator();</span>
-<span class="nc bnc" id="L127" title="All 2 branches missed.">		if (enabled(enableInternationalValueBuilder)) {</span>
-<span class="nc" id="L128">			translator.add(new InternationalNumberFormatHandler());</span>
+<span class="fc" id="L126">		CompositePhoneNumberTranslator translator = new CompositePhoneNumberTranslator();</span>
+<span class="pc bpc" id="L127" title="1 of 2 branches missed.">		if (enabled(enableInternationalValueBuilder)) {</span>
+<span class="fc" id="L128">			translator.add(new InternationalNumberFormatHandler());</span>
 		}
-<span class="nc" id="L130">		translator.add(new DefaultHandler());</span>
-<span class="nc" id="L131">		return translator;</span>
+<span class="fc" id="L130">		translator.add(new DefaultHandler());</span>
+<span class="fc" id="L131">		return translator;</span>
 	}
 
 	private boolean enabled(ConfigurationValueBuilderHelper&lt;?, Boolean&gt; enableInternational) {
-<span class="nc" id="L135">		PropertyResolver propertyResolver = environmentBuilder.build();</span>
-<span class="nc" id="L136">		return enableInternational.getValue(propertyResolver, false);</span>
+<span class="fc" id="L135">		PropertyResolver propertyResolver = environmentBuilder.build();</span>
+<span class="fc" id="L136">		return enableInternational.getValue(propertyResolver, false);</span>
 	}
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

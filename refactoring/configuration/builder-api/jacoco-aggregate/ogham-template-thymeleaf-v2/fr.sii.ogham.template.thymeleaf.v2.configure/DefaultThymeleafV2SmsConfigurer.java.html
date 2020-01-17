@@ -100,39 +100,39 @@ import fr.sii.ogham.template.thymeleaf.v2.buider.ThymeleafV2SmsBuilder;
  *
  */
 public final class DefaultThymeleafV2SmsConfigurer {
-<span class="nc" id="L103">	private static final Logger LOG = LoggerFactory.getLogger(DefaultThymeleafV2SmsConfigurer.class);</span>
+<span class="fc" id="L103">	private static final Logger LOG = LoggerFactory.getLogger(DefaultThymeleafV2SmsConfigurer.class);</span>
 
 	@ConfigurerFor(targetedBuilder = { &quot;minimal&quot;, &quot;standard&quot; }, priority = DEFAULT_THYMELEAF_SMS_CONFIGURER_PRIORITY, phase = AFTER_INIT)
-<span class="nc" id="L106">	public static class EnvironmentPropagator implements MessagingConfigurer {</span>
+<span class="fc" id="L106">	public static class EnvironmentPropagator implements MessagingConfigurer {</span>
 		@Override
 		public void configure(MessagingBuilder msgBuilder) {
-<span class="nc bnc" id="L109" title="All 2 branches missed.">			if (canUseThymeleafV2()) {</span>
-<span class="nc" id="L110">				AbstractThymeleafBuilder&lt;?, ?, ?&gt; builder = msgBuilder.sms().template(ThymeleafV2SmsBuilder.class);</span>
+<span class="fc bfc" id="L109" title="All 2 branches covered.">			if (canUseThymeleafV2()) {</span>
+<span class="fc" id="L110">				AbstractThymeleafBuilder&lt;?, ?, ?&gt; builder = msgBuilder.sms().template(ThymeleafV2SmsBuilder.class);</span>
 				// use same environment as parent builder
-<span class="nc" id="L112">				builder.environment(msgBuilder.environment());</span>
+<span class="fc" id="L112">				builder.environment(msgBuilder.environment());</span>
 			}
-<span class="nc" id="L114">		}</span>
+<span class="fc" id="L114">		}</span>
 	}
 	
 	@ConfigurerFor(targetedBuilder = { &quot;minimal&quot;, &quot;standard&quot; }, priority = DEFAULT_THYMELEAF_SMS_CONFIGURER_PRIORITY)
 	public static class ThymeleafV2SmsConfigurer extends AbstractDefaultThymeleafSmsConfigurer {
 		public ThymeleafV2SmsConfigurer() {
-<span class="nc" id="L120">			super(LOG);</span>
-<span class="nc" id="L121">		}</span>
+<span class="fc" id="L120">			super(LOG);</span>
+<span class="fc" id="L121">		}</span>
 		
 		@Override
 		protected boolean canUseThymeleaf() {
-<span class="nc" id="L125">			return canUseThymeleafV2();</span>
+<span class="fc" id="L125">			return canUseThymeleafV2();</span>
 		}
 
 		@Override
 		protected Class&lt;? extends AbstractThymeleafBuilder&lt;?, ?, ?&gt;&gt; getBuilderClass() {
-<span class="nc" id="L130">			return ThymeleafV2SmsBuilder.class;</span>
+<span class="fc" id="L130">			return ThymeleafV2SmsBuilder.class;</span>
 		}
 	}
 
 	private static boolean canUseThymeleafV2() {
-<span class="nc bnc" id="L135" title="All 4 branches missed.">		return ClasspathUtils.exists(&quot;org.thymeleaf.TemplateEngine&quot;) &amp;&amp; !ClasspathUtils.exists(&quot;org.thymeleaf.IEngineConfiguration&quot;);</span>
+<span class="fc bfc" id="L135" title="All 4 branches covered.">		return ClasspathUtils.exists(&quot;org.thymeleaf.TemplateEngine&quot;) &amp;&amp; !ClasspathUtils.exists(&quot;org.thymeleaf.IEngineConfiguration&quot;);</span>
 	}
 
 	private DefaultThymeleafV2SmsConfigurer() {

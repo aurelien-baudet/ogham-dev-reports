@@ -25,7 +25,7 @@ import fr.sii.ogham.core.sender.ConditionalSender;
  * @see ConditionalSender
  */
 public class EverySupportingMessagingService implements MessagingService {
-<span class="nc" id="L28">	private static final Logger LOG = LoggerFactory.getLogger(EverySupportingMessagingService.class);</span>
+<span class="fc" id="L28">	private static final Logger LOG = LoggerFactory.getLogger(EverySupportingMessagingService.class);</span>
 
 	/**
 	 * The list of senders used to handle messages
@@ -51,9 +51,9 @@ public class EverySupportingMessagingService implements MessagingService {
 	 *            the senders to register
 	 */
 	public EverySupportingMessagingService(List&lt;ConditionalSender&gt; senders) {
-<span class="nc" id="L54">		super();</span>
-<span class="nc" id="L55">		this.senders = senders;</span>
-<span class="nc" id="L56">	}</span>
+<span class="fc" id="L54">		super();</span>
+<span class="fc" id="L55">		this.senders = senders;</span>
+<span class="fc" id="L56">	}</span>
 
 	/**
 	 * Sends the message. The message can be anything with any content and that
@@ -72,27 +72,27 @@ public class EverySupportingMessagingService implements MessagingService {
 	 */
 	@Override
 	public void send(Message message) throws MessagingException {
-<span class="nc" id="L75">		LOG.info(&quot;Sending message...&quot;);</span>
-<span class="nc" id="L76">		LOG.trace(&quot;{}&quot;, message);</span>
-<span class="nc" id="L77">		LOG.debug(&quot;Find senders that is able to send the message {}&quot;, summarize(message));</span>
-<span class="nc" id="L78">		boolean sent = false;</span>
-<span class="nc bnc" id="L79" title="All 2 branches missed.">		for (ConditionalSender sender : senders) {</span>
-<span class="nc bnc" id="L80" title="All 2 branches missed.">			if (sender.supports(message)) {</span>
-<span class="nc" id="L81">				LOG.debug(&quot;Sending message {} using sender {}...&quot;, summarize(message), sender);</span>
-<span class="nc" id="L82">				sender.send(message);</span>
-<span class="nc" id="L83">				LOG.debug(&quot;Message {} sent using sender {}&quot;, summarize(message), sender);</span>
-<span class="nc" id="L84">				sent = true;</span>
+<span class="fc" id="L75">		LOG.info(&quot;Sending message...&quot;);</span>
+<span class="fc" id="L76">		LOG.trace(&quot;{}&quot;, message);</span>
+<span class="fc" id="L77">		LOG.debug(&quot;Find senders that is able to send the message {}&quot;, summarize(message));</span>
+<span class="fc" id="L78">		boolean sent = false;</span>
+<span class="fc bfc" id="L79" title="All 2 branches covered.">		for (ConditionalSender sender : senders) {</span>
+<span class="fc bfc" id="L80" title="All 2 branches covered.">			if (sender.supports(message)) {</span>
+<span class="fc" id="L81">				LOG.debug(&quot;Sending message {} using sender {}...&quot;, summarize(message), sender);</span>
+<span class="fc" id="L82">				sender.send(message);</span>
+<span class="fc" id="L83">				LOG.debug(&quot;Message {} sent using sender {}&quot;, summarize(message), sender);</span>
+<span class="fc" id="L84">				sent = true;</span>
 			} else {
-<span class="nc" id="L86">				LOG.debug(&quot;Sender {} can't handle the message {}&quot;, sender, summarize(message));</span>
+<span class="fc" id="L86">				LOG.debug(&quot;Sender {} can't handle the message {}&quot;, sender, summarize(message));</span>
 			}
-<span class="nc" id="L88">		}</span>
-<span class="nc bnc" id="L89" title="All 2 branches missed.">		if(sent) {</span>
-<span class="nc" id="L90">			LOG.info(&quot;Message sent&quot;);</span>
-<span class="nc" id="L91">			LOG.trace(&quot;{}&quot;, message);</span>
+<span class="fc" id="L88">		}</span>
+<span class="fc bfc" id="L89" title="All 2 branches covered.">		if(sent) {</span>
+<span class="fc" id="L90">			LOG.info(&quot;Message sent&quot;);</span>
+<span class="fc" id="L91">			LOG.trace(&quot;{}&quot;, message);</span>
 		} else {
-<span class="nc" id="L93">			throw new MessageNotSentException(&quot;No sender available to send the message&quot;, message);</span>
+<span class="fc" id="L93">			throw new MessageNotSentException(&quot;No sender available to send the message&quot;, message);</span>
 		}
-<span class="nc" id="L95">	}</span>
+<span class="fc" id="L95">	}</span>
 
 	/**
 	 * Register a new sender. The sender is added at the end.

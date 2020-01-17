@@ -24,7 +24,7 @@ class DeliveryReceiptTask implements Runnable {
 	private static final int TWO_BYTES = 16;
 	private static final int WAIT_DURATION = 1000;
 
-<span class="nc" id="L27">	private static final Logger LOG = LoggerFactory.getLogger(DeliveryReceiptTask.class);</span>
+<span class="fc" id="L27">	private static final Logger LOG = LoggerFactory.getLogger(DeliveryReceiptTask.class);</span>
 
 	private final SMPPServerSession session;
 	private final MessageId messageId;
@@ -42,24 +42,24 @@ class DeliveryReceiptTask implements Runnable {
 
 	private final byte[] shortMessage;
 
-<span class="nc" id="L45">	public DeliveryReceiptTask(SMPPServerSession session, SubmitSm submitSm, MessageId messageId) {</span>
-<span class="nc" id="L46">		this.session = session;</span>
-<span class="nc" id="L47">		this.messageId = messageId;</span>
+<span class="fc" id="L45">	public DeliveryReceiptTask(SMPPServerSession session, SubmitSm submitSm, MessageId messageId) {</span>
+<span class="fc" id="L46">		this.session = session;</span>
+<span class="fc" id="L47">		this.messageId = messageId;</span>
 
 		// reversing destination to source
-<span class="nc" id="L50">		sourceAddrTon = TypeOfNumber.valueOf(submitSm.getDestAddrTon());</span>
-<span class="nc" id="L51">		sourceAddrNpi = NumberingPlanIndicator.valueOf(submitSm.getDestAddrNpi());</span>
-<span class="nc" id="L52">		sourceAddress = submitSm.getDestAddress();</span>
+<span class="fc" id="L50">		sourceAddrTon = TypeOfNumber.valueOf(submitSm.getDestAddrTon());</span>
+<span class="fc" id="L51">		sourceAddrNpi = NumberingPlanIndicator.valueOf(submitSm.getDestAddrNpi());</span>
+<span class="fc" id="L52">		sourceAddress = submitSm.getDestAddress();</span>
 
 		// reversing source to destination
-<span class="nc" id="L55">		destAddrTon = TypeOfNumber.valueOf(submitSm.getSourceAddrTon());</span>
-<span class="nc" id="L56">		destAddrNpi = NumberingPlanIndicator.valueOf(submitSm.getSourceAddrNpi());</span>
-<span class="nc" id="L57">		destAddress = submitSm.getSourceAddr();</span>
+<span class="fc" id="L55">		destAddrTon = TypeOfNumber.valueOf(submitSm.getSourceAddrTon());</span>
+<span class="fc" id="L56">		destAddrNpi = NumberingPlanIndicator.valueOf(submitSm.getSourceAddrNpi());</span>
+<span class="fc" id="L57">		destAddress = submitSm.getSourceAddr();</span>
 
-<span class="nc" id="L59">		totalSubmitted = totalDelivered = 1;</span>
+<span class="fc" id="L59">		totalSubmitted = totalDelivered = 1;</span>
 
-<span class="nc" id="L61">		shortMessage = submitSm.getShortMessage();</span>
-<span class="nc" id="L62">	}</span>
+<span class="fc" id="L61">		shortMessage = submitSm.getShortMessage();</span>
+<span class="fc" id="L62">	}</span>
 
 <span class="nc" id="L64">	public DeliveryReceiptTask(SMPPServerSession session, SubmitMulti submitMulti, MessageId messageId) {</span>
 <span class="nc" id="L65">		this.session = session;</span>
@@ -83,15 +83,15 @@ class DeliveryReceiptTask implements Runnable {
 
 	public void run() {
 		try {
-<span class="nc" id="L86">			Thread.sleep(WAIT_DURATION);</span>
+<span class="fc" id="L86">			Thread.sleep(WAIT_DURATION);</span>
 <span class="nc" id="L87">		} catch (InterruptedException e1) {</span>
 <span class="nc" id="L88">			Thread.currentThread().interrupt();</span>
 <span class="nc" id="L89">			LOG.error(&quot;Sleep interrupted&quot;, e1);</span>
-<span class="nc" id="L90">		}</span>
-<span class="nc" id="L91">		SessionState state = session.getSessionState();</span>
-<span class="nc bnc" id="L92" title="All 2 branches missed.">		if (!state.isReceivable()) {</span>
-<span class="nc" id="L93">			LOG.debug(&quot;Not sending delivery receipt for message id {} since session state is {}&quot;, messageId, state);</span>
-<span class="nc" id="L94">			return;</span>
+<span class="fc" id="L90">		}</span>
+<span class="fc" id="L91">		SessionState state = session.getSessionState();</span>
+<span class="pc bpc" id="L92" title="1 of 2 branches missed.">		if (!state.isReceivable()) {</span>
+<span class="fc" id="L93">			LOG.debug(&quot;Not sending delivery receipt for message id {} since session state is {}&quot;, messageId, state);</span>
+<span class="fc" id="L94">			return;</span>
 		}
 <span class="nc" id="L96">		String stringValue = Integer.valueOf(messageId.getValue(), TWO_BYTES).toString();</span>
 		try {

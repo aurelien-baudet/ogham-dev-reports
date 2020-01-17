@@ -29,34 +29,34 @@ import fr.sii.ogham.core.exception.convert.ConversionException;
  * @author Aurélien Baudet
  *
  */
-<span class="nc" id="L32">public class StringToBooleanConverter implements SupportingConverter {</span>
-<span class="nc" id="L33">	private static final Set&lt;String&gt; trueValues = new HashSet&lt;&gt;(4);</span>
-<span class="nc" id="L34">	private static final Set&lt;String&gt; falseValues = new HashSet&lt;&gt;(4);</span>
+<span class="fc" id="L32">public class StringToBooleanConverter implements SupportingConverter {</span>
+<span class="fc" id="L33">	private static final Set&lt;String&gt; trueValues = new HashSet&lt;&gt;(4);</span>
+<span class="fc" id="L34">	private static final Set&lt;String&gt; falseValues = new HashSet&lt;&gt;(4);</span>
 
 	static {
-<span class="nc" id="L37">		trueValues.add(&quot;true&quot;);</span>
-<span class="nc" id="L38">		trueValues.add(&quot;on&quot;);</span>
-<span class="nc" id="L39">		trueValues.add(&quot;yes&quot;);</span>
-<span class="nc" id="L40">		trueValues.add(&quot;1&quot;);</span>
+<span class="fc" id="L37">		trueValues.add(&quot;true&quot;);</span>
+<span class="fc" id="L38">		trueValues.add(&quot;on&quot;);</span>
+<span class="fc" id="L39">		trueValues.add(&quot;yes&quot;);</span>
+<span class="fc" id="L40">		trueValues.add(&quot;1&quot;);</span>
 
-<span class="nc" id="L42">		falseValues.add(&quot;false&quot;);</span>
-<span class="nc" id="L43">		falseValues.add(&quot;off&quot;);</span>
-<span class="nc" id="L44">		falseValues.add(&quot;no&quot;);</span>
-<span class="nc" id="L45">		falseValues.add(&quot;0&quot;);</span>
-<span class="nc" id="L46">	}</span>
+<span class="fc" id="L42">		falseValues.add(&quot;false&quot;);</span>
+<span class="fc" id="L43">		falseValues.add(&quot;off&quot;);</span>
+<span class="fc" id="L44">		falseValues.add(&quot;no&quot;);</span>
+<span class="fc" id="L45">		falseValues.add(&quot;0&quot;);</span>
+<span class="fc" id="L46">	}</span>
 
 	@SuppressWarnings(&quot;unchecked&quot;)
 	@Override
 	public &lt;T&gt; T convert(Object source, Class&lt;T&gt; targetType) {
-<span class="nc" id="L51">		String value = ((String) source).trim();</span>
-<span class="nc bnc" id="L52" title="All 2 branches missed.">		if (&quot;&quot;.equals(value)) {</span>
+<span class="fc" id="L51">		String value = ((String) source).trim();</span>
+<span class="pc bpc" id="L52" title="1 of 2 branches missed.">		if (&quot;&quot;.equals(value)) {</span>
 <span class="nc" id="L53">			return null;</span>
 		}
-<span class="nc" id="L55">		value = value.toLowerCase(ENGLISH);</span>
-<span class="nc bnc" id="L56" title="All 2 branches missed.">		if (trueValues.contains(value)) {</span>
-<span class="nc" id="L57">			return (T) Boolean.TRUE;</span>
-<span class="nc bnc" id="L58" title="All 2 branches missed.">		} else if (falseValues.contains(value)) {</span>
-<span class="nc" id="L59">			return (T) Boolean.FALSE;</span>
+<span class="fc" id="L55">		value = value.toLowerCase(ENGLISH);</span>
+<span class="fc bfc" id="L56" title="All 2 branches covered.">		if (trueValues.contains(value)) {</span>
+<span class="fc" id="L57">			return (T) Boolean.TRUE;</span>
+<span class="pc bpc" id="L58" title="1 of 2 branches missed.">		} else if (falseValues.contains(value)) {</span>
+<span class="fc" id="L59">			return (T) Boolean.FALSE;</span>
 		} else {
 <span class="nc" id="L61">			throw new ConversionException(&quot;Invalid boolean value '&quot; + source + &quot;'&quot;);</span>
 		}
@@ -64,7 +64,7 @@ import fr.sii.ogham.core.exception.convert.ConversionException;
 
 	@Override
 	public boolean supports(Class&lt;?&gt; sourceType, Class&lt;?&gt; targetType) {
-<span class="nc bnc" id="L67" title="All 4 branches missed.">		return String.class.isAssignableFrom(sourceType) &amp;&amp; Boolean.class.isAssignableFrom(targetType);</span>
+<span class="pc bpc" id="L67" title="1 of 4 branches missed.">		return String.class.isAssignableFrom(sourceType) &amp;&amp; Boolean.class.isAssignableFrom(targetType);</span>
 	}
 
 }

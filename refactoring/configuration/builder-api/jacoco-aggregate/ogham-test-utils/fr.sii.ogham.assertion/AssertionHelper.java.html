@@ -40,8 +40,8 @@ public final class AssertionHelper {
 	 *            the type used for the matcher
 	 */
 	public static &lt;T&gt; void assertThat(T actual, Matcher&lt;? super T&gt; matcher) {
-<span class="nc" id="L43">		assertThat(&quot;&quot;, actual, matcher);</span>
-<span class="nc" id="L44">	}</span>
+<span class="fc" id="L43">		assertThat(&quot;&quot;, actual, matcher);</span>
+<span class="fc" id="L44">	}</span>
 
 	/**
 	 * Copy of {@link MatcherAssert#assertThat(String, Object, Matcher)} with
@@ -66,81 +66,81 @@ public final class AssertionHelper {
 	 *            the type used for the matcher
 	 */
 	public static &lt;T&gt; void assertThat(String reason, T actual, Matcher&lt;? super T&gt; matcher) {
-<span class="nc bnc" id="L69" title="All 2 branches missed.">		if (!matcher.matches(actual)) {</span>
-<span class="nc" id="L70">			Description description = getDescription(reason, actual, matcher);</span>
+<span class="fc bfc" id="L69" title="All 2 branches covered.">		if (!matcher.matches(actual)) {</span>
+<span class="fc" id="L70">			Description description = getDescription(reason, actual, matcher);</span>
 
-<span class="nc bnc" id="L72" title="All 2 branches missed.">			if (hasExpectedValue(matcher)) {</span>
-<span class="nc" id="L73">				ExpectedValueProvider&lt;T&gt; comparable = getComparable(matcher);</span>
-<span class="nc bnc" id="L74" title="All 2 branches missed.">				throw new ComparisonFailure(description.toString(), String.valueOf(comparable==null ? null : comparable.getExpectedValue()), String.valueOf(actual));</span>
+<span class="fc bfc" id="L72" title="All 2 branches covered.">			if (hasExpectedValue(matcher)) {</span>
+<span class="fc" id="L73">				ExpectedValueProvider&lt;T&gt; comparable = getComparable(matcher);</span>
+<span class="pc bpc" id="L74" title="1 of 2 branches missed.">				throw new ComparisonFailure(description.toString(), String.valueOf(comparable==null ? null : comparable.getExpectedValue()), String.valueOf(actual));</span>
 			} else {
-<span class="nc" id="L76">				throw new AssertionError(description.toString());</span>
+<span class="fc" id="L76">				throw new AssertionError(description.toString());</span>
 			}
 		}
-<span class="nc" id="L79">	}</span>
+<span class="fc" id="L79">	}</span>
 
 	@SuppressWarnings(&quot;unchecked&quot;)
 	private static &lt;T&gt; boolean hasExpectedValue(Matcher&lt;? super T&gt; matcher) {
-<span class="nc bnc" id="L83" title="All 2 branches missed.">		if (matcher instanceof ExpectedValueProvider) {</span>
-<span class="nc" id="L84">			return true;</span>
+<span class="fc bfc" id="L83" title="All 2 branches covered.">		if (matcher instanceof ExpectedValueProvider) {</span>
+<span class="fc" id="L84">			return true;</span>
 		}
-<span class="nc bnc" id="L86" title="All 2 branches missed.">		if (matcher instanceof DecoratorMatcher) {</span>
-<span class="nc" id="L87">			return hasExpectedValue(((DecoratorMatcher&lt;T&gt;) matcher).getDecoree());</span>
+<span class="fc bfc" id="L86" title="All 2 branches covered.">		if (matcher instanceof DecoratorMatcher) {</span>
+<span class="fc" id="L87">			return hasExpectedValue(((DecoratorMatcher&lt;T&gt;) matcher).getDecoree());</span>
 		}
-<span class="nc" id="L89">		return false;</span>
+<span class="fc" id="L89">		return false;</span>
 	}
 
 	@SuppressWarnings(&quot;unchecked&quot;)
 	private static &lt;T&gt; ExpectedValueProvider&lt;T&gt; getComparable(Matcher&lt;? super T&gt; matcher) {
-<span class="nc bnc" id="L94" title="All 2 branches missed.">		if (matcher instanceof ExpectedValueProvider) {</span>
-<span class="nc" id="L95">			return (ExpectedValueProvider&lt;T&gt;) matcher;</span>
+<span class="fc bfc" id="L94" title="All 2 branches covered.">		if (matcher instanceof ExpectedValueProvider) {</span>
+<span class="fc" id="L95">			return (ExpectedValueProvider&lt;T&gt;) matcher;</span>
 		}
-<span class="nc bnc" id="L97" title="All 2 branches missed.">		if (matcher instanceof DecoratorMatcher) {</span>
-<span class="nc" id="L98">			return getComparable(((DecoratorMatcher&lt;T&gt;) matcher).getDecoree());</span>
+<span class="pc bpc" id="L97" title="1 of 2 branches missed.">		if (matcher instanceof DecoratorMatcher) {</span>
+<span class="fc" id="L98">			return getComparable(((DecoratorMatcher&lt;T&gt;) matcher).getDecoree());</span>
 		}
 <span class="nc" id="L100">		return null;</span>
 	}
 
 	private static &lt;T&gt; Description getDescription(String reason, T actual, Matcher&lt;? super T&gt; matcher) {
-<span class="nc" id="L104">		String additionalText = null;</span>
-<span class="nc" id="L105">		ComparisonAwareMatcher cam = getComparisonAwareMatcher(matcher);</span>
-<span class="nc bnc" id="L106" title="All 2 branches missed.">		if(cam!=null) {</span>
-<span class="nc" id="L107">			additionalText = cam.comparisonMessage();</span>
+<span class="fc" id="L104">		String additionalText = null;</span>
+<span class="fc" id="L105">		ComparisonAwareMatcher cam = getComparisonAwareMatcher(matcher);</span>
+<span class="fc bfc" id="L106" title="All 2 branches covered.">		if(cam!=null) {</span>
+<span class="fc" id="L107">			additionalText = cam.comparisonMessage();</span>
 		}
-<span class="nc" id="L109">		return getDescription(reason, actual, matcher, additionalText);</span>
+<span class="fc" id="L109">		return getDescription(reason, actual, matcher, additionalText);</span>
 	}
 
 	@SuppressWarnings(&quot;unchecked&quot;)
 	private static &lt;T&gt; ComparisonAwareMatcher getComparisonAwareMatcher(Matcher&lt;? super T&gt; matcher) {
-<span class="nc bnc" id="L114" title="All 2 branches missed.">		if (matcher instanceof ComparisonAwareMatcher) {</span>
-<span class="nc" id="L115">			return (ComparisonAwareMatcher) matcher;</span>
+<span class="fc bfc" id="L114" title="All 2 branches covered.">		if (matcher instanceof ComparisonAwareMatcher) {</span>
+<span class="fc" id="L115">			return (ComparisonAwareMatcher) matcher;</span>
 		}
-<span class="nc bnc" id="L117" title="All 2 branches missed.">		if (matcher instanceof DecoratorMatcher) {</span>
-<span class="nc" id="L118">			return getComparisonAwareMatcher(((DecoratorMatcher&lt;T&gt;) matcher).getDecoree());</span>
+<span class="fc bfc" id="L117" title="All 2 branches covered.">		if (matcher instanceof DecoratorMatcher) {</span>
+<span class="fc" id="L118">			return getComparisonAwareMatcher(((DecoratorMatcher&lt;T&gt;) matcher).getDecoree());</span>
 		}
-<span class="nc" id="L120">		return null;</span>
+<span class="fc" id="L120">		return null;</span>
 	}
 
 	private static &lt;T&gt; Description getDescription(String reason, T actual, Matcher&lt;? super T&gt; matcher, String additionalText) {
 		// @formatter:off
-<span class="nc" id="L125">		Description description = new StringDescription();</span>
-<span class="nc bnc" id="L126" title="All 2 branches missed.">		description.appendText(getReason(reason, matcher))</span>
-<span class="nc" id="L127">					.appendText(additionalText==null ? &quot;&quot; : (&quot;\n&quot;+additionalText))</span>
-<span class="nc" id="L128">					.appendText(&quot;\nExpected: &quot;)</span>
-<span class="nc" id="L129">					.appendDescriptionOf(matcher)</span>
-<span class="nc" id="L130">					.appendText(&quot;\n     but: &quot;);</span>
-<span class="nc" id="L131">		matcher.describeMismatch(actual, description);</span>
+<span class="fc" id="L125">		Description description = new StringDescription();</span>
+<span class="fc bfc" id="L126" title="All 2 branches covered.">		description.appendText(getReason(reason, matcher))</span>
+<span class="fc" id="L127">					.appendText(additionalText==null ? &quot;&quot; : (&quot;\n&quot;+additionalText))</span>
+<span class="fc" id="L128">					.appendText(&quot;\nExpected: &quot;)</span>
+<span class="fc" id="L129">					.appendDescriptionOf(matcher)</span>
+<span class="fc" id="L130">					.appendText(&quot;\n     but: &quot;);</span>
+<span class="fc" id="L131">		matcher.describeMismatch(actual, description);</span>
 		// @formatter:on
-<span class="nc" id="L133">		return description;</span>
+<span class="fc" id="L133">		return description;</span>
 	}
 
 	private static &lt;T&gt; String getReason(String reason, Matcher&lt;? super T&gt; matcher) {
-<span class="nc bnc" id="L137" title="All 4 branches missed.">		if (reason != null &amp;&amp; !reason.isEmpty()) {</span>
-<span class="nc" id="L138">			return reason;</span>
+<span class="pc bpc" id="L137" title="1 of 4 branches missed.">		if (reason != null &amp;&amp; !reason.isEmpty()) {</span>
+<span class="fc" id="L138">			return reason;</span>
 		}
-<span class="nc bnc" id="L140" title="All 2 branches missed.">		if (matcher instanceof CustomReason) {</span>
-<span class="nc" id="L141">			return ((CustomReason&lt;?&gt;) matcher).getReason();</span>
+<span class="fc bfc" id="L140" title="All 2 branches covered.">		if (matcher instanceof CustomReason) {</span>
+<span class="fc" id="L141">			return ((CustomReason&lt;?&gt;) matcher).getReason();</span>
 		}
-<span class="nc" id="L143">		return &quot;&quot;;</span>
+<span class="fc" id="L143">		return &quot;&quot;;</span>
 	}
 
 	private AssertionHelper() {

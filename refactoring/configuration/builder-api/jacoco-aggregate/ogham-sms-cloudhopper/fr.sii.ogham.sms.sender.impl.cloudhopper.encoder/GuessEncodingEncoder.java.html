@@ -44,7 +44,7 @@ import fr.sii.ogham.sms.sender.impl.cloudhopper.exception.GuessEncodingException
  *
  */
 public class GuessEncodingEncoder implements SupportingEncoder {
-<span class="nc" id="L47">	private static final Logger LOG = LoggerFactory.getLogger(GuessEncodingEncoder.class);</span>
+<span class="fc" id="L47">	private static final Logger LOG = LoggerFactory.getLogger(GuessEncodingEncoder.class);</span>
 
 	private final List&lt;Encoder&gt; possibleEncoders;
 
@@ -61,40 +61,40 @@ public class GuessEncodingEncoder implements SupportingEncoder {
 	 *            the possible encoders used to encode the message
 	 */
 	public GuessEncodingEncoder(List&lt;Encoder&gt; possibleEncoders) {
-<span class="nc" id="L64">		super();</span>
-<span class="nc" id="L65">		this.possibleEncoders = possibleEncoders;</span>
-<span class="nc" id="L66">	}</span>
+<span class="fc" id="L64">		super();</span>
+<span class="fc" id="L65">		this.possibleEncoders = possibleEncoders;</span>
+<span class="fc" id="L66">	}</span>
 
 	@Override
 	public boolean canEncode(String message) {
-<span class="nc bnc" id="L70" title="All 2 branches missed.">		for (Encoder encoder : possibleEncoders) {</span>
-<span class="nc bnc" id="L71" title="All 2 branches missed.">			if (canEncode(encoder, message)) {</span>
-<span class="nc" id="L72">				return true;</span>
+<span class="fc bfc" id="L70" title="All 2 branches covered.">		for (Encoder encoder : possibleEncoders) {</span>
+<span class="fc bfc" id="L71" title="All 2 branches covered.">			if (canEncode(encoder, message)) {</span>
+<span class="fc" id="L72">				return true;</span>
 			}
-<span class="nc" id="L74">		}</span>
-<span class="nc" id="L75">		return false;</span>
+<span class="fc" id="L74">		}</span>
+<span class="fc" id="L75">		return false;</span>
 	}
 
 	@Override
 	public Encoded encode(String message) throws EncodingException {
-<span class="nc bnc" id="L80" title="All 2 branches missed.">		for (Encoder encoder : possibleEncoders) {</span>
-<span class="nc bnc" id="L81" title="All 2 branches missed.">			if (!canEncode(encoder, message)) {</span>
-<span class="nc" id="L82">				continue;</span>
+<span class="fc bfc" id="L80" title="All 2 branches covered.">		for (Encoder encoder : possibleEncoders) {</span>
+<span class="fc bfc" id="L81" title="All 2 branches covered.">			if (!canEncode(encoder, message)) {</span>
+<span class="fc" id="L82">				continue;</span>
 			}
 			try {
-<span class="nc" id="L85">				return encoder.encode(message);</span>
-<span class="nc" id="L86">			} catch (EncodingException e) {</span>
-<span class="nc" id="L87">				LOG.debug(&quot;Encoder failed to encode =&gt; try next one&quot;, e);</span>
+<span class="fc" id="L85">				return encoder.encode(message);</span>
+<span class="fc" id="L86">			} catch (EncodingException e) {</span>
+<span class="fc" id="L87">				LOG.debug(&quot;Encoder failed to encode =&gt; try next one&quot;, e);</span>
 			}
-<span class="nc" id="L89">		}</span>
-<span class="nc" id="L90">		throw new GuessEncodingException(&quot;Failed to guess encoding for message&quot;, message);</span>
+<span class="fc" id="L89">		}</span>
+<span class="fc" id="L90">		throw new GuessEncodingException(&quot;Failed to guess encoding for message&quot;, message);</span>
 	}
 
 	private static boolean canEncode(Encoder encoder, String message) {
-<span class="nc bnc" id="L94" title="All 2 branches missed.">		if (encoder instanceof SupportingEncoder) {</span>
-<span class="nc" id="L95">			return ((SupportingEncoder) encoder).canEncode(message);</span>
+<span class="fc bfc" id="L94" title="All 2 branches covered.">		if (encoder instanceof SupportingEncoder) {</span>
+<span class="fc" id="L95">			return ((SupportingEncoder) encoder).canEncode(message);</span>
 		}
-<span class="nc" id="L97">		return true;</span>
+<span class="fc" id="L97">		return true;</span>
 	}
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

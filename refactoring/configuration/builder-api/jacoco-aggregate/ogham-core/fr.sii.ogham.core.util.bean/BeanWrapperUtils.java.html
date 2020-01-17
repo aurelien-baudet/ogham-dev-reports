@@ -22,11 +22,11 @@ import fr.sii.ogham.core.exception.util.BeanWrapperException;
  */
 public final class BeanWrapperUtils {
 
-<span class="nc" id="L25">	private static final List&lt;Class&lt;?&gt;&gt; INVALID_TYPES = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L25">	private static final List&lt;Class&lt;?&gt;&gt; INVALID_TYPES = new ArrayList&lt;&gt;();</span>
 	static {
-<span class="nc" id="L27">		INVALID_TYPES.add(String.class);</span>
-<span class="nc" id="L28">		INVALID_TYPES.add(Number.class);</span>
-<span class="nc" id="L29">	}</span>
+<span class="fc" id="L27">		INVALID_TYPES.add(String.class);</span>
+<span class="fc" id="L28">		INVALID_TYPES.add(Number.class);</span>
+<span class="fc" id="L29">	}</span>
 
 	/**
 	 * Check if the bean type can be wrapped or not.
@@ -37,12 +37,12 @@ public final class BeanWrapperUtils {
 	 */
 	@SuppressWarnings(&quot;squid:S2250&quot;)
 	public static boolean isInvalid(Object bean) {
-<span class="nc bnc" id="L40" title="All 2 branches missed.">		if (bean == null) {</span>
+<span class="pc bpc" id="L40" title="1 of 2 branches missed.">		if (bean == null) {</span>
 <span class="nc" id="L41">			return false;</span>
 		}
-<span class="nc bnc" id="L43" title="All 2 branches missed.">		return isPrimitiveOrWrapper(bean.getClass()) </span>
-<span class="nc bnc" id="L44" title="All 2 branches missed.">				|| INVALID_TYPES.contains(bean.getClass())</span>
-<span class="nc bnc" id="L45" title="All 2 branches missed.">				|| isInstanceOfInvalid(bean.getClass());</span>
+<span class="fc bfc" id="L43" title="All 2 branches covered.">		return isPrimitiveOrWrapper(bean.getClass()) </span>
+<span class="fc bfc" id="L44" title="All 2 branches covered.">				|| INVALID_TYPES.contains(bean.getClass())</span>
+<span class="fc bfc" id="L45" title="All 2 branches covered.">				|| isInstanceOfInvalid(bean.getClass());</span>
 	}
 
 	/**
@@ -53,7 +53,7 @@ public final class BeanWrapperUtils {
 	 * @return the class of the bean
 	 */
 	public static String getClassName(Object bean) {
-<span class="nc bnc" id="L56" title="All 2 branches missed.">		return bean == null ? &quot;null&quot; : bean.getClass().getName();</span>
+<span class="pc bpc" id="L56" title="1 of 2 branches missed.">		return bean == null ? &quot;null&quot; : bean.getClass().getName();</span>
 	}
 
 	/**
@@ -64,15 +64,15 @@ public final class BeanWrapperUtils {
 	 * @return the map of bean property getters (indexed by property name)
 	 */
 	public static Map&lt;String, Method&gt; getReadMethods(Object bean) {
-<span class="nc" id="L67">		Class&lt;? extends Object&gt; beanClass = bean.getClass();</span>
+<span class="fc" id="L67">		Class&lt;? extends Object&gt; beanClass = bean.getClass();</span>
 		try {
-<span class="nc" id="L69">			Map&lt;String, Method&gt; readMethods = new HashMap&lt;&gt;();</span>
-<span class="nc" id="L70">			final BeanInfo beanInfo = Introspector.getBeanInfo(beanClass);</span>
-<span class="nc" id="L71">			final PropertyDescriptor[] propertyDescriptors = beanInfo.getPropertyDescriptors();</span>
-<span class="nc bnc" id="L72" title="All 2 branches missed.">			if (propertyDescriptors != null) {</span>
-<span class="nc" id="L73">				putReadMethods(readMethods, propertyDescriptors);</span>
+<span class="fc" id="L69">			Map&lt;String, Method&gt; readMethods = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L70">			final BeanInfo beanInfo = Introspector.getBeanInfo(beanClass);</span>
+<span class="fc" id="L71">			final PropertyDescriptor[] propertyDescriptors = beanInfo.getPropertyDescriptors();</span>
+<span class="pc bpc" id="L72" title="1 of 2 branches missed.">			if (propertyDescriptors != null) {</span>
+<span class="fc" id="L73">				putReadMethods(readMethods, propertyDescriptors);</span>
 			}
-<span class="nc" id="L75">			return readMethods;</span>
+<span class="fc" id="L75">			return readMethods;</span>
 <span class="nc" id="L76">		} catch (final IntrospectionException e) {</span>
 <span class="nc" id="L77">			throw new BeanWrapperException(&quot;Failed to initialize bean wrapper on &quot; + beanClass, e);</span>
 		}
@@ -88,29 +88,29 @@ public final class BeanWrapperUtils {
 	 * @return the getter method for the property
 	 */
 	public static Method getReadMethod(Object bean, String name) {
-<span class="nc" id="L91">		return getReadMethods(bean).get(name);</span>
+<span class="fc" id="L91">		return getReadMethods(bean).get(name);</span>
 	}
 
 	private static void putReadMethods(Map&lt;String, Method&gt; readMethods, final PropertyDescriptor[] propertyDescriptors) {
-<span class="nc bnc" id="L95" title="All 2 branches missed.">		for (final PropertyDescriptor propertyDescriptor : propertyDescriptors) {</span>
-<span class="nc bnc" id="L96" title="All 2 branches missed.">			if (propertyDescriptor != null) {</span>
-<span class="nc" id="L97">				final String name = propertyDescriptor.getName();</span>
-<span class="nc" id="L98">				final Method readMethod = propertyDescriptor.getReadMethod();</span>
+<span class="fc bfc" id="L95" title="All 2 branches covered.">		for (final PropertyDescriptor propertyDescriptor : propertyDescriptors) {</span>
+<span class="pc bpc" id="L96" title="1 of 2 branches missed.">			if (propertyDescriptor != null) {</span>
+<span class="fc" id="L97">				final String name = propertyDescriptor.getName();</span>
+<span class="fc" id="L98">				final Method readMethod = propertyDescriptor.getReadMethod();</span>
 
-<span class="nc bnc" id="L100" title="All 2 branches missed.">				if (readMethod != null) {</span>
-<span class="nc" id="L101">					readMethods.put(name, readMethod);</span>
+<span class="pc bpc" id="L100" title="1 of 2 branches missed.">				if (readMethod != null) {</span>
+<span class="fc" id="L101">					readMethods.put(name, readMethod);</span>
 				}
 			}
 		}
-<span class="nc" id="L105">	}</span>
+<span class="fc" id="L105">	}</span>
 
 	private static boolean isInstanceOfInvalid(Class&lt;?&gt; clazz) {
-<span class="nc bnc" id="L108" title="All 2 branches missed.">		for(Class&lt;?&gt; c : INVALID_TYPES) {</span>
-<span class="nc bnc" id="L109" title="All 2 branches missed.">			if(c.isAssignableFrom(clazz)) {</span>
-<span class="nc" id="L110">				return true;</span>
+<span class="fc bfc" id="L108" title="All 2 branches covered.">		for(Class&lt;?&gt; c : INVALID_TYPES) {</span>
+<span class="fc bfc" id="L109" title="All 2 branches covered.">			if(c.isAssignableFrom(clazz)) {</span>
+<span class="fc" id="L110">				return true;</span>
 			}
-<span class="nc" id="L112">		}</span>
-<span class="nc" id="L113">		return false;</span>
+<span class="fc" id="L112">		}</span>
+<span class="fc" id="L113">		return false;</span>
 	}
 
 	private BeanWrapperUtils() {

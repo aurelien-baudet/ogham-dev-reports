@@ -107,25 +107,25 @@ import fr.sii.ogham.template.thymeleaf.v3.buider.ThymeleafV3SmsBuilder;
  *
  */
 public final class DefaultThymeleafV3EmailConfigurer {
-<span class="nc" id="L110">	private static final Logger LOG = LoggerFactory.getLogger(DefaultThymeleafV3EmailConfigurer.class);</span>
+<span class="fc" id="L110">	private static final Logger LOG = LoggerFactory.getLogger(DefaultThymeleafV3EmailConfigurer.class);</span>
 
 	@ConfigurerFor(targetedBuilder = { &quot;minimal&quot;, &quot;standard&quot; }, priority = DEFAULT_THYMELEAF_EMAIL_CONFIGURER_PRIORITY, phase = AFTER_INIT)
-<span class="nc" id="L113">	public static class EnvironmentPropagator implements MessagingConfigurer {</span>
+<span class="fc" id="L113">	public static class EnvironmentPropagator implements MessagingConfigurer {</span>
 		@Override
 		public void configure(MessagingBuilder msgBuilder) {
-<span class="nc bnc" id="L116" title="All 2 branches missed.">			if (canUseThymeleafV3()) {</span>
-<span class="nc" id="L117">				AbstractThymeleafMultiContentBuilder&lt;?, ?, ?&gt; builder = msgBuilder.email().template(ThymeleafV3EmailBuilder.class);</span>
+<span class="fc bfc" id="L116" title="All 2 branches covered.">			if (canUseThymeleafV3()) {</span>
+<span class="fc" id="L117">				AbstractThymeleafMultiContentBuilder&lt;?, ?, ?&gt; builder = msgBuilder.email().template(ThymeleafV3EmailBuilder.class);</span>
 				// use same environment as parent builder
-<span class="nc" id="L119">				builder.environment(msgBuilder.environment());</span>
+<span class="fc" id="L119">				builder.environment(msgBuilder.environment());</span>
 			}
-<span class="nc" id="L121">		}</span>
+<span class="fc" id="L121">		}</span>
 	}
 	
 	@ConfigurerFor(targetedBuilder = { &quot;minimal&quot;, &quot;standard&quot; }, priority = DEFAULT_THYMELEAF_EMAIL_CONFIGURER_PRIORITY)
 	public static class ThymeleafV3EmailConfigurer extends AbstractDefaultThymeleafEmailConfigurer {
 		public ThymeleafV3EmailConfigurer() {
-<span class="nc" id="L127">			super(LOG);</span>
-<span class="nc" id="L128">		}</span>
+<span class="fc" id="L127">			super(LOG);</span>
+<span class="fc" id="L128">		}</span>
 	
 		public ThymeleafV3EmailConfigurer(MessagingConfigurerAdapter delegate) {
 <span class="nc" id="L131">			super(LOG, delegate);</span>
@@ -133,17 +133,17 @@ public final class DefaultThymeleafV3EmailConfigurer {
 	
 		@Override
 		protected boolean canUseThymeleaf() {
-<span class="nc" id="L136">			return canUseThymeleafV3();</span>
+<span class="fc" id="L136">			return canUseThymeleafV3();</span>
 		}
 
 		@Override
 		protected Class&lt;? extends AbstractThymeleafMultiContentBuilder&lt;?, ?, ?&gt;&gt; getBuilderClass() {
-<span class="nc" id="L141">			return ThymeleafV3EmailBuilder.class;</span>
+<span class="fc" id="L141">			return ThymeleafV3EmailBuilder.class;</span>
 		}
 	}
 	
 	private static boolean canUseThymeleafV3() {
-<span class="nc bnc" id="L146" title="All 4 branches missed.">		return ClasspathUtils.exists(&quot;org.thymeleaf.TemplateEngine&quot;) &amp;&amp; ClasspathUtils.exists(&quot;org.thymeleaf.IEngineConfiguration&quot;);</span>
+<span class="fc bfc" id="L146" title="All 4 branches covered.">		return ClasspathUtils.exists(&quot;org.thymeleaf.TemplateEngine&quot;) &amp;&amp; ClasspathUtils.exists(&quot;org.thymeleaf.IEngineConfiguration&quot;);</span>
 	}
 	
 	private DefaultThymeleafV3EmailConfigurer() {

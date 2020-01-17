@@ -26,17 +26,17 @@ import fr.sii.ogham.core.template.detector.TemplateEngineDetector;
  *
  */
 public class ThymeleafV3TemplateDetector implements TemplateEngineDetector {
-<span class="nc" id="L29">	private static final Logger LOG = LoggerFactory.getLogger(ThymeleafV3TemplateDetector.class);</span>
+<span class="fc" id="L29">	private static final Logger LOG = LoggerFactory.getLogger(ThymeleafV3TemplateDetector.class);</span>
 
 	/**
 	 * The pattern to search into the template
 	 */
-<span class="nc" id="L34">	private static final Pattern NAMESPACE_PATTERN = Pattern.compile(&quot;xmlns[^=]+=\\s*\&quot;http://www.thymeleaf.org\&quot;&quot;);</span>
+<span class="fc" id="L34">	private static final Pattern NAMESPACE_PATTERN = Pattern.compile(&quot;xmlns[^=]+=\\s*\&quot;http://www.thymeleaf.org\&quot;&quot;);</span>
 
 	/**
 	 * The pattern to search into the template
 	 */
-<span class="nc" id="L39">	private static final Pattern VARIABLE_PATTERN = Pattern.compile(&quot;(\\[\\[\\$\\{[^}]+\\}\\]\\])|(\\[\\(\\$\\{[^}]+\\}\\)\\])&quot;);</span>
+<span class="fc" id="L39">	private static final Pattern VARIABLE_PATTERN = Pattern.compile(&quot;(\\[\\[\\$\\{[^}]+\\}\\]\\])|(\\[\\(\\$\\{[^}]+\\}\\)\\])&quot;);</span>
 
 	/**
 	 * The template resolver used to find the template
@@ -44,25 +44,25 @@ public class ThymeleafV3TemplateDetector implements TemplateEngineDetector {
 	private final ResourceResolver resolver;
 
 	public ThymeleafV3TemplateDetector(ResourceResolver resolver) {
-<span class="nc" id="L47">		super();</span>
-<span class="nc" id="L48">		this.resolver = resolver;</span>
-<span class="nc" id="L49">	}</span>
+<span class="fc" id="L47">		super();</span>
+<span class="fc" id="L48">		this.resolver = resolver;</span>
+<span class="fc" id="L49">	}</span>
 
 	@Override
 	public boolean canParse(ResourcePath template, Context ctx) throws EngineDetectionException {
-<span class="nc" id="L53">		LOG.debug(&quot;Checking if Thymeleaf can handle the template {}&quot;, template);</span>
-<span class="nc" id="L54">		Resource resolvedTemplate = getTemplate(template);</span>
-<span class="nc bnc" id="L55" title="All 2 branches missed.">		if (resolvedTemplate == null) {</span>
-<span class="nc" id="L56">			return false;</span>
+<span class="fc" id="L53">		LOG.debug(&quot;Checking if Thymeleaf can handle the template {}&quot;, template);</span>
+<span class="fc" id="L54">		Resource resolvedTemplate = getTemplate(template);</span>
+<span class="fc bfc" id="L55" title="All 2 branches covered.">		if (resolvedTemplate == null) {</span>
+<span class="fc" id="L56">			return false;</span>
 		}
-<span class="nc" id="L58">		try (BufferedReader br = new BufferedReader(new InputStreamReader(resolvedTemplate.getInputStream()))) {</span>
-<span class="nc" id="L59">			boolean isThymeleafTemplate = isThymeleafTemplate(br);</span>
-<span class="nc bnc" id="L60" title="All 2 branches missed.">			if (isThymeleafTemplate) {</span>
-<span class="nc" id="L61">				LOG.debug(&quot;The template {} contains the namespace http://www.thymeleaf.org. Thymeleaf can be used&quot;, template);</span>
+<span class="fc" id="L58">		try (BufferedReader br = new BufferedReader(new InputStreamReader(resolvedTemplate.getInputStream()))) {</span>
+<span class="fc" id="L59">			boolean isThymeleafTemplate = isThymeleafTemplate(br);</span>
+<span class="fc bfc" id="L60" title="All 2 branches covered.">			if (isThymeleafTemplate) {</span>
+<span class="fc" id="L61">				LOG.debug(&quot;The template {} contains the namespace http://www.thymeleaf.org. Thymeleaf can be used&quot;, template);</span>
 			} else {
-<span class="nc" id="L63">				LOG.debug(&quot;The template {} doesn't contain the namespace http://www.thymeleaf.org. Thymeleaf can't be used&quot;, template);</span>
+<span class="fc" id="L63">				LOG.debug(&quot;The template {} doesn't contain the namespace http://www.thymeleaf.org. Thymeleaf can't be used&quot;, template);</span>
 			}
-<span class="nc bnc" id="L65" title="All 4 branches missed.">			return isThymeleafTemplate || isEmptyTemplate(resolvedTemplate);</span>
+<span class="fc bfc" id="L65" title="All 4 branches covered.">			return isThymeleafTemplate || isEmptyTemplate(resolvedTemplate);</span>
 <span class="nc" id="L66">		} catch (IOException e) {</span>
 <span class="nc" id="L67">			throw new EngineDetectionException(&quot;Failed to detect if template can be read by thymeleaf&quot;, e);</span>
 		}
@@ -71,34 +71,34 @@ public class ThymeleafV3TemplateDetector implements TemplateEngineDetector {
 	private static boolean isThymeleafTemplate(BufferedReader br) throws IOException {
 		String line;
 		do {
-<span class="nc" id="L74">			line = br.readLine();</span>
-<span class="nc bnc" id="L75" title="All 6 branches missed.">			if (line != null &amp;&amp; (containsThymeleafNamespace(line) || containsThymeleafVariables(line))) {</span>
-<span class="nc" id="L76">				return true;</span>
+<span class="fc" id="L74">			line = br.readLine();</span>
+<span class="fc bfc" id="L75" title="All 6 branches covered.">			if (line != null &amp;&amp; (containsThymeleafNamespace(line) || containsThymeleafVariables(line))) {</span>
+<span class="fc" id="L76">				return true;</span>
 			}
-<span class="nc bnc" id="L78" title="All 2 branches missed.">		} while (line != null);</span>
-<span class="nc" id="L79">		return false;</span>
+<span class="fc bfc" id="L78" title="All 2 branches covered.">		} while (line != null);</span>
+<span class="fc" id="L79">		return false;</span>
 	}
 	
 	private static boolean isEmptyTemplate(Resource template) throws IOException {
-<span class="nc" id="L83">		try (InputStream stream = template.getInputStream()) {</span>
-<span class="nc bnc" id="L84" title="All 2 branches missed.">			return stream.read() == -1;</span>
+<span class="fc" id="L83">		try (InputStream stream = template.getInputStream()) {</span>
+<span class="fc bfc" id="L84" title="All 2 branches covered.">			return stream.read() == -1;</span>
 		}
 	}
 
 	private static boolean containsThymeleafNamespace(String line) {
-<span class="nc" id="L89">		return NAMESPACE_PATTERN.matcher(line).find();</span>
+<span class="fc" id="L89">		return NAMESPACE_PATTERN.matcher(line).find();</span>
 	}
 
 	private static boolean containsThymeleafVariables(String line) {
-<span class="nc" id="L93">		return VARIABLE_PATTERN.matcher(line).find();</span>
+<span class="fc" id="L93">		return VARIABLE_PATTERN.matcher(line).find();</span>
 	}
 
 	private Resource getTemplate(ResourcePath templateName) {
 		try {
-<span class="nc" id="L98">			return resolver.getResource(templateName);</span>
-<span class="nc" id="L99">		} catch (ResourceResolutionException e) {</span>
-<span class="nc" id="L100">			LOG.trace(&quot;Thymeleaf detector can't be applied because &quot; + templateName + &quot; couldn't be resolved&quot;, e);</span>
-<span class="nc" id="L101">			return null;</span>
+<span class="fc" id="L98">			return resolver.getResource(templateName);</span>
+<span class="fc" id="L99">		} catch (ResourceResolutionException e) {</span>
+<span class="fc" id="L100">			LOG.trace(&quot;Thymeleaf detector can't be applied because &quot; + templateName + &quot; couldn't be resolved&quot;, e);</span>
+<span class="fc" id="L101">			return null;</span>
 		}
 	}
 

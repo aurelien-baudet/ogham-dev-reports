@@ -40,12 +40,12 @@ public class SenderNumberFormatBuilder extends AbstractParent&lt;SenderNumberBui
 	 *            the configuration for property resolution and evaluation
 	 */
 	public SenderNumberFormatBuilder(SenderNumberBuilder parent, EnvironmentBuilder&lt;?&gt; environmentBuilder) {
-<span class="nc" id="L43">		super(parent);</span>
-<span class="nc" id="L44">		this.environmentBuilder = environmentBuilder;</span>
-<span class="nc" id="L45">		enableAlphanumericValueBuilder = new ConfigurationValueBuilderHelper&lt;&gt;(this, Boolean.class);</span>
-<span class="nc" id="L46">		enableShortCodeValueBuilder = new ConfigurationValueBuilderHelper&lt;&gt;(this, Boolean.class);</span>
-<span class="nc" id="L47">		enableInternationalValueBuilder = new ConfigurationValueBuilderHelper&lt;&gt;(this, Boolean.class);</span>
-<span class="nc" id="L48">	}</span>
+<span class="fc" id="L43">		super(parent);</span>
+<span class="fc" id="L44">		this.environmentBuilder = environmentBuilder;</span>
+<span class="fc" id="L45">		enableAlphanumericValueBuilder = new ConfigurationValueBuilderHelper&lt;&gt;(this, Boolean.class);</span>
+<span class="fc" id="L46">		enableShortCodeValueBuilder = new ConfigurationValueBuilderHelper&lt;&gt;(this, Boolean.class);</span>
+<span class="fc" id="L47">		enableInternationalValueBuilder = new ConfigurationValueBuilderHelper&lt;&gt;(this, Boolean.class);</span>
+<span class="fc" id="L48">	}</span>
 
 	/**
 	 * Enable/disable alphanumeric code conversion: if the sender address is
@@ -84,8 +84,8 @@ public class SenderNumberFormatBuilder extends AbstractParent&lt;SenderNumberBui
 	 * @return this instance for fluent chaining
 	 */
 	public SenderNumberFormatBuilder alphanumericCode(Boolean enable) {
-<span class="nc" id="L87">		enableAlphanumericValueBuilder.setValue(enable);</span>
-<span class="nc" id="L88">		return this;</span>
+<span class="fc" id="L87">		enableAlphanumericValueBuilder.setValue(enable);</span>
+<span class="fc" id="L88">		return this;</span>
 	}
 
 	
@@ -126,7 +126,7 @@ public class SenderNumberFormatBuilder extends AbstractParent&lt;SenderNumberBui
 	 * @return the builder to configure property keys/default value
 	 */
 	public ConfigurationValueBuilder&lt;SenderNumberFormatBuilder, Boolean&gt; alphanumericCode() {
-<span class="nc" id="L129">		return enableAlphanumericValueBuilder;</span>
+<span class="fc" id="L129">		return enableAlphanumericValueBuilder;</span>
 	}
 	
 	/**
@@ -166,8 +166,8 @@ public class SenderNumberFormatBuilder extends AbstractParent&lt;SenderNumberBui
 	 * @return this instance for fluent chaining
 	 */
 	public SenderNumberFormatBuilder shortCode(Boolean enable) {
-<span class="nc" id="L169">		enableShortCodeValueBuilder.setValue(enable);</span>
-<span class="nc" id="L170">		return this;</span>
+<span class="fc" id="L169">		enableShortCodeValueBuilder.setValue(enable);</span>
+<span class="fc" id="L170">		return this;</span>
 	}
 
 	
@@ -208,7 +208,7 @@ public class SenderNumberFormatBuilder extends AbstractParent&lt;SenderNumberBui
 	 * @return the builder to configure property keys/default value
 	 */
 	public ConfigurationValueBuilder&lt;SenderNumberFormatBuilder, Boolean&gt; shortCode() {
-<span class="nc" id="L211">		return enableShortCodeValueBuilder;</span>
+<span class="fc" id="L211">		return enableShortCodeValueBuilder;</span>
 	}
 	
 	/**
@@ -247,8 +247,8 @@ public class SenderNumberFormatBuilder extends AbstractParent&lt;SenderNumberBui
 	 * @return this instance for fluent chaining
 	 */
 	public SenderNumberFormatBuilder internationalNumber(Boolean enable) {
-<span class="nc" id="L250">		enableInternationalValueBuilder.setValue(enable);</span>
-<span class="nc" id="L251">		return this;</span>
+<span class="fc" id="L250">		enableInternationalValueBuilder.setValue(enable);</span>
+<span class="fc" id="L251">		return this;</span>
 	}
 
 	
@@ -288,28 +288,28 @@ public class SenderNumberFormatBuilder extends AbstractParent&lt;SenderNumberBui
 	 * @return the builder to configure property keys/default value
 	 */
 	public ConfigurationValueBuilder&lt;SenderNumberFormatBuilder, Boolean&gt; internationalNumber() {
-<span class="nc" id="L291">		return enableInternationalValueBuilder;</span>
+<span class="fc" id="L291">		return enableInternationalValueBuilder;</span>
 	}
 
 	@Override
 	public PhoneNumberTranslator build() {
-<span class="nc" id="L296">		CompositePhoneNumberTranslator translator = new CompositePhoneNumberTranslator();</span>
-<span class="nc" id="L297">		PropertyResolver propertyResolver = environmentBuilder.build();</span>
-<span class="nc bnc" id="L298" title="All 2 branches missed.">		if (enabled(enableAlphanumericValueBuilder, propertyResolver)) {</span>
-<span class="nc" id="L299">			translator.add(new AlphanumericCodeNumberFormatHandler());</span>
+<span class="fc" id="L296">		CompositePhoneNumberTranslator translator = new CompositePhoneNumberTranslator();</span>
+<span class="fc" id="L297">		PropertyResolver propertyResolver = environmentBuilder.build();</span>
+<span class="pc bpc" id="L298" title="1 of 2 branches missed.">		if (enabled(enableAlphanumericValueBuilder, propertyResolver)) {</span>
+<span class="fc" id="L299">			translator.add(new AlphanumericCodeNumberFormatHandler());</span>
 		}
-<span class="nc bnc" id="L301" title="All 2 branches missed.">		if (enabled(enableShortCodeValueBuilder, propertyResolver)) {</span>
-<span class="nc" id="L302">			translator.add(new ShortCodeNumberFormatHandler());</span>
+<span class="pc bpc" id="L301" title="1 of 2 branches missed.">		if (enabled(enableShortCodeValueBuilder, propertyResolver)) {</span>
+<span class="fc" id="L302">			translator.add(new ShortCodeNumberFormatHandler());</span>
 		}
-<span class="nc bnc" id="L304" title="All 2 branches missed.">		if (enabled(enableInternationalValueBuilder, propertyResolver)) {</span>
-<span class="nc" id="L305">			translator.add(new InternationalNumberFormatHandler());</span>
+<span class="pc bpc" id="L304" title="1 of 2 branches missed.">		if (enabled(enableInternationalValueBuilder, propertyResolver)) {</span>
+<span class="fc" id="L305">			translator.add(new InternationalNumberFormatHandler());</span>
 		}
-<span class="nc" id="L307">		translator.add(new DefaultHandler());</span>
-<span class="nc" id="L308">		return translator;</span>
+<span class="fc" id="L307">		translator.add(new DefaultHandler());</span>
+<span class="fc" id="L308">		return translator;</span>
 	}
 
 	private static boolean enabled(ConfigurationValueBuilderHelper&lt;?, Boolean&gt; props, PropertyResolver propertyResolver) {
-<span class="nc" id="L312">		return props.getValue(propertyResolver, false);</span>
+<span class="fc" id="L312">		return props.getValue(propertyResolver, false);</span>
 	}
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

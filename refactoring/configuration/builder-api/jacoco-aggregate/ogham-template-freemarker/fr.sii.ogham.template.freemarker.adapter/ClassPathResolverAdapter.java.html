@@ -19,37 +19,37 @@ public class ClassPathResolverAdapter extends AbstractFreeMarkerTemplateLoaderOp
 	private final ClassLoader classLoader;
 	
 	public ClassPathResolverAdapter(ClassLoader classLoader) {
-<span class="nc" id="L22">		super();</span>
-<span class="nc" id="L23">		this.classLoader = classLoader;</span>
-<span class="nc" id="L24">	}</span>
+<span class="fc" id="L22">		super();</span>
+<span class="fc" id="L23">		this.classLoader = classLoader;</span>
+<span class="fc" id="L24">	}</span>
 
 	@Override
 	public boolean supports(ResourceResolver resolver) {
-<span class="nc bnc" id="L28" title="All 2 branches missed.">		ResourceResolver actualResolver = resolver instanceof DelegateResourceResolver ? ((DelegateResourceResolver) resolver).getActualResourceResolver() : resolver;</span>
-<span class="nc" id="L29">		return actualResolver instanceof ClassPathResolver;</span>
+<span class="fc bfc" id="L28" title="All 2 branches covered.">		ResourceResolver actualResolver = resolver instanceof DelegateResourceResolver ? ((DelegateResourceResolver) resolver).getActualResourceResolver() : resolver;</span>
+<span class="fc" id="L29">		return actualResolver instanceof ClassPathResolver;</span>
 	}
 
 	@Override
 	public TemplateLoader adapt(ResourceResolver resolver) {
-<span class="nc" id="L34">		return new FixClassTemplateLoader(getClassLoader(), &quot;&quot;);</span>
+<span class="fc" id="L34">		return new FixClassTemplateLoader(getClassLoader(), &quot;&quot;);</span>
 	}
 
 	private ClassLoader getClassLoader() {
-<span class="nc bnc" id="L38" title="All 2 branches missed.">		if(classLoader!=null) {</span>
+<span class="pc bpc" id="L38" title="1 of 2 branches missed.">		if(classLoader!=null) {</span>
 <span class="nc" id="L39">			return classLoader;</span>
 		}
-<span class="nc" id="L41">		return Thread.currentThread().getContextClassLoader();</span>
+<span class="fc" id="L41">		return Thread.currentThread().getContextClassLoader();</span>
 	}
 
 	private static class FixClassTemplateLoader extends ClassTemplateLoader {
 		public FixClassTemplateLoader(ClassLoader classLoader, String basePackagePath) {
-<span class="nc" id="L46">			super(classLoader, basePackagePath);</span>
-<span class="nc" id="L47">		}</span>
+<span class="fc" id="L46">			super(classLoader, basePackagePath);</span>
+<span class="fc" id="L47">		}</span>
 
 		@Override
 		protected URL getURL(String name) {
-<span class="nc bnc" id="L51" title="All 2 branches missed.">			String path = name.startsWith(&quot;/&quot;) ? name.substring(1) : name;</span>
-<span class="nc" id="L52">			return super.getURL(path);</span>
+<span class="fc bfc" id="L51" title="All 2 branches covered.">			String path = name.startsWith(&quot;/&quot;) ? name.substring(1) : name;</span>
+<span class="fc" id="L52">			return super.getURL(path);</span>
 		}
 	}
 	

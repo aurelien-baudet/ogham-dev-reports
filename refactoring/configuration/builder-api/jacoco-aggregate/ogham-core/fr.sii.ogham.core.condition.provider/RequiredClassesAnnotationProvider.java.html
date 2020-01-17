@@ -23,23 +23,23 @@ public class RequiredClassesAnnotationProvider&lt;T&gt; implements ConditionProv
 	private final RequiredClassAnnotationProvider&lt;T&gt; delegate;
 
 	public RequiredClassesAnnotationProvider() {
-<span class="nc" id="L26">		super();</span>
-<span class="nc" id="L27">		this.delegate = new RequiredClassAnnotationProvider&lt;&gt;();</span>
-<span class="nc" id="L28">	}</span>
+<span class="fc" id="L26">		super();</span>
+<span class="fc" id="L27">		this.delegate = new RequiredClassAnnotationProvider&lt;&gt;();</span>
+<span class="fc" id="L28">	}</span>
 
 	@Override
 	public Condition&lt;T&gt; provide(RequiredClasses annotation) {
-<span class="nc bnc" id="L32" title="All 2 branches missed.">		if (annotation == null) {</span>
-<span class="nc" id="L33">			return new FixedCondition&lt;&gt;(true);</span>
+<span class="fc bfc" id="L32" title="All 2 branches covered.">		if (annotation == null) {</span>
+<span class="fc" id="L33">			return new FixedCondition&lt;&gt;(true);</span>
 		} else {
-<span class="nc" id="L35">			AndCondition&lt;T&gt; mainCondition = new AndCondition&lt;&gt;();</span>
-<span class="nc bnc" id="L36" title="All 2 branches missed.">			for (String requiredClassName : annotation.value()) {</span>
-<span class="nc" id="L37">				mainCondition = mainCondition.and(Conditions.&lt;T&gt; requiredClass(requiredClassName));</span>
+<span class="fc" id="L35">			AndCondition&lt;T&gt; mainCondition = new AndCondition&lt;&gt;();</span>
+<span class="fc bfc" id="L36" title="All 2 branches covered.">			for (String requiredClassName : annotation.value()) {</span>
+<span class="fc" id="L37">				mainCondition = mainCondition.and(Conditions.&lt;T&gt; requiredClass(requiredClassName));</span>
 			}
-<span class="nc bnc" id="L39" title="All 2 branches missed.">			for (RequiredClass subAnnotation : annotation.classes()) {</span>
-<span class="nc" id="L40">				mainCondition = mainCondition.and(delegate.provide(subAnnotation));</span>
+<span class="fc bfc" id="L39" title="All 2 branches covered.">			for (RequiredClass subAnnotation : annotation.classes()) {</span>
+<span class="fc" id="L40">				mainCondition = mainCondition.and(delegate.provide(subAnnotation));</span>
 			}
-<span class="nc" id="L42">			return mainCondition;</span>
+<span class="fc" id="L42">			return mainCondition;</span>
 		}
 	}
 

@@ -235,7 +235,7 @@ import fr.sii.ogham.sms.message.Sms;
  *
  */
 public class MessagingBuilder implements Builder&lt;MessagingService&gt; {
-<span class="nc" id="L238">	private static final Logger LOG = LoggerFactory.getLogger(MessagingBuilder.class);</span>
+<span class="fc" id="L238">	private static final Logger LOG = LoggerFactory.getLogger(MessagingBuilder.class);</span>
 	private static final String BASE_PACKAGE = &quot;fr.sii.ogham&quot;;
 
 	protected final boolean autoconfigure;
@@ -271,15 +271,15 @@ public class MessagingBuilder implements Builder&lt;MessagingService&gt; {
 	 *            {@link #configure(ConfigurationPhase)} manually.
 	 */
 	public MessagingBuilder(boolean autoconfigure) {
-<span class="nc" id="L274">		super();</span>
-<span class="nc" id="L275">		this.autoconfigure = autoconfigure;</span>
-<span class="nc" id="L276">		alreadyConfigured = new EnumMap&lt;&gt;(ConfigurationPhase.class);</span>
-<span class="nc" id="L277">		configurers = new PriorizedList&lt;&gt;();</span>
-<span class="nc" id="L278">		environmentBuilder = new SimpleEnvironmentBuilder&lt;&gt;(this);</span>
-<span class="nc" id="L279">		mimetypeBuilder = new SimpleMimetypeDetectionBuilder&lt;&gt;(this, environmentBuilder);</span>
-<span class="nc" id="L280">		resourceBuilder = new StandaloneResourceResolutionBuilder&lt;&gt;(this, environmentBuilder);</span>
-<span class="nc" id="L281">		wrapUncaughtValueBuilder = new ConfigurationValueBuilderHelper&lt;&gt;(this, Boolean.class);</span>
-<span class="nc" id="L282">	}</span>
+<span class="fc" id="L274">		super();</span>
+<span class="fc" id="L275">		this.autoconfigure = autoconfigure;</span>
+<span class="fc" id="L276">		alreadyConfigured = new EnumMap&lt;&gt;(ConfigurationPhase.class);</span>
+<span class="fc" id="L277">		configurers = new PriorizedList&lt;&gt;();</span>
+<span class="fc" id="L278">		environmentBuilder = new SimpleEnvironmentBuilder&lt;&gt;(this);</span>
+<span class="fc" id="L279">		mimetypeBuilder = new SimpleMimetypeDetectionBuilder&lt;&gt;(this, environmentBuilder);</span>
+<span class="fc" id="L280">		resourceBuilder = new StandaloneResourceResolutionBuilder&lt;&gt;(this, environmentBuilder);</span>
+<span class="fc" id="L281">		wrapUncaughtValueBuilder = new ConfigurationValueBuilderHelper&lt;&gt;(this, Boolean.class);</span>
+<span class="fc" id="L282">	}</span>
 
 	/**
 	 * Registers a configurer with a priority. Configuration order may be
@@ -307,7 +307,7 @@ public class MessagingBuilder implements Builder&lt;MessagingService&gt; {
 	 * @return this instance for fluent chaining
 	 */
 	public MessagingBuilder register(MessagingConfigurer configurer, int priority) {
-<span class="nc" id="L310">		return register(configurer, priority, ConfigurationPhase.BEFORE_BUILD);</span>
+<span class="fc" id="L310">		return register(configurer, priority, ConfigurationPhase.BEFORE_BUILD);</span>
 	}
 
 	/**
@@ -335,9 +335,9 @@ public class MessagingBuilder implements Builder&lt;MessagingService&gt; {
 	 * @return this instance for fluent chaining
 	 */
 	public MessagingBuilder register(MessagingConfigurer configurer, int priority, ConfigurationPhase phase) {
-<span class="nc" id="L338">		LOG.debug(&quot;[{}] registered for phase {} with priority={}&quot;, configurer, phase, priority);</span>
-<span class="nc" id="L339">		configurers.register(new ConfigurerWithPhase(configurer, phase), priority);</span>
-<span class="nc" id="L340">		return this;</span>
+<span class="fc" id="L338">		LOG.debug(&quot;[{}] registered for phase {} with priority={}&quot;, configurer, phase, priority);</span>
+<span class="fc" id="L339">		configurers.register(new ConfigurerWithPhase(configurer, phase), priority);</span>
+<span class="fc" id="L340">		return this;</span>
 	}
 
 	/**
@@ -352,17 +352,17 @@ public class MessagingBuilder implements Builder&lt;MessagingService&gt; {
 	 *            the configuration phase
 	 */
 	public void configure(ConfigurationPhase phase) {
-<span class="nc bnc" id="L355" title="All 2 branches missed.">		if (alreadyConfigured(phase)) {</span>
+<span class="pc bpc" id="L355" title="1 of 2 branches missed.">		if (alreadyConfigured(phase)) {</span>
 <span class="nc" id="L356">			return;</span>
 		}
-<span class="nc bnc" id="L358" title="All 2 branches missed.">		for (ConfigurerWithPhase configurerWithPhase : configurers.getOrdered()) {</span>
-<span class="nc bnc" id="L359" title="All 2 branches missed.">			if (phase == configurerWithPhase.getPhase()) {</span>
-<span class="nc" id="L360">				LOG.debug(&quot;[{}] configuring for phase {}...&quot;, configurerWithPhase.getConfigurer(), phase);</span>
-<span class="nc" id="L361">				configurerWithPhase.getConfigurer().configure(this);</span>
+<span class="fc bfc" id="L358" title="All 2 branches covered.">		for (ConfigurerWithPhase configurerWithPhase : configurers.getOrdered()) {</span>
+<span class="fc bfc" id="L359" title="All 2 branches covered.">			if (phase == configurerWithPhase.getPhase()) {</span>
+<span class="fc" id="L360">				LOG.debug(&quot;[{}] configuring for phase {}...&quot;, configurerWithPhase.getConfigurer(), phase);</span>
+<span class="fc" id="L361">				configurerWithPhase.getConfigurer().configure(this);</span>
 			}
-<span class="nc" id="L363">		}</span>
-<span class="nc" id="L364">		alreadyConfigured.put(phase, true);</span>
-<span class="nc" id="L365">	}</span>
+<span class="fc" id="L363">		}</span>
+<span class="fc" id="L364">		alreadyConfigured.put(phase, true);</span>
+<span class="fc" id="L365">	}</span>
 
 	/**
 	 * Configures environment for the builder (and sub-builders if inherited).
@@ -410,7 +410,7 @@ public class MessagingBuilder implements Builder&lt;MessagingService&gt; {
 	 * @return the builder to configure properties handling
 	 */
 	public EnvironmentBuilder&lt;MessagingBuilder&gt; environment() {
-<span class="nc" id="L413">		return environmentBuilder;</span>
+<span class="fc" id="L413">		return environmentBuilder;</span>
 	}
 
 	/**
@@ -478,7 +478,7 @@ public class MessagingBuilder implements Builder&lt;MessagingService&gt; {
 	 * @return the builder to configure resource resolution
 	 */
 	public StandaloneResourceResolutionBuilder&lt;MessagingBuilder&gt; resource() {
-<span class="nc" id="L481">		return resourceBuilder;</span>
+<span class="fc" id="L481">		return resourceBuilder;</span>
 	}
 
 	/**
@@ -530,7 +530,7 @@ public class MessagingBuilder implements Builder&lt;MessagingService&gt; {
 	 * @return the builder to configure mimetype detection
 	 */
 	public MimetypeDetectionBuilder&lt;MessagingBuilder&gt; mimetype() {
-<span class="nc" id="L533">		return mimetypeBuilder;</span>
+<span class="fc" id="L533">		return mimetypeBuilder;</span>
 	}
 
 	/**
@@ -653,7 +653,7 @@ public class MessagingBuilder implements Builder&lt;MessagingService&gt; {
 	 * @return the builder to configure property keys/default value
 	 */
 	public ConfigurationValueBuilder&lt;MessagingBuilder, Boolean&gt; wrapUncaught() {
-<span class="nc" id="L656">		return wrapUncaughtValueBuilder;</span>
+<span class="fc" id="L656">		return wrapUncaughtValueBuilder;</span>
 	}
 
 	/**
@@ -952,10 +952,10 @@ public class MessagingBuilder implements Builder&lt;MessagingService&gt; {
 	 * @return the builder to configure how Email are handled
 	 */
 	public EmailBuilder email() {
-<span class="nc bnc" id="L955" title="All 2 branches missed.">		if (emailBuilder == null) {</span>
-<span class="nc" id="L956">			emailBuilder = new EmailBuilder(this, environmentBuilder);</span>
+<span class="fc bfc" id="L955" title="All 2 branches covered.">		if (emailBuilder == null) {</span>
+<span class="fc" id="L956">			emailBuilder = new EmailBuilder(this, environmentBuilder);</span>
 		}
-<span class="nc" id="L958">		return emailBuilder;</span>
+<span class="fc" id="L958">		return emailBuilder;</span>
 	}
 
 	/**
@@ -1196,10 +1196,10 @@ public class MessagingBuilder implements Builder&lt;MessagingService&gt; {
 	 * @return the builder to configure how SMS are handled
 	 */
 	public SmsBuilder sms() {
-<span class="nc bnc" id="L1199" title="All 2 branches missed.">		if (smsBuilder == null) {</span>
-<span class="nc" id="L1200">			smsBuilder = new SmsBuilder(this, environmentBuilder);</span>
+<span class="fc bfc" id="L1199" title="All 2 branches covered.">		if (smsBuilder == null) {</span>
+<span class="fc" id="L1200">			smsBuilder = new SmsBuilder(this, environmentBuilder);</span>
 		}
-<span class="nc" id="L1202">		return smsBuilder;</span>
+<span class="fc" id="L1202">		return smsBuilder;</span>
 	}
 
 	/**
@@ -1225,17 +1225,17 @@ public class MessagingBuilder implements Builder&lt;MessagingService&gt; {
 	@Override
 	@SuppressWarnings(&quot;squid:S5411&quot;)
 	public MessagingService build() {
-<span class="nc bnc" id="L1228" title="All 2 branches missed.">		if (autoconfigure) {</span>
-<span class="nc" id="L1229">			configure(ConfigurationPhase.BEFORE_BUILD);</span>
+<span class="fc bfc" id="L1228" title="All 2 branches covered.">		if (autoconfigure) {</span>
+<span class="fc" id="L1229">			configure(ConfigurationPhase.BEFORE_BUILD);</span>
 		}
-<span class="nc" id="L1231">		LOG.info(&quot;Using service that calls all registered senders&quot;);</span>
-<span class="nc" id="L1232">		List&lt;ConditionalSender&gt; senders = buildSenders();</span>
-<span class="nc" id="L1233">		LOG.debug(&quot;Registered senders: {}&quot;, senders);</span>
-<span class="nc" id="L1234">		MessagingService service = new EverySupportingMessagingService(senders);</span>
-<span class="nc bnc" id="L1235" title="All 2 branches missed.">		if (wrapUncaughtValueBuilder.getValue(environmentBuilder.build(), false)) {</span>
-<span class="nc" id="L1236">			service = new WrapExceptionMessagingService(service);</span>
+<span class="fc" id="L1231">		LOG.info(&quot;Using service that calls all registered senders&quot;);</span>
+<span class="fc" id="L1232">		List&lt;ConditionalSender&gt; senders = buildSenders();</span>
+<span class="fc" id="L1233">		LOG.debug(&quot;Registered senders: {}&quot;, senders);</span>
+<span class="fc" id="L1234">		MessagingService service = new EverySupportingMessagingService(senders);</span>
+<span class="fc bfc" id="L1235" title="All 2 branches covered.">		if (wrapUncaughtValueBuilder.getValue(environmentBuilder.build(), false)) {</span>
+<span class="fc" id="L1236">			service = new WrapExceptionMessagingService(service);</span>
 		}
-<span class="nc" id="L1238">		return service;</span>
+<span class="fc" id="L1238">		return service;</span>
 	}
 
 	/**
@@ -1246,7 +1246,7 @@ public class MessagingBuilder implements Builder&lt;MessagingService&gt; {
 	 *         be configured
 	 */
 	public static MessagingBuilder empty() {
-<span class="nc" id="L1249">		return new MessagingBuilder(false);</span>
+<span class="fc" id="L1249">		return new MessagingBuilder(false);</span>
 	}
 
 	/**
@@ -1338,7 +1338,7 @@ public class MessagingBuilder implements Builder&lt;MessagingService&gt; {
 	 * @return the messaging builder that can be customized
 	 */
 	public static MessagingBuilder standard() {
-<span class="nc" id="L1341">		return standard(BASE_PACKAGE);</span>
+<span class="fc" id="L1341">		return standard(BASE_PACKAGE);</span>
 	}
 
 	/**
@@ -1432,7 +1432,7 @@ public class MessagingBuilder implements Builder&lt;MessagingService&gt; {
 	 * @return the messaging builder that can be customized
 	 */
 	public static MessagingBuilder standard(String... basePackages) {
-<span class="nc" id="L1435">		return standard(true, basePackages);</span>
+<span class="fc" id="L1435">		return standard(true, basePackages);</span>
 	}
 
 	/**
@@ -1529,7 +1529,7 @@ public class MessagingBuilder implements Builder&lt;MessagingService&gt; {
 	 * @return the messaging builder that can be customized
 	 */
 	public static MessagingBuilder standard(boolean autoconfigure) {
-<span class="nc" id="L1532">		return standard(autoconfigure, BASE_PACKAGE);</span>
+<span class="fc" id="L1532">		return standard(autoconfigure, BASE_PACKAGE);</span>
 	}
 
 	/**
@@ -1628,12 +1628,12 @@ public class MessagingBuilder implements Builder&lt;MessagingService&gt; {
 	 * @return the messaging builder that can be customized
 	 */
 	public static MessagingBuilder standard(boolean autoconfigure, String... basePackages) {
-<span class="nc" id="L1631">		MessagingBuilder builder = new MessagingBuilder(autoconfigure);</span>
-<span class="nc" id="L1632">		findAndRegister(builder, &quot;standard&quot;, basePackages);</span>
-<span class="nc bnc" id="L1633" title="All 2 branches missed.">		if (autoconfigure) {</span>
-<span class="nc" id="L1634">			builder.configure(ConfigurationPhase.AFTER_INIT);</span>
+<span class="fc" id="L1631">		MessagingBuilder builder = new MessagingBuilder(autoconfigure);</span>
+<span class="fc" id="L1632">		findAndRegister(builder, &quot;standard&quot;, basePackages);</span>
+<span class="fc bfc" id="L1633" title="All 2 branches covered.">		if (autoconfigure) {</span>
+<span class="fc" id="L1634">			builder.configure(ConfigurationPhase.AFTER_INIT);</span>
 		}
-<span class="nc" id="L1636">		return builder;</span>
+<span class="fc" id="L1636">		return builder;</span>
 	}
 
 	/**
@@ -2035,40 +2035,40 @@ public class MessagingBuilder implements Builder&lt;MessagingService&gt; {
 	 *            {@link MessagingConfigurer} implementations
 	 */
 	public static void findAndRegister(MessagingBuilder builder, String builderName, String... basePackages) {
-<span class="nc" id="L2038">		Reflections reflections = new Reflections(basePackages, new SubTypesScanner());</span>
-<span class="nc" id="L2039">		Set&lt;Class&lt;? extends MessagingConfigurer&gt;&gt; configurerClasses = reflections.getSubTypesOf(MessagingConfigurer.class);</span>
-<span class="nc bnc" id="L2040" title="All 2 branches missed.">		for (Class&lt;? extends MessagingConfigurer&gt; configurerClass : configurerClasses) {</span>
-<span class="nc" id="L2041">			ConfigurerFor annotation = configurerClass.getAnnotation(ConfigurerFor.class);</span>
-<span class="nc bnc" id="L2042" title="All 4 branches missed.">			if (annotation != null &amp;&amp; asList(annotation.targetedBuilder()).contains(builderName)) {</span>
-<span class="nc" id="L2043">				register(builder, builderName, configurerClass, annotation);</span>
+<span class="fc" id="L2038">		Reflections reflections = new Reflections(basePackages, new SubTypesScanner());</span>
+<span class="fc" id="L2039">		Set&lt;Class&lt;? extends MessagingConfigurer&gt;&gt; configurerClasses = reflections.getSubTypesOf(MessagingConfigurer.class);</span>
+<span class="fc bfc" id="L2040" title="All 2 branches covered.">		for (Class&lt;? extends MessagingConfigurer&gt; configurerClass : configurerClasses) {</span>
+<span class="fc" id="L2041">			ConfigurerFor annotation = configurerClass.getAnnotation(ConfigurerFor.class);</span>
+<span class="pc bpc" id="L2042" title="1 of 4 branches missed.">			if (annotation != null &amp;&amp; asList(annotation.targetedBuilder()).contains(builderName)) {</span>
+<span class="fc" id="L2043">				register(builder, builderName, configurerClass, annotation);</span>
 			}
-<span class="nc" id="L2045">		}</span>
-<span class="nc" id="L2046">	}</span>
+<span class="fc" id="L2045">		}</span>
+<span class="fc" id="L2046">	}</span>
 
 	private static void register(MessagingBuilder builder, String builderName, Class&lt;? extends MessagingConfigurer&gt; configurerClass, ConfigurerFor annotation) {
 		try {
-<span class="nc" id="L2050">			builder.register(configurerClass.newInstance(), annotation.priority(), annotation.phase());</span>
+<span class="fc" id="L2050">			builder.register(configurerClass.newInstance(), annotation.priority(), annotation.phase());</span>
 <span class="nc" id="L2051">		} catch (InstantiationException | IllegalAccessException e) {</span>
 <span class="nc" id="L2052">			throw new BuildException(&quot;Failed to register custom auto-discovered configurer (&quot; + configurerClass.getSimpleName() + &quot;) for &quot; + builderName + &quot; messaging builder&quot;, e);</span>
-<span class="nc" id="L2053">		}</span>
-<span class="nc" id="L2054">	}</span>
+<span class="fc" id="L2053">		}</span>
+<span class="fc" id="L2054">	}</span>
 
 	private List&lt;ConditionalSender&gt; buildSenders() {
-<span class="nc" id="L2057">		List&lt;ConditionalSender&gt; senders = new ArrayList&lt;&gt;();</span>
-<span class="nc bnc" id="L2058" title="All 2 branches missed.">		if (emailBuilder != null) {</span>
-<span class="nc" id="L2059">			LOG.debug(&quot;building email sender with {}&quot;, emailBuilder);</span>
-<span class="nc" id="L2060">			senders.add(emailBuilder.build());</span>
+<span class="fc" id="L2057">		List&lt;ConditionalSender&gt; senders = new ArrayList&lt;&gt;();</span>
+<span class="fc bfc" id="L2058" title="All 2 branches covered.">		if (emailBuilder != null) {</span>
+<span class="fc" id="L2059">			LOG.debug(&quot;building email sender with {}&quot;, emailBuilder);</span>
+<span class="fc" id="L2060">			senders.add(emailBuilder.build());</span>
 		}
-<span class="nc bnc" id="L2062" title="All 2 branches missed.">		if (smsBuilder != null) {</span>
-<span class="nc" id="L2063">			LOG.debug(&quot;building email sender with {}&quot;, emailBuilder);</span>
-<span class="nc" id="L2064">			senders.add(smsBuilder.build());</span>
+<span class="fc bfc" id="L2062" title="All 2 branches covered.">		if (smsBuilder != null) {</span>
+<span class="fc" id="L2063">			LOG.debug(&quot;building email sender with {}&quot;, emailBuilder);</span>
+<span class="fc" id="L2064">			senders.add(smsBuilder.build());</span>
 		}
-<span class="nc" id="L2066">		return senders;</span>
+<span class="fc" id="L2066">		return senders;</span>
 	}
 
 	private boolean alreadyConfigured(ConfigurationPhase phase) {
-<span class="nc" id="L2070">		Boolean configured = alreadyConfigured.get(phase);</span>
-<span class="nc bnc" id="L2071" title="All 4 branches missed.">		return configured != null &amp;&amp; configured;</span>
+<span class="fc" id="L2070">		Boolean configured = alreadyConfigured.get(phase);</span>
+<span class="pc bpc" id="L2071" title="3 of 4 branches missed.">		return configured != null &amp;&amp; configured;</span>
 	}
 
 	private static class ConfigurerWithPhase {
@@ -2076,17 +2076,17 @@ public class MessagingBuilder implements Builder&lt;MessagingService&gt; {
 		private final ConfigurationPhase phase;
 
 		public ConfigurerWithPhase(MessagingConfigurer configurer, ConfigurationPhase phase) {
-<span class="nc" id="L2079">			super();</span>
-<span class="nc" id="L2080">			this.configurer = configurer;</span>
-<span class="nc" id="L2081">			this.phase = phase;</span>
-<span class="nc" id="L2082">		}</span>
+<span class="fc" id="L2079">			super();</span>
+<span class="fc" id="L2080">			this.configurer = configurer;</span>
+<span class="fc" id="L2081">			this.phase = phase;</span>
+<span class="fc" id="L2082">		}</span>
 
 		public MessagingConfigurer getConfigurer() {
-<span class="nc" id="L2085">			return configurer;</span>
+<span class="fc" id="L2085">			return configurer;</span>
 		}
 
 		public ConfigurationPhase getPhase() {
-<span class="nc" id="L2089">			return phase;</span>
+<span class="fc" id="L2089">			return phase;</span>
 		}
 
 	}

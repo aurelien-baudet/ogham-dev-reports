@@ -25,7 +25,7 @@ import fr.sii.ogham.core.exception.retry.RetryExecutionInterruptedException;
  *
  */
 public class SimpleRetryExecutor implements RetryExecutor {
-<span class="nc" id="L28">	private static final Logger LOG = LoggerFactory.getLogger(SimpleRetryExecutor.class);</span>
+<span class="fc" id="L28">	private static final Logger LOG = LoggerFactory.getLogger(SimpleRetryExecutor.class);</span>
 
 	/**
 	 * Use a provider in order to use a fresh {@link RetryStrategy} strategy
@@ -47,51 +47,51 @@ public class SimpleRetryExecutor implements RetryExecutor {
 	 *            the provider that will provide the retry strategy
 	 */
 	public SimpleRetryExecutor(RetryStrategyProvider retryProvider) {
-<span class="nc" id="L50">		super();</span>
-<span class="nc" id="L51">		this.retryProvider = retryProvider;</span>
-<span class="nc" id="L52">	}</span>
+<span class="fc" id="L50">		super();</span>
+<span class="fc" id="L51">		this.retryProvider = retryProvider;</span>
+<span class="fc" id="L52">	}</span>
 
 	@Override
 	public &lt;V&gt; V execute(Callable&lt;V&gt; actionToRetry) throws RetryException {
 		// new instance for each execution
-<span class="nc" id="L57">		RetryStrategy retry = retryProvider.provide();</span>
-<span class="nc bnc" id="L58" title="All 2 branches missed.">		if (retry == null) {</span>
+<span class="fc" id="L57">		RetryStrategy retry = retryProvider.provide();</span>
+<span class="fc bfc" id="L58" title="All 2 branches covered.">		if (retry == null) {</span>
 			try {
-<span class="nc" id="L60">				return actionToRetry.call();</span>
-<span class="nc" id="L61">			} catch (Exception e) {</span>
-<span class="nc" id="L62">				throw new ExecutionFailedNotRetriedException(&quot;Failed to execute action &quot;+getActionName(actionToRetry)+&quot; and no retry strategy configured&quot;, e);</span>
+<span class="fc" id="L60">				return actionToRetry.call();</span>
+<span class="fc" id="L61">			} catch (Exception e) {</span>
+<span class="fc" id="L62">				throw new ExecutionFailedNotRetriedException(&quot;Failed to execute action &quot;+getActionName(actionToRetry)+&quot; and no retry strategy configured&quot;, e);</span>
 			}
 		}
-<span class="nc" id="L65">		List&lt;Exception&gt; failures = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L65">		List&lt;Exception&gt; failures = new ArrayList&lt;&gt;();</span>
 		do {
 			try {
-<span class="nc" id="L68">				return actionToRetry.call();</span>
-<span class="nc" id="L69">			} catch (Exception e) {</span>
-<span class="nc" id="L70">				failures.add(e);</span>
-<span class="nc" id="L71">				long delay = Math.max(0, retry.nextDate() - System.currentTimeMillis());</span>
-<span class="nc" id="L72">				LOG.debug(&quot;{} failed ({}). Cause: {}. Retrying in {}ms...&quot;, e.getMessage(), e.getClass(), getActionName(actionToRetry), delay);</span>
-<span class="nc" id="L73">				LOG.trace(&quot;{}&quot;, e.getMessage(), e);</span>
-<span class="nc" id="L74">				pause(delay);</span>
+<span class="fc" id="L68">				return actionToRetry.call();</span>
+<span class="fc" id="L69">			} catch (Exception e) {</span>
+<span class="fc" id="L70">				failures.add(e);</span>
+<span class="fc" id="L71">				long delay = Math.max(0, retry.nextDate() - System.currentTimeMillis());</span>
+<span class="fc" id="L72">				LOG.debug(&quot;{} failed ({}). Cause: {}. Retrying in {}ms...&quot;, e.getMessage(), e.getClass(), getActionName(actionToRetry), delay);</span>
+<span class="fc" id="L73">				LOG.trace(&quot;{}&quot;, e.getMessage(), e);</span>
+<span class="fc" id="L74">				pause(delay);</span>
 			}
-<span class="nc bnc" id="L76" title="All 2 branches missed.">		} while (!retry.terminated());</span>
+<span class="fc bfc" id="L76" title="All 2 branches covered.">		} while (!retry.terminated());</span>
 		// action couldn't be executed
-<span class="nc" id="L78">		throw new MaximumAttemptsReachedException(&quot;Maximum attempts to execute action &quot;+getActionName(actionToRetry)+&quot; is reached&quot;, failures);</span>
+<span class="fc" id="L78">		throw new MaximumAttemptsReachedException(&quot;Maximum attempts to execute action &quot;+getActionName(actionToRetry)+&quot; is reached&quot;, failures);</span>
 	}
 
 	private static void pause(long delay) throws RetryExecutionInterruptedException {
 		try {
-<span class="nc" id="L83">			Thread.sleep(delay);</span>
+<span class="fc" id="L83">			Thread.sleep(delay);</span>
 <span class="nc" id="L84">		} catch (InterruptedException e) {</span>
 <span class="nc" id="L85">			Thread.currentThread().interrupt();</span>
 <span class="nc" id="L86">			throw new RetryExecutionInterruptedException(e);</span>
-<span class="nc" id="L87">		}</span>
-<span class="nc" id="L88">	}</span>
+<span class="fc" id="L87">		}</span>
+<span class="fc" id="L88">	}</span>
 
 	private static &lt;V&gt; String getActionName(Callable&lt;V&gt; actionToRetry) {
-<span class="nc bnc" id="L91" title="All 2 branches missed.">		if(actionToRetry instanceof NamedCallable) {</span>
-<span class="nc" id="L92">			return ((NamedCallable&lt;?&gt;) actionToRetry).getName();</span>
+<span class="fc bfc" id="L91" title="All 2 branches covered.">		if(actionToRetry instanceof NamedCallable) {</span>
+<span class="fc" id="L92">			return ((NamedCallable&lt;?&gt;) actionToRetry).getName();</span>
 		}
-<span class="nc" id="L94">		return &quot;unnamed&quot;;</span>
+<span class="fc" id="L94">		return &quot;unnamed&quot;;</span>
 	}
 
 }

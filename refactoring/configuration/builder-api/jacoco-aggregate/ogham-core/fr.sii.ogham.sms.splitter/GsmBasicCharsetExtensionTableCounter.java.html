@@ -8,9 +8,9 @@
  * 
  * @author Aurélien Baudet
  */
-<span class="nc" id="L11">public class GsmBasicCharsetExtensionTableCounter implements LengthCounter {</span>
+<span class="fc" id="L11">public class GsmBasicCharsetExtensionTableCounter implements LengthCounter {</span>
 	private static final int MAXIMUM_SPLIT_SEGMENT_LENGTH = 153;
-<span class="nc" id="L13">	private static final char[] EXT_CHARS = { '\f', '^', '{', '}', '\\', '[', '~', ']', '|', '\u20ac' };</span>
+<span class="fc" id="L13">	private static final char[] EXT_CHARS = { '\f', '^', '{', '}', '\\', '[', '~', ']', '|', '\u20ac' };</span>
 
 	/**
 	 * If extended characters are found in the string, each character must be
@@ -19,8 +19,8 @@
 	 */
 	@Override
 	public int count(String str) {
-<span class="nc" id="L22">		int originalLength = str.length();</span>
-<span class="nc" id="L23">		int extendedChars = countExtendedChars(str);</span>
+<span class="fc" id="L22">		int originalLength = str.length();</span>
+<span class="fc" id="L23">		int extendedChars = countExtendedChars(str);</span>
 		// There is a edge case where the whole message can't fit in a single
 		// segment, contains extended characters only and the segments are full.
 		//
@@ -31,26 +31,26 @@
 		// middle.
 		// We need to add 1 to message length to generate an additional segment
 		// TODO: improve this
-<span class="nc bnc" id="L34" title="All 4 branches missed.">		if (originalLength == extendedChars &amp;&amp; extendedChars % MAXIMUM_SPLIT_SEGMENT_LENGTH == 0) {</span>
-<span class="nc" id="L35">			return originalLength + extendedChars + 1;</span>
+<span class="fc bfc" id="L34" title="All 4 branches covered.">		if (originalLength == extendedChars &amp;&amp; extendedChars % MAXIMUM_SPLIT_SEGMENT_LENGTH == 0) {</span>
+<span class="fc" id="L35">			return originalLength + extendedChars + 1;</span>
 		}
-<span class="nc" id="L37">		return originalLength + extendedChars;</span>
+<span class="fc" id="L37">		return originalLength + extendedChars;</span>
 	}
 
 	private static int countExtendedChars(String str) {
-<span class="nc" id="L41">		int found = 0;</span>
-<span class="nc" id="L42">		int len = str.length();</span>
-<span class="nc bnc" id="L43" title="All 2 branches missed.">		for (int i = 0; i &lt; len; i++) {</span>
-<span class="nc" id="L44">			int search = 0;</span>
-<span class="nc" id="L45">			char c = str.charAt(i);</span>
-<span class="nc bnc" id="L46" title="All 2 branches missed.">			for (; search &lt; EXT_CHARS.length; search++) {</span>
-<span class="nc bnc" id="L47" title="All 2 branches missed.">				if (c == EXT_CHARS[search]) {</span>
-<span class="nc" id="L48">					found++;</span>
-<span class="nc" id="L49">					break;</span>
+<span class="fc" id="L41">		int found = 0;</span>
+<span class="fc" id="L42">		int len = str.length();</span>
+<span class="fc bfc" id="L43" title="All 2 branches covered.">		for (int i = 0; i &lt; len; i++) {</span>
+<span class="fc" id="L44">			int search = 0;</span>
+<span class="fc" id="L45">			char c = str.charAt(i);</span>
+<span class="fc bfc" id="L46" title="All 2 branches covered.">			for (; search &lt; EXT_CHARS.length; search++) {</span>
+<span class="fc bfc" id="L47" title="All 2 branches covered.">				if (c == EXT_CHARS[search]) {</span>
+<span class="fc" id="L48">					found++;</span>
+<span class="fc" id="L49">					break;</span>
 				}
 			}
 		}
-<span class="nc" id="L53">		return found;</span>
+<span class="fc" id="L53">		return found;</span>
 	}
 
 }

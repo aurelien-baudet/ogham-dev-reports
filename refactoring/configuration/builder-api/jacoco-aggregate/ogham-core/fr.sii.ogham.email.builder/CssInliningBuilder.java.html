@@ -32,7 +32,7 @@ import fr.sii.ogham.html.translator.InlineCssTranslator;
  *
  */
 public class CssInliningBuilder extends AbstractParent&lt;CssHandlingBuilder&gt; implements ResourceResolutionBuilder&lt;CssInliningBuilder&gt;, Builder&lt;ContentTranslator&gt; {
-<span class="nc" id="L35">	private static final Logger LOG = LoggerFactory.getLogger(CssInliningBuilder.class);</span>
+<span class="fc" id="L35">	private static final Logger LOG = LoggerFactory.getLogger(CssInliningBuilder.class);</span>
 
 	private ResourceResolutionBuilderHelper&lt;CssInliningBuilder&gt; resourceResolutionBuilderHelper;
 	private boolean useJsoup;
@@ -48,9 +48,9 @@ public class CssInliningBuilder extends AbstractParent&lt;CssHandlingBuilder&gt;
 	 *            the configuration for property resolution and evaluation
 	 */
 	public CssInliningBuilder(CssHandlingBuilder parent, EnvironmentBuilder&lt;?&gt; environmentBuilder) {
-<span class="nc" id="L51">		super(parent);</span>
-<span class="nc" id="L52">		resourceResolutionBuilderHelper = new ResourceResolutionBuilderHelper&lt;&gt;(this, environmentBuilder);</span>
-<span class="nc" id="L53">	}</span>
+<span class="fc" id="L51">		super(parent);</span>
+<span class="fc" id="L52">		resourceResolutionBuilderHelper = new ResourceResolutionBuilderHelper&lt;&gt;(this, environmentBuilder);</span>
+<span class="fc" id="L53">	}</span>
 
 	/**
 	 * Enable CSS inlining: CSS styles are loaded and applied on the matching
@@ -62,23 +62,23 @@ public class CssInliningBuilder extends AbstractParent&lt;CssHandlingBuilder&gt;
 	 * @return this instance for fluent chaining
 	 */
 	public CssInliningBuilder jsoup() {
-<span class="nc" id="L65">		useJsoup = true;</span>
-<span class="nc" id="L66">		return this;</span>
+<span class="fc" id="L65">		useJsoup = true;</span>
+<span class="fc" id="L66">		return this;</span>
 	}
 
 	@Override
 	public ClassPathResolutionBuilder&lt;CssInliningBuilder&gt; classpath() {
-<span class="nc" id="L71">		return resourceResolutionBuilderHelper.classpath();</span>
+<span class="fc" id="L71">		return resourceResolutionBuilderHelper.classpath();</span>
 	}
 
 	@Override
 	public FileResolutionBuilder&lt;CssInliningBuilder&gt; file() {
-<span class="nc" id="L76">		return resourceResolutionBuilderHelper.file();</span>
+<span class="fc" id="L76">		return resourceResolutionBuilderHelper.file();</span>
 	}
 
 	@Override
 	public StringResolutionBuilder&lt;CssInliningBuilder&gt; string() {
-<span class="nc" id="L81">		return resourceResolutionBuilderHelper.string();</span>
+<span class="fc" id="L81">		return resourceResolutionBuilderHelper.string();</span>
 	}
 
 	@Override
@@ -88,28 +88,28 @@ public class CssInliningBuilder extends AbstractParent&lt;CssHandlingBuilder&gt;
 
 	@Override
 	public ContentTranslator build() {
-<span class="nc" id="L91">		CssInliner cssInliner = buildInliner();</span>
-<span class="nc bnc" id="L92" title="All 2 branches missed.">		if (cssInliner == null) {</span>
+<span class="fc" id="L91">		CssInliner cssInliner = buildInliner();</span>
+<span class="pc bpc" id="L92" title="1 of 2 branches missed.">		if (cssInliner == null) {</span>
 <span class="nc" id="L93">			LOG.info(&quot;CSS won't be applied on HTML content of your emails because no inliner is configured&quot;);</span>
 <span class="nc" id="L94">			return null;</span>
 		}
-<span class="nc" id="L96">		return new InlineCssTranslator(cssInliner, buildResolver(), buildRelativePathProvider());</span>
+<span class="fc" id="L96">		return new InlineCssTranslator(cssInliner, buildResolver(), buildRelativePathProvider());</span>
 	}
 
 	private CssInliner buildInliner() {
-<span class="nc bnc" id="L100" title="All 2 branches missed.">		if (useJsoup) {</span>
-<span class="nc" id="L101">			return new JsoupCssInliner();</span>
+<span class="pc bpc" id="L100" title="1 of 2 branches missed.">		if (useJsoup) {</span>
+<span class="fc" id="L101">			return new JsoupCssInliner();</span>
 		}
 <span class="nc" id="L103">		return null;</span>
 	}
 
 	private ResourceResolver buildResolver() {
-<span class="nc" id="L107">		List&lt;ResourceResolver&gt; resolvers = resourceResolutionBuilderHelper.buildResolvers();</span>
-<span class="nc" id="L108">		return new FirstSupportingResourceResolver(resolvers);</span>
+<span class="fc" id="L107">		List&lt;ResourceResolver&gt; resolvers = resourceResolutionBuilderHelper.buildResolvers();</span>
+<span class="fc" id="L108">		return new FirstSupportingResourceResolver(resolvers);</span>
 	}
 
 	private RelativePathResolver buildRelativePathProvider() {
-<span class="nc" id="L112">		return new LookupAwareRelativePathResolver(resourceResolutionBuilderHelper.getAllLookups());</span>
+<span class="fc" id="L112">		return new LookupAwareRelativePathResolver(resourceResolutionBuilderHelper.getAllLookups());</span>
 	}
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

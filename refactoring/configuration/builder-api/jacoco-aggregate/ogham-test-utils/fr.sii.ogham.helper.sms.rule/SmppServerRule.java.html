@@ -33,7 +33,7 @@ import fr.sii.ogham.helper.sms.rule.config.annotation.SmppServerConfig;
  *
  */
 public abstract class SmppServerRule&lt;M&gt; implements TestRule {
-<span class="nc" id="L36">	private static final Logger LOG = LoggerFactory.getLogger(SmppServerRule.class);</span>
+<span class="fc" id="L36">	private static final Logger LOG = LoggerFactory.getLogger(SmppServerRule.class);</span>
 
 	/**
 	 * The default port used by the server if none is specified
@@ -62,16 +62,16 @@ public abstract class SmppServerRule&lt;M&gt; implements TestRule {
 	 *            the configuration for the server
 	 */
 	public SmppServerRule(int port, ServerConfig builder) {
-<span class="nc" id="L65">		super();</span>
-<span class="nc" id="L66">		this.port = port;</span>
-<span class="nc" id="L67">		this.builder = builder;</span>
-<span class="nc" id="L68">	}</span>
+<span class="fc" id="L65">		super();</span>
+<span class="fc" id="L66">		this.port = port;</span>
+<span class="fc" id="L67">		this.builder = builder;</span>
+<span class="fc" id="L68">	}</span>
 
 	@Override
 	public Statement apply(final Statement base, final Description description) {
-<span class="nc" id="L72">		SmppServerConfig config = description.getAnnotation(SmppServerConfig.class);</span>
-<span class="nc" id="L73">		this.server = initServer(builder.annotationConfig(config).build());</span>
-<span class="nc" id="L74">		return new StartServerStatement(base);</span>
+<span class="fc" id="L72">		SmppServerConfig config = description.getAnnotation(SmppServerConfig.class);</span>
+<span class="fc" id="L73">		this.server = initServer(builder.annotationConfig(config).build());</span>
+<span class="fc" id="L74">		return new StartServerStatement(base);</span>
 	}
 
 	/**
@@ -80,7 +80,7 @@ public abstract class SmppServerRule&lt;M&gt; implements TestRule {
 	 * @return the port used by the server
 	 */
 	public int getPort() {
-<span class="nc" id="L83">		return port;</span>
+<span class="fc" id="L83">		return port;</span>
 	}
 
 	/**
@@ -89,10 +89,10 @@ public abstract class SmppServerRule&lt;M&gt; implements TestRule {
 	 * @return the list of received messages
 	 */
 	public List&lt;M&gt; getReceivedMessages() {
-<span class="nc bnc" id="L92" title="All 2 branches missed.">		if (server == null) {</span>
+<span class="pc bpc" id="L92" title="1 of 2 branches missed.">		if (server == null) {</span>
 <span class="nc" id="L93">			return Collections.emptyList();</span>
 		}
-<span class="nc" id="L95">		return server.getReceivedMessages();</span>
+<span class="fc" id="L95">		return server.getReceivedMessages();</span>
 	}
 
 	/**
@@ -107,23 +107,23 @@ public abstract class SmppServerRule&lt;M&gt; implements TestRule {
 	private final class StartServerStatement extends Statement {
 		private final Statement base;
 
-<span class="nc" id="L110">		private StartServerStatement(Statement base) {</span>
-<span class="nc" id="L111">			this.base = base;</span>
-<span class="nc" id="L112">		}</span>
+<span class="fc" id="L110">		private StartServerStatement(Statement base) {</span>
+<span class="fc" id="L111">			this.base = base;</span>
+<span class="fc" id="L112">		}</span>
 
 		@Override
 		public void evaluate() throws Throwable {
-<span class="nc" id="L116">			LOG.info(&quot;starting SMPP server on port {}...&quot;, getPort());</span>
-<span class="nc" id="L117">			server.start();</span>
-<span class="nc" id="L118">			LOG.info(&quot;SMPP server started on port {}&quot;, getPort());</span>
+<span class="fc" id="L116">			LOG.info(&quot;starting SMPP server on port {}...&quot;, getPort());</span>
+<span class="fc" id="L117">			server.start();</span>
+<span class="fc" id="L118">			LOG.info(&quot;SMPP server started on port {}&quot;, getPort());</span>
 			try {
-<span class="nc" id="L120">				base.evaluate();</span>
+<span class="fc" id="L120">				base.evaluate();</span>
 			} finally {
-<span class="nc" id="L122">				LOG.info(&quot;stopping SMPP server...&quot;);</span>
-<span class="nc" id="L123">				server.stop();</span>
-<span class="nc" id="L124">				LOG.info(&quot;SMPP server stopped&quot;);</span>
+<span class="fc" id="L122">				LOG.info(&quot;stopping SMPP server...&quot;);</span>
+<span class="fc" id="L123">				server.stop();</span>
+<span class="fc" id="L124">				LOG.info(&quot;SMPP server stopped&quot;);</span>
 			}
-<span class="nc" id="L126">		}</span>
+<span class="fc" id="L126">		}</span>
 	}
 
 }

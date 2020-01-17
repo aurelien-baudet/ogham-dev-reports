@@ -46,7 +46,7 @@ import fr.sii.ogham.template.common.adapter.VariantResolver;
  *            {@link TemplateParser} {@link Builder}
  */
 public class TemplateBuilderHelper&lt;P&gt; {
-<span class="nc" id="L49">	private static final Logger LOG = LoggerFactory.getLogger(TemplateBuilderHelper.class);</span>
+<span class="fc" id="L49">	private static final Logger LOG = LoggerFactory.getLogger(TemplateBuilderHelper.class);</span>
 
 	private final P parent;
 	private final List&lt;Builder&lt;? extends TemplateParser&gt;&gt; templateBuilders;
@@ -67,12 +67,12 @@ public class TemplateBuilderHelper&lt;P&gt; {
 	 *            the configuration for property resolution and evaluation
 	 */
 	public TemplateBuilderHelper(P parent, EnvironmentBuilder&lt;?&gt; environmentBuilder) {
-<span class="nc" id="L70">		super();</span>
-<span class="nc" id="L71">		this.parent = parent;</span>
-<span class="nc" id="L72">		this.environmentBuilder = environmentBuilder;</span>
-<span class="nc" id="L73">		templateBuilders = new ArrayList&lt;&gt;();</span>
-<span class="nc" id="L74">		missingVariantFailValueBuilder = new ConfigurationValueBuilderHelper&lt;&gt;(this, Boolean.class);</span>
-<span class="nc" id="L75">	}</span>
+<span class="fc" id="L70">		super();</span>
+<span class="fc" id="L71">		this.parent = parent;</span>
+<span class="fc" id="L72">		this.environmentBuilder = environmentBuilder;</span>
+<span class="fc" id="L73">		templateBuilders = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L74">		missingVariantFailValueBuilder = new ConfigurationValueBuilderHelper&lt;&gt;(this, Boolean.class);</span>
+<span class="fc" id="L75">	}</span>
 
 	/**
 	 * Indicates if some {@link TemplateParser} {@link Builder}s have been
@@ -81,7 +81,7 @@ public class TemplateBuilderHelper&lt;P&gt; {
 	 * @return true if at least one builder has been registered
 	 */
 	public boolean hasRegisteredTemplates() {
-<span class="nc bnc" id="L84" title="All 2 branches missed.">		return !templateBuilders.isEmpty();</span>
+<span class="fc bfc" id="L84" title="All 2 branches covered.">		return !templateBuilders.isEmpty();</span>
 	}
 
 	
@@ -229,15 +229,15 @@ public class TemplateBuilderHelper&lt;P&gt; {
 	@SuppressWarnings(&quot;unchecked&quot;)
 	public &lt;B extends Builder&lt;? extends TemplateParser&gt;&gt; B register(Class&lt;B&gt; builderClass) {
 		// if already registered =&gt; provide same instance
-<span class="nc bnc" id="L232" title="All 2 branches missed.">		for (Builder&lt;? extends TemplateParser&gt; builder : templateBuilders) {</span>
-<span class="nc bnc" id="L233" title="All 2 branches missed.">			if (builderClass.isAssignableFrom(builder.getClass())) {</span>
-<span class="nc" id="L234">				return (B) builder;</span>
+<span class="fc bfc" id="L232" title="All 2 branches covered.">		for (Builder&lt;? extends TemplateParser&gt; builder : templateBuilders) {</span>
+<span class="fc bfc" id="L233" title="All 2 branches covered.">			if (builderClass.isAssignableFrom(builder.getClass())) {</span>
+<span class="fc" id="L234">				return (B) builder;</span>
 			}
-<span class="nc" id="L236">		}</span>
+<span class="fc" id="L236">		}</span>
 		// create the builder instance
-<span class="nc" id="L238">		B builder = instantiateBuilder(builderClass, parent, environmentBuilder);</span>
-<span class="nc" id="L239">		templateBuilders.add(builder);</span>
-<span class="nc" id="L240">		return builder;</span>
+<span class="fc" id="L238">		B builder = instantiateBuilder(builderClass, parent, environmentBuilder);</span>
+<span class="fc" id="L239">		templateBuilders.add(builder);</span>
+<span class="fc" id="L240">		return builder;</span>
 	}
 
 	/**
@@ -255,21 +255,21 @@ public class TemplateBuilderHelper&lt;P&gt; {
 	 */
 	public TemplateParser buildTemplateParser() {
 		// TODO: handle enable?
-<span class="nc" id="L258">		List&lt;TemplateImplementation&gt; impls = buildTemplateParserImpls();</span>
-<span class="nc bnc" id="L259" title="All 2 branches missed.">		if (impls.isEmpty()) {</span>
+<span class="fc" id="L258">		List&lt;TemplateImplementation&gt; impls = buildTemplateParserImpls();</span>
+<span class="pc bpc" id="L259" title="1 of 2 branches missed.">		if (impls.isEmpty()) {</span>
 			// if no template parser available =&gt; exception
 <span class="nc" id="L261">			throw new BuildException(&quot;No parser available. Either disable template features or register a template engine&quot;);</span>
 		}
-<span class="nc bnc" id="L263" title="All 2 branches missed.">		if (impls.size() == 1) {</span>
+<span class="fc bfc" id="L263" title="All 2 branches covered.">		if (impls.size() == 1) {</span>
 			// if no detector defined or only one available parser =&gt; do not use
 			// auto detection
-<span class="nc" id="L266">			TemplateParser parser = impls.get(0).getParser();</span>
-<span class="nc" id="L267">			LOG.info(&quot;Using single template engine: {}&quot;, parser);</span>
-<span class="nc" id="L268">			return parser;</span>
+<span class="fc" id="L266">			TemplateParser parser = impls.get(0).getParser();</span>
+<span class="fc" id="L267">			LOG.info(&quot;Using single template engine: {}&quot;, parser);</span>
+<span class="fc" id="L268">			return parser;</span>
 		}
-<span class="nc" id="L270">		LOG.info(&quot;Using auto detection mechanism&quot;);</span>
-<span class="nc" id="L271">		LOG.debug(&quot;Auto detection mechanisms: {}&quot;, impls);</span>
-<span class="nc" id="L272">		return new AutoDetectTemplateParser(impls);</span>
+<span class="fc" id="L270">		LOG.info(&quot;Using auto detection mechanism&quot;);</span>
+<span class="fc" id="L271">		LOG.debug(&quot;Auto detection mechanisms: {}&quot;, impls);</span>
+<span class="fc" id="L272">		return new AutoDetectTemplateParser(impls);</span>
 	}
 
 	/**
@@ -282,45 +282,45 @@ public class TemplateBuilderHelper&lt;P&gt; {
 	 * @return the variant resolver
 	 */
 	public VariantResolver buildVariant() {
-<span class="nc" id="L285">		FirstExistingResourceVariantResolver variantResolver = new FirstExistingResourceVariantResolver(buildDefaultVariantResolver());</span>
-<span class="nc bnc" id="L286" title="All 2 branches missed.">		for (Builder&lt;? extends TemplateParser&gt; builder : templateBuilders) {</span>
-<span class="nc bnc" id="L287" title="All 2 branches missed.">			if (builder instanceof VariantBuilder) {</span>
-<span class="nc" id="L288">				variantResolver.addVariantResolver(((VariantBuilder&lt;?&gt;) builder).buildVariant());</span>
+<span class="fc" id="L285">		FirstExistingResourceVariantResolver variantResolver = new FirstExistingResourceVariantResolver(buildDefaultVariantResolver());</span>
+<span class="fc bfc" id="L286" title="All 2 branches covered.">		for (Builder&lt;? extends TemplateParser&gt; builder : templateBuilders) {</span>
+<span class="pc bpc" id="L287" title="1 of 2 branches missed.">			if (builder instanceof VariantBuilder) {</span>
+<span class="fc" id="L288">				variantResolver.addVariantResolver(((VariantBuilder&lt;?&gt;) builder).buildVariant());</span>
 			}
-<span class="nc" id="L290">		}</span>
-<span class="nc" id="L291">		return variantResolver;</span>
+<span class="fc" id="L290">		}</span>
+<span class="fc" id="L291">		return variantResolver;</span>
 	}
 
 	@SuppressWarnings(&quot;squid:S5411&quot;)
 	private VariantResolver buildDefaultVariantResolver() {
-<span class="nc bnc" id="L296" title="All 2 branches missed.">		if (missingResolver != null) {</span>
+<span class="pc bpc" id="L296" title="1 of 2 branches missed.">		if (missingResolver != null) {</span>
 <span class="nc" id="L297">			return missingResolver;</span>
 		}
-<span class="nc" id="L299">		PropertyResolver propertyResolver = environmentBuilder.build();</span>
-<span class="nc bnc" id="L300" title="All 2 branches missed.">		if (missingVariantFailValueBuilder.getValue(propertyResolver, false)) {</span>
+<span class="fc" id="L299">		PropertyResolver propertyResolver = environmentBuilder.build();</span>
+<span class="pc bpc" id="L300" title="1 of 2 branches missed.">		if (missingVariantFailValueBuilder.getValue(propertyResolver, false)) {</span>
 <span class="nc" id="L301">			return new FailIfNotFoundVariantResolver();</span>
 		}
-<span class="nc" id="L303">		FailIfNotFoundWithTestedPathsVariantResolver fail = new FailIfNotFoundWithTestedPathsVariantResolver();</span>
-<span class="nc bnc" id="L304" title="All 2 branches missed.">		for (Builder&lt;? extends TemplateParser&gt; builder : templateBuilders) {</span>
-<span class="nc bnc" id="L305" title="All 2 branches missed.">			if (builder instanceof VariantBuilder) {</span>
-<span class="nc" id="L306">				fail.addVariantResolver(((VariantBuilder&lt;?&gt;) builder).buildVariant());</span>
+<span class="fc" id="L303">		FailIfNotFoundWithTestedPathsVariantResolver fail = new FailIfNotFoundWithTestedPathsVariantResolver();</span>
+<span class="fc bfc" id="L304" title="All 2 branches covered.">		for (Builder&lt;? extends TemplateParser&gt; builder : templateBuilders) {</span>
+<span class="pc bpc" id="L305" title="1 of 2 branches missed.">			if (builder instanceof VariantBuilder) {</span>
+<span class="fc" id="L306">				fail.addVariantResolver(((VariantBuilder&lt;?&gt;) builder).buildVariant());</span>
 			}
-<span class="nc" id="L308">		}</span>
-<span class="nc" id="L309">		return fail;</span>
+<span class="fc" id="L308">		}</span>
+<span class="fc" id="L309">		return fail;</span>
 	}
 
 	private List&lt;TemplateImplementation&gt; buildTemplateParserImpls() {
-<span class="nc" id="L313">		List&lt;TemplateImplementation&gt; impls = new ArrayList&lt;&gt;();</span>
-<span class="nc bnc" id="L314" title="All 2 branches missed.">		for (Builder&lt;? extends TemplateParser&gt; builder : templateBuilders) {</span>
+<span class="fc" id="L313">		List&lt;TemplateImplementation&gt; impls = new ArrayList&lt;&gt;();</span>
+<span class="fc bfc" id="L314" title="All 2 branches covered.">		for (Builder&lt;? extends TemplateParser&gt; builder : templateBuilders) {</span>
 			TemplateEngineDetector detector;
-<span class="nc bnc" id="L316" title="All 2 branches missed.">			if (builder instanceof DetectorBuilder) {</span>
-<span class="nc" id="L317">				detector = ((DetectorBuilder&lt;?&gt;) builder).buildDetector();</span>
+<span class="pc bpc" id="L316" title="1 of 2 branches missed.">			if (builder instanceof DetectorBuilder) {</span>
+<span class="fc" id="L317">				detector = ((DetectorBuilder&lt;?&gt;) builder).buildDetector();</span>
 			} else {
 <span class="nc" id="L319">				detector = new FixedEngineDetector(true);</span>
 			}
-<span class="nc" id="L321">			impls.add(new TemplateImplementation(detector, builder.build()));</span>
-<span class="nc" id="L322">		}</span>
-<span class="nc" id="L323">		return impls;</span>
+<span class="fc" id="L321">			impls.add(new TemplateImplementation(detector, builder.build()));</span>
+<span class="fc" id="L322">		}</span>
+<span class="fc" id="L323">		return impls;</span>
 	}
 
 }

@@ -33,8 +33,8 @@ public class DelegateConverter implements Converter, ConverterRegistry {
 	 *            the converters to register
 	 */
 	public DelegateConverter(SupportingConverter... delegates) {
-<span class="nc" id="L36">		this(new ArrayList&lt;&gt;(Arrays.asList(delegates)));</span>
-<span class="nc" id="L37">	}</span>
+<span class="fc" id="L36">		this(new ArrayList&lt;&gt;(Arrays.asList(delegates)));</span>
+<span class="fc" id="L37">	}</span>
 
 	/**
 	 * Registers a list of converters. The list must not be null
@@ -43,29 +43,29 @@ public class DelegateConverter implements Converter, ConverterRegistry {
 	 *            the converters to register
 	 */
 	public DelegateConverter(List&lt;SupportingConverter&gt; delegates) {
-<span class="nc" id="L46">		super();</span>
-<span class="nc" id="L47">		this.delegates = delegates;</span>
-<span class="nc" id="L48">	}</span>
+<span class="fc" id="L46">		super();</span>
+<span class="fc" id="L47">		this.delegates = delegates;</span>
+<span class="fc" id="L48">	}</span>
 
 	@Override
 	public ConverterRegistry register(SupportingConverter converter) {
-<span class="nc bnc" id="L52" title="All 2 branches missed.">		if (!delegates.contains(converter)) {</span>
-<span class="nc" id="L53">			delegates.add(converter);</span>
+<span class="fc bfc" id="L52" title="All 2 branches covered.">		if (!delegates.contains(converter)) {</span>
+<span class="fc" id="L53">			delegates.add(converter);</span>
 		}
-<span class="nc" id="L55">		return this;</span>
+<span class="fc" id="L55">		return this;</span>
 	}
 
 	@Override
 	public &lt;T&gt; T convert(Object source, Class&lt;T&gt; targetType) {
-<span class="nc bnc" id="L60" title="All 2 branches missed.">		if (source == null) {</span>
-<span class="nc" id="L61">			return null;</span>
+<span class="fc bfc" id="L60" title="All 2 branches covered.">		if (source == null) {</span>
+<span class="fc" id="L61">			return null;</span>
 		}
-<span class="nc bnc" id="L63" title="All 2 branches missed.">		for (SupportingConverter converter : delegates) {</span>
-<span class="nc bnc" id="L64" title="All 2 branches missed.">			if (converter.supports(source.getClass(), targetType)) {</span>
-<span class="nc" id="L65">				return converter.convert(source, targetType);</span>
+<span class="fc bfc" id="L63" title="All 2 branches covered.">		for (SupportingConverter converter : delegates) {</span>
+<span class="fc bfc" id="L64" title="All 2 branches covered.">			if (converter.supports(source.getClass(), targetType)) {</span>
+<span class="fc" id="L65">				return converter.convert(source, targetType);</span>
 			}
-<span class="nc" id="L67">		}</span>
-<span class="nc" id="L68">		throw new ConversionException(&quot;No converter available to convert &quot; + source + &quot; into &quot; + targetType.getSimpleName());</span>
+<span class="fc" id="L67">		}</span>
+<span class="fc" id="L68">		throw new ConversionException(&quot;No converter available to convert &quot; + source + &quot; into &quot; + targetType.getSimpleName());</span>
 	}
 
 	@Override

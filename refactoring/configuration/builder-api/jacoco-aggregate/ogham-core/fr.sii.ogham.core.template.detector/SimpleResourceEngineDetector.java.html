@@ -23,7 +23,7 @@ import fr.sii.ogham.core.template.context.Context;
  *
  */
 public class SimpleResourceEngineDetector implements TemplateEngineDetector {
-<span class="nc" id="L26">	private static final Logger LOG = LoggerFactory.getLogger(SimpleResourceEngineDetector.class);</span>
+<span class="fc" id="L26">	private static final Logger LOG = LoggerFactory.getLogger(SimpleResourceEngineDetector.class);</span>
 
 	private final ResourceResolver resolver;
 	private final TemplateEngineDetector delegate;
@@ -40,37 +40,37 @@ public class SimpleResourceEngineDetector implements TemplateEngineDetector {
 	 *            the delegate to call if it is a {@link SimpleResource}
 	 */
 	public SimpleResourceEngineDetector(ResourceResolver resolver, TemplateEngineDetector delegate) {
-<span class="nc" id="L43">		super();</span>
-<span class="nc" id="L44">		this.resolver = resolver;</span>
-<span class="nc" id="L45">		this.delegate = delegate;</span>
-<span class="nc" id="L46">	}</span>
+<span class="fc" id="L43">		super();</span>
+<span class="fc" id="L44">		this.resolver = resolver;</span>
+<span class="fc" id="L45">		this.delegate = delegate;</span>
+<span class="fc" id="L46">	}</span>
 
 	@Override
 	public boolean canParse(ResourcePath template, Context ctx) throws EngineDetectionException {
-<span class="nc" id="L50">		Resource resource = getResource(template);</span>
+<span class="fc" id="L50">		Resource resource = getResource(template);</span>
 		// no resource matches requested template
 		// =&gt; can't parse (we need a SimpleResource)
-<span class="nc bnc" id="L53" title="All 2 branches missed.">		if (resource == null) {</span>
-<span class="nc" id="L54">			return false;</span>
+<span class="fc bfc" id="L53" title="All 2 branches covered.">		if (resource == null) {</span>
+<span class="fc" id="L54">			return false;</span>
 		}
 
 		// resource found but not a SimpleResource
 		// =&gt; can't parse
-<span class="nc bnc" id="L59" title="All 2 branches missed.">		if (!(resource instanceof SimpleResource)) {</span>
+<span class="pc bpc" id="L59" title="1 of 2 branches missed.">		if (!(resource instanceof SimpleResource)) {</span>
 <span class="nc" id="L60">			return false;</span>
 		}
 
 		// it is a SimpleResource
 		// =&gt; may be able to parse, it depends on delegate
-<span class="nc" id="L65">		return delegate.canParse(template, ctx);</span>
+<span class="fc" id="L65">		return delegate.canParse(template, ctx);</span>
 	}
 
 	private Resource getResource(ResourcePath template) {
 		try {
-<span class="nc" id="L70">			return resolver.getResource(template);</span>
-<span class="nc" id="L71">		} catch (ResourceResolutionException e) {</span>
-<span class="nc" id="L72">			LOG.trace(&quot;resource resolution couldn't resolve template &quot; + template + &quot; while trying detect template engine&quot;, e);</span>
-<span class="nc" id="L73">			return null;</span>
+<span class="fc" id="L70">			return resolver.getResource(template);</span>
+<span class="fc" id="L71">		} catch (ResourceResolutionException e) {</span>
+<span class="fc" id="L72">			LOG.trace(&quot;resource resolution couldn't resolve template &quot; + template + &quot; while trying detect template engine&quot;, e);</span>
+<span class="fc" id="L73">			return null;</span>
 		}
 	}
 

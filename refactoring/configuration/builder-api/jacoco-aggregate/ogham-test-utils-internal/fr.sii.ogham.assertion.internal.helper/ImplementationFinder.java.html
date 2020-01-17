@@ -48,12 +48,12 @@ public final class ImplementationFinder {
 	 * @return the found sender
 	 */
 	public static &lt;T extends MessageSender&gt; T findSender(MessagingService service, Class&lt;T&gt; clazz) {
-<span class="nc" id="L51">		Set&lt;T&gt; found = findSenders(service, clazz);</span>
-<span class="nc bnc" id="L52" title="All 2 branches missed.">		if (found.isEmpty()) {</span>
-<span class="nc" id="L53">			throw new IllegalStateException(&quot;Failed to find MessageSender of &quot; + clazz.getTypeName());</span>
+<span class="fc" id="L51">		Set&lt;T&gt; found = findSenders(service, clazz);</span>
+<span class="fc bfc" id="L52" title="All 2 branches covered.">		if (found.isEmpty()) {</span>
+<span class="fc" id="L53">			throw new IllegalStateException(&quot;Failed to find MessageSender of &quot; + clazz.getTypeName());</span>
 		}
-<span class="nc bnc" id="L55" title="All 2 branches missed.">		if (found.size() == 1) {</span>
-<span class="nc" id="L56">			return found.iterator().next();</span>
+<span class="pc bpc" id="L55" title="1 of 2 branches missed.">		if (found.size() == 1) {</span>
+<span class="fc" id="L56">			return found.iterator().next();</span>
 		}
 <span class="nc" id="L58">		throw new IllegalStateException(&quot;Several matching MessageSender for &quot; + clazz.getTypeName() + &quot; found&quot;);</span>
 	}
@@ -72,12 +72,12 @@ public final class ImplementationFinder {
 	@SuppressWarnings(&quot;unchecked&quot;)
 	public static &lt;T extends MessageSender&gt; Set&lt;T&gt; findSenders(MessagingService service, Class&lt;T&gt; clazz) {
 		try {
-<span class="nc" id="L75">			Set&lt;T&gt; found = new HashSet&lt;&gt;();</span>
-<span class="nc" id="L76">			List&lt;ConditionalSender&gt; senders = (List&lt;ConditionalSender&gt;) readField(getRealService(service), &quot;senders&quot;, true);</span>
-<span class="nc bnc" id="L77" title="All 2 branches missed.">			for (ConditionalSender sender : senders) {</span>
-<span class="nc" id="L78">				found.addAll(findSenders(sender, clazz));</span>
-<span class="nc" id="L79">			}</span>
-<span class="nc" id="L80">			return found;</span>
+<span class="fc" id="L75">			Set&lt;T&gt; found = new HashSet&lt;&gt;();</span>
+<span class="fc" id="L76">			List&lt;ConditionalSender&gt; senders = (List&lt;ConditionalSender&gt;) readField(getRealService(service), &quot;senders&quot;, true);</span>
+<span class="fc bfc" id="L77" title="All 2 branches covered.">			for (ConditionalSender sender : senders) {</span>
+<span class="fc" id="L78">				found.addAll(findSenders(sender, clazz));</span>
+<span class="fc" id="L79">			}</span>
+<span class="fc" id="L80">			return found;</span>
 <span class="nc" id="L81">		} catch (IllegalAccessException e) {</span>
 <span class="nc" id="L82">			throw new IllegalStateException(&quot;Failed to find senders of type &quot; + clazz.getTypeName(), e);</span>
 		}
@@ -96,15 +96,15 @@ public final class ImplementationFinder {
 	 */
 	public static &lt;T extends TemplateParser&gt; Set&lt;FoundParser&lt;T&gt;&gt; findParsers(MessagingService service, Class&lt;T&gt; clazz) {
 		try {
-<span class="nc" id="L99">			Set&lt;FoundParser&lt;T&gt;&gt; found = new HashSet&lt;&gt;();</span>
-<span class="nc" id="L100">			Set&lt;ContentTranslatorSender&gt; translatorSenders = findSenders(service, ContentTranslatorSender.class);</span>
-<span class="nc bnc" id="L101" title="All 2 branches missed.">			for (ContentTranslatorSender sender : translatorSenders) {</span>
-<span class="nc" id="L102">				Set&lt;TemplateContentTranslator&gt; translators = findTranslators(sender, TemplateContentTranslator.class);</span>
-<span class="nc bnc" id="L103" title="All 2 branches missed.">				for (TemplateContentTranslator translator : translators) {</span>
-<span class="nc" id="L104">					found.addAll(findParsers(clazz, translator, (MessageSender) readField(sender, DELEGATE_FIELD, true)));</span>
-<span class="nc" id="L105">				}</span>
-<span class="nc" id="L106">			}</span>
-<span class="nc" id="L107">			return found;</span>
+<span class="fc" id="L99">			Set&lt;FoundParser&lt;T&gt;&gt; found = new HashSet&lt;&gt;();</span>
+<span class="fc" id="L100">			Set&lt;ContentTranslatorSender&gt; translatorSenders = findSenders(service, ContentTranslatorSender.class);</span>
+<span class="fc bfc" id="L101" title="All 2 branches covered.">			for (ContentTranslatorSender sender : translatorSenders) {</span>
+<span class="fc" id="L102">				Set&lt;TemplateContentTranslator&gt; translators = findTranslators(sender, TemplateContentTranslator.class);</span>
+<span class="fc bfc" id="L103" title="All 2 branches covered.">				for (TemplateContentTranslator translator : translators) {</span>
+<span class="fc" id="L104">					found.addAll(findParsers(clazz, translator, (MessageSender) readField(sender, DELEGATE_FIELD, true)));</span>
+<span class="fc" id="L105">				}</span>
+<span class="fc" id="L106">			}</span>
+<span class="fc" id="L107">			return found;</span>
 <span class="nc" id="L108">		} catch (IllegalAccessException e) {</span>
 <span class="nc" id="L109">			throw new IllegalStateException(&quot;Failed to find parser of type &quot; + clazz.getTypeName(), e);</span>
 		}
@@ -112,11 +112,11 @@ public final class ImplementationFinder {
 
 	private static MessagingService getRealService(MessagingService service) {
 		try {
-<span class="nc bnc" id="L115" title="All 2 branches missed.">			if (service instanceof WrapExceptionMessagingService) {</span>
-<span class="nc" id="L116">				return getRealService((MessagingService) readField(service, DELEGATE_FIELD, true));</span>
+<span class="fc bfc" id="L115" title="All 2 branches covered.">			if (service instanceof WrapExceptionMessagingService) {</span>
+<span class="fc" id="L116">				return getRealService((MessagingService) readField(service, DELEGATE_FIELD, true));</span>
 			}
-<span class="nc bnc" id="L118" title="All 2 branches missed.">			if (service instanceof EverySupportingMessagingService) {</span>
-<span class="nc" id="L119">				return service;</span>
+<span class="pc bpc" id="L118" title="1 of 2 branches missed.">			if (service instanceof EverySupportingMessagingService) {</span>
+<span class="fc" id="L119">				return service;</span>
 			}
 <span class="nc" id="L121">			throw new IllegalStateException(&quot;Unknown MessagingService implementation, please add it here&quot;);</span>
 <span class="nc" id="L122">		} catch (IllegalAccessException e) {</span>
@@ -127,22 +127,22 @@ public final class ImplementationFinder {
 	@SuppressWarnings(&quot;unchecked&quot;)
 	private static &lt;T extends MessageSender&gt; Set&lt;T&gt; findSenders(MessageSender sender, Class&lt;T&gt; clazz) {
 		try {
-<span class="nc" id="L130">			Set&lt;T&gt; found = new HashSet&lt;&gt;();</span>
-<span class="nc bnc" id="L131" title="All 2 branches missed.">			if (clazz.isAssignableFrom(sender.getClass())) {</span>
-<span class="nc" id="L132">				found.add((T) sender);</span>
+<span class="fc" id="L130">			Set&lt;T&gt; found = new HashSet&lt;&gt;();</span>
+<span class="fc bfc" id="L131" title="All 2 branches covered.">			if (clazz.isAssignableFrom(sender.getClass())) {</span>
+<span class="fc" id="L132">				found.add((T) sender);</span>
 			}
 			// Any sender that delegates in the chain (FillerSender,
 			// AttachmentResourceTranslatorSender, ContentTranslatorSender,
 			// PhoneNumberTranslatorSender)
 			// TODO: FallbackSender
-<span class="nc bnc" id="L138" title="All 2 branches missed.">			if (delegates(sender)) {</span>
-<span class="nc" id="L139">				MessageSender delegate = (MessageSender) readField(sender, DELEGATE_FIELD, true);</span>
-<span class="nc" id="L140">				found.addAll(findSenders(delegate, clazz));</span>
+<span class="fc bfc" id="L138" title="All 2 branches covered.">			if (delegates(sender)) {</span>
+<span class="fc" id="L139">				MessageSender delegate = (MessageSender) readField(sender, DELEGATE_FIELD, true);</span>
+<span class="fc" id="L140">				found.addAll(findSenders(delegate, clazz));</span>
 			}
-<span class="nc bnc" id="L142" title="All 2 branches missed.">			if (sender instanceof MultiImplementationSender&lt;?&gt;) {</span>
-<span class="nc" id="L143">				found.addAll(findSenders((MultiImplementationSender&lt;?&gt;) sender, clazz));</span>
+<span class="fc bfc" id="L142" title="All 2 branches covered.">			if (sender instanceof MultiImplementationSender&lt;?&gt;) {</span>
+<span class="fc" id="L143">				found.addAll(findSenders((MultiImplementationSender&lt;?&gt;) sender, clazz));</span>
 			}
-<span class="nc" id="L145">			return found;</span>
+<span class="fc" id="L145">			return found;</span>
 <span class="nc" id="L146">		} catch (IllegalAccessException e) {</span>
 <span class="nc" id="L147">			throw new IllegalStateException(&quot;Failed to find senders of type &quot; + clazz.getTypeName(), e);</span>
 		}
@@ -150,66 +150,66 @@ public final class ImplementationFinder {
 
 	private static boolean delegates(MessageSender sender) {
 		try {
-<span class="nc" id="L153">			Object value = readField(sender, DELEGATE_FIELD, true);</span>
-<span class="nc" id="L154">			return value instanceof MessageSender;</span>
-<span class="nc" id="L155">		} catch (IllegalAccessException | IllegalArgumentException e) { // NOSONAR</span>
-<span class="nc" id="L156">			return false;</span>
+<span class="fc" id="L153">			Object value = readField(sender, DELEGATE_FIELD, true);</span>
+<span class="fc" id="L154">			return value instanceof MessageSender;</span>
+<span class="fc" id="L155">		} catch (IllegalAccessException | IllegalArgumentException e) { // NOSONAR</span>
+<span class="fc" id="L156">			return false;</span>
 		}
 	}
 
 	@SuppressWarnings(&quot;unchecked&quot;)
 	private static &lt;T extends MessageSender&gt; Set&lt;T&gt; findSenders(MultiImplementationSender&lt;?&gt; sender, Class&lt;T&gt; clazz) {
-<span class="nc" id="L162">		Set&lt;T&gt; found = new HashSet&lt;&gt;();</span>
-<span class="nc" id="L163">		List&lt;Implementation&gt; implementations = sender.getImplementations();</span>
-<span class="nc bnc" id="L164" title="All 2 branches missed.">		for (Implementation impl : implementations) {</span>
-<span class="nc bnc" id="L165" title="All 2 branches missed.">			if (clazz.isAssignableFrom(impl.getSender().getClass())) {</span>
-<span class="nc" id="L166">				found.add((T) impl.getSender());</span>
+<span class="fc" id="L162">		Set&lt;T&gt; found = new HashSet&lt;&gt;();</span>
+<span class="fc" id="L163">		List&lt;Implementation&gt; implementations = sender.getImplementations();</span>
+<span class="fc bfc" id="L164" title="All 2 branches covered.">		for (Implementation impl : implementations) {</span>
+<span class="fc bfc" id="L165" title="All 2 branches covered.">			if (clazz.isAssignableFrom(impl.getSender().getClass())) {</span>
+<span class="fc" id="L166">				found.add((T) impl.getSender());</span>
 			}
-<span class="nc" id="L168">		}</span>
-<span class="nc" id="L169">		return found;</span>
+<span class="fc" id="L168">		}</span>
+<span class="fc" id="L169">		return found;</span>
 	}
 
 	@SuppressWarnings(&quot;unchecked&quot;)
 	private static &lt;T extends TemplateParser&gt; Set&lt;FoundParser&lt;T&gt;&gt; findParsers(Class&lt;T&gt; clazz, TemplateContentTranslator translator, MessageSender sender) throws IllegalAccessException {
-<span class="nc" id="L174">		Set&lt;FoundParser&lt;T&gt;&gt; found = new HashSet&lt;&gt;();</span>
-<span class="nc" id="L175">		TemplateParser parser = (TemplateParser) readField(translator, &quot;parser&quot;, true);</span>
-<span class="nc bnc" id="L176" title="All 2 branches missed.">		if (clazz.isAssignableFrom(parser.getClass())) {</span>
+<span class="fc" id="L174">		Set&lt;FoundParser&lt;T&gt;&gt; found = new HashSet&lt;&gt;();</span>
+<span class="fc" id="L175">		TemplateParser parser = (TemplateParser) readField(translator, &quot;parser&quot;, true);</span>
+<span class="pc bpc" id="L176" title="1 of 2 branches missed.">		if (clazz.isAssignableFrom(parser.getClass())) {</span>
 <span class="nc" id="L177">			found.add(new FoundParser&lt;&gt;((T) parser, getMessageType(sender)));</span>
 		}
-<span class="nc bnc" id="L179" title="All 2 branches missed.">		if (parser instanceof AutoDetectTemplateParser) {</span>
-<span class="nc" id="L180">			found.addAll(findParsers(clazz, (AutoDetectTemplateParser) parser, sender));</span>
+<span class="pc bpc" id="L179" title="1 of 2 branches missed.">		if (parser instanceof AutoDetectTemplateParser) {</span>
+<span class="fc" id="L180">			found.addAll(findParsers(clazz, (AutoDetectTemplateParser) parser, sender));</span>
 		}
-<span class="nc" id="L182">		return found;</span>
+<span class="fc" id="L182">		return found;</span>
 	}
 
 	@SuppressWarnings(&quot;unchecked&quot;)
 	private static &lt;T extends TemplateParser&gt; Set&lt;FoundParser&lt;T&gt;&gt; findParsers(Class&lt;T&gt; clazz, AutoDetectTemplateParser parser, MessageSender sender) throws IllegalAccessException {
-<span class="nc" id="L187">		Set&lt;FoundParser&lt;T&gt;&gt; found = new HashSet&lt;&gt;();</span>
-<span class="nc" id="L188">		List&lt;TemplateImplementation&gt; implementations = (List&lt;TemplateImplementation&gt;) readField(parser, &quot;implementations&quot;, true);</span>
-<span class="nc bnc" id="L189" title="All 2 branches missed.">		for (TemplateImplementation impl : implementations) {</span>
-<span class="nc bnc" id="L190" title="All 2 branches missed.">			if (clazz.isAssignableFrom(impl.getParser().getClass())) {</span>
-<span class="nc" id="L191">				found.add(new FoundParser&lt;&gt;((T) impl.getParser(), getMessageType(sender)));</span>
+<span class="fc" id="L187">		Set&lt;FoundParser&lt;T&gt;&gt; found = new HashSet&lt;&gt;();</span>
+<span class="fc" id="L188">		List&lt;TemplateImplementation&gt; implementations = (List&lt;TemplateImplementation&gt;) readField(parser, &quot;implementations&quot;, true);</span>
+<span class="fc bfc" id="L189" title="All 2 branches covered.">		for (TemplateImplementation impl : implementations) {</span>
+<span class="fc bfc" id="L190" title="All 2 branches covered.">			if (clazz.isAssignableFrom(impl.getParser().getClass())) {</span>
+<span class="fc" id="L191">				found.add(new FoundParser&lt;&gt;((T) impl.getParser(), getMessageType(sender)));</span>
 			}
-<span class="nc" id="L193">		}</span>
-<span class="nc" id="L194">		return found;</span>
+<span class="fc" id="L193">		}</span>
+<span class="fc" id="L194">		return found;</span>
 	}
 
 	private static Class&lt;? extends Message&gt; getMessageType(MessageSender sender) {
-<span class="nc" id="L198">		Set&lt;EmailSender&gt; emailSenders = findSenders(sender, EmailSender.class);</span>
-<span class="nc bnc" id="L199" title="All 2 branches missed.">		if (!emailSenders.isEmpty()) {</span>
-<span class="nc" id="L200">			return Email.class;</span>
+<span class="fc" id="L198">		Set&lt;EmailSender&gt; emailSenders = findSenders(sender, EmailSender.class);</span>
+<span class="fc bfc" id="L199" title="All 2 branches covered.">		if (!emailSenders.isEmpty()) {</span>
+<span class="fc" id="L200">			return Email.class;</span>
 		}
-<span class="nc" id="L202">		Set&lt;SmsSender&gt; smsSenders = findSenders(sender, SmsSender.class);</span>
-<span class="nc bnc" id="L203" title="All 2 branches missed.">		if (!smsSenders.isEmpty()) {</span>
-<span class="nc" id="L204">			return Sms.class;</span>
+<span class="fc" id="L202">		Set&lt;SmsSender&gt; smsSenders = findSenders(sender, SmsSender.class);</span>
+<span class="pc bpc" id="L203" title="1 of 2 branches missed.">		if (!smsSenders.isEmpty()) {</span>
+<span class="fc" id="L204">			return Sms.class;</span>
 		}
 <span class="nc" id="L206">		throw new IllegalStateException(&quot;Failed to find message type&quot;);</span>
 	}
 
 	private static &lt;T extends ContentTranslator&gt; Set&lt;T&gt; findTranslators(ContentTranslatorSender translatorSender, Class&lt;T&gt; clazz) {
 		try {
-<span class="nc" id="L211">			ContentTranslator translator = (ContentTranslator) readField(translatorSender, &quot;translator&quot;, true);</span>
-<span class="nc" id="L212">			return findTranslators(translator, clazz);</span>
+<span class="fc" id="L211">			ContentTranslator translator = (ContentTranslator) readField(translatorSender, &quot;translator&quot;, true);</span>
+<span class="fc" id="L212">			return findTranslators(translator, clazz);</span>
 <span class="nc" id="L213">		} catch (IllegalAccessException e) {</span>
 <span class="nc" id="L214">			throw new IllegalStateException(&quot;Failed to find translator of type &quot; + clazz.getTypeName(), e);</span>
 		}
@@ -217,14 +217,14 @@ public final class ImplementationFinder {
 
 	private static &lt;T extends ContentTranslator&gt; Set&lt;T&gt; findTranslators(ContentTranslator translator, Class&lt;T&gt; clazz) {
 		try {
-<span class="nc" id="L220">			Set&lt;T&gt; found = new HashSet&lt;&gt;();</span>
-<span class="nc bnc" id="L221" title="All 2 branches missed.">			if (translator instanceof EveryContentTranslator) {</span>
-<span class="nc" id="L222">				found.addAll(findTranslators((EveryContentTranslator) translator, clazz));</span>
+<span class="fc" id="L220">			Set&lt;T&gt; found = new HashSet&lt;&gt;();</span>
+<span class="pc bpc" id="L221" title="1 of 2 branches missed.">			if (translator instanceof EveryContentTranslator) {</span>
+<span class="fc" id="L222">				found.addAll(findTranslators((EveryContentTranslator) translator, clazz));</span>
 			}
-<span class="nc bnc" id="L224" title="All 2 branches missed.">			if (translator instanceof MultiContentTranslator) {</span>
+<span class="pc bpc" id="L224" title="1 of 2 branches missed.">			if (translator instanceof MultiContentTranslator) {</span>
 <span class="nc" id="L225">				found.addAll(findTranslators((ContentTranslator) readField(translator, DELEGATE_FIELD, true), clazz));</span>
 			}
-<span class="nc" id="L227">			return found;</span>
+<span class="fc" id="L227">			return found;</span>
 <span class="nc" id="L228">		} catch (IllegalAccessException e) {</span>
 <span class="nc" id="L229">			throw new IllegalStateException(&quot;Failed to read 'delegate' of MultiContentTranslator&quot;, e);</span>
 		}
@@ -232,13 +232,13 @@ public final class ImplementationFinder {
 
 	@SuppressWarnings(&quot;unchecked&quot;)
 	private static &lt;T extends ContentTranslator&gt; Set&lt;T&gt; findTranslators(EveryContentTranslator translator, Class&lt;T&gt; clazz) {
-<span class="nc" id="L235">		Set&lt;T&gt; found = new HashSet&lt;&gt;();</span>
-<span class="nc bnc" id="L236" title="All 2 branches missed.">		for (ContentTranslator t : translator.getTranslators()) {</span>
-<span class="nc bnc" id="L237" title="All 2 branches missed.">			if (clazz.isAssignableFrom(t.getClass())) {</span>
-<span class="nc" id="L238">				found.add((T) t);</span>
+<span class="fc" id="L235">		Set&lt;T&gt; found = new HashSet&lt;&gt;();</span>
+<span class="fc bfc" id="L236" title="All 2 branches covered.">		for (ContentTranslator t : translator.getTranslators()) {</span>
+<span class="fc bfc" id="L237" title="All 2 branches covered.">			if (clazz.isAssignableFrom(t.getClass())) {</span>
+<span class="fc" id="L238">				found.add((T) t);</span>
 			}
-<span class="nc" id="L240">		}</span>
-<span class="nc" id="L241">		return found;</span>
+<span class="fc" id="L240">		}</span>
+<span class="fc" id="L241">		return found;</span>
 	}
 
 	private ImplementationFinder() {

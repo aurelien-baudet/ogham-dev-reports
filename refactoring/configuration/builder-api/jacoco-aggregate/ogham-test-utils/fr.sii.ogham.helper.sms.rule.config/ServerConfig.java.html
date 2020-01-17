@@ -15,8 +15,8 @@ import fr.sii.ogham.helper.sms.rule.config.annotation.SmppServerConfig;
  * @author Aurélien Baudet
  *
  */
-<span class="nc" id="L18">public class ServerConfig {</span>
-<span class="nc" id="L19">	private final List&lt;Credentials&gt; credentials = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L18">public class ServerConfig {</span>
+<span class="fc" id="L19">	private final List&lt;Credentials&gt; credentials = new ArrayList&lt;&gt;();</span>
 	private SmppServerConfig annotationConfig;
 	private SlowConfig slowConfig;
 
@@ -30,8 +30,8 @@ import fr.sii.ogham.helper.sms.rule.config.annotation.SmppServerConfig;
 	 * @return this instance for fluent chaining
 	 */
 	public ServerConfig credentials(String systemId, String password) {
-<span class="nc" id="L33">		credentials.add(new Credentials(systemId, password));</span>
-<span class="nc" id="L34">		return this;</span>
+<span class="fc" id="L33">		credentials.add(new Credentials(systemId, password));</span>
+<span class="fc" id="L34">		return this;</span>
 	}
 
 	/**
@@ -59,8 +59,8 @@ import fr.sii.ogham.helper.sms.rule.config.annotation.SmppServerConfig;
 	 * @return this instance for fluent chaining
 	 */
 	public ServerConfig annotationConfig(SmppServerConfig annotationConfig) {
-<span class="nc" id="L62">		this.annotationConfig = annotationConfig;</span>
-<span class="nc" id="L63">		return this;</span>
+<span class="fc" id="L62">		this.annotationConfig = annotationConfig;</span>
+<span class="fc" id="L63">		return this;</span>
 	}
 
 	/**
@@ -70,56 +70,56 @@ import fr.sii.ogham.helper.sms.rule.config.annotation.SmppServerConfig;
 	 * @return the simulator configuration
 	 */
 	public SimulatorConfiguration build() {
-<span class="nc" id="L73">		SimulatorConfiguration config = new SimulatorConfiguration();</span>
-<span class="nc" id="L74">		config.setCredentials(buildCredentials());</span>
-<span class="nc" id="L75">		config.setServerDelays(buildServerDelays());</span>
-<span class="nc" id="L76">		return config;</span>
+<span class="fc" id="L73">		SimulatorConfiguration config = new SimulatorConfiguration();</span>
+<span class="fc" id="L74">		config.setCredentials(buildCredentials());</span>
+<span class="fc" id="L75">		config.setServerDelays(buildServerDelays());</span>
+<span class="fc" id="L76">		return config;</span>
 	}
 
 	private List&lt;Credentials&gt; buildCredentials() {
-<span class="nc bnc" id="L80" title="All 2 branches missed.">		if (annotationConfig != null) {</span>
-<span class="nc" id="L81">			return Arrays.stream(annotationConfig.credentials()).map(c -&gt; new Credentials(c.systemId(), c.password())).collect(toList());</span>
+<span class="fc bfc" id="L80" title="All 2 branches covered.">		if (annotationConfig != null) {</span>
+<span class="pc" id="L81">			return Arrays.stream(annotationConfig.credentials()).map(c -&gt; new Credentials(c.systemId(), c.password())).collect(toList());</span>
 		}
-<span class="nc" id="L83">		return credentials;</span>
+<span class="fc" id="L83">		return credentials;</span>
 	}
 
 	private ServerDelays buildServerDelays() {
-<span class="nc bnc" id="L87" title="All 2 branches missed.">		if (annotationConfig != null) {</span>
-<span class="nc" id="L88">			return buildServerDelays(annotationConfig.slow());</span>
+<span class="fc bfc" id="L87" title="All 2 branches covered.">		if (annotationConfig != null) {</span>
+<span class="fc" id="L88">			return buildServerDelays(annotationConfig.slow());</span>
 		}
-<span class="nc bnc" id="L90" title="All 2 branches missed.">		if (slowConfig != null) {</span>
+<span class="pc bpc" id="L90" title="1 of 2 branches missed.">		if (slowConfig != null) {</span>
 <span class="nc" id="L91">			return slowConfig.build();</span>
 		}
-<span class="nc" id="L93">		return null;</span>
+<span class="fc" id="L93">		return null;</span>
 	}
 
 	private static ServerDelays buildServerDelays(Slow slow) {
-<span class="nc" id="L97">		ServerDelays delays = new ServerDelays();</span>
-<span class="nc" id="L98">		delays.setSendAlertNotificationDelay(slow.sendAlertNotificationDelay());</span>
-<span class="nc" id="L99">		delays.setSendBindDelay(slow.sendBindDelay());</span>
-<span class="nc" id="L100">		delays.setSendBindRespDelay(slow.sendBindRespDelay());</span>
-<span class="nc" id="L101">		delays.setSendCancelSmDelay(slow.sendCancelSmDelay());</span>
-<span class="nc" id="L102">		delays.setSendCancelSmRespDelay(slow.sendCancelSmRespDelay());</span>
-<span class="nc" id="L103">		delays.setSendDataSmDelay(slow.sendDataSmDelay());</span>
-<span class="nc" id="L104">		delays.setSendDataSmRespDelay(slow.sendDataSmRespDelay());</span>
-<span class="nc" id="L105">		delays.setSendDeliverSmDelay(slow.sendDeliverSmDelay());</span>
-<span class="nc" id="L106">		delays.setSendDeliverSmRespDelay(slow.sendDeliverSmRespDelay());</span>
-<span class="nc" id="L107">		delays.setSendEnquireLinkDelay(slow.sendEnquireLinkDelay());</span>
-<span class="nc" id="L108">		delays.setSendEnquireLinkRespDelay(slow.sendEnquireLinkRespDelay());</span>
-<span class="nc" id="L109">		delays.setSendGenericNackDelay(slow.sendGenericNackDelay());</span>
-<span class="nc" id="L110">		delays.setSendHeaderDelay(slow.sendHeaderDelay());</span>
-<span class="nc" id="L111">		delays.setSendOutbindDelay(slow.sendOutbindDelay());</span>
-<span class="nc" id="L112">		delays.setSendQuerySmDelay(slow.sendQuerySmDelay());</span>
-<span class="nc" id="L113">		delays.setSendQuerySmRespDelay(slow.sendQuerySmRespDelay());</span>
-<span class="nc" id="L114">		delays.setSendReplaceSmDelay(slow.sendReplaceSmDelay());</span>
-<span class="nc" id="L115">		delays.setSendReplaceSmRespDelay(slow.sendReplaceSmRespDelay());</span>
-<span class="nc" id="L116">		delays.setSendSubmiMultiDelay(slow.sendSubmiMultiDelay());</span>
-<span class="nc" id="L117">		delays.setSendSubmitMultiRespDelay(slow.sendSubmitMultiRespDelay());</span>
-<span class="nc" id="L118">		delays.setSendSubmitSmDelay(slow.sendSubmitSmDelay());</span>
-<span class="nc" id="L119">		delays.setSendSubmitSmRespDelay(slow.sendSubmitSmRespDelay());</span>
-<span class="nc" id="L120">		delays.setSendUnbindDelay(slow.sendUnbindDelay());</span>
-<span class="nc" id="L121">		delays.setSendUnbindRespDelay(slow.sendUnbindRespDelay());</span>
-<span class="nc" id="L122">		return delays;</span>
+<span class="fc" id="L97">		ServerDelays delays = new ServerDelays();</span>
+<span class="fc" id="L98">		delays.setSendAlertNotificationDelay(slow.sendAlertNotificationDelay());</span>
+<span class="fc" id="L99">		delays.setSendBindDelay(slow.sendBindDelay());</span>
+<span class="fc" id="L100">		delays.setSendBindRespDelay(slow.sendBindRespDelay());</span>
+<span class="fc" id="L101">		delays.setSendCancelSmDelay(slow.sendCancelSmDelay());</span>
+<span class="fc" id="L102">		delays.setSendCancelSmRespDelay(slow.sendCancelSmRespDelay());</span>
+<span class="fc" id="L103">		delays.setSendDataSmDelay(slow.sendDataSmDelay());</span>
+<span class="fc" id="L104">		delays.setSendDataSmRespDelay(slow.sendDataSmRespDelay());</span>
+<span class="fc" id="L105">		delays.setSendDeliverSmDelay(slow.sendDeliverSmDelay());</span>
+<span class="fc" id="L106">		delays.setSendDeliverSmRespDelay(slow.sendDeliverSmRespDelay());</span>
+<span class="fc" id="L107">		delays.setSendEnquireLinkDelay(slow.sendEnquireLinkDelay());</span>
+<span class="fc" id="L108">		delays.setSendEnquireLinkRespDelay(slow.sendEnquireLinkRespDelay());</span>
+<span class="fc" id="L109">		delays.setSendGenericNackDelay(slow.sendGenericNackDelay());</span>
+<span class="fc" id="L110">		delays.setSendHeaderDelay(slow.sendHeaderDelay());</span>
+<span class="fc" id="L111">		delays.setSendOutbindDelay(slow.sendOutbindDelay());</span>
+<span class="fc" id="L112">		delays.setSendQuerySmDelay(slow.sendQuerySmDelay());</span>
+<span class="fc" id="L113">		delays.setSendQuerySmRespDelay(slow.sendQuerySmRespDelay());</span>
+<span class="fc" id="L114">		delays.setSendReplaceSmDelay(slow.sendReplaceSmDelay());</span>
+<span class="fc" id="L115">		delays.setSendReplaceSmRespDelay(slow.sendReplaceSmRespDelay());</span>
+<span class="fc" id="L116">		delays.setSendSubmiMultiDelay(slow.sendSubmiMultiDelay());</span>
+<span class="fc" id="L117">		delays.setSendSubmitMultiRespDelay(slow.sendSubmitMultiRespDelay());</span>
+<span class="fc" id="L118">		delays.setSendSubmitSmDelay(slow.sendSubmitSmDelay());</span>
+<span class="fc" id="L119">		delays.setSendSubmitSmRespDelay(slow.sendSubmitSmRespDelay());</span>
+<span class="fc" id="L120">		delays.setSendUnbindDelay(slow.sendUnbindDelay());</span>
+<span class="fc" id="L121">		delays.setSendUnbindRespDelay(slow.sendUnbindRespDelay());</span>
+<span class="fc" id="L122">		return delays;</span>
 	}
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

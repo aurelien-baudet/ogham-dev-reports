@@ -16,7 +16,7 @@ import fr.sii.ogham.core.exception.util.InvalidPropertyException;
  *            The type of the value
  */
 public class ReadMethodAccessor&lt;T&gt; implements Accessor&lt;T&gt; {
-<span class="nc" id="L19">	private static final Object[] NULL_ARGUMENTS = {};</span>
+<span class="fc" id="L19">	private static final Object[] NULL_ARGUMENTS = {};</span>
 	private final Object bean;
 	private final String name;
 	private final Method readMethod;
@@ -39,8 +39,8 @@ public class ReadMethodAccessor&lt;T&gt; implements Accessor&lt;T&gt; {
 	 *            the name of the property to access
 	 */
 	public ReadMethodAccessor(Object bean, String name) {
-<span class="nc" id="L42">		this(bean, name, getReadMethod(bean, name), new FieldAccessor&lt;T&gt;(bean, name));</span>
-<span class="nc" id="L43">	}</span>
+<span class="fc" id="L42">		this(bean, name, getReadMethod(bean, name), new FieldAccessor&lt;T&gt;(bean, name));</span>
+<span class="fc" id="L43">	}</span>
 
 	/**
 	 * Initialize the accessor with the provided bean and property name.
@@ -62,8 +62,8 @@ public class ReadMethodAccessor&lt;T&gt; implements Accessor&lt;T&gt; {
 	 *            access the property
 	 */
 	public ReadMethodAccessor(Object bean, String name, Method readMethod) {
-<span class="nc" id="L65">		this(bean, name, readMethod, new FieldAccessor&lt;T&gt;(bean, name));</span>
-<span class="nc" id="L66">	}</span>
+<span class="fc" id="L65">		this(bean, name, readMethod, new FieldAccessor&lt;T&gt;(bean, name));</span>
+<span class="fc" id="L66">	}</span>
 
 	/**
 	 * Initialize the accessor with the provided bean and property name.
@@ -89,32 +89,32 @@ public class ReadMethodAccessor&lt;T&gt; implements Accessor&lt;T&gt; {
 	 *            only read method is used
 	 */
 	public ReadMethodAccessor(Object bean, String name, Method readMethod, Accessor&lt;T&gt; defaultAccessor) {
-<span class="nc" id="L92">		super();</span>
-<span class="nc" id="L93">		this.bean = bean;</span>
-<span class="nc" id="L94">		this.name = name;</span>
-<span class="nc" id="L95">		this.readMethod = readMethod;</span>
-<span class="nc" id="L96">		this.defaultAccessor = defaultAccessor;</span>
-<span class="nc" id="L97">	}</span>
+<span class="fc" id="L92">		super();</span>
+<span class="fc" id="L93">		this.bean = bean;</span>
+<span class="fc" id="L94">		this.name = name;</span>
+<span class="fc" id="L95">		this.readMethod = readMethod;</span>
+<span class="fc" id="L96">		this.defaultAccessor = defaultAccessor;</span>
+<span class="fc" id="L97">	}</span>
 
 	@Override
 	@SuppressWarnings(&quot;unchecked&quot;)
 	public T getValue() {
-<span class="nc bnc" id="L102" title="All 4 branches missed.">		if (readMethod == null &amp;&amp; defaultAccessor == null) {</span>
-<span class="nc" id="L103">			throw new InvalidPropertyException(&quot;Can't get value for property '&quot; + name + &quot;' on bean '&quot; + getClassName() + &quot;': no getter and no default accessor provided.&quot;, bean, name);</span>
+<span class="fc bfc" id="L102" title="All 4 branches covered.">		if (readMethod == null &amp;&amp; defaultAccessor == null) {</span>
+<span class="fc" id="L103">			throw new InvalidPropertyException(&quot;Can't get value for property '&quot; + name + &quot;' on bean '&quot; + getClassName() + &quot;': no getter and no default accessor provided.&quot;, bean, name);</span>
 		}
-<span class="nc bnc" id="L105" title="All 2 branches missed.">		if (readMethod == null) {</span>
-<span class="nc" id="L106">			return defaultAccessor.getValue();</span>
+<span class="fc bfc" id="L105" title="All 2 branches covered.">		if (readMethod == null) {</span>
+<span class="fc" id="L106">			return defaultAccessor.getValue();</span>
 		}
 
 		try {
-<span class="nc" id="L110">			return (T) readMethod.invoke(bean, NULL_ARGUMENTS);</span>
+<span class="fc" id="L110">			return (T) readMethod.invoke(bean, NULL_ARGUMENTS);</span>
 <span class="nc" id="L111">		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | ClassCastException e) {</span>
 <span class="nc" id="L112">			throw new InvalidPropertyException(&quot;Failed to get value for property '&quot; + name + &quot;' on bean '&quot; + getClassName() + &quot;'&quot;, bean, name, e);</span>
 		}
 	}
 
 	private String getClassName() {
-<span class="nc bnc" id="L117" title="All 2 branches missed.">		return bean == null ? &quot;null&quot; : bean.getClass().getName();</span>
+<span class="pc bpc" id="L117" title="1 of 2 branches missed.">		return bean == null ? &quot;null&quot; : bean.getClass().getName();</span>
 	}
 
 }

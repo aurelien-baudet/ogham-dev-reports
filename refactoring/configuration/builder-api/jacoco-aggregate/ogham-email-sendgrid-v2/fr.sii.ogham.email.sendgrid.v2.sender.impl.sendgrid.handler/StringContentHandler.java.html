@@ -20,7 +20,7 @@ import fr.sii.ogham.email.message.Email;
  */
 public final class StringContentHandler implements SendGridContentHandler {
 
-<span class="nc" id="L23">	private static final Logger LOG = LoggerFactory.getLogger(StringContentHandler.class);</span>
+<span class="fc" id="L23">	private static final Logger LOG = LoggerFactory.getLogger(StringContentHandler.class);</span>
 
 	private final MimeTypeProvider mimeProvider;
 
@@ -31,13 +31,13 @@ public final class StringContentHandler implements SendGridContentHandler {
 	 *            an object in charge of determining the MIME type of the
 	 *            messages to send
 	 */
-<span class="nc" id="L34">	public StringContentHandler(final MimeTypeProvider mimeProvider) {</span>
-<span class="nc bnc" id="L35" title="All 2 branches missed.">		if (mimeProvider == null) {</span>
-<span class="nc" id="L36">			throw new IllegalArgumentException(&quot;[mimeProvider] cannot be null&quot;);</span>
+<span class="fc" id="L34">	public StringContentHandler(final MimeTypeProvider mimeProvider) {</span>
+<span class="fc bfc" id="L35" title="All 2 branches covered.">		if (mimeProvider == null) {</span>
+<span class="fc" id="L36">			throw new IllegalArgumentException(&quot;[mimeProvider] cannot be null&quot;);</span>
 		}
 
-<span class="nc" id="L39">		this.mimeProvider = mimeProvider;</span>
-<span class="nc" id="L40">	}</span>
+<span class="fc" id="L39">		this.mimeProvider = mimeProvider;</span>
+<span class="fc" id="L40">	}</span>
 
 	/**
 	 * Reads the content and adds it into the email. This method is expected to
@@ -58,39 +58,39 @@ public final class StringContentHandler implements SendGridContentHandler {
 	 */
 	@Override
 	public void setContent(final Email original, final SendGrid.Email email, final Content content) throws ContentHandlerException {
-<span class="nc bnc" id="L61" title="All 2 branches missed.">		if (email == null) {</span>
-<span class="nc" id="L62">			throw new IllegalArgumentException(&quot;[email] cannot be null&quot;);</span>
+<span class="fc bfc" id="L61" title="All 2 branches covered.">		if (email == null) {</span>
+<span class="fc" id="L62">			throw new IllegalArgumentException(&quot;[email] cannot be null&quot;);</span>
 		}
-<span class="nc bnc" id="L64" title="All 2 branches missed.">		if (content == null) {</span>
-<span class="nc" id="L65">			throw new IllegalArgumentException(&quot;[content] cannot be null&quot;);</span>
+<span class="fc bfc" id="L64" title="All 2 branches covered.">		if (content == null) {</span>
+<span class="fc" id="L65">			throw new IllegalArgumentException(&quot;[content] cannot be null&quot;);</span>
 		}
 
-<span class="nc bnc" id="L68" title="All 4 branches missed.">		if (content instanceof MayHaveStringContent &amp;&amp; ((MayHaveStringContent) content).canProvideString()) {</span>
-<span class="nc" id="L69">			final String contentStr = ((MayHaveStringContent) content).asString();</span>
+<span class="pc bpc" id="L68" title="1 of 4 branches missed.">		if (content instanceof MayHaveStringContent &amp;&amp; ((MayHaveStringContent) content).canProvideString()) {</span>
+<span class="fc" id="L69">			final String contentStr = ((MayHaveStringContent) content).asString();</span>
 
 			try {
-<span class="nc" id="L72">				final String mime = mimeProvider.detect(contentStr).toString();</span>
-<span class="nc" id="L73">				LOG.debug(&quot;Email content has detected type {}&quot;, mime);</span>
-<span class="nc" id="L74">				LOG.trace(&quot;content: {}&quot;, content);</span>
-<span class="nc" id="L75">				setMimeContent(email, contentStr, mime);</span>
-<span class="nc" id="L76">			} catch (MimeTypeDetectionException e) {</span>
-<span class="nc" id="L77">				throw new ContentHandlerException(&quot;Unable to set the email content&quot;, e);</span>
-<span class="nc" id="L78">			}</span>
-<span class="nc" id="L79">		} else {</span>
-<span class="nc" id="L80">			throw new IllegalArgumentException(&quot;This instance can only work with MayHaveStringContent instances, but was passed &quot; + content.getClass().getSimpleName());</span>
+<span class="fc" id="L72">				final String mime = mimeProvider.detect(contentStr).toString();</span>
+<span class="fc" id="L73">				LOG.debug(&quot;Email content has detected type {}&quot;, mime);</span>
+<span class="fc" id="L74">				LOG.trace(&quot;content: {}&quot;, content);</span>
+<span class="fc" id="L75">				setMimeContent(email, contentStr, mime);</span>
+<span class="fc" id="L76">			} catch (MimeTypeDetectionException e) {</span>
+<span class="fc" id="L77">				throw new ContentHandlerException(&quot;Unable to set the email content&quot;, e);</span>
+<span class="fc" id="L78">			}</span>
+<span class="fc" id="L79">		} else {</span>
+<span class="fc" id="L80">			throw new IllegalArgumentException(&quot;This instance can only work with MayHaveStringContent instances, but was passed &quot; + content.getClass().getSimpleName());</span>
 		}
 
-<span class="nc" id="L83">	}</span>
+<span class="fc" id="L83">	}</span>
 
 	private static void setMimeContent(final SendGrid.Email email, final String contentStr, final String mime) throws ContentHandlerException {
-<span class="nc bnc" id="L86" title="All 2 branches missed.">		if (&quot;text/plain&quot;.equals(mime)) {</span>
-<span class="nc" id="L87">			email.setText(contentStr);</span>
-<span class="nc bnc" id="L88" title="All 2 branches missed.">		} else if (&quot;text/html&quot;.equals(mime)) {</span>
-<span class="nc" id="L89">			email.setHtml(contentStr);</span>
+<span class="fc bfc" id="L86" title="All 2 branches covered.">		if (&quot;text/plain&quot;.equals(mime)) {</span>
+<span class="fc" id="L87">			email.setText(contentStr);</span>
+<span class="fc bfc" id="L88" title="All 2 branches covered.">		} else if (&quot;text/html&quot;.equals(mime)) {</span>
+<span class="fc" id="L89">			email.setHtml(contentStr);</span>
 		} else {
-<span class="nc" id="L91">			throw new ContentHandlerException(&quot;MIME type &quot; + mime + &quot; is not supported&quot;);</span>
+<span class="fc" id="L91">			throw new ContentHandlerException(&quot;MIME type &quot; + mime + &quot; is not supported&quot;);</span>
 		}
-<span class="nc" id="L93">	}</span>
+<span class="fc" id="L93">	}</span>
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

@@ -38,11 +38,11 @@ import fr.sii.ogham.sms.message.Sender;
  *
  */
 public final class BeanUtils {
-<span class="nc" id="L41">	private static final Logger LOG = LoggerFactory.getLogger(BeanUtils.class);</span>
+<span class="fc" id="L41">	private static final Logger LOG = LoggerFactory.getLogger(BeanUtils.class);</span>
 
 	static {
-<span class="nc" id="L44">		registerDefaultConverters();</span>
-<span class="nc" id="L45">	}</span>
+<span class="fc" id="L44">		registerDefaultConverters();</span>
+<span class="fc" id="L45">	}</span>
 
 	/**
 	 * Register the following converters:
@@ -57,12 +57,12 @@ public final class BeanUtils {
 		// TODO: auto-detect converters in the classpath ?
 		// Add converter for being able to convert string address into
 		// EmailAddress
-<span class="nc" id="L60">		ConvertUtils.register(new EmailAddressConverter(), EmailAddress.class);</span>
+<span class="fc" id="L60">		ConvertUtils.register(new EmailAddressConverter(), EmailAddress.class);</span>
 		// Add converter for being able to convert string into
 		// SMS sender
-<span class="nc" id="L63">		ConvertUtils.register(new SmsSenderConverter(), Sender.class);</span>
-<span class="nc" id="L64">		BeanUtilsBean.getInstance().getConvertUtils().register(true, false, 0);</span>
-<span class="nc" id="L65">	}</span>
+<span class="fc" id="L63">		ConvertUtils.register(new SmsSenderConverter(), Sender.class);</span>
+<span class="fc" id="L64">		BeanUtilsBean.getInstance().getConvertUtils().register(true, false, 0);</span>
+<span class="fc" id="L65">	}</span>
 
 	/**
 	 * &lt;p&gt;
@@ -80,7 +80,7 @@ public final class BeanUtils {
 	 * @return the bean as map
 	 */
 	public static Map&lt;String, Object&gt; convert(Object bean) {
-<span class="nc" id="L83">		return new MapBeanReadWrapper(bean);</span>
+<span class="fc" id="L83">		return new MapBeanReadWrapper(bean);</span>
 	}
 
 	/**
@@ -124,10 +124,10 @@ public final class BeanUtils {
 	 *             when the bean couldn't be populated
 	 */
 	public static void populate(Object bean, Map&lt;String, Object&gt; values, Options options) throws BeanException {
-<span class="nc bnc" id="L127" title="All 2 branches missed.">		for (Entry&lt;String, Object&gt; entry : values.entrySet()) {</span>
-<span class="nc" id="L128">			populate(bean, entry, options);</span>
-<span class="nc" id="L129">		}</span>
-<span class="nc" id="L130">	}</span>
+<span class="fc bfc" id="L127" title="All 2 branches covered.">		for (Entry&lt;String, Object&gt; entry : values.entrySet()) {</span>
+<span class="fc" id="L128">			populate(bean, entry, options);</span>
+<span class="fc" id="L129">		}</span>
+<span class="fc" id="L130">	}</span>
 
 	/**
 	 * &lt;p&gt;
@@ -171,18 +171,18 @@ public final class BeanUtils {
 	 */
 	public static void populate(Object bean, Entry&lt;String, Object&gt; entry, Options options) throws BeanException {
 		try {
-<span class="nc" id="L174">			String property = org.apache.commons.beanutils.BeanUtils.getProperty(bean, entry.getKey());</span>
-<span class="nc bnc" id="L175" title="All 4 branches missed.">			if (options.isOverride() || property == null) {</span>
-<span class="nc" id="L176">				org.apache.commons.beanutils.BeanUtils.setProperty(bean, entry.getKey(), entry.getValue());</span>
+<span class="fc" id="L174">			String property = org.apache.commons.beanutils.BeanUtils.getProperty(bean, entry.getKey());</span>
+<span class="fc bfc" id="L175" title="All 4 branches covered.">			if (options.isOverride() || property == null) {</span>
+<span class="fc" id="L176">				org.apache.commons.beanutils.BeanUtils.setProperty(bean, entry.getKey(), entry.getValue());</span>
 			}
-<span class="nc" id="L178">		} catch (NestedNullException | NoSuchMethodException e) {</span>
-<span class="nc" id="L179">			handleUnknown(bean, options, entry, e);</span>
-<span class="nc" id="L180">		} catch (ConversionException e) {</span>
-<span class="nc" id="L181">			handleConversion(bean, options, entry, e);</span>
-<span class="nc" id="L182">		} catch (IllegalAccessException | InvocationTargetException e) {</span>
-<span class="nc" id="L183">			handleInvocation(bean, options, entry, e);</span>
-<span class="nc" id="L184">		}</span>
-<span class="nc" id="L185">	}</span>
+<span class="fc" id="L178">		} catch (NestedNullException | NoSuchMethodException e) {</span>
+<span class="fc" id="L179">			handleUnknown(bean, options, entry, e);</span>
+<span class="fc" id="L180">		} catch (ConversionException e) {</span>
+<span class="fc" id="L181">			handleConversion(bean, options, entry, e);</span>
+<span class="fc" id="L182">		} catch (IllegalAccessException | InvocationTargetException e) {</span>
+<span class="fc" id="L183">			handleInvocation(bean, options, entry, e);</span>
+<span class="fc" id="L184">		}</span>
+<span class="fc" id="L185">	}</span>
 
 	/**
 	 * &lt;p&gt;
@@ -242,28 +242,28 @@ public final class BeanUtils {
 <span class="nc" id="L242">	}</span>
 
 	private static void handleUnknown(Object bean, Options options, Entry&lt;String, Object&gt; entry, Exception e) throws BeanException {
-<span class="nc bnc" id="L245" title="All 2 branches missed.">		if (options.isSkipUnknown()) {</span>
-<span class="nc" id="L246">			LOG.debug(&quot;skipping property {}: it doesn't exist or is not accessible&quot;, entry.getKey(), e);</span>
+<span class="fc bfc" id="L245" title="All 2 branches covered.">		if (options.isSkipUnknown()) {</span>
+<span class="fc" id="L246">			LOG.debug(&quot;skipping property {}: it doesn't exist or is not accessible&quot;, entry.getKey(), e);</span>
 		} else {
-<span class="nc" id="L248">			throw new BeanException(&quot;Failed to populate bean due to unknown property&quot;, bean, e);</span>
+<span class="fc" id="L248">			throw new BeanException(&quot;Failed to populate bean due to unknown property&quot;, bean, e);</span>
 		}
-<span class="nc" id="L250">	}</span>
+<span class="fc" id="L250">	}</span>
 
 	private static void handleConversion(Object bean, Options options, Entry&lt;String, Object&gt; entry, ConversionException e) throws BeanException {
-<span class="nc bnc" id="L253" title="All 2 branches missed.">		if (options.isSkipConversionError()) {</span>
-<span class="nc" id="L254">			LOG.debug(&quot;skipping property {}: can't convert value&quot;, entry.getKey(), e);</span>
+<span class="fc bfc" id="L253" title="All 2 branches covered.">		if (options.isSkipConversionError()) {</span>
+<span class="fc" id="L254">			LOG.debug(&quot;skipping property {}: can't convert value&quot;, entry.getKey(), e);</span>
 		} else {
-<span class="nc" id="L256">			throw new BeanException(&quot;Failed to populate bean due to conversion error&quot;, bean, e);</span>
+<span class="fc" id="L256">			throw new BeanException(&quot;Failed to populate bean due to conversion error&quot;, bean, e);</span>
 		}
-<span class="nc" id="L258">	}</span>
+<span class="fc" id="L258">	}</span>
 
 	private static void handleInvocation(Object bean, Options options, Entry&lt;String, Object&gt; entry, ReflectiveOperationException e) throws BeanException {
-<span class="nc bnc" id="L261" title="All 2 branches missed.">		if (options.isSkipInvocationError()) {</span>
-<span class="nc" id="L262">			LOG.debug(&quot;skipping property {}: can't set value&quot;, entry.getKey(), e);</span>
+<span class="fc bfc" id="L261" title="All 2 branches covered.">		if (options.isSkipInvocationError()) {</span>
+<span class="fc" id="L262">			LOG.debug(&quot;skipping property {}: can't set value&quot;, entry.getKey(), e);</span>
 		} else {
-<span class="nc" id="L264">			throw new BeanException(&quot;Failed to populate bean due to invalid setter call or security retrictions&quot;, bean, e);</span>
+<span class="fc" id="L264">			throw new BeanException(&quot;Failed to populate bean due to invalid setter call or security retrictions&quot;, bean, e);</span>
 		}
-<span class="nc" id="L266">	}</span>
+<span class="fc" id="L266">	}</span>
 
 	/**
 	 * Populate options:
@@ -290,27 +290,27 @@ public final class BeanUtils {
 		private final boolean skipInvocationError;
 
 		public Options(boolean override, boolean skipUnknown, boolean skipConversionError, boolean skipInvocationError) {
-<span class="nc" id="L293">			super();</span>
-<span class="nc" id="L294">			this.override = override;</span>
-<span class="nc" id="L295">			this.skipUnknown = skipUnknown;</span>
-<span class="nc" id="L296">			this.skipConversionError = skipConversionError;</span>
-<span class="nc" id="L297">			this.skipInvocationError = skipInvocationError;</span>
-<span class="nc" id="L298">		}</span>
+<span class="fc" id="L293">			super();</span>
+<span class="fc" id="L294">			this.override = override;</span>
+<span class="fc" id="L295">			this.skipUnknown = skipUnknown;</span>
+<span class="fc" id="L296">			this.skipConversionError = skipConversionError;</span>
+<span class="fc" id="L297">			this.skipInvocationError = skipInvocationError;</span>
+<span class="fc" id="L298">		}</span>
 
 		public boolean isOverride() {
-<span class="nc" id="L301">			return override;</span>
+<span class="fc" id="L301">			return override;</span>
 		}
 
 		public boolean isSkipUnknown() {
-<span class="nc" id="L305">			return skipUnknown;</span>
+<span class="fc" id="L305">			return skipUnknown;</span>
 		}
 
 		public boolean isSkipConversionError() {
-<span class="nc" id="L309">			return skipConversionError;</span>
+<span class="fc" id="L309">			return skipConversionError;</span>
 		}
 
 		public boolean isSkipInvocationError() {
-<span class="nc" id="L313">			return skipInvocationError;</span>
+<span class="fc" id="L313">			return skipInvocationError;</span>
 		}
 	}
 

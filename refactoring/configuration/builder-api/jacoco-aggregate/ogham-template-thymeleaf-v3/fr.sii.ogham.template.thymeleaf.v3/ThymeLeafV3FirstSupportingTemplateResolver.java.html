@@ -42,33 +42,33 @@ public class ThymeLeafV3FirstSupportingTemplateResolver implements ITemplateReso
 	private FirstSupportingResolverAdapter resolverAdapter;
 
 	public ThymeLeafV3FirstSupportingTemplateResolver(FirstSupportingResourceResolver resolver, FirstSupportingResolverAdapter resolverAdapter) {
-<span class="nc" id="L45">		super();</span>
-<span class="nc" id="L46">		this.resolver = resolver;</span>
-<span class="nc" id="L47">		this.resolverAdapter = resolverAdapter;</span>
-<span class="nc" id="L48">	}</span>
+<span class="fc" id="L45">		super();</span>
+<span class="fc" id="L46">		this.resolver = resolver;</span>
+<span class="fc" id="L47">		this.resolverAdapter = resolverAdapter;</span>
+<span class="fc" id="L48">	}</span>
 
 	@Override
 	public String getName() {
-<span class="nc" id="L52">		return &quot;ThymeLeafFirstSupportingTemplateResolver&quot;;</span>
+<span class="fc" id="L52">		return &quot;ThymeLeafFirstSupportingTemplateResolver&quot;;</span>
 	}
 
 	@Override
 	public Integer getOrder() {
-<span class="nc" id="L57">		return 0;</span>
+<span class="fc" id="L57">		return 0;</span>
 	}
 
 	@Override
 	public TemplateResolution resolveTemplate(IEngineConfiguration configuration, String ownerTemplate, String template, Map&lt;String, Object&gt; templateResolutionAttributes) {
 		try {
-<span class="nc" id="L63">			ResourceResolver supportingResolver = resolver.getSupportingResolver(new UnresolvedPath(template));</span>
-<span class="nc" id="L64">			ITemplateResolver templateResolver = resolverAdapter.adapt(supportingResolver);</span>
-<span class="nc" id="L65">			ResolvedPath resourcePath = supportingResolver.resolve(new UnresolvedPath(template));</span>
-<span class="nc" id="L66">			String resolvedPath = resourcePath.getResolvedPath();</span>
-<span class="nc" id="L67">			TemplateResolution resolution = templateResolver.resolveTemplate(configuration, ownerTemplate, resolvedPath, templateResolutionAttributes);</span>
-<span class="nc bnc" id="L68" title="All 2 branches missed.">			if(!templateExists(resolution)) {</span>
+<span class="fc" id="L63">			ResourceResolver supportingResolver = resolver.getSupportingResolver(new UnresolvedPath(template));</span>
+<span class="fc" id="L64">			ITemplateResolver templateResolver = resolverAdapter.adapt(supportingResolver);</span>
+<span class="fc" id="L65">			ResolvedPath resourcePath = supportingResolver.resolve(new UnresolvedPath(template));</span>
+<span class="fc" id="L66">			String resolvedPath = resourcePath.getResolvedPath();</span>
+<span class="fc" id="L67">			TemplateResolution resolution = templateResolver.resolveTemplate(configuration, ownerTemplate, resolvedPath, templateResolutionAttributes);</span>
+<span class="pc bpc" id="L68" title="1 of 2 branches missed.">			if(!templateExists(resolution)) {</span>
 <span class="nc" id="L69">				throw new TemplateResolutionException(&quot;Failed to find template &quot;+template+&quot; (&quot;+resolvedPath+&quot;)&quot;, template, resourcePath);</span>
 			}
-<span class="nc" id="L71">			return resolution;</span>
+<span class="fc" id="L71">			return resolution;</span>
 <span class="nc" id="L72">		} catch (NoResolverAdapterException e) {</span>
 <span class="nc" id="L73">			throw new ResolverAdapterNotFoundException(&quot;Unable to resolve template cause no adapter supporting template name '&quot; + template + &quot;' was found.&quot;, e);</span>
 
@@ -78,13 +78,13 @@ public class ThymeLeafV3FirstSupportingTemplateResolver implements ITemplateReso
 	private static boolean templateExists(TemplateResolution resolution) {
 		// Thymeleaf can check existence of template but only if option is set.
 		// If set and the template doesn't exist, resolution will be null.
-<span class="nc bnc" id="L81" title="All 2 branches missed.">		if(resolution == null) {</span>
+<span class="pc bpc" id="L81" title="1 of 2 branches missed.">		if(resolution == null) {</span>
 <span class="nc" id="L82">			return false;</span>
 		}
 		// If option is not set, then check existence manually to be consistent
 		// with other template engines
-<span class="nc bnc" id="L86" title="All 2 branches missed.">		if(!resolution.isTemplateResourceExistenceVerified()) {</span>
-<span class="nc" id="L87">			return resolution.getTemplateResource().exists();</span>
+<span class="pc bpc" id="L86" title="1 of 2 branches missed.">		if(!resolution.isTemplateResourceExistenceVerified()) {</span>
+<span class="fc" id="L87">			return resolution.getTemplateResource().exists();</span>
 		}
 <span class="nc" id="L89">		return false;</span>
 	}

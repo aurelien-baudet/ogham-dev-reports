@@ -29,8 +29,8 @@ import fr.sii.ogham.helper.html.AssertHtml;
  */
 @SuppressWarnings(&quot;squid:S1192&quot;)
 public final class AssertEmail {
-<span class="nc" id="L32">	private static final Pattern HTML_PATTERN = Pattern.compile(&quot;&lt;html&quot;, Pattern.CASE_INSENSITIVE);</span>
-<span class="nc" id="L33">	private static final Pattern TEXT_OR_HTML_MIMETYPES = Pattern.compile(&quot;^((text/)|(application/x?html)).*&quot;, Pattern.CASE_INSENSITIVE);</span>
+<span class="fc" id="L32">	private static final Pattern HTML_PATTERN = Pattern.compile(&quot;&lt;html&quot;, Pattern.CASE_INSENSITIVE);</span>
+<span class="fc" id="L33">	private static final Pattern TEXT_OR_HTML_MIMETYPES = Pattern.compile(&quot;^((text/)|(application/x?html)).*&quot;, Pattern.CASE_INSENSITIVE);</span>
 
 	/**
 	 * Assert that the fields of the received email are equal to the expected
@@ -149,8 +149,8 @@ public final class AssertEmail {
 	 *             when accessing the received email fails
 	 */
 	public static void assertEquals(ExpectedEmail expectedEmail, Message[] actualEmails) throws MessagingException {
-<span class="nc" id="L152">		assertEquals(new ExpectedEmail[] { expectedEmail }, actualEmails);</span>
-<span class="nc" id="L153">	}</span>
+<span class="fc" id="L152">		assertEquals(new ExpectedEmail[] { expectedEmail }, actualEmails);</span>
+<span class="fc" id="L153">	}</span>
 
 	/**
 	 * Assert that each received email content respects the expected one. It
@@ -166,11 +166,11 @@ public final class AssertEmail {
 	 *             when accessing the received email fails
 	 */
 	public static void assertEquals(ExpectedEmail[] expectedEmail, Message[] actualEmails) throws MessagingException {
-<span class="nc" id="L169">		Assert.assertEquals(&quot;should have &quot; + expectedEmail.length + &quot; email&quot;, expectedEmail.length, actualEmails.length);</span>
-<span class="nc bnc" id="L170" title="All 2 branches missed.">		for (int i = 0; i &lt; expectedEmail.length; i++) {</span>
-<span class="nc" id="L171">			assertEquals(expectedEmail[i], actualEmails[i]);</span>
+<span class="fc" id="L169">		Assert.assertEquals(&quot;should have &quot; + expectedEmail.length + &quot; email&quot;, expectedEmail.length, actualEmails.length);</span>
+<span class="fc bfc" id="L170" title="All 2 branches covered.">		for (int i = 0; i &lt; expectedEmail.length; i++) {</span>
+<span class="fc" id="L171">			assertEquals(expectedEmail[i], actualEmails[i]);</span>
 		}
-<span class="nc" id="L173">	}</span>
+<span class="fc" id="L173">	}</span>
 
 	/**
 	 * Assert that the fields of the received email are equal to the expected
@@ -196,8 +196,8 @@ public final class AssertEmail {
 	 *             when accessing the received email fails
 	 */
 	public static void assertEquals(ExpectedEmail expectedEmail, Message actualEmail) throws MessagingException {
-<span class="nc" id="L199">		assertEquals(expectedEmail, actualEmail, true);</span>
-<span class="nc" id="L200">	}</span>
+<span class="fc" id="L199">		assertEquals(expectedEmail, actualEmail, true);</span>
+<span class="fc" id="L200">	}</span>
 
 	/**
 	 * Assert that the fields of the received email are equal to the expected
@@ -437,10 +437,10 @@ public final class AssertEmail {
 	 *             when accessing the received email fails
 	 */
 	public static void assertEquals(ExpectedEmail expectedEmail, Message actualEmail, boolean strict) throws MessagingException {
-<span class="nc" id="L440">		assertHeaders(expectedEmail, actualEmail);</span>
-<span class="nc" id="L441">		assertBody(expectedEmail.getExpectedContent().getBody(), getBody(actualEmail), strict);</span>
-<span class="nc" id="L442">		assertMimetype(expectedEmail.getExpectedContent(), getBodyMimetype(actualEmail));</span>
-<span class="nc" id="L443">	}</span>
+<span class="fc" id="L440">		assertHeaders(expectedEmail, actualEmail);</span>
+<span class="fc" id="L441">		assertBody(expectedEmail.getExpectedContent().getBody(), getBody(actualEmail), strict);</span>
+<span class="fc" id="L442">		assertMimetype(expectedEmail.getExpectedContent(), getBodyMimetype(actualEmail));</span>
+<span class="fc" id="L443">	}</span>
 
 	/**
 	 * Checks that the received Mime Type for the message is like the expected
@@ -471,8 +471,8 @@ public final class AssertEmail {
 	 *             when accessing the received email fails
 	 */
 	public static void assertMimetype(ExpectedContent expectedContent, String contentType) throws MessagingException {
-<span class="nc" id="L474">		Assert.assertTrue(&quot;mimetype should be &quot; + expectedContent.getMimetype() + &quot; instead of &quot; + contentType, expectedContent.getMimetype().matcher(contentType).matches());</span>
-<span class="nc" id="L475">	}</span>
+<span class="fc" id="L474">		Assert.assertTrue(&quot;mimetype should be &quot; + expectedContent.getMimetype() + &quot; instead of &quot; + contentType, expectedContent.getMimetype().matcher(contentType).matches());</span>
+<span class="fc" id="L475">	}</span>
 
 	/**
 	 * Checks if the received body equals the expected body. It handles HTML
@@ -497,18 +497,18 @@ public final class AssertEmail {
 	 *            new line characters
 	 */
 	public static void assertBody(String expectedBody, String actualBody, boolean strict) {
-<span class="nc bnc" id="L500" title="All 2 branches missed.">		if (isHtml(expectedBody)) {</span>
-<span class="nc bnc" id="L501" title="All 2 branches missed.">			if (strict) {</span>
-<span class="nc" id="L502">				AssertHtml.assertIdentical(expectedBody, actualBody);</span>
+<span class="fc bfc" id="L500" title="All 2 branches covered.">		if (isHtml(expectedBody)) {</span>
+<span class="pc bpc" id="L501" title="1 of 2 branches missed.">			if (strict) {</span>
+<span class="fc" id="L502">				AssertHtml.assertIdentical(expectedBody, actualBody);</span>
 			} else {
 <span class="nc" id="L504">				AssertHtml.assertSimilar(expectedBody, actualBody);</span>
 			}
 		} else {
-<span class="nc bnc" id="L507" title="All 6 branches missed.">			if(strict ? !expectedBody.equals(actualBody) : !sanitize(expectedBody).equals(sanitize(actualBody))) {</span>
+<span class="pc bpc" id="L507" title="4 of 6 branches missed.">			if(strict ? !expectedBody.equals(actualBody) : !sanitize(expectedBody).equals(sanitize(actualBody))) {</span>
 <span class="nc" id="L508">				throw new ComparisonFailure(&quot;body should be '&quot; + expectedBody + &quot;'&quot;, expectedBody, actualBody);</span>
 			}
 		}
-<span class="nc" id="L511">	}</span>
+<span class="fc" id="L511">	}</span>
 
 	/**
 	 * Checks if the received headers corresponds to the expected header values.
@@ -537,15 +537,15 @@ public final class AssertEmail {
 	 *             when accessing the received email fails
 	 */
 	public static void assertHeaders(ExpectedEmailHeader expectedEmail, Message actualEmail) throws MessagingException {
-<span class="nc" id="L540">		Assert.assertEquals(&quot;subject should be '&quot; + expectedEmail.getSubject() + &quot;'&quot;, expectedEmail.getSubject(), actualEmail.getSubject());</span>
-<span class="nc" id="L541">		Assert.assertEquals(&quot;should have only one from&quot;, 1, actualEmail.getFrom().length);</span>
-<span class="nc" id="L542">		Assert.assertEquals(&quot;from should be '&quot; + expectedEmail.getFrom() + &quot;'&quot;, expectedEmail.getFrom(), actualEmail.getFrom()[0].toString());</span>
-<span class="nc" id="L543">		int recipients = expectedEmail.getTo().size() + expectedEmail.getBcc().size() + expectedEmail.getCc().size();</span>
-<span class="nc" id="L544">		Assert.assertEquals(&quot;should have only &quot; + recipients + &quot; recipients&quot;, recipients, actualEmail.getAllRecipients().length);</span>
-<span class="nc" id="L545">		assertRecipients(expectedEmail.getTo(), actualEmail, RecipientType.TO);</span>
-<span class="nc" id="L546">		assertRecipients(expectedEmail.getCc(), actualEmail, RecipientType.CC);</span>
-<span class="nc" id="L547">		assertRecipients(expectedEmail.getBcc(), actualEmail, RecipientType.BCC);</span>
-<span class="nc" id="L548">	}</span>
+<span class="fc" id="L540">		Assert.assertEquals(&quot;subject should be '&quot; + expectedEmail.getSubject() + &quot;'&quot;, expectedEmail.getSubject(), actualEmail.getSubject());</span>
+<span class="fc" id="L541">		Assert.assertEquals(&quot;should have only one from&quot;, 1, actualEmail.getFrom().length);</span>
+<span class="fc" id="L542">		Assert.assertEquals(&quot;from should be '&quot; + expectedEmail.getFrom() + &quot;'&quot;, expectedEmail.getFrom(), actualEmail.getFrom()[0].toString());</span>
+<span class="fc" id="L543">		int recipients = expectedEmail.getTo().size() + expectedEmail.getBcc().size() + expectedEmail.getCc().size();</span>
+<span class="fc" id="L544">		Assert.assertEquals(&quot;should have only &quot; + recipients + &quot; recipients&quot;, recipients, actualEmail.getAllRecipients().length);</span>
+<span class="fc" id="L545">		assertRecipients(expectedEmail.getTo(), actualEmail, RecipientType.TO);</span>
+<span class="fc" id="L546">		assertRecipients(expectedEmail.getCc(), actualEmail, RecipientType.CC);</span>
+<span class="fc" id="L547">		assertRecipients(expectedEmail.getBcc(), actualEmail, RecipientType.BCC);</span>
+<span class="fc" id="L548">	}</span>
 
 	/**
 	 * Checks if the received headers corresponds to the expected header values.
@@ -567,16 +567,16 @@ public final class AssertEmail {
 	 *             when accessing the received email fails
 	 */
 	public static void assertRecipients(List&lt;String&gt; expectedRecipients, Message actualEmail, RecipientType recipientType) throws MessagingException {
-<span class="nc" id="L570">		Address[] actualRecipients = actualEmail.getRecipients(recipientType);</span>
-<span class="nc bnc" id="L571" title="All 2 branches missed.">		if (expectedRecipients.isEmpty()) {</span>
-<span class="nc bnc" id="L572" title="All 4 branches missed.">			Assert.assertTrue(&quot;should have no recipients &quot; + recipientType, actualRecipients == null || actualRecipients.length == 0);</span>
+<span class="fc" id="L570">		Address[] actualRecipients = actualEmail.getRecipients(recipientType);</span>
+<span class="fc bfc" id="L571" title="All 2 branches covered.">		if (expectedRecipients.isEmpty()) {</span>
+<span class="pc bpc" id="L572" title="3 of 4 branches missed.">			Assert.assertTrue(&quot;should have no recipients &quot; + recipientType, actualRecipients == null || actualRecipients.length == 0);</span>
 		} else {
-<span class="nc" id="L574">			Assert.assertEquals(&quot;should have only &quot; + expectedRecipients.size() + &quot; &quot; + recipientType, expectedRecipients.size(), actualRecipients.length);</span>
-<span class="nc bnc" id="L575" title="All 2 branches missed.">			for (int i = 0; i &lt; expectedRecipients.size(); i++) {</span>
-<span class="nc" id="L576">				Assert.assertEquals(recipientType + &quot;[&quot; + i + &quot;] should be '&quot; + expectedRecipients.get(i) + &quot;'&quot;, expectedRecipients.get(i), actualRecipients[i].toString());</span>
+<span class="fc" id="L574">			Assert.assertEquals(&quot;should have only &quot; + expectedRecipients.size() + &quot; &quot; + recipientType, expectedRecipients.size(), actualRecipients.length);</span>
+<span class="fc bfc" id="L575" title="All 2 branches covered.">			for (int i = 0; i &lt; expectedRecipients.size(); i++) {</span>
+<span class="fc" id="L576">				Assert.assertEquals(recipientType + &quot;[&quot; + i + &quot;] should be '&quot; + expectedRecipients.get(i) + &quot;'&quot;, expectedRecipients.get(i), actualRecipients[i].toString());</span>
 			}
 		}
-<span class="nc" id="L579">	}</span>
+<span class="fc" id="L579">	}</span>
 
 	/**
 	 * Remove new lines from the string.
@@ -590,47 +590,47 @@ public final class AssertEmail {
 	}
 
 	private static Part getBodyPart(Part actualEmail) throws MessagingException {
-<span class="nc" id="L593">		List&lt;Part&gt; bodyParts = getBodyParts(actualEmail);</span>
-<span class="nc bnc" id="L594" title="All 2 branches missed.">		if(bodyParts.isEmpty()) {</span>
+<span class="fc" id="L593">		List&lt;Part&gt; bodyParts = getBodyParts(actualEmail);</span>
+<span class="pc bpc" id="L594" title="1 of 2 branches missed.">		if(bodyParts.isEmpty()) {</span>
 <span class="nc" id="L595">			throw new IllegalStateException(&quot;Expected at least one body part but none found&quot;);</span>
 		}
-<span class="nc" id="L597">		return bodyParts.get(0);</span>
+<span class="fc" id="L597">		return bodyParts.get(0);</span>
 	}
 
 	private static List&lt;Part&gt; getBodyParts(Part actualEmail) throws MessagingException {
-<span class="nc" id="L601">		List&lt;Part&gt; founds = new ArrayList&lt;&gt;();</span>
-<span class="nc" id="L602">		getBodyParts(actualEmail, founds);</span>
-<span class="nc" id="L603">		return founds;</span>
+<span class="fc" id="L601">		List&lt;Part&gt; founds = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L602">		getBodyParts(actualEmail, founds);</span>
+<span class="fc" id="L603">		return founds;</span>
 	}
 	
 	private static void getBodyParts(Part actualEmail, List&lt;Part&gt; founds) throws MessagingException {
 		try {
-<span class="nc" id="L608">			Object content = actualEmail.getContent();</span>
-<span class="nc bnc" id="L609" title="All 2 branches missed.">			if (content instanceof Multipart) {</span>
-<span class="nc" id="L610">				Multipart mp = (Multipart) content;</span>
-<span class="nc bnc" id="L611" title="All 2 branches missed.">				for(int i=0 ; i&lt;mp.getCount() ; i++) {</span>
-<span class="nc" id="L612">					addPart(founds, mp, i);</span>
+<span class="fc" id="L608">			Object content = actualEmail.getContent();</span>
+<span class="pc bpc" id="L609" title="1 of 2 branches missed.">			if (content instanceof Multipart) {</span>
+<span class="fc" id="L610">				Multipart mp = (Multipart) content;</span>
+<span class="fc bfc" id="L611" title="All 2 branches covered.">				for(int i=0 ; i&lt;mp.getCount() ; i++) {</span>
+<span class="fc" id="L612">					addPart(founds, mp, i);</span>
 				}
 			}
 <span class="nc" id="L615">		} catch (IOException e) {</span>
 <span class="nc" id="L616">			throw new MessagingException(&quot;Failed to access content of the mail&quot;, e);</span>
-<span class="nc" id="L617">		}</span>
-<span class="nc" id="L618">	}</span>
+<span class="fc" id="L617">		}</span>
+<span class="fc" id="L618">	}</span>
 
 	private static void addPart(List&lt;Part&gt; founds, Multipart mp, int i) throws MessagingException {
-<span class="nc" id="L621">		BodyPart part = mp.getBodyPart(i);</span>
-<span class="nc bnc" id="L622" title="All 2 branches missed.">		if(part.getContentType().startsWith(&quot;multipart/&quot;)) {</span>
+<span class="fc" id="L621">		BodyPart part = mp.getBodyPart(i);</span>
+<span class="pc bpc" id="L622" title="1 of 2 branches missed.">		if(part.getContentType().startsWith(&quot;multipart/&quot;)) {</span>
 <span class="nc" id="L623">			getBodyParts(part, founds);</span>
-<span class="nc bnc" id="L624" title="All 2 branches missed.">		} else if(TEXT_OR_HTML_MIMETYPES.matcher(part.getContentType()).matches()){</span>
-<span class="nc" id="L625">			founds.add(part);</span>
+<span class="pc bpc" id="L624" title="1 of 2 branches missed.">		} else if(TEXT_OR_HTML_MIMETYPES.matcher(part.getContentType()).matches()){</span>
+<span class="fc" id="L625">			founds.add(part);</span>
 		}
-<span class="nc" id="L627">	}</span>
+<span class="fc" id="L627">	}</span>
 
 	private static String getBody(Part actualEmail) throws MessagingException {
 		try {
-<span class="nc" id="L631">			Object content = getBodyPart(actualEmail).getContent();</span>
-<span class="nc bnc" id="L632" title="All 2 branches missed.">			if(content instanceof String) {</span>
-<span class="nc" id="L633">				return (String) content;</span>
+<span class="fc" id="L631">			Object content = getBodyPart(actualEmail).getContent();</span>
+<span class="pc bpc" id="L632" title="1 of 2 branches missed.">			if(content instanceof String) {</span>
+<span class="fc" id="L633">				return (String) content;</span>
 <span class="nc bnc" id="L634" title="All 2 branches missed.">			} else if(content instanceof InputStream) {</span>
 <span class="nc" id="L635">				return IOUtils.toString((InputStream) content, Charset.defaultCharset());</span>
 			} else {
@@ -642,11 +642,11 @@ public final class AssertEmail {
 	}
 
 	private static String getBodyMimetype(Part actualEmail) throws MessagingException {
-<span class="nc" id="L645">		return getBodyPart(actualEmail).getContentType();</span>
+<span class="fc" id="L645">		return getBodyPart(actualEmail).getContentType();</span>
 	}
 	
 	private static boolean isHtml(String expectedBody) {
-<span class="nc" id="L649">		return HTML_PATTERN.matcher(expectedBody).find();</span>
+<span class="fc" id="L649">		return HTML_PATTERN.matcher(expectedBody).find();</span>
 	}
 	
 	private AssertEmail() {

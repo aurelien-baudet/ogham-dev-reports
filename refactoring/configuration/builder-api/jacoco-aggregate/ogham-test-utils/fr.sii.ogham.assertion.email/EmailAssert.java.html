@@ -39,13 +39,13 @@ public class EmailAssert&lt;P&gt; extends HasParent&lt;P&gt; {
 	private final List&lt;? extends Message&gt; actual;
 
 	public EmailAssert(Message actual, P parent) {
-<span class="nc" id="L42">		this(Arrays.asList(actual), parent);</span>
-<span class="nc" id="L43">	}</span>
+<span class="fc" id="L42">		this(Arrays.asList(actual), parent);</span>
+<span class="fc" id="L43">	}</span>
 
 	public EmailAssert(List&lt;? extends Message&gt; actual, P parent) {
-<span class="nc" id="L46">		super(parent);</span>
-<span class="nc" id="L47">		this.actual = actual;</span>
-<span class="nc" id="L48">	}</span>
+<span class="fc" id="L46">		super(parent);</span>
+<span class="fc" id="L47">		this.actual = actual;</span>
+<span class="fc" id="L48">	}</span>
 
 	/**
 	 * Make assertions on the subject of the message(s).
@@ -70,12 +70,12 @@ public class EmailAssert&lt;P&gt; extends HasParent&lt;P&gt; {
 	 */
 	public EmailAssert&lt;P&gt; subject(Matcher&lt;String&gt; matcher) {
 		try {
-<span class="nc" id="L73">			String desc = &quot;subject of message ${messageIndex}&quot;;</span>
-<span class="nc" id="L74">			int index = 0;</span>
-<span class="nc bnc" id="L75" title="All 2 branches missed.">			for (Message message : actual) {</span>
-<span class="nc" id="L76">				assertThat(message.getSubject(), usingContext(desc, new SingleMessageContext(index++), matcher));</span>
-<span class="nc" id="L77">			}</span>
-<span class="nc" id="L78">			return this;</span>
+<span class="fc" id="L73">			String desc = &quot;subject of message ${messageIndex}&quot;;</span>
+<span class="fc" id="L74">			int index = 0;</span>
+<span class="fc bfc" id="L75" title="All 2 branches covered.">			for (Message message : actual) {</span>
+<span class="fc" id="L76">				assertThat(message.getSubject(), usingContext(desc, new SingleMessageContext(index++), matcher));</span>
+<span class="fc" id="L77">			}</span>
+<span class="fc" id="L78">			return this;</span>
 <span class="nc" id="L79">		} catch (MessagingException e) {</span>
 <span class="nc" id="L80">			throw new AssertionError(&quot;Failed to get subject of messsage&quot;, e);</span>
 		}
@@ -114,12 +114,12 @@ public class EmailAssert&lt;P&gt; extends HasParent&lt;P&gt; {
 	 */
 	public PartAssert&lt;EmailAssert&lt;P&gt;&gt; body() {
 		try {
-<span class="nc" id="L117">			int index = 0;</span>
-<span class="nc" id="L118">			List&lt;PartWithContext&gt; bodies = new ArrayList&lt;&gt;();</span>
-<span class="nc bnc" id="L119" title="All 2 branches missed.">			for (Message message : actual) {</span>
-<span class="nc" id="L120">				bodies.add(new PartWithContext(getBodyPart(message), &quot;body&quot;, new SingleMessageContext(index++)));</span>
-<span class="nc" id="L121">			}</span>
-<span class="nc" id="L122">			return new PartAssert&lt;&gt;(bodies, this);</span>
+<span class="fc" id="L117">			int index = 0;</span>
+<span class="fc" id="L118">			List&lt;PartWithContext&gt; bodies = new ArrayList&lt;&gt;();</span>
+<span class="fc bfc" id="L119" title="All 2 branches covered.">			for (Message message : actual) {</span>
+<span class="fc" id="L120">				bodies.add(new PartWithContext(getBodyPart(message), &quot;body&quot;, new SingleMessageContext(index++)));</span>
+<span class="fc" id="L121">			}</span>
+<span class="fc" id="L122">			return new PartAssert&lt;&gt;(bodies, this);</span>
 <span class="nc" id="L123">		} catch (MessagingException e) {</span>
 <span class="nc" id="L124">			throw new AssertionError(&quot;Failed to get body of messsage&quot;, e);</span>
 		}
@@ -164,12 +164,12 @@ public class EmailAssert&lt;P&gt; extends HasParent&lt;P&gt; {
 	 */
 	public PartAssert&lt;EmailAssert&lt;P&gt;&gt; alternative() {
 		try {
-<span class="nc" id="L167">			int index = 0;</span>
-<span class="nc" id="L168">			List&lt;PartWithContext&gt; bodies = new ArrayList&lt;&gt;();</span>
-<span class="nc bnc" id="L169" title="All 2 branches missed.">			for (Message message : actual) {</span>
-<span class="nc" id="L170">				bodies.add(new PartWithContext(getAlternativePart(message), &quot;alternative&quot;, new SingleMessageContext(index++)));</span>
-<span class="nc" id="L171">			}</span>
-<span class="nc" id="L172">			return new PartAssert&lt;&gt;(bodies, this);</span>
+<span class="fc" id="L167">			int index = 0;</span>
+<span class="fc" id="L168">			List&lt;PartWithContext&gt; bodies = new ArrayList&lt;&gt;();</span>
+<span class="fc bfc" id="L169" title="All 2 branches covered.">			for (Message message : actual) {</span>
+<span class="fc" id="L170">				bodies.add(new PartWithContext(getAlternativePart(message), &quot;alternative&quot;, new SingleMessageContext(index++)));</span>
+<span class="fc" id="L171">			}</span>
+<span class="fc" id="L172">			return new PartAssert&lt;&gt;(bodies, this);</span>
 <span class="nc" id="L173">		} catch (MessagingException e) {</span>
 <span class="nc" id="L174">			throw new AssertionError(&quot;Failed to get body of messsage&quot;, e);</span>
 		}
@@ -269,12 +269,12 @@ public class EmailAssert&lt;P&gt; extends HasParent&lt;P&gt; {
 	 */
 	public &lt;T extends Part&gt; EmailAssert&lt;P&gt; alternative(Matcher&lt;? super Part&gt; matcher) {	// NOSONAR
 		try {
-<span class="nc" id="L272">			String desc = &quot;alternative of message ${messageIndex}&quot;;</span>
-<span class="nc" id="L273">			int index = 0;</span>
-<span class="nc bnc" id="L274" title="All 2 branches missed.">			for (Message message : actual) {</span>
-<span class="nc" id="L275">				assertThat(getAlternativePart(message), usingContext(desc, new SingleMessageContext(index++), matcher));</span>
-<span class="nc" id="L276">			}</span>
-<span class="nc" id="L277">			return this;</span>
+<span class="fc" id="L272">			String desc = &quot;alternative of message ${messageIndex}&quot;;</span>
+<span class="fc" id="L273">			int index = 0;</span>
+<span class="fc bfc" id="L274" title="All 2 branches covered.">			for (Message message : actual) {</span>
+<span class="fc" id="L275">				assertThat(getAlternativePart(message), usingContext(desc, new SingleMessageContext(index++), matcher));</span>
+<span class="fc" id="L276">			}</span>
+<span class="fc" id="L277">			return this;</span>
 <span class="nc" id="L278">		} catch (MessagingException e) {</span>
 <span class="nc" id="L279">			throw new AssertionError(&quot;Failed to access attachments of messsage&quot;, e);</span>
 		}
@@ -307,12 +307,12 @@ public class EmailAssert&lt;P&gt; extends HasParent&lt;P&gt; {
 	 */
 	public AddressListAssert&lt;EmailAssert&lt;P&gt;&gt; from() {
 		try {
-<span class="nc" id="L310">			int index = 0;</span>
-<span class="nc" id="L311">			List&lt;AddressesWithContext&gt; addresses = new ArrayList&lt;&gt;();</span>
-<span class="nc bnc" id="L312" title="All 2 branches missed.">			for (Message message : actual) {</span>
-<span class="nc" id="L313">				addresses.add(new AddressesWithContext(asList((InternetAddress[]) message.getFrom()), &quot;from&quot;, new SingleMessageContext(index++)));</span>
-<span class="nc" id="L314">			}</span>
-<span class="nc" id="L315">			return new AddressListAssert&lt;&gt;(addresses, this);</span>
+<span class="fc" id="L310">			int index = 0;</span>
+<span class="fc" id="L311">			List&lt;AddressesWithContext&gt; addresses = new ArrayList&lt;&gt;();</span>
+<span class="fc bfc" id="L312" title="All 2 branches covered.">			for (Message message : actual) {</span>
+<span class="fc" id="L313">				addresses.add(new AddressesWithContext(asList((InternetAddress[]) message.getFrom()), &quot;from&quot;, new SingleMessageContext(index++)));</span>
+<span class="fc" id="L314">			}</span>
+<span class="fc" id="L315">			return new AddressListAssert&lt;&gt;(addresses, this);</span>
 <span class="nc" id="L316">		} catch (MessagingException e) {</span>
 <span class="nc" id="L317">			throw new AssertionError(&quot;Failed to get from field of messsage&quot;, e);</span>
 		}
@@ -347,12 +347,12 @@ public class EmailAssert&lt;P&gt; extends HasParent&lt;P&gt; {
 	 */
 	public AddressListAssert&lt;EmailAssert&lt;P&gt;&gt; to() {
 		try {
-<span class="nc" id="L350">			int index = 0;</span>
-<span class="nc" id="L351">			List&lt;AddressesWithContext&gt; addresses = new ArrayList&lt;&gt;();</span>
-<span class="nc bnc" id="L352" title="All 2 branches missed.">			for (Message message : actual) {</span>
-<span class="nc" id="L353">				addresses.add(new AddressesWithContext(asList((InternetAddress[]) message.getRecipients(TO)), &quot;to&quot;, new SingleMessageContext(index++)));</span>
-<span class="nc" id="L354">			}</span>
-<span class="nc" id="L355">			return new AddressListAssert&lt;&gt;(addresses, this);</span>
+<span class="fc" id="L350">			int index = 0;</span>
+<span class="fc" id="L351">			List&lt;AddressesWithContext&gt; addresses = new ArrayList&lt;&gt;();</span>
+<span class="fc bfc" id="L352" title="All 2 branches covered.">			for (Message message : actual) {</span>
+<span class="fc" id="L353">				addresses.add(new AddressesWithContext(asList((InternetAddress[]) message.getRecipients(TO)), &quot;to&quot;, new SingleMessageContext(index++)));</span>
+<span class="fc" id="L354">			}</span>
+<span class="fc" id="L355">			return new AddressListAssert&lt;&gt;(addresses, this);</span>
 <span class="nc" id="L356">		} catch (MessagingException e) {</span>
 <span class="nc" id="L357">			throw new AssertionError(&quot;Failed to get to field of messsage&quot;, e);</span>
 		}
@@ -387,12 +387,12 @@ public class EmailAssert&lt;P&gt; extends HasParent&lt;P&gt; {
 	 */
 	public AddressListAssert&lt;EmailAssert&lt;P&gt;&gt; cc() {
 		try {
-<span class="nc" id="L390">			int index = 0;</span>
-<span class="nc" id="L391">			List&lt;AddressesWithContext&gt; addresses = new ArrayList&lt;&gt;();</span>
-<span class="nc bnc" id="L392" title="All 2 branches missed.">			for (Message message : actual) {</span>
-<span class="nc" id="L393">				addresses.add(new AddressesWithContext(asList((InternetAddress[]) message.getRecipients(CC)), &quot;cc&quot;, new SingleMessageContext(index++)));</span>
-<span class="nc" id="L394">			}</span>
-<span class="nc" id="L395">			return new AddressListAssert&lt;&gt;(addresses, this);</span>
+<span class="fc" id="L390">			int index = 0;</span>
+<span class="fc" id="L391">			List&lt;AddressesWithContext&gt; addresses = new ArrayList&lt;&gt;();</span>
+<span class="fc bfc" id="L392" title="All 2 branches covered.">			for (Message message : actual) {</span>
+<span class="fc" id="L393">				addresses.add(new AddressesWithContext(asList((InternetAddress[]) message.getRecipients(CC)), &quot;cc&quot;, new SingleMessageContext(index++)));</span>
+<span class="fc" id="L394">			}</span>
+<span class="fc" id="L395">			return new AddressListAssert&lt;&gt;(addresses, this);</span>
 <span class="nc" id="L396">		} catch (MessagingException e) {</span>
 <span class="nc" id="L397">			throw new AssertionError(&quot;Failed to get cc field of messsage&quot;, e);</span>
 		}
@@ -429,14 +429,14 @@ public class EmailAssert&lt;P&gt; extends HasParent&lt;P&gt; {
 	 */
 	public &lt;T extends Collection&lt;? extends BodyPart&gt;&gt; EmailAssert&lt;P&gt; attachments(Matcher&lt;? super Collection&lt;? extends BodyPart&gt;&gt; matcher) {	// NOSONAR
 		try {
-<span class="nc" id="L432">			String desc = &quot;attachments of message ${messageIndex}&quot;;</span>
-<span class="nc" id="L433">			int index = 0;</span>
-<span class="nc bnc" id="L434" title="All 2 branches missed.">			for (Message message : actual) {</span>
-<span class="nc" id="L435">				Object content = message.getContent();</span>
-<span class="nc" id="L436">				Assert.assertTrue(&quot;should be multipart message&quot;, content instanceof Multipart);</span>
-<span class="nc" id="L437">				assertThat(getAttachments(message), usingContext(desc, new SingleMessageContext(index++), matcher));</span>
-<span class="nc" id="L438">			}</span>
-<span class="nc" id="L439">			return this;</span>
+<span class="fc" id="L432">			String desc = &quot;attachments of message ${messageIndex}&quot;;</span>
+<span class="fc" id="L433">			int index = 0;</span>
+<span class="fc bfc" id="L434" title="All 2 branches covered.">			for (Message message : actual) {</span>
+<span class="fc" id="L435">				Object content = message.getContent();</span>
+<span class="fc" id="L436">				Assert.assertTrue(&quot;should be multipart message&quot;, content instanceof Multipart);</span>
+<span class="fc" id="L437">				assertThat(getAttachments(message), usingContext(desc, new SingleMessageContext(index++), matcher));</span>
+<span class="fc" id="L438">			}</span>
+<span class="fc" id="L439">			return this;</span>
 <span class="nc" id="L440">		} catch (MessagingException | IOException e) {</span>
 <span class="nc" id="L441">			throw new AssertionError(&quot;Failed to access attachments of messsage&quot;, e);</span>
 		}
@@ -471,7 +471,7 @@ public class EmailAssert&lt;P&gt; extends HasParent&lt;P&gt; {
 	 * @return the fluent API for chaining assertions on received message(s)
 	 */
 	public PartAssert&lt;EmailAssert&lt;P&gt;&gt; attachment(String filename) {
-<span class="nc" id="L474">		return attachments(new FileNamePredicate(filename));</span>
+<span class="fc" id="L474">		return attachments(new FileNamePredicate(filename));</span>
 	}
 
 	/**
@@ -541,19 +541,19 @@ public class EmailAssert&lt;P&gt; extends HasParent&lt;P&gt; {
 	 */
 	public PartAssert&lt;EmailAssert&lt;P&gt;&gt; attachments(Predicate&lt;Part&gt; filter) {
 		try {
-<span class="nc" id="L544">			int index = 0;</span>
-<span class="nc" id="L545">			List&lt;PartWithContext&gt; attachments = new ArrayList&lt;&gt;();</span>
-<span class="nc bnc" id="L546" title="All 2 branches missed.">			for (Message message : actual) {</span>
-<span class="nc" id="L547">				Object content = message.getContent();</span>
-<span class="nc" id="L548">				Assert.assertTrue(&quot;should be multipart message&quot;, content instanceof Multipart);</span>
-<span class="nc" id="L549">				int attachmentIdx = 0;</span>
-<span class="nc bnc" id="L550" title="All 2 branches missed.">				for (BodyPart attachment : EmailUtils.&lt;BodyPart&gt;getAttachments(message, filter)) {</span>
-<span class="nc" id="L551">					attachments.add(new PartWithContext(attachment, &quot;attachment &quot; + filter + &quot;(&quot; + attachmentIdx + &quot;)&quot;, new SingleMessageContext(index)));</span>
-<span class="nc" id="L552">					attachmentIdx++;</span>
-<span class="nc" id="L553">				}</span>
-<span class="nc" id="L554">				index++;</span>
-<span class="nc" id="L555">			}</span>
-<span class="nc" id="L556">			return new PartAssert&lt;&gt;(attachments, this);</span>
+<span class="fc" id="L544">			int index = 0;</span>
+<span class="fc" id="L545">			List&lt;PartWithContext&gt; attachments = new ArrayList&lt;&gt;();</span>
+<span class="fc bfc" id="L546" title="All 2 branches covered.">			for (Message message : actual) {</span>
+<span class="fc" id="L547">				Object content = message.getContent();</span>
+<span class="fc" id="L548">				Assert.assertTrue(&quot;should be multipart message&quot;, content instanceof Multipart);</span>
+<span class="fc" id="L549">				int attachmentIdx = 0;</span>
+<span class="fc bfc" id="L550" title="All 2 branches covered.">				for (BodyPart attachment : EmailUtils.&lt;BodyPart&gt;getAttachments(message, filter)) {</span>
+<span class="fc" id="L551">					attachments.add(new PartWithContext(attachment, &quot;attachment &quot; + filter + &quot;(&quot; + attachmentIdx + &quot;)&quot;, new SingleMessageContext(index)));</span>
+<span class="fc" id="L552">					attachmentIdx++;</span>
+<span class="fc" id="L553">				}</span>
+<span class="fc" id="L554">				index++;</span>
+<span class="fc" id="L555">			}</span>
+<span class="fc" id="L556">			return new PartAssert&lt;&gt;(attachments, this);</span>
 <span class="nc" id="L557">		} catch (MessagingException | IOException e) {</span>
 <span class="nc" id="L558">			throw new AssertionError(&quot;Failed to get attachment &quot; + filter + &quot; of messsage&quot;, e);</span>
 		}

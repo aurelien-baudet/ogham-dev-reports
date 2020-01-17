@@ -41,7 +41,7 @@ import fr.sii.ogham.core.sender.MultiImplementationSender;
  *            {@link Builder}
  */
 public class SenderImplementationBuilderHelper&lt;P&gt; {
-<span class="nc" id="L44">	private static final Logger LOG = LoggerFactory.getLogger(SenderImplementationBuilderHelper.class);</span>
+<span class="fc" id="L44">	private static final Logger LOG = LoggerFactory.getLogger(SenderImplementationBuilderHelper.class);</span>
 
 	private final P parent;
 	private final EnvironmentBuilder&lt;?&gt; environmentBuilder;
@@ -61,12 +61,12 @@ public class SenderImplementationBuilderHelper&lt;P&gt; {
 	 *            the configuration for property resolution and evaluation
 	 */
 	public SenderImplementationBuilderHelper(P parent, EnvironmentBuilder&lt;?&gt; environmentBuilder) {
-<span class="nc" id="L64">		super();</span>
-<span class="nc" id="L65">		this.parent = parent;</span>
-<span class="nc" id="L66">		this.environmentBuilder = environmentBuilder;</span>
-<span class="nc" id="L67">		senderBuilders = new ArrayList&lt;&gt;();</span>
-<span class="nc" id="L68">		customSenders = new ArrayList&lt;&gt;();</span>
-<span class="nc" id="L69">	}</span>
+<span class="fc" id="L64">		super();</span>
+<span class="fc" id="L65">		this.parent = parent;</span>
+<span class="fc" id="L66">		this.environmentBuilder = environmentBuilder;</span>
+<span class="fc" id="L67">		senderBuilders = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L68">		customSenders = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L69">	}</span>
 
 	/**
 	 * Returns true if at least either one custom sender or a sender builder was
@@ -111,8 +111,8 @@ public class SenderImplementationBuilderHelper&lt;P&gt; {
 	 *            the sender to register
 	 */
 	public void customSender(MessageSender sender) {
-<span class="nc" id="L114">		customSenders.add(sender);</span>
-<span class="nc" id="L115">	}</span>
+<span class="fc" id="L114">		customSenders.add(sender);</span>
+<span class="fc" id="L115">	}</span>
 
 	/**
 	 * Registers and configures sender through a dedicated builder.
@@ -174,14 +174,14 @@ public class SenderImplementationBuilderHelper&lt;P&gt; {
 	@SuppressWarnings(&quot;unchecked&quot;)
 	public &lt;B extends Builder&lt;? extends MessageSender&gt;&gt; B register(Class&lt;B&gt; builderClass) {
 		// if builder already registered =&gt; provide same instance
-<span class="nc bnc" id="L177" title="All 2 branches missed.">		for (Builder&lt;? extends MessageSender&gt; builder : senderBuilders) {</span>
-<span class="nc bnc" id="L178" title="All 2 branches missed.">			if (builderClass.isAssignableFrom(builder.getClass())) {</span>
-<span class="nc" id="L179">				return (B) builder;</span>
+<span class="fc bfc" id="L177" title="All 2 branches covered.">		for (Builder&lt;? extends MessageSender&gt; builder : senderBuilders) {</span>
+<span class="fc bfc" id="L178" title="All 2 branches covered.">			if (builderClass.isAssignableFrom(builder.getClass())) {</span>
+<span class="fc" id="L179">				return (B) builder;</span>
 			}
-<span class="nc" id="L181">		}</span>
-<span class="nc" id="L182">		B builder = instantiateBuilder(builderClass, parent, environmentBuilder);</span>
-<span class="nc" id="L183">		senderBuilders.add(builder);</span>
-<span class="nc" id="L184">		return builder;</span>
+<span class="fc" id="L181">		}</span>
+<span class="fc" id="L182">		B builder = instantiateBuilder(builderClass, parent, environmentBuilder);</span>
+<span class="fc" id="L183">		senderBuilders.add(builder);</span>
+<span class="fc" id="L184">		return builder;</span>
 	}
 
 	/**
@@ -225,19 +225,19 @@ public class SenderImplementationBuilderHelper&lt;P&gt; {
 	 *            the sender that manages several implementations
 	 */
 	public void addSenders(MultiImplementationSender&lt;?&gt; mainSender) {
-<span class="nc" id="L228">		ImplementationConditionProvider implementationSelection = new ImplementationConditionProvider(environmentBuilder.build());</span>
-<span class="nc bnc" id="L229" title="All 2 branches missed.">		for (MessageSender customSender : customSenders) {</span>
-<span class="nc" id="L230">			LOG.debug(&quot;Custom implementation {} registered into {}&quot;, customSender, mainSender);</span>
-<span class="nc" id="L231">			mainSender.addImplementation(implementationSelection.provide(customSender), customSender);</span>
-<span class="nc" id="L232">		}</span>
-<span class="nc bnc" id="L233" title="All 2 branches missed.">		for (Builder&lt;? extends MessageSender&gt; builder : senderBuilders) {</span>
-<span class="nc" id="L234">			MessageSender sender = builder.build();</span>
-<span class="nc bnc" id="L235" title="All 2 branches missed.">			if (sender != null) {</span>
-<span class="nc" id="L236">				LOG.debug(&quot;Implementation {} registered into {}&quot;, sender, mainSender);</span>
-<span class="nc" id="L237">				mainSender.addImplementation(implementationSelection.provide(builder), sender);</span>
+<span class="fc" id="L228">		ImplementationConditionProvider implementationSelection = new ImplementationConditionProvider(environmentBuilder.build());</span>
+<span class="fc bfc" id="L229" title="All 2 branches covered.">		for (MessageSender customSender : customSenders) {</span>
+<span class="fc" id="L230">			LOG.debug(&quot;Custom implementation {} registered into {}&quot;, customSender, mainSender);</span>
+<span class="fc" id="L231">			mainSender.addImplementation(implementationSelection.provide(customSender), customSender);</span>
+<span class="fc" id="L232">		}</span>
+<span class="fc bfc" id="L233" title="All 2 branches covered.">		for (Builder&lt;? extends MessageSender&gt; builder : senderBuilders) {</span>
+<span class="fc" id="L234">			MessageSender sender = builder.build();</span>
+<span class="fc bfc" id="L235" title="All 2 branches covered.">			if (sender != null) {</span>
+<span class="fc" id="L236">				LOG.debug(&quot;Implementation {} registered into {}&quot;, sender, mainSender);</span>
+<span class="fc" id="L237">				mainSender.addImplementation(implementationSelection.provide(builder), sender);</span>
 			}
-<span class="nc" id="L239">		}</span>
-<span class="nc" id="L240">	}</span>
+<span class="fc" id="L239">		}</span>
+<span class="fc" id="L240">	}</span>
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

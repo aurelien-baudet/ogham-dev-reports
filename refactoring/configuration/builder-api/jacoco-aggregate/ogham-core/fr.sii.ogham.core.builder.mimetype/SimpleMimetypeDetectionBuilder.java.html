@@ -58,86 +58,86 @@ public class SimpleMimetypeDetectionBuilder&lt;P&gt; extends AbstractParent&lt;P
 	 *            used to evaluate property values
 	 */
 	public SimpleMimetypeDetectionBuilder(P parent, EnvironmentBuilder&lt;?&gt; environmentBuilder) {
-<span class="nc" id="L61">		super(parent);</span>
-<span class="nc" id="L62">		this.environmentBuilder = environmentBuilder;</span>
-<span class="nc" id="L63">		defaultMimetypeValueBuilder = new ConfigurationValueBuilderHelper&lt;&gt;(this, String.class);</span>
-<span class="nc" id="L64">	}</span>
+<span class="fc" id="L61">		super(parent);</span>
+<span class="fc" id="L62">		this.environmentBuilder = environmentBuilder;</span>
+<span class="fc" id="L63">		defaultMimetypeValueBuilder = new ConfigurationValueBuilderHelper&lt;&gt;(this, String.class);</span>
+<span class="fc" id="L64">	}</span>
 
 	@Override
 	public TikaBuilder&lt;MimetypeDetectionBuilder&lt;P&gt;&gt; tika() {
-<span class="nc bnc" id="L68" title="All 2 branches missed.">		if (tikaBuilder == null) {</span>
-<span class="nc" id="L69">			tikaBuilder = new SimpleTikaBuilder&lt;&gt;(this, environmentBuilder);</span>
+<span class="pc bpc" id="L68" title="1 of 2 branches missed.">		if (tikaBuilder == null) {</span>
+<span class="fc" id="L69">			tikaBuilder = new SimpleTikaBuilder&lt;&gt;(this, environmentBuilder);</span>
 		}
-<span class="nc" id="L71">		return tikaBuilder;</span>
+<span class="fc" id="L71">		return tikaBuilder;</span>
 	}
 
 	@Override
 	public MimetypeDetectionBuilder&lt;P&gt; defaultMimetype(String mimetype) {
-<span class="nc" id="L76">		defaultMimetypeValueBuilder.setValue(mimetype);</span>
-<span class="nc" id="L77">		return this;</span>
+<span class="fc" id="L76">		defaultMimetypeValueBuilder.setValue(mimetype);</span>
+<span class="fc" id="L77">		return this;</span>
 	}
 
 	@Override
 	public ConfigurationValueBuilder&lt;MimetypeDetectionBuilder&lt;P&gt;, String&gt; defaultMimetype() {
-<span class="nc" id="L82">		return new ConfigurationValueBuilderDelegate&lt;&gt;(this, defaultMimetypeValueBuilder);</span>
+<span class="fc" id="L82">		return new ConfigurationValueBuilderDelegate&lt;&gt;(this, defaultMimetypeValueBuilder);</span>
 	}
 
 	@Override
 	public ReplaceMimetypeBuilder&lt;MimetypeDetectionBuilder&lt;P&gt;&gt; replace() {
-<span class="nc bnc" id="L87" title="All 2 branches missed.">		if(replaceMimetypeBuilder == null) {</span>
-<span class="nc" id="L88">			replaceMimetypeBuilder = new SimpleReplaceMimetypeBuilder&lt;&gt;(this);</span>
+<span class="pc bpc" id="L87" title="1 of 2 branches missed.">		if(replaceMimetypeBuilder == null) {</span>
+<span class="fc" id="L88">			replaceMimetypeBuilder = new SimpleReplaceMimetypeBuilder&lt;&gt;(this);</span>
 		}
-<span class="nc" id="L90">		return replaceMimetypeBuilder;</span>
+<span class="fc" id="L90">		return replaceMimetypeBuilder;</span>
 	}
 
 	@Override
 	public MimeTypeProvider build() {
 		try {
-<span class="nc" id="L96">			List&lt;MimeTypeProvider&gt; providers = new ArrayList&lt;&gt;();</span>
-<span class="nc" id="L97">			buildTika(providers);</span>
-<span class="nc" id="L98">			buildDefault(providers);</span>
-<span class="nc" id="L99">			assertNotEmpty(providers);</span>
-<span class="nc" id="L100">			MimeTypeProvider provider = buildProvider(providers);</span>
-<span class="nc" id="L101">			return overrideProvider(provider);</span>
+<span class="fc" id="L96">			List&lt;MimeTypeProvider&gt; providers = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L97">			buildTika(providers);</span>
+<span class="fc" id="L98">			buildDefault(providers);</span>
+<span class="fc" id="L99">			assertNotEmpty(providers);</span>
+<span class="fc" id="L100">			MimeTypeProvider provider = buildProvider(providers);</span>
+<span class="fc" id="L101">			return overrideProvider(provider);</span>
 <span class="nc" id="L102">		} catch (MimeTypeParseException e) {</span>
 <span class="nc" id="L103">			throw new BuildException(&quot;Failed to build mimetype provider&quot;, e);</span>
 		}
 	}
 
 	private static void assertNotEmpty(List&lt;MimeTypeProvider&gt; providers) {
-<span class="nc bnc" id="L108" title="All 2 branches missed.">		if (providers.isEmpty()) {</span>
-<span class="nc" id="L109">			throw new BuildException(&quot;No mimetype detector configured&quot;);</span>
+<span class="fc bfc" id="L108" title="All 2 branches covered.">		if (providers.isEmpty()) {</span>
+<span class="fc" id="L109">			throw new BuildException(&quot;No mimetype detector configured&quot;);</span>
 		}
-<span class="nc" id="L111">	}</span>
+<span class="fc" id="L111">	}</span>
 	
 	private static MimeTypeProvider buildProvider(List&lt;MimeTypeProvider&gt; providers) {
-<span class="nc bnc" id="L114" title="All 2 branches missed.">		if (providers.size() == 1) {</span>
-<span class="nc" id="L115">			return providers.get(0);</span>
+<span class="fc bfc" id="L114" title="All 2 branches covered.">		if (providers.size() == 1) {</span>
+<span class="fc" id="L115">			return providers.get(0);</span>
 		}
-<span class="nc" id="L117">		return new FallbackMimeTypeProvider(providers);</span>
+<span class="fc" id="L117">		return new FallbackMimeTypeProvider(providers);</span>
 	}
 
 	private MimeTypeProvider overrideProvider(MimeTypeProvider provider) {
-<span class="nc bnc" id="L121" title="All 2 branches missed.">		if(replaceMimetypeBuilder==null) {</span>
-<span class="nc" id="L122">			return provider;</span>
+<span class="fc bfc" id="L121" title="All 2 branches covered.">		if(replaceMimetypeBuilder==null) {</span>
+<span class="fc" id="L122">			return provider;</span>
 		}
-<span class="nc" id="L124">		MimetypeReplacer replacer = replaceMimetypeBuilder.build();</span>
-<span class="nc" id="L125">		return new OverrideMimetypeProvider(provider, replacer);</span>
+<span class="fc" id="L124">		MimetypeReplacer replacer = replaceMimetypeBuilder.build();</span>
+<span class="fc" id="L125">		return new OverrideMimetypeProvider(provider, replacer);</span>
 	}
 
 	private void buildTika(List&lt;MimeTypeProvider&gt; providers) {
-<span class="nc bnc" id="L129" title="All 2 branches missed.">		if (tikaBuilder != null) {</span>
-<span class="nc" id="L130">			providers.add(tikaBuilder.build());</span>
+<span class="fc bfc" id="L129" title="All 2 branches covered.">		if (tikaBuilder != null) {</span>
+<span class="fc" id="L130">			providers.add(tikaBuilder.build());</span>
 		}
-<span class="nc" id="L132">	}</span>
+<span class="fc" id="L132">	}</span>
 
 	private void buildDefault(List&lt;MimeTypeProvider&gt; providers) throws MimeTypeParseException {
-<span class="nc" id="L135">		PropertyResolver propertyResolver = environmentBuilder.build();</span>
-<span class="nc" id="L136">		String mimetype = defaultMimetypeValueBuilder.getValue(propertyResolver);</span>
-<span class="nc bnc" id="L137" title="All 2 branches missed.">		if (mimetype != null) {</span>
-<span class="nc" id="L138">			providers.add(new FixedMimeTypeProvider(mimetype));</span>
+<span class="fc" id="L135">		PropertyResolver propertyResolver = environmentBuilder.build();</span>
+<span class="fc" id="L136">		String mimetype = defaultMimetypeValueBuilder.getValue(propertyResolver);</span>
+<span class="fc bfc" id="L137" title="All 2 branches covered.">		if (mimetype != null) {</span>
+<span class="fc" id="L138">			providers.add(new FixedMimeTypeProvider(mimetype));</span>
 		}
-<span class="nc" id="L140">	}</span>
+<span class="fc" id="L140">	}</span>
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

@@ -24,7 +24,7 @@ import fr.sii.ogham.core.message.Message;
  *
  */
 public class FallbackSender implements MessageSender {
-<span class="nc" id="L27">	private static final Logger LOG = LoggerFactory.getLogger(FallbackSender.class);</span>
+<span class="fc" id="L27">	private static final Logger LOG = LoggerFactory.getLogger(FallbackSender.class);</span>
 
 	/**
 	 * The list of senders to try one by one until one succeeds
@@ -39,8 +39,8 @@ public class FallbackSender implements MessageSender {
 	 *            the senders to register
 	 */
 	public FallbackSender(MessageSender... senders) {
-<span class="nc" id="L42">		this(Arrays.asList(senders));</span>
-<span class="nc" id="L43">	}</span>
+<span class="fc" id="L42">		this(Arrays.asList(senders));</span>
+<span class="fc" id="L43">	}</span>
 
 	/**
 	 * Initialize with the provided list of senders to try one by one until one
@@ -50,27 +50,27 @@ public class FallbackSender implements MessageSender {
 	 *            the senders to register
 	 */
 	public FallbackSender(List&lt;MessageSender&gt; senders) {
-<span class="nc" id="L53">		super();</span>
-<span class="nc" id="L54">		this.senders = senders;</span>
-<span class="nc" id="L55">	}</span>
+<span class="fc" id="L53">		super();</span>
+<span class="fc" id="L54">		this.senders = senders;</span>
+<span class="fc" id="L55">	}</span>
 
 	@Override
 	@SuppressWarnings(&quot;squid:S2221&quot;)
 	public void send(Message message) throws MessageException {
-<span class="nc" id="L60">		List&lt;Exception&gt; causes = new ArrayList&lt;&gt;();</span>
-<span class="nc bnc" id="L61" title="All 2 branches missed.">		for (MessageSender sender : senders) {</span>
+<span class="fc" id="L60">		List&lt;Exception&gt; causes = new ArrayList&lt;&gt;();</span>
+<span class="fc bfc" id="L61" title="All 2 branches covered.">		for (MessageSender sender : senders) {</span>
 			try {
-<span class="nc" id="L63">				LOG.debug(&quot;Try to send message {} using sender {}&quot;, summarize(message), sender);</span>
-<span class="nc" id="L64">				sender.send(message);</span>
-<span class="nc" id="L65">				LOG.debug(&quot;Message {} sent using sender {}&quot;, summarize(message), sender);</span>
-<span class="nc" id="L66">				return;</span>
-<span class="nc" id="L67">			} catch (Exception e) {</span>
-<span class="nc" id="L68">				LOG.debug(&quot;Message {} couldn't be sent using sender {}. Cause: {}&quot;, summarize(message), sender, e.getMessage());</span>
-<span class="nc" id="L69">				LOG.trace(&quot;&quot;, e);</span>
-<span class="nc" id="L70">				causes.add(e);</span>
+<span class="fc" id="L63">				LOG.debug(&quot;Try to send message {} using sender {}&quot;, summarize(message), sender);</span>
+<span class="fc" id="L64">				sender.send(message);</span>
+<span class="fc" id="L65">				LOG.debug(&quot;Message {} sent using sender {}&quot;, summarize(message), sender);</span>
+<span class="fc" id="L66">				return;</span>
+<span class="fc" id="L67">			} catch (Exception e) {</span>
+<span class="fc" id="L68">				LOG.debug(&quot;Message {} couldn't be sent using sender {}. Cause: {}&quot;, summarize(message), sender, e.getMessage());</span>
+<span class="fc" id="L69">				LOG.trace(&quot;&quot;, e);</span>
+<span class="fc" id="L70">				causes.add(e);</span>
 			}
-<span class="nc" id="L72">		}</span>
-<span class="nc" id="L73">		throw new MessageNotSentException(&quot;No sender could handle the message&quot;, message, new MultipleCauseExceptionWrapper(causes));</span>
+<span class="fc" id="L72">		}</span>
+<span class="fc" id="L73">		throw new MessageNotSentException(&quot;No sender could handle the message&quot;, message, new MultipleCauseExceptionWrapper(causes));</span>
 	}
 
 	/**

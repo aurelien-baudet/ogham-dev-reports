@@ -26,36 +26,36 @@ import freemarker.template.TemplateException;
  *
  */
 public class FreeMarkerParser implements TemplateParser {
-<span class="nc" id="L29">	private static final Logger LOG = LoggerFactory.getLogger(FreeMarkerParser.class);</span>
+<span class="fc" id="L29">	private static final Logger LOG = LoggerFactory.getLogger(FreeMarkerParser.class);</span>
 
 	private final Configuration configuration;
 	private final ResourceResolver resolver;
 
 	public FreeMarkerParser(Configuration configuration, ResourceResolver resolver) {
-<span class="nc" id="L35">		super();</span>
-<span class="nc" id="L36">		this.configuration = configuration;</span>
-<span class="nc" id="L37">		this.resolver = resolver;</span>
-<span class="nc" id="L38">	}</span>
+<span class="fc" id="L35">		super();</span>
+<span class="fc" id="L36">		this.configuration = configuration;</span>
+<span class="fc" id="L37">		this.resolver = resolver;</span>
+<span class="fc" id="L38">	}</span>
 
 	@Override
 	public Content parse(ResourcePath templatePath, Context ctx) throws ParseException {
-<span class="nc" id="L42">		LOG.debug(&quot;Parsing FreeMarker template {} with context {}...&quot;, templatePath, ctx);</span>
+<span class="fc" id="L42">		LOG.debug(&quot;Parsing FreeMarker template {} with context {}...&quot;, templatePath, ctx);</span>
 
 		try {
-<span class="nc" id="L45">			Template template = configuration.getTemplate(templatePath.getOriginalPath());</span>
-<span class="nc bnc" id="L46" title="All 2 branches missed.">			if (ctx instanceof LocaleContext) {</span>
-<span class="nc" id="L47">				template.setLocale(((LocaleContext) ctx).getLocale());</span>
+<span class="fc" id="L45">			Template template = configuration.getTemplate(templatePath.getOriginalPath());</span>
+<span class="fc bfc" id="L46" title="All 2 branches covered.">			if (ctx instanceof LocaleContext) {</span>
+<span class="fc" id="L47">				template.setLocale(((LocaleContext) ctx).getLocale());</span>
 			}
-<span class="nc" id="L49">			StringWriter out = new StringWriter();</span>
-<span class="nc" id="L50">			template.process(ctx.getVariables(), out);</span>
+<span class="fc" id="L49">			StringWriter out = new StringWriter();</span>
+<span class="fc" id="L50">			template.process(ctx.getVariables(), out);</span>
 
-<span class="nc" id="L52">			LOG.debug(&quot;Template {} successfully parsed with context {}. Result:&quot;, templatePath, ctx);</span>
-<span class="nc" id="L53">			String templateString = out.toString();</span>
-<span class="nc" id="L54">			LOG.debug(&quot;{}&quot;, templateString);</span>
-<span class="nc" id="L55">			return new ParsedContent(resolver.resolve(templatePath), ctx, templateString);</span>
+<span class="fc" id="L52">			LOG.debug(&quot;Template {} successfully parsed with context {}. Result:&quot;, templatePath, ctx);</span>
+<span class="fc" id="L53">			String templateString = out.toString();</span>
+<span class="fc" id="L54">			LOG.debug(&quot;{}&quot;, templateString);</span>
+<span class="fc" id="L55">			return new ParsedContent(resolver.resolve(templatePath), ctx, templateString);</span>
 
-<span class="nc" id="L57">		} catch (IOException | TemplateException e) {</span>
-<span class="nc" id="L58">			throw new ParseException(&quot;Failed to parse template with FreeMarker&quot;, templatePath, ctx, e);</span>
+<span class="fc" id="L57">		} catch (IOException | TemplateException e) {</span>
+<span class="fc" id="L58">			throw new ParseException(&quot;Failed to parse template with FreeMarker&quot;, templatePath, ctx, e);</span>
 <span class="nc" id="L59">		} catch (ContextException e) {</span>
 <span class="nc" id="L60">			throw new ParseException(&quot;Failed to parse template with FreeMarker due to conversion error&quot;, templatePath, ctx, e);</span>
 
@@ -64,7 +64,7 @@ public class FreeMarkerParser implements TemplateParser {
 
 	@Override
 	public String toString() {
-<span class="nc" id="L67">		return &quot;FremarkerParser&quot;;</span>
+<span class="fc" id="L67">		return &quot;FremarkerParser&quot;;</span>
 	}
 
 }

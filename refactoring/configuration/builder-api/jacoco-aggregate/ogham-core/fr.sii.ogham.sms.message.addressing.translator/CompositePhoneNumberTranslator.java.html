@@ -17,7 +17,7 @@ import fr.sii.ogham.sms.message.addressing.AddressedPhoneNumber;
  * 
  */
 public class CompositePhoneNumberTranslator implements PhoneNumberTranslator {
-<span class="nc" id="L20">	private final List&lt;PhoneNumberHandler&gt; handlerList = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L20">	private final List&lt;PhoneNumberHandler&gt; handlerList = new ArrayList&lt;&gt;();</span>
 
 	/**
 	 * Initializes the translator with the given handlers.
@@ -26,9 +26,9 @@ public class CompositePhoneNumberTranslator implements PhoneNumberTranslator {
 	 *            all the handlers to request when trying to translate a phone
 	 *            number
 	 */
-<span class="nc" id="L29">	public CompositePhoneNumberTranslator(PhoneNumberHandler... handlers) {</span>
-<span class="nc" id="L30">		Collections.addAll(handlerList, handlers);</span>
-<span class="nc" id="L31">	}</span>
+<span class="fc" id="L29">	public CompositePhoneNumberTranslator(PhoneNumberHandler... handlers) {</span>
+<span class="fc" id="L30">		Collections.addAll(handlerList, handlers);</span>
+<span class="fc" id="L31">	}</span>
 
 	/**
 	 * 
@@ -36,16 +36,16 @@ public class CompositePhoneNumberTranslator implements PhoneNumberTranslator {
 	 *            the handler to add
 	 */
 	public void add(PhoneNumberHandler handler) {
-<span class="nc" id="L39">		handlerList.add(handler);</span>
-<span class="nc" id="L40">	}</span>
+<span class="fc" id="L39">		handlerList.add(handler);</span>
+<span class="fc" id="L40">	}</span>
 
 	@Override
 	public AddressedPhoneNumber translate(PhoneNumber phoneNumber) throws PhoneNumberTranslatorException {
-<span class="nc bnc" id="L44" title="All 2 branches missed.">		for (PhoneNumberHandler currentHandler : handlerList) {</span>
-<span class="nc bnc" id="L45" title="All 2 branches missed.">			if (currentHandler.supports(phoneNumber)) {</span>
-<span class="nc" id="L46">				return currentHandler.translate(phoneNumber);</span>
+<span class="pc bpc" id="L44" title="1 of 2 branches missed.">		for (PhoneNumberHandler currentHandler : handlerList) {</span>
+<span class="fc bfc" id="L45" title="All 2 branches covered.">			if (currentHandler.supports(phoneNumber)) {</span>
+<span class="fc" id="L46">				return currentHandler.translate(phoneNumber);</span>
 			}
-<span class="nc" id="L48">		}</span>
+<span class="fc" id="L48">		}</span>
 <span class="nc" id="L49">		throw new PhoneNumberTranslatorException(&quot;No handler referenced to translate the phone number : &quot; + phoneNumber);</span>
 	}
 }

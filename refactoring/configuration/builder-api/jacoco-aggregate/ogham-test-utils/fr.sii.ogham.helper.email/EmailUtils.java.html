@@ -18,8 +18,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public final class EmailUtils {
-<span class="nc" id="L21">	private static final Logger LOG = LoggerFactory.getLogger(EmailUtils.class);</span>
-<span class="nc" id="L22">	private static final Pattern TEXT_OR_HTML_MIMETYPES = Pattern.compile(&quot;^((text/)|(application/x?html)).*&quot;, Pattern.CASE_INSENSITIVE);</span>
+<span class="fc" id="L21">	private static final Logger LOG = LoggerFactory.getLogger(EmailUtils.class);</span>
+<span class="fc" id="L22">	private static final Pattern TEXT_OR_HTML_MIMETYPES = Pattern.compile(&quot;^((text/)|(application/x?html)).*&quot;, Pattern.CASE_INSENSITIVE);</span>
 	public static final String ATTACHMENT_DISPOSITION = &quot;attachment&quot;;
 	public static final String INLINE_DISPOSITION = &quot;inline&quot;;
 
@@ -40,17 +40,17 @@ public final class EmailUtils {
 	 *             when message can't be read
 	 */
 	public static Part getBodyPart(Part actualEmail) throws MessagingException {
-<span class="nc" id="L43">		List&lt;Part&gt; bodyParts = getTextualParts(actualEmail);</span>
+<span class="fc" id="L43">		List&lt;Part&gt; bodyParts = getTextualParts(actualEmail);</span>
 		// if no textual part, it may mean that the body is not textual
-<span class="nc bnc" id="L45" title="All 2 branches missed.">		if (bodyParts.isEmpty()) {</span>
-<span class="nc" id="L46">			List&lt;Part&gt; all = getBodyParts(actualEmail, bp -&gt; true);</span>
-<span class="nc bnc" id="L47" title="All 2 branches missed.">			return all.size() == 1 ? all.get(0) : all.get(1);</span>
+<span class="fc bfc" id="L45" title="All 2 branches covered.">		if (bodyParts.isEmpty()) {</span>
+<span class="fc" id="L46">			List&lt;Part&gt; all = getBodyParts(actualEmail, bp -&gt; true);</span>
+<span class="fc bfc" id="L47" title="All 2 branches covered.">			return all.size() == 1 ? all.get(0) : all.get(1);</span>
 		}
 		// if only one part matching =&gt; not Multipart with alternative =&gt; take
 		// the first one
 		// if several matching parts =&gt; alternative + main content =&gt; the second
 		// is the main
-<span class="nc bnc" id="L53" title="All 2 branches missed.">		return bodyParts.size() == 1 ? bodyParts.get(0) : bodyParts.get(1);</span>
+<span class="fc bfc" id="L53" title="All 2 branches covered.">		return bodyParts.size() == 1 ? bodyParts.get(0) : bodyParts.get(1);</span>
 	}
 
 	/**
@@ -77,11 +77,11 @@ public final class EmailUtils {
 	 *             when message can't be read
 	 */
 	public static Part getAlternativePart(Part actualEmail) throws MessagingException {
-<span class="nc" id="L80">		List&lt;Part&gt; bodyParts = getTextualParts(actualEmail);</span>
-<span class="nc bnc" id="L81" title="All 2 branches missed.">		if (bodyParts.size() &lt; 2) {</span>
-<span class="nc" id="L82">			return null;</span>
+<span class="fc" id="L80">		List&lt;Part&gt; bodyParts = getTextualParts(actualEmail);</span>
+<span class="fc bfc" id="L81" title="All 2 branches covered.">		if (bodyParts.size() &lt; 2) {</span>
+<span class="fc" id="L82">			return null;</span>
 		}
-<span class="nc" id="L84">		return bodyParts.get(0);</span>
+<span class="fc" id="L84">		return bodyParts.get(0);</span>
 	}
 
 	/**
@@ -94,7 +94,7 @@ public final class EmailUtils {
 	 *             when message can't be read
 	 */
 	public static List&lt;Part&gt; getTextualParts(Part actualEmail) throws MessagingException {
-<span class="nc" id="L97">		return getBodyParts(actualEmail, EmailUtils::isTextualContent);</span>
+<span class="fc" id="L97">		return getBodyParts(actualEmail, EmailUtils::isTextualContent);</span>
 	}
 
 	/**
@@ -109,10 +109,10 @@ public final class EmailUtils {
 	 *             when message can&quot;t be read
 	 */
 	public static byte[] getContent(Part part) throws IOException, MessagingException {
-<span class="nc" id="L112">		InputStream stream = part.getInputStream();</span>
-<span class="nc" id="L113">		ByteArrayOutputStream baos = new ByteArrayOutputStream();</span>
-<span class="nc" id="L114">		IOUtils.copy(stream, baos);</span>
-<span class="nc" id="L115">		return baos.toByteArray();</span>
+<span class="fc" id="L112">		InputStream stream = part.getInputStream();</span>
+<span class="fc" id="L113">		ByteArrayOutputStream baos = new ByteArrayOutputStream();</span>
+<span class="fc" id="L114">		IOUtils.copy(stream, baos);</span>
+<span class="fc" id="L115">		return baos.toByteArray();</span>
 	}
 
 	/**
@@ -179,7 +179,7 @@ public final class EmailUtils {
 	 *             when message can't be read
 	 */
 	public static List&lt;BodyPart&gt; getAttachments(Part message) throws MessagingException {
-<span class="nc" id="L182">		return getAttachments(message, new DefaultAttachmentPredicate());</span>
+<span class="fc" id="L182">		return getAttachments(message, new DefaultAttachmentPredicate());</span>
 	}
 
 	/**
@@ -197,9 +197,9 @@ public final class EmailUtils {
 	 *             when message can't be read
 	 */
 	public static &lt;T extends Part&gt; List&lt;T&gt; getAttachments(Part message, Predicate&lt;Part&gt; filter) throws MessagingException {
-<span class="nc" id="L200">		List&lt;T&gt; attachments = new ArrayList&lt;&gt;();</span>
-<span class="nc" id="L201">		findBodyParts(message, filter, attachments);</span>
-<span class="nc" id="L202">		return attachments;</span>
+<span class="fc" id="L200">		List&lt;T&gt; attachments = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L201">		findBodyParts(message, filter, attachments);</span>
+<span class="fc" id="L202">		return attachments;</span>
 	}
 
 	/**
@@ -210,55 +210,55 @@ public final class EmailUtils {
 	 * 
 	 * @author Aurélien Baudet
 	 */
-<span class="nc" id="L213">	public static class DefaultAttachmentPredicate implements Predicate&lt;Part&gt; {</span>
+<span class="fc" id="L213">	public static class DefaultAttachmentPredicate implements Predicate&lt;Part&gt; {</span>
 
 		@Override
 		public boolean test(Part p) {
-<span class="nc bnc" id="L217" title="All 4 branches missed.">			return !isTextualContent(p) &amp;&amp; !isMultipart(p);</span>
+<span class="pc bpc" id="L217" title="1 of 4 branches missed.">			return !isTextualContent(p) &amp;&amp; !isMultipart(p);</span>
 		}
 
 	}
 
 	private static &lt;T extends Part&gt; List&lt;T&gt; getBodyParts(Part actualEmail, Predicate&lt;Part&gt; filter) throws MessagingException {
-<span class="nc" id="L223">		List&lt;T&gt; founds = new ArrayList&lt;&gt;();</span>
-<span class="nc" id="L224">		findBodyParts(actualEmail, filter, founds);</span>
-<span class="nc" id="L225">		return founds;</span>
+<span class="fc" id="L223">		List&lt;T&gt; founds = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L224">		findBodyParts(actualEmail, filter, founds);</span>
+<span class="fc" id="L225">		return founds;</span>
 	}
 
 	private static &lt;T extends Part&gt; void findBodyParts(Part actualEmail, Predicate&lt;Part&gt; filter, List&lt;T&gt; founds) throws MessagingException {
-<span class="nc" id="L229">		LOG.trace(&quot;---------------------------&quot;);</span>
-<span class="nc" id="L230">		findBodyParts(actualEmail, filter, founds, &quot;&quot;);</span>
-<span class="nc" id="L231">	}</span>
+<span class="fc" id="L229">		LOG.trace(&quot;---------------------------&quot;);</span>
+<span class="fc" id="L230">		findBodyParts(actualEmail, filter, founds, &quot;&quot;);</span>
+<span class="fc" id="L231">	}</span>
 
 	private static &lt;T extends Part&gt; void findBodyParts(Part actualEmail, Predicate&lt;Part&gt; filter, List&lt;T&gt; founds, String indent) throws MessagingException {
 		try {
-<span class="nc" id="L235">			Object content = actualEmail.getContent();</span>
-<span class="nc bnc" id="L236" title="All 2 branches missed.">			if (content instanceof Multipart) {</span>
-<span class="nc" id="L237">				Multipart mp = (Multipart) content;</span>
-<span class="nc" id="L238">				LOG.trace(&quot;{}find {}&quot;, indent, mp.getContentType());</span>
-<span class="nc bnc" id="L239" title="All 2 branches missed.">				for (int i = 0; i &lt; mp.getCount(); i++) {</span>
-<span class="nc" id="L240">					BodyPart part = mp.getBodyPart(i);</span>
-<span class="nc" id="L241">					addPart(filter, founds, indent, part);</span>
+<span class="fc" id="L235">			Object content = actualEmail.getContent();</span>
+<span class="pc bpc" id="L236" title="1 of 2 branches missed.">			if (content instanceof Multipart) {</span>
+<span class="fc" id="L237">				Multipart mp = (Multipart) content;</span>
+<span class="fc" id="L238">				LOG.trace(&quot;{}find {}&quot;, indent, mp.getContentType());</span>
+<span class="fc bfc" id="L239" title="All 2 branches covered.">				for (int i = 0; i &lt; mp.getCount(); i++) {</span>
+<span class="fc" id="L240">					BodyPart part = mp.getBodyPart(i);</span>
+<span class="fc" id="L241">					addPart(filter, founds, indent, part);</span>
 				}
 			}
 <span class="nc" id="L244">		} catch (IOException e) {</span>
 <span class="nc" id="L245">			throw new MessagingException(&quot;Failed to access content of the mail&quot;, e);</span>
-<span class="nc" id="L246">		}</span>
-<span class="nc" id="L247">	}</span>
+<span class="fc" id="L246">		}</span>
+<span class="fc" id="L247">	}</span>
 
 	@SuppressWarnings(&quot;unchecked&quot;)
 	private static &lt;T extends Part&gt; void addPart(Predicate&lt;Part&gt; filter, List&lt;T&gt; founds, String indent, BodyPart part) throws MessagingException {
-<span class="nc bnc" id="L251" title="All 2 branches missed.">		if (isMultipart(part)) {</span>
-<span class="nc" id="L252">			findBodyParts(part, filter, founds, indent + &quot;   &quot;);</span>
-<span class="nc bnc" id="L253" title="All 2 branches missed.">		} else if (filter.test(part)) {</span>
-<span class="nc" id="L254">			LOG.trace(&quot;{}add {}&quot;, indent + &quot;   &quot;, part.getContentType());</span>
-<span class="nc" id="L255">			founds.add((T) part);</span>
+<span class="fc bfc" id="L251" title="All 2 branches covered.">		if (isMultipart(part)) {</span>
+<span class="fc" id="L252">			findBodyParts(part, filter, founds, indent + &quot;   &quot;);</span>
+<span class="fc bfc" id="L253" title="All 2 branches covered.">		} else if (filter.test(part)) {</span>
+<span class="fc" id="L254">			LOG.trace(&quot;{}add {}&quot;, indent + &quot;   &quot;, part.getContentType());</span>
+<span class="fc" id="L255">			founds.add((T) part);</span>
 		}
-<span class="nc" id="L257">	}</span>
+<span class="fc" id="L257">	}</span>
 
 	private static boolean isMultipart(Part part) {
 		try {
-<span class="nc" id="L261">			return part.isMimeType(&quot;multipart/*&quot;);</span>
+<span class="fc" id="L261">			return part.isMimeType(&quot;multipart/*&quot;);</span>
 <span class="nc" id="L262">		} catch (MessagingException e) {</span>
 <span class="nc" id="L263">			throw new MessagingRuntimeException(&quot;Failed to retrieve Content-Type of part&quot;, e);</span>
 		}
@@ -266,7 +266,7 @@ public final class EmailUtils {
 
 	private static boolean isTextualContent(Part part) {
 		try {
-<span class="nc" id="L269">			return TEXT_OR_HTML_MIMETYPES.matcher(part.getContentType()).matches();</span>
+<span class="fc" id="L269">			return TEXT_OR_HTML_MIMETYPES.matcher(part.getContentType()).matches();</span>
 <span class="nc" id="L270">		} catch (MessagingException e) {</span>
 <span class="nc" id="L271">			throw new MessagingRuntimeException(&quot;Failed to retrieve Content-Type of part&quot;, e);</span>
 		}

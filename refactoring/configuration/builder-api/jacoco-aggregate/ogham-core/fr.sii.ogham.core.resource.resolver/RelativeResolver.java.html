@@ -29,7 +29,7 @@ import fr.sii.ogham.core.resource.path.ResourcePath;
  *
  */
 public class RelativeResolver implements DelegateResourceResolver {
-<span class="nc" id="L32">	private static final Logger LOG = LoggerFactory.getLogger(RelativeResolver.class);</span>
+<span class="fc" id="L32">	private static final Logger LOG = LoggerFactory.getLogger(RelativeResolver.class);</span>
 
 	/**
 	 * The parent path to add to the resource name (or path)
@@ -71,48 +71,48 @@ public class RelativeResolver implements DelegateResourceResolver {
 	 *            a string to add after the resource path
 	 */
 	public RelativeResolver(RelativisableResourceResolver delegate, String parentPath, String extension) {
-<span class="nc" id="L74">		super();</span>
-<span class="nc bnc" id="L75" title="All 2 branches missed.">		this.parentPath = parentPath == null ? &quot;&quot; : parentPath;</span>
-<span class="nc bnc" id="L76" title="All 2 branches missed.">		this.extension = extension == null ? &quot;&quot; : extension;</span>
-<span class="nc" id="L77">		this.delegate = delegate;</span>
-<span class="nc" id="L78">	}</span>
+<span class="fc" id="L74">		super();</span>
+<span class="pc bpc" id="L75" title="1 of 2 branches missed.">		this.parentPath = parentPath == null ? &quot;&quot; : parentPath;</span>
+<span class="pc bpc" id="L76" title="1 of 2 branches missed.">		this.extension = extension == null ? &quot;&quot; : extension;</span>
+<span class="fc" id="L77">		this.delegate = delegate;</span>
+<span class="fc" id="L78">	}</span>
 
 	@Override
 	public Resource getResource(ResourcePath path) throws ResourceResolutionException {
-<span class="nc bnc" id="L82" title="All 2 branches missed.">		if (delegate.isAbsolute(path)) {</span>
-<span class="nc" id="L83">			LOG.trace(&quot;Absolute resource path {} =&gt; do not add parentPath/extension&quot;, path);</span>
-<span class="nc" id="L84">			return delegate.getResource(path);</span>
+<span class="fc bfc" id="L82" title="All 2 branches covered.">		if (delegate.isAbsolute(path)) {</span>
+<span class="fc" id="L83">			LOG.trace(&quot;Absolute resource path {} =&gt; do not add parentPath/extension&quot;, path);</span>
+<span class="fc" id="L84">			return delegate.getResource(path);</span>
 		} else {
-<span class="nc" id="L86">			LOG.debug(&quot;Adding parentPath '{}' and extension '{}' to the resource path {}&quot;, parentPath, extension, path);</span>
-<span class="nc" id="L87">			return delegate.getResource(delegate.resolve(path, parentPath, extension));</span>
+<span class="fc" id="L86">			LOG.debug(&quot;Adding parentPath '{}' and extension '{}' to the resource path {}&quot;, parentPath, extension, path);</span>
+<span class="fc" id="L87">			return delegate.getResource(delegate.resolve(path, parentPath, extension));</span>
 		}
 	}
 
 	@Override
 	public boolean supports(ResourcePath path) {
-<span class="nc" id="L93">		return delegate.supports(path);</span>
+<span class="fc" id="L93">		return delegate.supports(path);</span>
 	}
 
 	@Override
 	public ResolvedPath resolve(ResourcePath path) {
-<span class="nc" id="L98">		ResolvedPath resourcePath = delegate.resolve(path);</span>
-<span class="nc" id="L99">		boolean absolute = resourcePath.getResolvedPath().startsWith(&quot;/&quot;);</span>
-<span class="nc bnc" id="L100" title="All 2 branches missed.">		if (absolute) {</span>
-<span class="nc" id="L101">			LOG.trace(&quot;Absolute resource path {} =&gt; do not add parentPath/extension&quot;, path);</span>
-<span class="nc" id="L102">			return resourcePath;</span>
+<span class="fc" id="L98">		ResolvedPath resourcePath = delegate.resolve(path);</span>
+<span class="fc" id="L99">		boolean absolute = resourcePath.getResolvedPath().startsWith(&quot;/&quot;);</span>
+<span class="fc bfc" id="L100" title="All 2 branches covered.">		if (absolute) {</span>
+<span class="fc" id="L101">			LOG.trace(&quot;Absolute resource path {} =&gt; do not add parentPath/extension&quot;, path);</span>
+<span class="fc" id="L102">			return resourcePath;</span>
 		}
-<span class="nc" id="L104">		LOG.debug(&quot;Adding parentPath ({}) and extension ({}) to the resource path {}&quot;, parentPath, extension, path);</span>
-<span class="nc" id="L105">		return new ResolvedResourcePath(path, resourcePath.getLookup(), parentPath + resourcePath.getResolvedPath() + extension);</span>
+<span class="fc" id="L104">		LOG.debug(&quot;Adding parentPath ({}) and extension ({}) to the resource path {}&quot;, parentPath, extension, path);</span>
+<span class="fc" id="L105">		return new ResolvedResourcePath(path, resourcePath.getLookup(), parentPath + resourcePath.getResolvedPath() + extension);</span>
 	}
 
 	@Override
 	public ResourceResolver getActualResourceResolver() {
-<span class="nc bnc" id="L110" title="All 2 branches missed.">		return delegate instanceof DelegateResourceResolver ? ((RelativeResolver) delegate).getActualResourceResolver() : delegate;</span>
+<span class="pc bpc" id="L110" title="1 of 2 branches missed.">		return delegate instanceof DelegateResourceResolver ? ((RelativeResolver) delegate).getActualResourceResolver() : delegate;</span>
 	}
 
 	@Override
 	public String toString() {
-<span class="nc" id="L115">		return &quot;RelativeResolver [parentPath=&quot; + parentPath + &quot;, extension=&quot; + extension + &quot;, delegate=&quot; + delegate + &quot;]&quot;;</span>
+<span class="fc" id="L115">		return &quot;RelativeResolver [parentPath=&quot; + parentPath + &quot;, extension=&quot; + extension + &quot;, delegate=&quot; + delegate + &quot;]&quot;;</span>
 	}
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

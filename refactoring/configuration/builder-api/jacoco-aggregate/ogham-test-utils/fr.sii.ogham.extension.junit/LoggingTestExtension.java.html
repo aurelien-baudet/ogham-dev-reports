@@ -34,8 +34,8 @@ public class LoggingTestExtension implements BeforeEachCallback, AfterEachCallba
 	 * 
 	 */
 	public LoggingTestExtension() {
-<span class="nc" id="L37">		super();</span>
-<span class="nc" id="L38">	}</span>
+<span class="fc" id="L37">		super();</span>
+<span class="fc" id="L38">	}</span>
 
 	/**
 	 * Initializes with the provided max line length.
@@ -81,31 +81,31 @@ public class LoggingTestExtension implements BeforeEachCallback, AfterEachCallba
 
 	@Override
 	public void beforeAll(ExtensionContext context) throws InstantiationException, IllegalAccessException {
-<span class="nc bnc" id="L84" title="All 2 branches missed.">		if (logger != null) {</span>
+<span class="pc bpc" id="L84" title="1 of 2 branches missed.">		if (logger != null) {</span>
 <span class="nc" id="L85">			return;</span>
 		}
-<span class="nc" id="L87">		LogTestInformation annotation = AnnotationSupport.findAnnotation(context.getElement(), LogTestInformation.class).orElse(null);</span>
-<span class="nc bnc" id="L88" title="All 2 branches missed.">		if (annotation == null) {</span>
+<span class="fc" id="L87">		LogTestInformation annotation = AnnotationSupport.findAnnotation(context.getElement(), LogTestInformation.class).orElse(null);</span>
+<span class="pc bpc" id="L88" title="1 of 2 branches missed.">		if (annotation == null) {</span>
 <span class="nc" id="L89">			logger = new TestInformationLogger();</span>
 		} else {
-<span class="nc" id="L91">			logger = new TestInformationLogger(annotation.maxLength(), annotation.marker(), annotation.printer().newInstance());</span>
+<span class="fc" id="L91">			logger = new TestInformationLogger(annotation.maxLength(), annotation.marker(), annotation.printer().newInstance());</span>
 		}
-<span class="nc" id="L93">	}</span>
+<span class="fc" id="L93">	}</span>
 
 	@Override
 	public void beforeEach(ExtensionContext context) throws Exception {
-<span class="nc" id="L97">		logger.writeStart(context.getDisplayName());</span>
-<span class="nc" id="L98">	}</span>
+<span class="fc" id="L97">		logger.writeStart(context.getDisplayName());</span>
+<span class="fc" id="L98">	}</span>
 
 	@Override
 	public void afterEach(ExtensionContext context) throws Exception {
-<span class="nc" id="L102">		Optional&lt;Throwable&gt; executionException = context.getExecutionException();</span>
-<span class="nc bnc" id="L103" title="All 2 branches missed.">		if (executionException.isPresent()) {</span>
-<span class="nc" id="L104">			logger.writeFailure(context.getDisplayName(), executionException.get());</span>
+<span class="fc" id="L102">		Optional&lt;Throwable&gt; executionException = context.getExecutionException();</span>
+<span class="fc bfc" id="L103" title="All 2 branches covered.">		if (executionException.isPresent()) {</span>
+<span class="fc" id="L104">			logger.writeFailure(context.getDisplayName(), executionException.get());</span>
 		} else {
-<span class="nc" id="L106">			logger.writeSuccess(context.getDisplayName());</span>
+<span class="fc" id="L106">			logger.writeSuccess(context.getDisplayName());</span>
 		}
-<span class="nc" id="L108">	}</span>
+<span class="fc" id="L108">	}</span>
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

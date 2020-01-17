@@ -23,7 +23,7 @@ import fr.sii.ogham.helper.sms.bean.Tag;
  *
  */
 public final class MessageDecoder {
-<span class="nc" id="L26">	private static final Logger LOG = LoggerFactory.getLogger(MessageDecoder.class);</span>
+<span class="fc" id="L26">	private static final Logger LOG = LoggerFactory.getLogger(MessageDecoder.class);</span>
 
 	/**
 	 * Decode the received message to extract the text message.
@@ -33,39 +33,39 @@ public final class MessageDecoder {
 	 * @return the text message
 	 */
 	public static String decode(SubmitSm submitSm) {
-<span class="nc" id="L36">		byte[] shortMessage = getMessageBytes(submitSm);</span>
-<span class="nc bnc" id="L37" title="All 2 branches missed.">		if (shortMessage == null) {</span>
+<span class="fc" id="L36">		byte[] shortMessage = getMessageBytes(submitSm);</span>
+<span class="pc bpc" id="L37" title="1 of 2 branches missed.">		if (shortMessage == null) {</span>
 <span class="nc" id="L38">			return null;</span>
 		}
-<span class="nc bnc" id="L40" title="All 2 branches missed.">		if (submitSm.isUdhi()) {</span>
-<span class="nc" id="L41">			int headerLength = shortMessage[0] + 1;</span>
-<span class="nc" id="L42">			shortMessage = Arrays.copyOfRange(shortMessage, headerLength, shortMessage.length);</span>
+<span class="fc bfc" id="L40" title="All 2 branches covered.">		if (submitSm.isUdhi()) {</span>
+<span class="fc" id="L41">			int headerLength = shortMessage[0] + 1;</span>
+<span class="fc" id="L42">			shortMessage = Arrays.copyOfRange(shortMessage, headerLength, shortMessage.length);</span>
 		}
-<span class="nc" id="L44">		Alphabet alphabet = Alphabet.parseDataCoding(submitSm.getDataCoding());</span>
-<span class="nc" id="L45">		Charset charset = getCharset(alphabet);</span>
-<span class="nc" id="L46">		LOG.trace(&quot;alphabet={}, charset={}, isUdhi={}, header={}&quot;, alphabet, charset, submitSm.isUdhi(), shortMessage);</span>
-<span class="nc" id="L47">		return charset.decode(shortMessage);</span>
+<span class="fc" id="L44">		Alphabet alphabet = Alphabet.parseDataCoding(submitSm.getDataCoding());</span>
+<span class="fc" id="L45">		Charset charset = getCharset(alphabet);</span>
+<span class="fc" id="L46">		LOG.trace(&quot;alphabet={}, charset={}, isUdhi={}, header={}&quot;, alphabet, charset, submitSm.isUdhi(), shortMessage);</span>
+<span class="fc" id="L47">		return charset.decode(shortMessage);</span>
 	}
 
 	@SuppressWarnings(&quot;squid:S1168&quot;)
 	private static byte[] getMessageBytes(SubmitSm submitSm) {
-<span class="nc" id="L52">		byte[] shortMessage = submitSm.getShortMessage();</span>
-<span class="nc bnc" id="L53" title="All 4 branches missed.">		if (shortMessage != null &amp;&amp; shortMessage.length &gt; 0) {</span>
-<span class="nc" id="L54">			return shortMessage;</span>
+<span class="fc" id="L52">		byte[] shortMessage = submitSm.getShortMessage();</span>
+<span class="pc bpc" id="L53" title="1 of 4 branches missed.">		if (shortMessage != null &amp;&amp; shortMessage.length &gt; 0) {</span>
+<span class="fc" id="L54">			return shortMessage;</span>
 		}
-<span class="nc" id="L56">		OptionalParameter parameter = submitSm.getOptionalParameter(Tag.MESSAGE_PAYLOAD);</span>
-<span class="nc bnc" id="L57" title="All 2 branches missed.">		if (parameter != null) {</span>
-<span class="nc" id="L58">			return parameter.getValue();</span>
+<span class="fc" id="L56">		OptionalParameter parameter = submitSm.getOptionalParameter(Tag.MESSAGE_PAYLOAD);</span>
+<span class="pc bpc" id="L57" title="1 of 2 branches missed.">		if (parameter != null) {</span>
+<span class="fc" id="L58">			return parameter.getValue();</span>
 		}
 <span class="nc" id="L60">		return null;</span>
 	}
 
 	private static Charset getCharset(Alphabet alphabet) {
 		// @formatter:off
-<span class="nc bnc" id="L65" title="All 5 branches missed.">		switch (alphabet) {</span>
-<span class="nc" id="L66">			case ALPHA_DEFAULT:						return CharsetUtil.CHARSET_GSM7;</span>
-<span class="nc" id="L67">			case ALPHA_8_BIT:						return CharsetUtil.CHARSET_GSM8;</span>
-<span class="nc" id="L68">			case ALPHA_UCS2:						return CharsetUtil.CHARSET_UCS_2;</span>
+<span class="pc bpc" id="L65" title="2 of 5 branches missed.">		switch (alphabet) {</span>
+<span class="fc" id="L66">			case ALPHA_DEFAULT:						return CharsetUtil.CHARSET_GSM7;</span>
+<span class="fc" id="L67">			case ALPHA_8_BIT:						return CharsetUtil.CHARSET_GSM8;</span>
+<span class="fc" id="L68">			case ALPHA_UCS2:						return CharsetUtil.CHARSET_UCS_2;</span>
 <span class="nc" id="L69">			case ALPHA_LATIN1:						return CharsetUtil.CHARSET_ISO_8859_1;</span>
 //			case ALPHA_IA5:							return CharsetUtil.;
 //			case ALPHA_CYRILLIC:					return CharsetUtil.;

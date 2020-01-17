@@ -26,24 +26,24 @@ public class RequiredPropertiesAnnotationProvider&lt;T&gt; implements ConditionP
 	private final RequiredPropertyAnnotationProvider&lt;T&gt; delegate;
 
 	public RequiredPropertiesAnnotationProvider(PropertyResolver propertyResolver) {
-<span class="nc" id="L29">		super();</span>
-<span class="nc" id="L30">		this.propertyResolver = propertyResolver;</span>
-<span class="nc" id="L31">		this.delegate = new RequiredPropertyAnnotationProvider&lt;&gt;(propertyResolver);</span>
-<span class="nc" id="L32">	}</span>
+<span class="fc" id="L29">		super();</span>
+<span class="fc" id="L30">		this.propertyResolver = propertyResolver;</span>
+<span class="fc" id="L31">		this.delegate = new RequiredPropertyAnnotationProvider&lt;&gt;(propertyResolver);</span>
+<span class="fc" id="L32">	}</span>
 
 	@Override
 	public Condition&lt;T&gt; provide(RequiredProperties annotation) {
-<span class="nc bnc" id="L36" title="All 2 branches missed.">		if (annotation == null) {</span>
-<span class="nc" id="L37">			return alwaysTrue();</span>
+<span class="fc bfc" id="L36" title="All 2 branches covered.">		if (annotation == null) {</span>
+<span class="fc" id="L37">			return alwaysTrue();</span>
 		} else {
-<span class="nc" id="L39">			AndCondition&lt;T&gt; mainCondition = new AndCondition&lt;&gt;();</span>
-<span class="nc bnc" id="L40" title="All 2 branches missed.">			for (String requiredProperties : annotation.value()) {</span>
-<span class="nc" id="L41">				mainCondition = mainCondition.and(Conditions.&lt;T&gt; requiredProperty(propertyResolver, requiredProperties));</span>
+<span class="fc" id="L39">			AndCondition&lt;T&gt; mainCondition = new AndCondition&lt;&gt;();</span>
+<span class="fc bfc" id="L40" title="All 2 branches covered.">			for (String requiredProperties : annotation.value()) {</span>
+<span class="fc" id="L41">				mainCondition = mainCondition.and(Conditions.&lt;T&gt; requiredProperty(propertyResolver, requiredProperties));</span>
 			}
-<span class="nc bnc" id="L43" title="All 2 branches missed.">			for (RequiredProperty subAnnotation : annotation.props()) {</span>
-<span class="nc" id="L44">				mainCondition = mainCondition.and(delegate.provide(subAnnotation));</span>
+<span class="fc bfc" id="L43" title="All 2 branches covered.">			for (RequiredProperty subAnnotation : annotation.props()) {</span>
+<span class="fc" id="L44">				mainCondition = mainCondition.and(delegate.provide(subAnnotation));</span>
 			}
-<span class="nc" id="L46">			return mainCondition;</span>
+<span class="fc" id="L46">			return mainCondition;</span>
 		}
 	}
 
