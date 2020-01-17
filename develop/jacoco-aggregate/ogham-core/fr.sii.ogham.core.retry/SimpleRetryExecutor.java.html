@@ -69,28 +69,29 @@ public class SimpleRetryExecutor implements RetryExecutor {
 <span class="fc" id="L69">			} catch (Exception e) {</span>
 <span class="fc" id="L70">				failures.add(e);</span>
 <span class="fc" id="L71">				long delay = Math.max(0, retry.nextDate() - System.currentTimeMillis());</span>
-<span class="fc" id="L72">				LOG.debug(&quot;{} failed. Retrying in {}ms...&quot;, getActionName(actionToRetry), delay);</span>
-<span class="fc" id="L73">				pause(delay);</span>
+<span class="fc" id="L72">				LOG.debug(&quot;{} failed ({}). Cause: {}. Retrying in {}ms...&quot;, e.getMessage(), e.getClass(), getActionName(actionToRetry), delay);</span>
+<span class="fc" id="L73">				LOG.trace(&quot;{}&quot;, e.getMessage(), e);</span>
+<span class="fc" id="L74">				pause(delay);</span>
 			}
-<span class="fc bfc" id="L75" title="All 2 branches covered.">		} while (!retry.terminated());</span>
+<span class="fc bfc" id="L76" title="All 2 branches covered.">		} while (!retry.terminated());</span>
 		// action couldn't be executed
-<span class="fc" id="L77">		throw new MaximumAttemptsReachedException(&quot;Maximum attempts to execute action &quot;+getActionName(actionToRetry)+&quot; is reached&quot;, failures);</span>
+<span class="fc" id="L78">		throw new MaximumAttemptsReachedException(&quot;Maximum attempts to execute action &quot;+getActionName(actionToRetry)+&quot; is reached&quot;, failures);</span>
 	}
 
-	private void pause(long delay) throws RetryExecutionInterruptedException {
+	private static void pause(long delay) throws RetryExecutionInterruptedException {
 		try {
-<span class="fc" id="L82">			Thread.sleep(delay);</span>
-<span class="nc" id="L83">		} catch (InterruptedException e) {</span>
-<span class="nc" id="L84">			Thread.currentThread().interrupt();</span>
-<span class="nc" id="L85">			throw new RetryExecutionInterruptedException(e);</span>
-<span class="fc" id="L86">		}</span>
-<span class="fc" id="L87">	}</span>
+<span class="fc" id="L83">			Thread.sleep(delay);</span>
+<span class="nc" id="L84">		} catch (InterruptedException e) {</span>
+<span class="nc" id="L85">			Thread.currentThread().interrupt();</span>
+<span class="nc" id="L86">			throw new RetryExecutionInterruptedException(e);</span>
+<span class="fc" id="L87">		}</span>
+<span class="fc" id="L88">	}</span>
 
-	private &lt;V&gt; String getActionName(Callable&lt;V&gt; actionToRetry) {
-<span class="pc bpc" id="L90" title="1 of 2 branches missed.">		if(actionToRetry instanceof NamedCallable) {</span>
-<span class="nc" id="L91">			return ((NamedCallable&lt;?&gt;) actionToRetry).getName();</span>
+	private static &lt;V&gt; String getActionName(Callable&lt;V&gt; actionToRetry) {
+<span class="fc bfc" id="L91" title="All 2 branches covered.">		if(actionToRetry instanceof NamedCallable) {</span>
+<span class="fc" id="L92">			return ((NamedCallable&lt;?&gt;) actionToRetry).getName();</span>
 		}
-<span class="fc" id="L93">		return &quot;unnamed&quot;;</span>
+<span class="fc" id="L94">		return &quot;unnamed&quot;;</span>
 	}
 
 }

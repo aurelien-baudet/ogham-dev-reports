@@ -17,7 +17,7 @@ import fr.sii.ogham.email.attachment.Attachment;
 import fr.sii.ogham.email.exception.javamail.AttachmentResourceHandlerException;
 
 public class FileResourceHandler implements JavaMailAttachmentResourceHandler {
-	private static final String ERROR_MESSAGE_PREFIX = &quot;Failed to attach &quot;;
+	private static final String ERROR_MESSAGE_PREFIX = &quot;Failed to attach '&quot;;
 	
 	/**
 	 * The Mime Type detector
@@ -35,13 +35,13 @@ public class FileResourceHandler implements JavaMailAttachmentResourceHandler {
 <span class="fc" id="L35">		try (FileInputStream fis = new FileInputStream(fileResource.getFile())) {</span>
 <span class="fc" id="L36">			part.setDataHandler(new DataHandler(new ByteArrayDataSource(fis, mimetypeProvider.getMimeType(fileResource.getFile()).toString())));</span>
 <span class="nc" id="L37">		} catch (MimeTypeDetectionException e) {</span>
-<span class="nc" id="L38">			throw new AttachmentResourceHandlerException(ERROR_MESSAGE_PREFIX + resource.getName() + &quot;. Mime type can't be detected&quot;, attachment, e);</span>
-<span class="nc" id="L39">		} catch (FileNotFoundException e) {</span>
-<span class="nc" id="L40">			throw new AttachmentResourceHandlerException(ERROR_MESSAGE_PREFIX + resource.getName() + &quot;. File doesn't exists&quot;, attachment, e);</span>
+<span class="nc" id="L38">			throw new AttachmentResourceHandlerException(ERROR_MESSAGE_PREFIX + resource.getName() + &quot;'. Mime type can't be detected&quot;, attachment, e);</span>
+<span class="fc" id="L39">		} catch (FileNotFoundException e) {</span>
+<span class="fc" id="L40">			throw new AttachmentResourceHandlerException(ERROR_MESSAGE_PREFIX + resource.getName() + &quot;'. File doesn't exists&quot;, attachment, e);</span>
 <span class="nc" id="L41">		} catch (MessagingException e) {</span>
-<span class="nc" id="L42">			throw new AttachmentResourceHandlerException(ERROR_MESSAGE_PREFIX + resource.getName(), attachment, e);</span>
+<span class="nc" id="L42">			throw new AttachmentResourceHandlerException(ERROR_MESSAGE_PREFIX + resource.getName() + &quot;'&quot;, attachment, e);</span>
 <span class="nc" id="L43">		} catch (IOException e) {</span>
-<span class="nc" id="L44">			throw new AttachmentResourceHandlerException(ERROR_MESSAGE_PREFIX + resource.getName() + &quot;. File can't be read&quot;, attachment, e);</span>
+<span class="nc" id="L44">			throw new AttachmentResourceHandlerException(ERROR_MESSAGE_PREFIX + resource.getName() + &quot;'. File can't be read&quot;, attachment, e);</span>
 <span class="fc" id="L45">		}</span>
 <span class="fc" id="L46">	}</span>
 

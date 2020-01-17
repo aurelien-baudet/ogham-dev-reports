@@ -49,32 +49,32 @@
 <span class="keyword">import</span> <span class="include">fr.sii.ogham.email.message.Email</span>;
 
 <span class="directive">public</span> <span class="type">class</span> <span class="class">WithAttachmentSample</span> {
-    <span class="directive">public</span> <span class="directive">static</span> <span class="type">void</span> main(<span class="predefined-type">String</span><span class="type">[]</span> args) <span class="directive">throws</span> MessagingException, <span class="exception">IOException</span> {
-        <span class="comment">// configure properties (could be stored in a properties file or defined</span>
-        <span class="comment">// in System properties)</span>
-        <span class="predefined-type">Properties</span> properties = <span class="keyword">new</span> <span class="predefined-type">Properties</span>();
-        properties.put(<span class="string"><span class="delimiter">&quot;</span><span class="content">mail.smtp.host</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;your server host&gt;</span><span class="delimiter">&quot;</span></span>);
-        properties.put(<span class="string"><span class="delimiter">&quot;</span><span class="content">mail.smtp.port</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;your server port&gt;</span><span class="delimiter">&quot;</span></span>);
-        properties.put(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.email.from</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;email address to display for the sender user&gt;</span><span class="delimiter">&quot;</span></span>);
-        <span class="comment">// Instantiate the messaging service using default behavior and</span>
-        <span class="comment">// provided properties</span>
-        MessagingService service = MessagingBuilder.standard()
-                .environment()
-                    .properties(properties)
-                    .and()
-                .build();
-        <span class="comment">// send the email using fluent API</span>
-        service.send(<span class="keyword">new</span> Email()
-                        .subject(<span class="string"><span class="delimiter">&quot;</span><span class="content">subject</span><span class="delimiter">&quot;</span></span>)
-                        .content(<span class="string"><span class="delimiter">&quot;</span><span class="content">content of the email</span><span class="delimiter">&quot;</span></span>)
-                        .to(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham-test@yopmail.com</span><span class="delimiter">&quot;</span></span>)
-                        .attach(<span class="keyword">new</span> Attachment(<span class="string"><span class="delimiter">&quot;</span><span class="content">classpath:/attachment/test.pdf</span><span class="delimiter">&quot;</span></span>))           <i class="conum" data-value="1"></i><b>(1)</b>
-                        .attach(<span class="keyword">new</span> Attachment(<span class="string"><span class="delimiter">&quot;</span><span class="content">from-stream.pdf</span><span class="delimiter">&quot;</span></span>, loadInputStream())));     <i class="conum" data-value="2"></i><b>(2)</b>
-    }
+  <span class="directive">public</span> <span class="directive">static</span> <span class="type">void</span> main(<span class="predefined-type">String</span><span class="type">[]</span> args) <span class="directive">throws</span> MessagingException, <span class="exception">IOException</span> {
+    <span class="comment">// configure properties (could be stored in a properties file or defined</span>
+    <span class="comment">// in System properties)</span>
+    <span class="predefined-type">Properties</span> properties = <span class="keyword">new</span> <span class="predefined-type">Properties</span>();
+    properties.put(<span class="string"><span class="delimiter">&quot;</span><span class="content">mail.smtp.host</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;your server host&gt;</span><span class="delimiter">&quot;</span></span>);
+    properties.put(<span class="string"><span class="delimiter">&quot;</span><span class="content">mail.smtp.port</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;your server port&gt;</span><span class="delimiter">&quot;</span></span>);
+    properties.put(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.email.from</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;email address to display for the sender user&gt;</span><span class="delimiter">&quot;</span></span>);
+    <span class="comment">// Instantiate the messaging service using default behavior and</span>
+    <span class="comment">// provided properties</span>
+    MessagingService service = MessagingBuilder.standard()
+        .environment()
+          .properties(properties)
+          .and()
+        .build();
+    <span class="comment">// send the email using fluent API</span>
+    service.send(<span class="keyword">new</span> Email()
+            .subject(<span class="string"><span class="delimiter">&quot;</span><span class="content">subject</span><span class="delimiter">&quot;</span></span>)
+            .content(<span class="string"><span class="delimiter">&quot;</span><span class="content">content of the email</span><span class="delimiter">&quot;</span></span>)
+            .to(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham-test@yopmail.com</span><span class="delimiter">&quot;</span></span>)
+            .attach(<span class="keyword">new</span> Attachment(<span class="string"><span class="delimiter">&quot;</span><span class="content">classpath:/attachment/test.pdf</span><span class="delimiter">&quot;</span></span>))     <i class="conum" data-value="1"></i><b>(1)</b>
+            .attach(<span class="keyword">new</span> Attachment(<span class="string"><span class="delimiter">&quot;</span><span class="content">from-stream.pdf</span><span class="delimiter">&quot;</span></span>, loadInputStream())));   <i class="conum" data-value="2"></i><b>(2)</b>
+  }
 
-    <span class="directive">private</span> <span class="directive">static</span> <span class="predefined-type">InputStream</span> loadInputStream() {
-        <span class="keyword">return</span> WithAttachmentSample.class.getResourceAsStream(<span class="string"><span class="delimiter">&quot;</span><span class="content">/attachment/test.pdf</span><span class="delimiter">&quot;</span></span>);
-    }
+  <span class="directive">private</span> <span class="directive">static</span> <span class="predefined-type">InputStream</span> loadInputStream() {
+    <span class="keyword">return</span> WithAttachmentSample.class.getResourceAsStream(<span class="string"><span class="delimiter">&quot;</span><span class="content">/attachment/test.pdf</span><span class="delimiter">&quot;</span></span>);
+  }
 }</code></pre>
 </div>
 </div>
@@ -91,7 +91,7 @@
 </table>
 </div>
 <div class="paragraph">
-<p><a href="https://github.com/groupe-sii/ogham/blob/master/sample-standard-usage/src/main/java/fr/sii/ogham/sample/standard/email/WithAttachmentSample.java?ts=4">Source code of the sample</a></p>
+<p><a href="https://github.com/groupe-sii/ogham/blob/master/sample-standard-usage/src/main/java/fr/sii/ogham/sample/standard/email/WithAttachmentSample.java?ts=2">Source code of the sample</a></p>
 </div>
 <div class="paragraph tab-container-end">
 <p>-</p>
@@ -137,7 +137,7 @@ You can also add a custom description for any attachment and link the file conte
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2019-11-20 13:19:28 UTC
+Last updated 2020-01-17 16:37:58 UTC
 </div>
 </div>
 </body>

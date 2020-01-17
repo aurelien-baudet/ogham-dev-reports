@@ -45,13 +45,13 @@ public class AutoDetectTemplateParser implements TemplateParser {
 <span class="fc" id="L45">			TemplateParser parser = findParser(templatePath, ctx);</span>
 <span class="fc" id="L46">			LOG.info(&quot;Parse the template {} using template engine {}&quot;, templatePath, parser);</span>
 <span class="fc" id="L47">			return parser.parse(templatePath, ctx);</span>
-<span class="nc" id="L48">		} catch (EngineDetectionException e) {</span>
-<span class="nc" id="L49">			throw new ParseException(&quot;Failed to automatically detect parser due to detection error&quot;, templatePath, ctx, e);</span>
+<span class="fc" id="L48">		} catch (EngineDetectionException e) {</span>
+<span class="fc" id="L49">			throw new ParseException(&quot;Failed to automatically detect parser due to detection error&quot;, templatePath, ctx, e);</span>
 		}
 	}
 
 	private TemplateParser findParser(ResourcePath templatePath, Context ctx) throws EngineDetectionException {
-<span class="pc bpc" id="L54" title="1 of 2 branches missed.">		for (TemplateImplementation impl : implementations) {</span>
+<span class="fc bfc" id="L54" title="All 2 branches covered.">		for (TemplateImplementation impl : implementations) {</span>
 <span class="fc bfc" id="L55" title="All 2 branches covered.">			if (impl.getDetector().canParse(templatePath, ctx)) {</span>
 <span class="fc" id="L56">				TemplateParser parser = impl.getParser();</span>
 <span class="fc" id="L57">				LOG.debug(&quot;Template engine {} is used for {}&quot;, parser, templatePath);</span>
@@ -60,7 +60,7 @@ public class AutoDetectTemplateParser implements TemplateParser {
 <span class="fc" id="L60">				LOG.debug(&quot;Template engine {} can't be used for {}&quot;, impl.getParser(), templatePath);</span>
 			}
 <span class="fc" id="L62">		}</span>
-<span class="nc" id="L63">		throw new NoEngineDetectionException(&quot;Auto detection couldn't find any parser able to handle the template &quot; + templatePath.getOriginalPath());</span>
+<span class="fc" id="L63">		throw new NoEngineDetectionException(&quot;Auto detection couldn't find any parser able to handle the template &quot; + templatePath.getOriginalPath());</span>
 	}
 	
 

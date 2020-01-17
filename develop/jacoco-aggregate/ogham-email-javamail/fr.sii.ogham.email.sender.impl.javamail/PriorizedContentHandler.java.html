@@ -52,8 +52,8 @@ public class PriorizedContentHandler implements JavaMailContentHandler {
 	@Override
 	public void setContent(MimePart message, Multipart multipart, Email email, Content content) throws ContentHandlerException {
 <span class="fc" id="L54">		JavaMailContentHandler contentHandler = getContentHandler(content);</span>
-<span class="pc bpc" id="L55" title="1 of 2 branches missed.">		if (contentHandler == null) {</span>
-<span class="nc" id="L56">			throw new NoContentHandlerException(&quot;there is no content handler defined for managing &quot; + content.getClass().getSimpleName() + &quot; content class&quot;, content);</span>
+<span class="fc bfc" id="L55" title="All 2 branches covered.">		if (contentHandler == null) {</span>
+<span class="fc" id="L56">			throw new NoContentHandlerException(&quot;there is no content handler defined for managing &quot; + content.getClass().getSimpleName() + &quot; content class&quot;, content);</span>
 		}
 <span class="fc" id="L58">		contentHandler.setContent(message, multipart, email, content);</span>
 <span class="fc" id="L59">	}</span>
@@ -123,13 +123,13 @@ public class PriorizedContentHandler implements JavaMailContentHandler {
 <span class="fc" id="L123">	}</span>
 
 	private JavaMailContentHandler getContentHandler(Content content) {
-<span class="fc" id="L126">		matchingHandlers.sort(new PriorityComparator&lt;PriorizedMatchingHandler&lt;JavaMailContentHandler&gt;&gt;(mh -&gt; mh.getPriority()));</span>
-<span class="pc bpc" id="L127" title="1 of 2 branches missed.">		for (PriorizedMatchingHandler&lt;JavaMailContentHandler&gt; entry : matchingHandlers) {</span>
+<span class="fc" id="L126">		matchingHandlers.sort(new PriorityComparator&lt;&gt;(PriorizedMatchingHandler::getPriority));</span>
+<span class="fc bfc" id="L127" title="All 2 branches covered.">		for (PriorizedMatchingHandler&lt;JavaMailContentHandler&gt; entry : matchingHandlers) {</span>
 <span class="fc bfc" id="L128" title="All 2 branches covered.">			if (entry.matches(content)) {</span>
 <span class="fc" id="L129">				return entry.getHandler();</span>
 			}
 <span class="fc" id="L131">		}</span>
-<span class="nc" id="L132">		return null;</span>
+<span class="fc" id="L132">		return null;</span>
 	}
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

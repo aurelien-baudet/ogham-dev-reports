@@ -34,21 +34,22 @@ public class WrapExceptionMessagingService implements MessagingService {
 	 *             when the message couldn't be sent
 	 */
 	@Override
+	@SuppressWarnings(&quot;squid:S2221&quot;)
 	public void send(Message message) throws MessagingException {
 		try {
-<span class="fc" id="L39">			delegate.send(message);</span>
-<span class="fc" id="L40">		} catch (MessagingException e) {</span>
-<span class="fc" id="L41">			throw e; // this is wanted to avoid wrapping MessagingException with</span>
+<span class="fc" id="L40">			delegate.send(message);</span>
+<span class="fc" id="L41">		} catch (MessagingException e) {</span>
+<span class="fc" id="L42">			throw e; // this is wanted to avoid wrapping MessagingException with</span>
 						// MessagingException
-<span class="fc" id="L43">		} catch (MessagingRuntimeException e) {</span>
-<span class="fc" id="L44">			throw new MessagingException(&quot;Message can't be sent due to technical exception. Cause: &quot; + e.getMessage(), e);</span>
-<span class="fc" id="L45">		} catch (IllegalArgumentException e) {</span>
-<span class="fc" id="L46">			throw new MessagingException(&quot;Message can't be sent due to precondition not met. Cause: &quot; + e.getMessage(), e);</span>
-<span class="nc" id="L47">		} catch (IllegalStateException e) {</span>
-<span class="nc" id="L48">			throw new MessagingException(&quot;Message can't be sent due to some illegal use. Cause: &quot; + e.getMessage(), e);</span>
-<span class="nc" id="L49">		} catch (Exception e) {</span>
-<span class="nc" id="L50">			throw new MessagingException(&quot;Message can't be sent due to uncaught exception. Cause: &quot; + e.getMessage(), e);</span>
-<span class="fc" id="L51">		}</span>
-<span class="fc" id="L52">	}</span>
+<span class="fc" id="L44">		} catch (MessagingRuntimeException e) {</span>
+<span class="fc" id="L45">			throw new MessagingException(&quot;Message can't be sent due to technical exception. Cause: &quot; + e.getMessage(), e);</span>
+<span class="fc" id="L46">		} catch (IllegalArgumentException e) {</span>
+<span class="fc" id="L47">			throw new MessagingException(&quot;Message can't be sent due to precondition not met. Cause: &quot; + e.getMessage(), e);</span>
+<span class="nc" id="L48">		} catch (IllegalStateException e) {</span>
+<span class="nc" id="L49">			throw new MessagingException(&quot;Message can't be sent due to some illegal use. Cause: &quot; + e.getMessage(), e);</span>
+<span class="nc" id="L50">		} catch (Exception e) {</span>
+<span class="nc" id="L51">			throw new MessagingException(&quot;Message can't be sent due to uncaught exception. Cause: &quot; + e.getMessage(), e);</span>
+<span class="fc" id="L52">		}</span>
+<span class="fc" id="L53">	}</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

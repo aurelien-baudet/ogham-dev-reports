@@ -4,8 +4,12 @@ import static java.util.stream.Collectors.toSet;
 import static org.apache.commons.lang3.reflect.FieldUtils.readField;
 
 import java.util.Set;
+import java.util.stream.Collectors;
+
+import org.apache.commons.lang3.reflect.FieldUtils;
 
 import fr.sii.ogham.assertion.HasParent;
+import fr.sii.ogham.core.resource.resolver.ResourceResolver;
 import fr.sii.ogham.template.freemarker.FreeMarkerParser;
 import freemarker.template.Configuration;
 
@@ -19,9 +23,9 @@ public class FreemarkerParserAssertions extends HasParent&lt;FreemarkerAssersion
 	private final Set&lt;FreeMarkerParser&gt; parsers;
 
 	public FreemarkerParserAssertions(FreemarkerAssersions parent, Set&lt;FreeMarkerParser&gt; parsers) {
-<span class="fc" id="L22">		super(parent);</span>
-<span class="fc" id="L23">		this.parsers = parsers;</span>
-<span class="fc" id="L24">	}</span>
+<span class="fc" id="L26">		super(parent);</span>
+<span class="fc" id="L27">		this.parsers = parsers;</span>
+<span class="fc" id="L28">	}</span>
 
 	/**
 	 * Make assertions on FreeMarker {@link Configuration} instance to ensure
@@ -39,14 +43,46 @@ public class FreemarkerParserAssertions extends HasParent&lt;FreemarkerAssersion
 	 * @return builder for fluent chaining
 	 */
 	public FreemarkerConfigurationAssersions configuration() {
-<span class="fc" id="L42">		return new FreemarkerConfigurationAssersions(this, parsers.stream().map(this::getConfiguration).collect(toSet()));</span>
+<span class="fc" id="L46">		return new FreemarkerConfigurationAssersions(this, parsers.stream().map(FreemarkerParserAssertions::getConfiguration).collect(toSet()));</span>
 	}
 
-	private Configuration getConfiguration(FreeMarkerParser freeMarkerParser) {
+	/**
+	 * Make assertions on resource resolution.
+	 * 
+	 * &lt;pre&gt;
+	 * {@code
+	 * resourceResolver()
+	 *   .classpath()
+	 *     .pathPrefix(is(&quot;prefix/&quot;)
+	 * }
+	 * &lt;/pre&gt;
+	 * 
+	 * @return builder for fluent chaining
+	 */
+	public ResourceResolverAssertions&lt;FreemarkerParserAssertions&gt; resourceResolver() {
+<span class="fc" id="L63">		return new ResourceResolverAssertions&lt;&gt;(this, getResourceResolvers());</span>
+	}
+	
+	private Set&lt;ResourceResolver&gt; getResourceResolvers() {
+<span class="fc" id="L67">		return parsers.stream()</span>
+<span class="fc" id="L68">				.map(FreemarkerParserAssertions::getResourceResolver)</span>
+<span class="fc" id="L69">				.collect(Collectors.toSet());</span>
+	}
+
+
+	private static Configuration getConfiguration(FreeMarkerParser freeMarkerParser) {
 		try {
-<span class="fc" id="L47">			return (Configuration) readField(freeMarkerParser, &quot;configuration&quot;, true);</span>
-<span class="nc" id="L48">		} catch (IllegalAccessException e) {</span>
-<span class="nc" id="L49">			throw new IllegalArgumentException(&quot;Failed to read 'configuration' field of FreeMarkerParser&quot;, e);</span>
+<span class="fc" id="L75">			return (Configuration) readField(freeMarkerParser, &quot;configuration&quot;, true);</span>
+<span class="nc" id="L76">		} catch (IllegalAccessException e) {</span>
+<span class="nc" id="L77">			throw new IllegalArgumentException(&quot;Failed to read 'configuration' field of FreeMarkerParser&quot;, e);</span>
+		}
+	}
+
+	private static ResourceResolver getResourceResolver(FreeMarkerParser parser) {
+		try {
+<span class="fc" id="L83">			return (ResourceResolver) FieldUtils.readField(parser, &quot;resolver&quot;, true);</span>
+<span class="nc" id="L84">		} catch (IllegalAccessException e) {</span>
+<span class="nc" id="L85">			throw new IllegalStateException(&quot;Failed to get 'resolver' field of FreeMarkerParser&quot;, e);</span>
 		}
 	}
 }

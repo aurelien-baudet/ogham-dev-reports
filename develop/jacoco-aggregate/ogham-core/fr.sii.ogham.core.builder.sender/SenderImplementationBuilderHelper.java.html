@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>SenderImplementationBuilderHelper.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">reporting</a> &gt; <a href="../index.html" class="el_bundle">ogham-core</a> &gt; <a href="index.source.html" class="el_package">fr.sii.ogham.core.builder.sender</a> &gt; <span class="el_source">SenderImplementationBuilderHelper.java</span></div><h1>SenderImplementationBuilderHelper.java</h1><pre class="source lang-java linenums">package fr.sii.ogham.core.builder.sender;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
+import static fr.sii.ogham.core.util.BuilderUtils.instantiateBuilder;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,7 +18,6 @@ import fr.sii.ogham.core.builder.env.EnvironmentBuilder;
 import fr.sii.ogham.core.condition.Condition;
 import fr.sii.ogham.core.condition.fluent.MessageConditions;
 import fr.sii.ogham.core.condition.provider.ImplementationConditionProvider;
-import fr.sii.ogham.core.exception.builder.BuildException;
 import fr.sii.ogham.core.message.Message;
 import fr.sii.ogham.core.sender.MessageSender;
 import fr.sii.ogham.core.sender.MultiImplementationSender;
@@ -42,7 +41,7 @@ import fr.sii.ogham.core.sender.MultiImplementationSender;
  *            {@link Builder}
  */
 public class SenderImplementationBuilderHelper&lt;P&gt; {
-<span class="fc" id="L45">	private static final Logger LOG = LoggerFactory.getLogger(SenderImplementationBuilderHelper.class);</span>
+<span class="fc" id="L44">	private static final Logger LOG = LoggerFactory.getLogger(SenderImplementationBuilderHelper.class);</span>
 
 	private final P parent;
 	private final EnvironmentBuilder&lt;?&gt; environmentBuilder;
@@ -62,12 +61,12 @@ public class SenderImplementationBuilderHelper&lt;P&gt; {
 	 *            the configuration for property resolution and evaluation
 	 */
 	public SenderImplementationBuilderHelper(P parent, EnvironmentBuilder&lt;?&gt; environmentBuilder) {
-<span class="fc" id="L65">		super();</span>
-<span class="fc" id="L66">		this.parent = parent;</span>
-<span class="fc" id="L67">		this.environmentBuilder = environmentBuilder;</span>
-<span class="fc" id="L68">		senderBuilders = new ArrayList&lt;&gt;();</span>
-<span class="fc" id="L69">		customSenders = new ArrayList&lt;&gt;();</span>
-<span class="fc" id="L70">	}</span>
+<span class="fc" id="L64">		super();</span>
+<span class="fc" id="L65">		this.parent = parent;</span>
+<span class="fc" id="L66">		this.environmentBuilder = environmentBuilder;</span>
+<span class="fc" id="L67">		senderBuilders = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L68">		customSenders = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L69">	}</span>
 
 	/**
 	 * Returns true if at least either one custom sender or a sender builder was
@@ -76,7 +75,7 @@ public class SenderImplementationBuilderHelper&lt;P&gt; {
 	 * @return true if at least one custom sender or one sender builder
 	 */
 	public boolean hasRegisteredSenders() {
-<span class="nc bnc" id="L79" title="All 4 branches missed.">		return !customSenders.isEmpty() || !senderBuilders.isEmpty();</span>
+<span class="nc bnc" id="L78" title="All 4 branches missed.">		return !customSenders.isEmpty() || !senderBuilders.isEmpty();</span>
 	}
 
 	/**
@@ -112,8 +111,8 @@ public class SenderImplementationBuilderHelper&lt;P&gt; {
 	 *            the sender to register
 	 */
 	public void customSender(MessageSender sender) {
-<span class="fc" id="L115">		customSenders.add(sender);</span>
-<span class="fc" id="L116">	}</span>
+<span class="fc" id="L114">		customSenders.add(sender);</span>
+<span class="fc" id="L115">	}</span>
 
 	/**
 	 * Registers and configures sender through a dedicated builder.
@@ -167,32 +166,22 @@ public class SenderImplementationBuilderHelper&lt;P&gt; {
 	 * 
 	 * @param builderClass
 	 *            the builder class to instantiate
-	 * @param &lt;T&gt;
+	 * @param &lt;B&gt;
 	 *            the type of the builder
 	 * @return the builder to configure the implementation
 	 * 
 	 */
 	@SuppressWarnings(&quot;unchecked&quot;)
-	public &lt;T extends Builder&lt;? extends MessageSender&gt;&gt; T register(Class&lt;T&gt; builderClass) {
+	public &lt;B extends Builder&lt;? extends MessageSender&gt;&gt; B register(Class&lt;B&gt; builderClass) {
 		// if builder already registered =&gt; provide same instance
-<span class="fc bfc" id="L178" title="All 2 branches covered.">		for (Builder&lt;? extends MessageSender&gt; builder : senderBuilders) {</span>
-<span class="fc bfc" id="L179" title="All 2 branches covered.">			if (builderClass.isAssignableFrom(builder.getClass())) {</span>
-<span class="fc" id="L180">				return (T) builder;</span>
+<span class="fc bfc" id="L177" title="All 2 branches covered.">		for (Builder&lt;? extends MessageSender&gt; builder : senderBuilders) {</span>
+<span class="fc bfc" id="L178" title="All 2 branches covered.">			if (builderClass.isAssignableFrom(builder.getClass())) {</span>
+<span class="fc" id="L179">				return (B) builder;</span>
 			}
-<span class="fc" id="L182">		}</span>
-		try {
-			T builder;
-<span class="fc" id="L185">			Constructor&lt;T&gt; constructor = builderClass.getConstructor(parent.getClass());</span>
-<span class="pc bpc" id="L186" title="1 of 2 branches missed.">			if (constructor != null) {</span>
-<span class="fc" id="L187">				builder = constructor.newInstance(parent);</span>
-			} else {
-<span class="nc" id="L189">				builder = builderClass.newInstance();</span>
-			}
-<span class="fc" id="L191">			senderBuilders.add(builder);</span>
-<span class="fc" id="L192">			return builder;</span>
-<span class="nc" id="L193">		} catch (InstantiationException | IllegalAccessException | NoSuchMethodException | SecurityException | IllegalArgumentException | InvocationTargetException e) {</span>
-<span class="nc" id="L194">			throw new BuildException(&quot;Can't instantiate builder from class &quot; + builderClass.getSimpleName(), e);</span>
-		}
+<span class="fc" id="L181">		}</span>
+<span class="fc" id="L182">		B builder = instantiateBuilder(builderClass, parent, environmentBuilder);</span>
+<span class="fc" id="L183">		senderBuilders.add(builder);</span>
+<span class="fc" id="L184">		return builder;</span>
 	}
 
 	/**
@@ -236,19 +225,19 @@ public class SenderImplementationBuilderHelper&lt;P&gt; {
 	 *            the sender that manages several implementations
 	 */
 	public void addSenders(MultiImplementationSender&lt;?&gt; mainSender) {
-<span class="fc" id="L239">		ImplementationConditionProvider implementationSelection = new ImplementationConditionProvider(environmentBuilder.build());</span>
-<span class="fc bfc" id="L240" title="All 2 branches covered.">		for (MessageSender customSender : customSenders) {</span>
-<span class="fc" id="L241">			LOG.debug(&quot;Custom implementation {} registered into {}&quot;, customSender, mainSender);</span>
-<span class="fc" id="L242">			mainSender.addImplementation(implementationSelection.provide(customSender), customSender);</span>
-<span class="fc" id="L243">		}</span>
-<span class="fc bfc" id="L244" title="All 2 branches covered.">		for (Builder&lt;? extends MessageSender&gt; builder : senderBuilders) {</span>
-<span class="fc" id="L245">			MessageSender sender = builder.build();</span>
-<span class="fc bfc" id="L246" title="All 2 branches covered.">			if (sender != null) {</span>
-<span class="fc" id="L247">				LOG.debug(&quot;Implementation {} registered into {}&quot;, sender, mainSender);</span>
-<span class="fc" id="L248">				mainSender.addImplementation(implementationSelection.provide(builder), sender);</span>
+<span class="fc" id="L228">		ImplementationConditionProvider implementationSelection = new ImplementationConditionProvider(environmentBuilder.build());</span>
+<span class="fc bfc" id="L229" title="All 2 branches covered.">		for (MessageSender customSender : customSenders) {</span>
+<span class="fc" id="L230">			LOG.debug(&quot;Custom implementation {} registered into {}&quot;, customSender, mainSender);</span>
+<span class="fc" id="L231">			mainSender.addImplementation(implementationSelection.provide(customSender), customSender);</span>
+<span class="fc" id="L232">		}</span>
+<span class="fc bfc" id="L233" title="All 2 branches covered.">		for (Builder&lt;? extends MessageSender&gt; builder : senderBuilders) {</span>
+<span class="fc" id="L234">			MessageSender sender = builder.build();</span>
+<span class="fc bfc" id="L235" title="All 2 branches covered.">			if (sender != null) {</span>
+<span class="fc" id="L236">				LOG.debug(&quot;Implementation {} registered into {}&quot;, sender, mainSender);</span>
+<span class="fc" id="L237">				mainSender.addImplementation(implementationSelection.provide(builder), sender);</span>
 			}
-<span class="fc" id="L250">		}</span>
-<span class="fc" id="L251">	}</span>
+<span class="fc" id="L239">		}</span>
+<span class="fc" id="L240">	}</span>
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

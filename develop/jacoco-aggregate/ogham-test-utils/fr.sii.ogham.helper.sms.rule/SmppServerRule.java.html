@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>SmppServerRule.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">reporting</a> &gt; <a href="../index.html" class="el_bundle">ogham-test-utils</a> &gt; <a href="index.source.html" class="el_package">fr.sii.ogham.helper.sms.rule</a> &gt; <span class="el_source">SmppServerRule.java</span></div><h1>SmppServerRule.java</h1><pre class="source lang-java linenums">package fr.sii.ogham.helper.sms.rule;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.junit.Rule;
@@ -8,6 +9,10 @@ import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import fr.sii.ogham.helper.sms.rule.config.ServerConfig;
+import fr.sii.ogham.helper.sms.rule.config.SimulatorConfiguration;
+import fr.sii.ogham.helper.sms.rule.config.annotation.SmppServerConfig;
 
 /**
  * JUnit {@link Rule} for starting a local SMPP server for integration tests.
@@ -27,8 +32,8 @@ import org.slf4j.LoggerFactory;
  * @author Aurélien Baudet
  *
  */
-public class SmppServerRule&lt;M&gt; implements TestRule {
-<span class="fc" id="L31">	private static final Logger LOG = LoggerFactory.getLogger(SmppServerRule.class);</span>
+public abstract class SmppServerRule&lt;M&gt; implements TestRule {
+<span class="fc" id="L36">	private static final Logger LOG = LoggerFactory.getLogger(SmppServerRule.class);</span>
 
 	/**
 	 * The default port used by the server if none is specified
@@ -36,25 +41,37 @@ public class SmppServerRule&lt;M&gt; implements TestRule {
 	public static final int DEFAULT_PORT = 8056;
 
 	/**
-	 * The server simulator based on &lt;a href=&quot;http://jsmpp.org/&quot;&gt;jsmpp&lt;/a&gt;
-	 * samples.
+	 * The server port
 	 */
-	private final SmppServerSimulator&lt;M&gt; server;
+	private int port;
+	/**
+	 * The configuration to control how server should behave
+	 */
+	private final ServerConfig builder;
+	/**
+	 * The server simulator
+	 */
+	private SmppServerSimulator&lt;M&gt; server;
 
 	/**
-	 * Initialize the server with the provided port.
+	 * Initializes with the port to use for the SMPP server
 	 * 
-	 * @param server
-	 *            the server implementation to use
+	 * @param port
+	 *            the port for server
+	 * @param builder
+	 *            the configuration for the server
 	 */
-	public SmppServerRule(SmppServerSimulator&lt;M&gt; server) {
-<span class="fc" id="L51">		super();</span>
-<span class="fc" id="L52">		this.server = server;</span>
-<span class="fc" id="L53">	}</span>
+	public SmppServerRule(int port, ServerConfig builder) {
+<span class="fc" id="L65">		super();</span>
+<span class="fc" id="L66">		this.port = port;</span>
+<span class="fc" id="L67">		this.builder = builder;</span>
+<span class="fc" id="L68">	}</span>
 
 	@Override
 	public Statement apply(final Statement base, final Description description) {
-<span class="fc" id="L57">		return new StartServerStatement(base);</span>
+<span class="fc" id="L72">		SmppServerConfig config = description.getAnnotation(SmppServerConfig.class);</span>
+<span class="fc" id="L73">		this.server = initServer(builder.annotationConfig(config).build());</span>
+<span class="fc" id="L74">		return new StartServerStatement(base);</span>
 	}
 
 	/**
@@ -63,7 +80,7 @@ public class SmppServerRule&lt;M&gt; implements TestRule {
 	 * @return the port used by the server
 	 */
 	public int getPort() {
-<span class="fc" id="L66">		return server.getPort();</span>
+<span class="fc" id="L83">		return port;</span>
 	}
 
 	/**
@@ -72,31 +89,41 @@ public class SmppServerRule&lt;M&gt; implements TestRule {
 	 * @return the list of received messages
 	 */
 	public List&lt;M&gt; getReceivedMessages() {
-<span class="fc" id="L75">		return server.getReceivedMessages();</span>
+<span class="pc bpc" id="L92" title="1 of 2 branches missed.">		if (server == null) {</span>
+<span class="nc" id="L93">			return Collections.emptyList();</span>
+		}
+<span class="fc" id="L95">		return server.getReceivedMessages();</span>
 	}
 
-	
-	
+	/**
+	 * Initialize the server with the ready to use configuration.
+	 * 
+	 * @param simulatorConfiguration
+	 *            the configuration to apply to the server
+	 * @return the server instance
+	 */
+	protected abstract SmppServerSimulator&lt;M&gt; initServer(SimulatorConfiguration simulatorConfiguration);
+
 	private final class StartServerStatement extends Statement {
 		private final Statement base;
 
-<span class="fc" id="L83">		private StartServerStatement(Statement base) {</span>
-<span class="fc" id="L84">			this.base = base;</span>
-<span class="fc" id="L85">		}</span>
+<span class="fc" id="L110">		private StartServerStatement(Statement base) {</span>
+<span class="fc" id="L111">			this.base = base;</span>
+<span class="fc" id="L112">		}</span>
 
 		@Override
 		public void evaluate() throws Throwable {
-<span class="fc" id="L89">			LOG.info(&quot;starting SMPP server on port {}...&quot;, getPort());</span>
-<span class="fc" id="L90">			server.start();</span>
-<span class="fc" id="L91">			LOG.info(&quot;SMPP server started on port {}&quot;, getPort());</span>
+<span class="fc" id="L116">			LOG.info(&quot;starting SMPP server on port {}...&quot;, getPort());</span>
+<span class="fc" id="L117">			server.start();</span>
+<span class="fc" id="L118">			LOG.info(&quot;SMPP server started on port {}&quot;, getPort());</span>
 			try {
-<span class="fc" id="L93">				base.evaluate();</span>
+<span class="fc" id="L120">				base.evaluate();</span>
 			} finally {
-<span class="fc" id="L95">				LOG.info(&quot;stopping SMPP server...&quot;);</span>
-<span class="fc" id="L96">				server.stop();</span>
-<span class="fc" id="L97">				LOG.info(&quot;SMPP server stopped&quot;);</span>
+<span class="fc" id="L122">				LOG.info(&quot;stopping SMPP server...&quot;);</span>
+<span class="fc" id="L123">				server.stop();</span>
+<span class="fc" id="L124">				LOG.info(&quot;SMPP server stopped&quot;);</span>
 			}
-<span class="fc" id="L99">		}</span>
+<span class="fc" id="L126">		}</span>
 	}
 
 }

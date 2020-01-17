@@ -67,6 +67,35 @@ public class EmailsAssert&lt;P&gt; extends HasParent&lt;P&gt; {
 	 * assertion will be applied on every message:
 	 * 
 	 * &lt;pre&gt;
+	 * .receivedMessages().every().subject(is(&quot;foobar&quot;))
+	 * &lt;/pre&gt;
+	 * 
+	 * Will check that subject of every message is &quot;foobar&quot;.
+	 * 
+	 * &lt;p&gt;
+	 * You can use this method to factorize several assertions on a message and
+	 * then make dedicated assertions on some messages:
+	 * 
+	 * &lt;pre&gt;
+	 * .receivedMessages().every().subject(is(&quot;foobar&quot;))
+	 *                    .and()
+	 *                    .message(0).body().contentAsString(is(&quot;toto&quot;))
+	 * &lt;/pre&gt;
+	 * 
+	 * Will check that subject of every message is &quot;foobar&quot; and that body of
+	 * first received message is &quot;toto&quot;.
+	 * 
+	 * @return the fluent API for chaining assertions on received messages
+	 */
+	public EmailAssert&lt;EmailsAssert&lt;P&gt;&gt; every() {
+<span class="fc" id="L91">		return new EmailAssert&lt;&gt;(actual, this);</span>
+	}
+
+	/**
+	 * Fluent API to write assertions on every received messages. Any defined
+	 * assertion will be applied on every message:
+	 * 
+	 * &lt;pre&gt;
 	 * .receivedMessages().forEach().subject(is(&quot;foobar&quot;))
 	 * &lt;/pre&gt;
 	 * 
@@ -86,10 +115,11 @@ public class EmailsAssert&lt;P&gt; extends HasParent&lt;P&gt; {
 	 * first received message is &quot;toto&quot;.
 	 * 
 	 * @return the fluent API for chaining assertions on received messages
+	 * @deprecated use {@link #every()} instead
 	 */
+	@Deprecated
 	public EmailAssert&lt;EmailsAssert&lt;P&gt;&gt; forEach() {
-<span class="fc" id="L91">		return new EmailAssert&lt;&gt;(actual, this);</span>
+<span class="nc" id="L122">		return new EmailAssert&lt;&gt;(actual, this);</span>
 	}
-
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

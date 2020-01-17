@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>AutofillEmailBuilder.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">reporting</a> &gt; <a href="../index.html" class="el_bundle">ogham-core</a> &gt; <a href="index.source.html" class="el_package">fr.sii.ogham.email.builder</a> &gt; <span class="el_source">AutofillEmailBuilder.java</span></div><h1>AutofillEmailBuilder.java</h1><pre class="source lang-java linenums">package fr.sii.ogham.email.builder;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import fr.sii.ogham.core.builder.AbstractParent;
 import fr.sii.ogham.core.builder.Builder;
+import fr.sii.ogham.core.builder.configuration.ConfigurationValueBuilderHelper;
 import fr.sii.ogham.core.builder.env.EnvironmentBuilder;
 import fr.sii.ogham.core.env.PropertyResolver;
 import fr.sii.ogham.core.filler.EveryFillerDecorator;
@@ -36,10 +36,10 @@ import fr.sii.ogham.email.message.Email;
  */
 public class AutofillEmailBuilder extends AbstractParent&lt;EmailBuilder&gt; implements Builder&lt;MessageFiller&gt; {
 	private AutofillSubjectBuilder subjectBuilder;
-	private AutofillDefaultEmailAddressBuilder fromBuilder;
-	private AutofillDefaultEmailAddressBuilder toBuilder;
-	private AutofillDefaultEmailAddressBuilder ccBuilder;
-	private AutofillDefaultEmailAddressBuilder bccBuilder;
+	private AutofillDefaultEmailAddressBuilder&lt;String&gt; fromBuilder;
+	private AutofillDefaultEmailAddressBuilder&lt;String[]&gt; toBuilder;
+	private AutofillDefaultEmailAddressBuilder&lt;String[]&gt; ccBuilder;
+	private AutofillDefaultEmailAddressBuilder&lt;String[]&gt; bccBuilder;
 	private EnvironmentBuilder&lt;?&gt; environmentBuilder;
 
 	/**
@@ -88,9 +88,9 @@ public class AutofillEmailBuilder extends AbstractParent&lt;EmailBuilder&gt; imp
 	 * 
 	 * @return the builder to configure default sender address handling
 	 */
-	public AutofillDefaultEmailAddressBuilder from() {
+	public AutofillDefaultEmailAddressBuilder&lt;String&gt; from() {
 <span class="pc bpc" id="L92" title="1 of 2 branches missed.">		if (fromBuilder == null) {</span>
-<span class="fc" id="L93">			fromBuilder = new AutofillDefaultEmailAddressBuilder(this);</span>
+<span class="fc" id="L93">			fromBuilder = new AutofillDefaultEmailAddressBuilder&lt;&gt;(this, String.class);</span>
 		}
 <span class="fc" id="L95">		return fromBuilder;</span>
 	}
@@ -103,9 +103,9 @@ public class AutofillEmailBuilder extends AbstractParent&lt;EmailBuilder&gt; imp
 	 * 
 	 * @return the builder to configure default address handling
 	 */
-	public AutofillDefaultEmailAddressBuilder to() {
+	public AutofillDefaultEmailAddressBuilder&lt;String[]&gt; to() {
 <span class="pc bpc" id="L107" title="1 of 2 branches missed.">		if (toBuilder == null) {</span>
-<span class="fc" id="L108">			toBuilder = new AutofillDefaultEmailAddressBuilder(this);</span>
+<span class="fc" id="L108">			toBuilder = new AutofillDefaultEmailAddressBuilder&lt;&gt;(this, String[].class);</span>
 		}
 <span class="fc" id="L110">		return toBuilder;</span>
 	}
@@ -118,9 +118,9 @@ public class AutofillEmailBuilder extends AbstractParent&lt;EmailBuilder&gt; imp
 	 * 
 	 * @return the builder to configure default address handling
 	 */
-	public AutofillDefaultEmailAddressBuilder cc() {
+	public AutofillDefaultEmailAddressBuilder&lt;String[]&gt; cc() {
 <span class="pc bpc" id="L122" title="1 of 2 branches missed.">		if (ccBuilder == null) {</span>
-<span class="fc" id="L123">			ccBuilder = new AutofillDefaultEmailAddressBuilder(this);</span>
+<span class="fc" id="L123">			ccBuilder = new AutofillDefaultEmailAddressBuilder&lt;&gt;(this, String[].class);</span>
 		}
 <span class="fc" id="L125">		return ccBuilder;</span>
 	}
@@ -133,9 +133,9 @@ public class AutofillEmailBuilder extends AbstractParent&lt;EmailBuilder&gt; imp
 	 * 
 	 * @return the builder to configure default address handling
 	 */
-	public AutofillDefaultEmailAddressBuilder bcc() {
+	public AutofillDefaultEmailAddressBuilder&lt;String[]&gt; bcc() {
 <span class="pc bpc" id="L137" title="1 of 2 branches missed.">		if (bccBuilder == null) {</span>
-<span class="fc" id="L138">			bccBuilder = new AutofillDefaultEmailAddressBuilder(this);</span>
+<span class="fc" id="L138">			bccBuilder = new AutofillDefaultEmailAddressBuilder&lt;&gt;(this, String[].class);</span>
 		}
 <span class="fc" id="L140">		return bccBuilder;</span>
 	}
@@ -151,22 +151,22 @@ public class AutofillEmailBuilder extends AbstractParent&lt;EmailBuilder&gt; imp
 <span class="fc" id="L151">		return filler;</span>
 	}
 
-	private Map&lt;String, List&lt;String&gt;&gt; buildDefaultValueProps() {
-<span class="fc" id="L155">		Map&lt;String, List&lt;String&gt;&gt; props = new HashMap&lt;&gt;();</span>
+	private Map&lt;String, ConfigurationValueBuilderHelper&lt;?, ?&gt;&gt; buildDefaultValueProps() {
+<span class="fc" id="L155">		Map&lt;String, ConfigurationValueBuilderHelper&lt;?, ?&gt;&gt; props = new HashMap&lt;&gt;();</span>
 <span class="pc bpc" id="L156" title="1 of 2 branches missed.">		if (subjectBuilder != null) {</span>
-<span class="fc" id="L157">			props.put(&quot;subject&quot;, subjectBuilder.getDefaultValueProperties());</span>
+<span class="fc" id="L157">			props.put(&quot;subject&quot;, (ConfigurationValueBuilderHelper&lt;?, String&gt;) subjectBuilder.defaultValue());</span>
 		}
 <span class="pc bpc" id="L159" title="1 of 2 branches missed.">		if (fromBuilder != null) {</span>
-<span class="fc" id="L160">			props.put(&quot;from&quot;, fromBuilder.getDefaultValueProperties());</span>
+<span class="fc" id="L160">			props.put(&quot;from&quot;, (ConfigurationValueBuilderHelper&lt;?, String&gt;) fromBuilder.defaultValue());</span>
 		}
 <span class="pc bpc" id="L162" title="1 of 2 branches missed.">		if (toBuilder != null) {</span>
-<span class="fc" id="L163">			props.put(&quot;to&quot;, toBuilder.getDefaultValueProperties());</span>
+<span class="fc" id="L163">			props.put(&quot;to&quot;, (ConfigurationValueBuilderHelper&lt;?, String[]&gt;) toBuilder.defaultValue());</span>
 		}
 <span class="pc bpc" id="L165" title="1 of 2 branches missed.">		if (ccBuilder != null) {</span>
-<span class="fc" id="L166">			props.put(&quot;cc&quot;, ccBuilder.getDefaultValueProperties());</span>
+<span class="fc" id="L166">			props.put(&quot;cc&quot;, (ConfigurationValueBuilderHelper&lt;?, String[]&gt;) ccBuilder.defaultValue());</span>
 		}
 <span class="pc bpc" id="L168" title="1 of 2 branches missed.">		if (bccBuilder != null) {</span>
-<span class="fc" id="L169">			props.put(&quot;bcc&quot;, bccBuilder.getDefaultValueProperties());</span>
+<span class="fc" id="L169">			props.put(&quot;bcc&quot;, (ConfigurationValueBuilderHelper&lt;?, String[]&gt;) bccBuilder.defaultValue());</span>
 		}
 <span class="fc" id="L171">		return props;</span>
 	}

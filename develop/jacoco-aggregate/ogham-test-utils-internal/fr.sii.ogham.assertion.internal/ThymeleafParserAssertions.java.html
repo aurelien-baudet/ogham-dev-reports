@@ -3,12 +3,14 @@
 import static fr.sii.ogham.assertion.AssertionHelper.assertThat;
 
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.hamcrest.Matcher;
 import org.thymeleaf.TemplateEngine;
 
 import fr.sii.ogham.assertion.HasParent;
+import fr.sii.ogham.core.resource.resolver.ResourceResolver;
 import fr.sii.ogham.template.thymeleaf.common.ThymeleafParser;
 
 /**
@@ -22,9 +24,9 @@ public class ThymeleafParserAssertions extends HasParent&lt;ThymeleafAssertions&
 	private final Set&lt;ThymeleafParser&gt; parsers;
 
 	public ThymeleafParserAssertions(ThymeleafAssertions parent, Set&lt;ThymeleafParser&gt; parsers) {
-<span class="fc" id="L25">		super(parent);</span>
-<span class="fc" id="L26">		this.parsers = parsers;</span>
-<span class="fc" id="L27">	}</span>
+<span class="fc" id="L27">		super(parent);</span>
+<span class="fc" id="L28">		this.parsers = parsers;</span>
+<span class="fc" id="L29">	}</span>
 
 	/**
 	 * Ensures that {@link TemplateEngine} is configured as expected.
@@ -36,17 +38,48 @@ public class ThymeleafParserAssertions extends HasParent&lt;ThymeleafAssertions&
 	 * @return this instance for fluent chaining
 	 */
 	public &lt;T extends TemplateEngine&gt; ThymeleafParserAssertions engine(Matcher&lt;? super TemplateEngine&gt; matcher) {
-<span class="fc bfc" id="L39" title="All 2 branches covered.">		for (ThymeleafParser thymeleafParser : parsers) {</span>
-<span class="fc" id="L40">			assertThat(getEngine(thymeleafParser), matcher);</span>
-<span class="fc" id="L41">		}</span>
-<span class="fc" id="L42">		return this;</span>
+<span class="fc bfc" id="L41" title="All 2 branches covered.">		for (ThymeleafParser thymeleafParser : parsers) {</span>
+<span class="fc" id="L42">			assertThat(getEngine(thymeleafParser), matcher);</span>
+<span class="fc" id="L43">		}</span>
+<span class="fc" id="L44">		return this;</span>
 	}
 
-	private TemplateEngine getEngine(ThymeleafParser parser) {
+	/**
+	 * Make assertions on resource resolution.
+	 * 
+	 * &lt;pre&gt;
+	 * {@code
+	 * resourceResolver()
+	 *   .classpath()
+	 *     .pathPrefix(is(&quot;prefix/&quot;)
+	 * }
+	 * &lt;/pre&gt;
+	 * 
+	 * @return builder for fluent chaining
+	 */
+	public ResourceResolverAssertions&lt;ThymeleafParserAssertions&gt; resourceResolver() {
+<span class="fc" id="L61">		return new ResourceResolverAssertions&lt;&gt;(this, getResourceResolvers());</span>
+	}
+
+	private Set&lt;ResourceResolver&gt; getResourceResolvers() {
+<span class="fc" id="L65">		return parsers.stream()</span>
+<span class="fc" id="L66">				.map(ThymeleafParserAssertions::getResourceResolver)</span>
+<span class="fc" id="L67">				.collect(Collectors.toSet());</span>
+	}
+
+	private static TemplateEngine getEngine(ThymeleafParser parser) {
 		try {
-<span class="fc" id="L47">			return (TemplateEngine) FieldUtils.readField(parser, &quot;engine&quot;, true);</span>
-<span class="nc" id="L48">		} catch (IllegalAccessException e) {</span>
-<span class="nc" id="L49">			throw new IllegalArgumentException(&quot;Failed to get 'engine' field of ThymeleafParser&quot;, e);</span>
+<span class="fc" id="L72">			return (TemplateEngine) FieldUtils.readField(parser, &quot;engine&quot;, true);</span>
+<span class="nc" id="L73">		} catch (IllegalAccessException e) {</span>
+<span class="nc" id="L74">			throw new IllegalStateException(&quot;Failed to get 'engine' field of ThymeleafParser&quot;, e);</span>
+		}
+	}
+
+	private static ResourceResolver getResourceResolver(ThymeleafParser parser) {
+		try {
+<span class="fc" id="L80">			return (ResourceResolver) FieldUtils.readField(parser, &quot;resolver&quot;, true);</span>
+<span class="nc" id="L81">		} catch (IllegalAccessException e) {</span>
+<span class="nc" id="L82">			throw new IllegalStateException(&quot;Failed to get 'resolver' field of ThymeleafParser&quot;, e);</span>
 		}
 	}
 }

@@ -164,14 +164,14 @@ import fr.sii.ogham.sms.sender.SmsSender;
  *     .and()
  *   .sms()
  *     .sender(CloudhopperBuilder.class)   // enable SMS sending using Cloudhopper
- *       .host(&quot;${smpp.host}&quot;)
- *       .port(&quot;${smpp.port}&quot;)
- *       .systemId(&quot;${smpp.system-id}&quot;)
- *       .password(&quot;${smpp.password}&quot;)
+ *       .host().properties(&quot;${smpp.host}&quot;).and()
+ *       .port().properties(&quot;${smpp.port}&quot;).and()
+ *       .systemId().properties(&quot;${smpp.system-id}&quot;).and()
+ *       .password().properties(&quot;${smpp.password}&quot;).and()
  *       .and()
  *     .autofill()    // enables and configures autofilling
  *       .from()
- *         .defaultValueProperty(&quot;${sms.sender.number}&quot;)
+ *         .defaultValue().properties(&quot;${sms.sender.number}&quot;).and()
  *         .and()
  *       .and()
  *     .and()
@@ -247,7 +247,7 @@ import fr.sii.ogham.sms.sender.SmsSender;
  *   .sms()
  *     .autofill()
  *       .from()
- *         .defaultValueProperty(&quot;${sms.sender.number}&quot;)   // overrides default sender phone number property
+ *         .defaultValue().properties(&quot;${sms.sender.number}&quot;).and()   // overrides default sender phone number property
  *         .and()
  *       .and()
  *     .and()
@@ -313,10 +313,10 @@ public class SmsBuilder extends AbstractParent&lt;MessagingBuilder&gt; implement
 	 *	builder
 	 *	  .autofill()
 	 *	    .from()
-	 *	      .defaultValueProperty(&quot;${ogham.sms.from}&quot;)
+	 *	      .defaultValue().properties(&quot;${ogham.sms.from}&quot;).and()
 	 *	        .and()
 	 *	    .to()
-	 *	      .defaultValueProperty(&quot;${ogham.sms.to}&quot;)
+	 *	      .defaultValue().properties(&quot;${ogham.sms.to}&quot;).and()
 	 *	        .and()
 	 *	    .and()
 	 * &lt;/code&gt;
@@ -349,14 +349,14 @@ public class SmsBuilder extends AbstractParent&lt;MessagingBuilder&gt; implement
 	 *	  .numbers()
 	 *	    .from()
 	 *	      .format()
-	 *	        .alphanumericCode(&quot;${ogham.sms.from-format-enable-alphanumeric}&quot;, &quot;true&quot;)
-	 *	        .shortCode(&quot;${ogham.sms.from-format-enable-shortcode}&quot;, &quot;true&quot;)
-	 *	        .internationalNumber(&quot;${ogham.sms.from-format-enable-international}&quot;, &quot;true&quot;)
+	 *	        .alphanumericCode().properties(&quot;${ogham.sms.from-format-enable-alphanumeric}&quot;).defaultValue(true).and()
+	 *	        .shortCode().properties(&quot;${ogham.sms.from-format-enable-shortcode}&quot;).defaultValue(true).and()
+	 *	        .internationalNumber().properties(&quot;${ogham.sms.from-format-enable-international}&quot;).defaultValue(true).and()
 	 *	        .and()
 	 *	      .and()
 	 *	    .to()
 	 *	      .format()
-	 *	        .internationalNumber(&quot;${ogham.sms.to-format-enable-international}&quot;, &quot;true&quot;);
+	 *	        .internationalNumber().properties(&quot;${ogham.sms.to-format-enable-international}&quot;).defaultValue(true);
 	 * &lt;/code&gt;
 	 * &lt;/pre&gt;
 	 * 
@@ -516,7 +516,7 @@ public class SmsBuilder extends AbstractParent&lt;MessagingBuilder&gt; implement
 <span class="fc" id="L516">		SmsSender smsSender = new SmsSender();</span>
 <span class="fc" id="L517">		ConditionalSender sender = smsSender;</span>
 <span class="fc" id="L518">		senderBuilderHelper.addSenders(smsSender);</span>
-<span class="pc bpc" id="L519" title="1 of 2 branches missed.">		if (templateBuilderHelper.hasRegisteredTemplates()) {</span>
+<span class="fc bfc" id="L519" title="All 2 branches covered.">		if (templateBuilderHelper.hasRegisteredTemplates()) {</span>
 <span class="fc" id="L520">			ContentTranslator translator = buildContentTranslator();</span>
 <span class="fc" id="L521">			LOG.debug(&quot;Content translation enabled {}&quot;, translator);</span>
 <span class="fc" id="L522">			sender = new ContentTranslatorSender(translator, sender);</span>

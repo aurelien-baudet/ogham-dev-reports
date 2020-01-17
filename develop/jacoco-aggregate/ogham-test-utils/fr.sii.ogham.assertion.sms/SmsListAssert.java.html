@@ -3,21 +3,37 @@
 import java.util.List;
 
 import org.hamcrest.Matcher;
-import org.jsmpp.bean.SubmitSm;
 
 import fr.sii.ogham.assertion.AssertionHelper;
 import fr.sii.ogham.assertion.HasParent;
+import fr.sii.ogham.helper.sms.bean.SubmitSm;
 
-public class SmsListAssert&lt;P&gt; extends HasParent&lt;P&gt; {
+/**
+ * Make assertions on received messages
+ * 
+ * @author Aurélien Baudet
+ *
+ * @param &lt;P&gt;
+ *            the parent type
+ * @param &lt;S&gt;
+ *            the type of {@link SubmitSm}
+ */
+public class SmsListAssert&lt;P, S extends SubmitSm&gt; extends HasParent&lt;P&gt; {
 	/**
 	 * The list of messages that will be used for assertions
 	 */
-	private final List&lt;SubmitSm&gt; actual;
+	private final List&lt;S&gt; actual;
 
-	public SmsListAssert(List&lt;SubmitSm&gt; actual, P parent) {
-<span class="fc" id="L18">		super(parent);</span>
-<span class="fc" id="L19">		this.actual = actual;</span>
-<span class="fc" id="L20">	}</span>
+	/**
+	 * @param actual
+	 *            the received messages
+	 * @param parent
+	 *            the parent
+	 */
+	public SmsListAssert(List&lt;S&gt; actual, P parent) {
+<span class="fc" id="L34">		super(parent);</span>
+<span class="fc" id="L35">		this.actual = actual;</span>
+<span class="fc" id="L36">	}</span>
 
 	/**
 	 * Assertion on the number of received messages:
@@ -30,9 +46,9 @@ public class SmsListAssert&lt;P&gt; extends HasParent&lt;P&gt; {
 	 *            the assertion applied on the number of received messages
 	 * @return the fluent API for chaining assertions on received messages
 	 */
-	public SmsListAssert&lt;P&gt; count(Matcher&lt;Integer&gt; matcher) {
-<span class="fc" id="L34">		AssertionHelper.assertThat(actual.size(), matcher);</span>
-<span class="fc" id="L35">		return this;</span>
+	public SmsListAssert&lt;P, S&gt; count(Matcher&lt;Integer&gt; matcher) {
+<span class="fc" id="L50">		AssertionHelper.assertThat(actual.size(), matcher);</span>
+<span class="fc" id="L51">		return this;</span>
 	}
 
 	/**
@@ -56,8 +72,39 @@ public class SmsListAssert&lt;P&gt; extends HasParent&lt;P&gt; {
 	 *            the index of the message in the received list
 	 * @return the fluent API for chaining assertions on received messages
 	 */
-	public SmsAssert&lt;SmsListAssert&lt;P&gt;&gt; message(int index) {
-<span class="fc" id="L60">		return new SmsAssert&lt;&gt;(actual.get(index), this);</span>
+	public SmsAssert&lt;SmsListAssert&lt;P, S&gt;, S&gt; message(int index) {
+<span class="fc" id="L76">		return new SmsAssert&lt;&gt;(actual.get(index), this);</span>
+	}
+
+	/**
+	 * Fluent API to write assertions on every received messages. Any defined
+	 * assertion will be applied on every message:
+	 * 
+	 * &lt;pre&gt;
+	 * .receivedMessages().every().content(is(&quot;foobar&quot;))
+	 * &lt;/pre&gt;
+	 * 
+	 * Will check that content of every message is &quot;foobar&quot;.
+	 * 
+	 * &lt;p&gt;
+	 * You can use this method to factorize several assertions on a message and
+	 * then make dedicated assertions on some messages:
+	 * 
+	 * &lt;pre&gt;
+	 * .receivedMessages().every()
+	 *                       .content(is(&quot;foobar&quot;))
+	 *                    .and()
+	 *                    .message(0)
+	 *                       .from().number(is(&quot;+33102030405&quot;))
+	 * &lt;/pre&gt;
+	 * 
+	 * Will check that content of every message is &quot;foobar&quot; and that body of
+	 * first received message is &quot;+33102030405&quot;.
+	 * 
+	 * @return the fluent API for chaining assertions on received messages
+	 */
+	public SmsAssert&lt;SmsListAssert&lt;P, S&gt;, S&gt; every() {
+<span class="fc" id="L107">		return new SmsAssert&lt;&gt;(actual, this);</span>
 	}
 
 	/**
@@ -86,9 +133,11 @@ public class SmsListAssert&lt;P&gt; extends HasParent&lt;P&gt; {
 	 * first received message is &quot;+33102030405&quot;.
 	 * 
 	 * @return the fluent API for chaining assertions on received messages
+	 * @deprecated use {@link #every()} instead
 	 */
-	public SmsAssert&lt;SmsListAssert&lt;P&gt;&gt; forEach() {
-<span class="fc" id="L91">		return new SmsAssert&lt;&gt;(actual, this);</span>
+	@Deprecated
+	public SmsAssert&lt;SmsListAssert&lt;P, S&gt;, S&gt; forEach() {
+<span class="nc" id="L140">		return new SmsAssert&lt;&gt;(actual, this);</span>
 	}
 
 }

@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>DefaultOvhSmsConfigurer.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">reporting</a> &gt; <a href="../index.html" class="el_bundle">ogham-sms-ovh</a> &gt; <a href="index.source.html" class="el_package">fr.sii.ogham.sms.builder.ovh</a> &gt; <span class="el_source">DefaultOvhSmsConfigurer.java</span></div><h1>DefaultOvhSmsConfigurer.java</h1><pre class="source lang-java linenums">package fr.sii.ogham.sms.builder.ovh;
 
+import static fr.sii.ogham.core.builder.configuration.MayOverride.overrideIfNotSet;
+import static fr.sii.ogham.core.builder.configurer.ConfigurationPhase.AFTER_INIT;
 import static fr.sii.ogham.sms.OvhSmsConstants.DEFAULT_OVHSMS_CONFIGURER_PRIORITY;
+
+import java.net.MalformedURLException;
+import java.net.URL;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,9 +57,10 @@ import fr.sii.ogham.sms.sender.impl.ovh.SmsCoding;
  * indication at the end of the message (useful to disable for non-commercial
  * SMS). Default to true (disabled)&lt;/li&gt;
  * &lt;li&gt;It uses &quot;ogham.sms.ovh.sms-coding&quot; property value to define message
- * encoding (see {@link SmsCoding}): 1 for 7bit encoding, 2 for 8bit encoding
- * (UTF-8). If you use UTF-8, your SMS will have a maximum size of 70 characters
- * instead of 160&lt;/li&gt;
+ * encoding (see {@link SmsCoding}): 1 for 7bit encoding, 2 for 16bit encoding
+ * (Unicode). If you use Unicode, your SMS will have a maximum size of 70
+ * characters instead of 160. If nothing specified, auto-detection is used. Set
+ * this property if you want to force {@link SmsCoding} value.&lt;/li&gt;
  * &lt;li&gt;It uses &quot;ogham.sms.ovh.tag&quot; to mark sent messages with a 20 maximum
  * character string&lt;/li&gt;
  * &lt;/ul&gt;
@@ -64,29 +70,50 @@ import fr.sii.ogham.sms.sender.impl.ovh.SmsCoding;
  * @author Aurélien Baudet
  *
  */
-@ConfigurerFor(targetedBuilder = &quot;standard&quot;, priority = DEFAULT_OVHSMS_CONFIGURER_PRIORITY)
-<span class="fc" id="L68">public class DefaultOvhSmsConfigurer implements MessagingConfigurer {</span>
-<span class="fc" id="L69">	private static final Logger LOG = LoggerFactory.getLogger(DefaultOvhSmsConfigurer.class);</span>
+public final class DefaultOvhSmsConfigurer {
+<span class="fc" id="L74">	private static final Logger LOG = LoggerFactory.getLogger(DefaultOvhSmsConfigurer.class);</span>
+
+	@ConfigurerFor(targetedBuilder = &quot;standard&quot;, priority = DEFAULT_OVHSMS_CONFIGURER_PRIORITY, phase = AFTER_INIT)
+<span class="fc" id="L77">	public static class EnvironmentPropagator implements MessagingConfigurer {</span>
+		@Override
+		public void configure(MessagingBuilder msgBuilder) {
+<span class="fc" id="L80">			OvhSmsBuilder builder = msgBuilder.sms().sender(OvhSmsBuilder.class);</span>
+			// use same environment as parent builder
+<span class="fc" id="L82">			builder.environment(msgBuilder.environment());</span>
+<span class="fc" id="L83">		}</span>
+	}
 	
-
-	@Override
-	public void configure(MessagingBuilder msgBuilder) {
-<span class="fc" id="L74">		LOG.debug(&quot;[{}] apply configuration&quot;, this);</span>
-<span class="fc" id="L75">		OvhSmsBuilder builder = msgBuilder.sms().sender(OvhSmsBuilder.class);</span>
-		// use same environment as parent builder
-<span class="fc" id="L77">		builder.environment(msgBuilder.environment());</span>
-		// @formatter:off
-<span class="fc" id="L79">		builder</span>
-<span class="fc" id="L80">			.url(&quot;${ogham.sms.ovh.url}&quot;, &quot;https://www.ovh.com/cgi-bin/sms/http2sms.cgi&quot;)</span>
-<span class="fc" id="L81">			.account(&quot;${ogham.sms.ovh.account}&quot;)</span>
-<span class="fc" id="L82">			.login(&quot;${ogham.sms.ovh.login}&quot;)</span>
-<span class="fc" id="L83">			.password(&quot;${ogham.sms.ovh.password}&quot;)</span>
-<span class="fc" id="L84">			.options()</span>
-<span class="fc" id="L85">				.noStop(&quot;${ogham.sms.ovh.no-stop}&quot;, &quot;true&quot;)</span>
-<span class="fc" id="L86">				.smsCoding(&quot;${ogham.sms.ovh.sms-coding}&quot;)</span>
-<span class="fc" id="L87">				.tag(&quot;${ogham.sms.ovh.tag}&quot;);</span>
-		// @formatter:on
-<span class="fc" id="L89">	}</span>
-
+	@ConfigurerFor(targetedBuilder = &quot;standard&quot;, priority = DEFAULT_OVHSMS_CONFIGURER_PRIORITY)
+<span class="fc" id="L87">	public static class OvhSmsConfigurer implements MessagingConfigurer {</span>
+		@Override
+		public void configure(MessagingBuilder msgBuilder) {
+<span class="fc" id="L90">			LOG.debug(&quot;[{}] apply configuration&quot;, this);</span>
+<span class="fc" id="L91">			OvhSmsBuilder builder = msgBuilder.sms().sender(OvhSmsBuilder.class);</span>
+			// @formatter:off
+<span class="fc" id="L93">			builder</span>
+<span class="fc" id="L94">				.url().properties(&quot;${ogham.sms.ovh.url}&quot;).defaultValue(overrideIfNotSet(defaultUrl())).and()</span>
+<span class="fc" id="L95">				.account().properties(&quot;${ogham.sms.ovh.account}&quot;).and()</span>
+<span class="fc" id="L96">				.login().properties(&quot;${ogham.sms.ovh.login}&quot;).and()</span>
+<span class="fc" id="L97">				.password().properties(&quot;${ogham.sms.ovh.password}&quot;).and()</span>
+<span class="fc" id="L98">				.options()</span>
+<span class="fc" id="L99">					.noStop().properties(&quot;${ogham.sms.ovh.no-stop}&quot;).defaultValue(overrideIfNotSet(true)).and()</span>
+<span class="fc" id="L100">					.smsCoding().properties(&quot;${ogham.sms.ovh.sms-coding}&quot;).and()</span>
+<span class="fc" id="L101">					.tag().properties(&quot;${ogham.sms.ovh.tag}&quot;);</span>
+			// @formatter:on
+<span class="fc" id="L103">		}</span>
+	
+		private static URL defaultUrl() {
+			try {
+<span class="fc" id="L107">				return new URL(&quot;https://www.ovh.com/cgi-bin/sms/http2sms.cgi&quot;);</span>
+<span class="nc" id="L108">			} catch (MalformedURLException e) {</span>
+				// can never be thrown
+<span class="nc" id="L110">				return null;</span>
+			}
+		}
+	}
+	
+	private DefaultOvhSmsConfigurer() {
+		super();
+	}
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

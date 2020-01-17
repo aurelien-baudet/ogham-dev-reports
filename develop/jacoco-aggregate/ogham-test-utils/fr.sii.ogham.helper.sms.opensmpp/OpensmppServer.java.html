@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>OpensmppServer.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">reporting</a> &gt; <a href="../index.html" class="el_bundle">ogham-test-utils</a> &gt; <a href="index.source.html" class="el_package">fr.sii.ogham.helper.sms.opensmpp</a> &gt; <span class="el_source">OpensmppServer.java</span></div><h1>OpensmppServer.java</h1><pre class="source lang-java linenums">package fr.sii.ogham.helper.sms.opensmpp;
+
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.smpp.SmppObject;
+import org.smpp.debug.Debug;
+import org.smpp.debug.Event;
+import org.smpp.debug.FileDebug;
+import org.smpp.debug.FileEvent;
+import org.smpp.pdu.SubmitSM;
+import org.smpp.smscsim.DeliveryInfoSender;
+import org.smpp.smscsim.PDUProcessorGroup;
+import org.smpp.smscsim.SMSCListener;
+import org.smpp.smscsim.SMSCListenerImpl;
+import org.smpp.smscsim.SMSCSession;
+import org.smpp.smscsim.ShortMessageStore;
+import org.smpp.smscsim.SimulatorPDUProcessor;
+import org.smpp.smscsim.SimulatorPDUProcessorFactory;
+import org.smpp.smscsim.util.Table;
+
+import fr.sii.ogham.helper.sms.rule.SmppServerException;
+import fr.sii.ogham.helper.sms.rule.SmppServerSimulator;
+
+/**
+ * FIXME: doesn't work for now
+ * 
+ * @author Aurélien Baudet
+ *
+ */
+public class OpensmppServer implements SmppServerSimulator&lt;SubmitSM&gt; {
+<span class="nc" id="L36">	private static final Logger LOG = LoggerFactory.getLogger(OpensmppServer.class);</span>
+
+	private int port;
+
+	private static final String DEBUG_DIR = &quot;./&quot;;
+<span class="nc" id="L41">	private static Debug debug = new FileDebug(DEBUG_DIR, &quot;sim.dbg&quot;);</span>
+<span class="nc" id="L42">	private static Event event = new FileEvent(DEBUG_DIR, &quot;sim.evt&quot;);</span>
+
+//	private static final int DSIM = 16;
+//	private static final int DSIMD = 17;
+	private static final int DSIMD2 = 18;
+
+	private SMSCListener smscListener;
+	private PDUProcessorGroup processors;
+	private ReadableShortMessageStore messageStore;
+	private DeliveryInfoSender deliveryInfoSender;
+
+	public OpensmppServer(int port) {
+<span class="nc" id="L54">		super();</span>
+<span class="nc" id="L55">		this.port = port;</span>
+<span class="nc" id="L56">		SmppObject.setDebug(debug);</span>
+<span class="nc" id="L57">		SmppObject.setEvent(event);</span>
+<span class="nc" id="L58">		debug.activate();</span>
+<span class="nc" id="L59">		event.activate();</span>
+<span class="nc" id="L60">		debug.deactivate(SmppObject.DRXTXD2);</span>
+<span class="nc" id="L61">		debug.deactivate(SmppObject.DPDUD);</span>
+<span class="nc" id="L62">		debug.deactivate(SmppObject.DCOMD);</span>
+<span class="nc" id="L63">		debug.deactivate(DSIMD2);</span>
+<span class="nc" id="L64">	}</span>
+
+	@Override
+	public synchronized void start() throws SmppServerException {
+		try {
+<span class="nc" id="L69">			smscListener = new SMSCListenerImpl(port, true);</span>
+<span class="nc" id="L70">			processors = new PDUProcessorGroup();</span>
+<span class="nc" id="L71">			messageStore = new ReadableShortMessageStore();</span>
+<span class="nc" id="L72">			deliveryInfoSender = new DeliveryInfoSender();</span>
+<span class="nc" id="L73">			deliveryInfoSender.start();</span>
+<span class="nc" id="L74">			Table users = new Table();</span>
+<span class="nc" id="L75">			SimulatorPDUProcessorFactory factory = new SimulatorPDUProcessorFactory(processors, messageStore, deliveryInfoSender, users);</span>
+<span class="nc" id="L76">			factory.setDisplayInfo(false);</span>
+<span class="nc" id="L77">			smscListener.setPDUProcessorFactory(factory);</span>
+<span class="nc" id="L78">			smscListener.start();</span>
+<span class="nc" id="L79">			LOG.info(&quot;Opensmpp simulator started&quot;);</span>
+<span class="nc" id="L80">		} catch (IOException e) {</span>
+<span class="nc" id="L81">			throw new SmppServerException(&quot;Failed to start Opensmpp simulator&quot;, e);</span>
+<span class="nc" id="L82">		}</span>
+<span class="nc" id="L83">	}</span>
+
+	@Override
+	public synchronized void stop() throws SmppServerException {
+		try {
+<span class="nc bnc" id="L88" title="All 2 branches missed.">			if (smscListener != null) {</span>
+<span class="nc" id="L89">				LOG.debug(&quot;Stopping Opensmpp simulator listener...&quot;);</span>
+<span class="nc" id="L90">				synchronized (processors) {</span>
+<span class="nc" id="L91">					int procCount = processors.count();</span>
+					SimulatorPDUProcessor proc;
+					SMSCSession session;
+<span class="nc bnc" id="L94" title="All 2 branches missed.">					for (int i = 0; i &lt; procCount; i++) {</span>
+<span class="nc" id="L95">						proc = (SimulatorPDUProcessor) processors.get(i);</span>
+<span class="nc" id="L96">						session = proc.getSession();</span>
+<span class="nc" id="L97">						LOG.trace(&quot;Stopping session {}: {}...&quot;, i, proc.getSystemId());</span>
+<span class="nc" id="L98">						session.stop();</span>
+<span class="nc" id="L99">						LOG.trace(&quot; stopped.&quot;);</span>
+					}
+<span class="nc" id="L101">				}</span>
+<span class="nc" id="L102">				smscListener.stop();</span>
+<span class="nc" id="L103">				smscListener = null;</span>
+<span class="nc bnc" id="L104" title="All 2 branches missed.">				if (deliveryInfoSender != null) {</span>
+<span class="nc" id="L105">					deliveryInfoSender.stop();</span>
+				}
+<span class="nc" id="L107">				LOG.info(&quot;Opensmpp simulator stopped&quot;);</span>
+			}
+<span class="nc" id="L109">		} catch (IOException e) {</span>
+<span class="nc" id="L110">			throw new SmppServerException(&quot;Failed to stop Opensmpp simulator&quot;, e);</span>
+<span class="nc" id="L111">		}</span>
+<span class="nc" id="L112">	}</span>
+
+	@Override
+	public int getPort() {
+<span class="nc" id="L116">		return port;</span>
+	}
+
+	@Override
+	public List&lt;SubmitSM&gt; getReceivedMessages() {
+<span class="nc" id="L121">		return messageStore.getReceivedMessages();</span>
+	}
+
+	private static class ReadableShortMessageStore extends ShortMessageStore {
+		private final List&lt;SubmitSM&gt; receivedMessages;
+
+		public ReadableShortMessageStore() {
+<span class="nc" id="L128">			super();</span>
+<span class="nc" id="L129">			this.receivedMessages = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L130">		}</span>
+
+		@Override
+		public synchronized void submit(SubmitSM message, String messageId, String systemId) throws UnsupportedEncodingException {
+<span class="nc" id="L134">			super.submit(message, messageId, systemId);</span>
+<span class="nc" id="L135">			receivedMessages.add(message);</span>
+<span class="nc" id="L136">		}</span>
+
+		public List&lt;SubmitSM&gt; getReceivedMessages() {
+<span class="nc" id="L139">			return receivedMessages;</span>
+		}
+	}
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

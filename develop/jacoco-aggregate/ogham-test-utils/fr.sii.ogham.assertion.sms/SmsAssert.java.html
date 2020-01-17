@@ -2,32 +2,58 @@
 
 import static fr.sii.ogham.assertion.AssertionHelper.assertThat;
 import static fr.sii.ogham.assertion.OghamAssertions.usingContext;
-import static fr.sii.ogham.helper.sms.SmsUtils.getSmsContent;
+import static fr.sii.ogham.helper.sms.util.SmsUtils.getSmsContent;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import org.hamcrest.Matcher;
-import org.jsmpp.bean.SubmitSm;
 
 import fr.sii.ogham.assertion.HasParent;
 import fr.sii.ogham.assertion.context.SingleMessageContext;
+import fr.sii.ogham.helper.sms.bean.SubmitSm;
 
-public class SmsAssert&lt;P&gt; extends HasParent&lt;P&gt; {
+/**
+ * Make assertions on particular message.
+ * 
+ * @author Aurélien Baudet
+ *
+ * @param &lt;P&gt;
+ *            the parent type
+ * @param &lt;S&gt;
+ *            the type of the {@link SubmitSm}
+ */
+public class SmsAssert&lt;P, S extends SubmitSm&gt; extends HasParent&lt;P&gt; {
 	/**
 	 * The list of messages that will be used for assertions
 	 */
-	private final List&lt;SubmitSm&gt; actual;
+	private final List&lt;S&gt; actual;
 
-	public SmsAssert(SubmitSm actual, P parent) {
-<span class="fc" id="L24">		this(Arrays.asList(actual), parent);</span>
-<span class="fc" id="L25">	}</span>
+	/**
+	 * Initializes with a single received message
+	 * 
+	 * @param actual
+	 *            received message
+	 * @param parent
+	 *            the parent
+	 */
+	public SmsAssert(S actual, P parent) {
+<span class="fc" id="L42">		this(Arrays.asList(actual), parent);</span>
+<span class="fc" id="L43">	}</span>
 
-	public SmsAssert(List&lt;SubmitSm&gt; actual, P parent) {
-<span class="fc" id="L28">		super(parent);</span>
-<span class="fc" id="L29">		this.actual = actual;</span>
-<span class="fc" id="L30">	}</span>
+	/**
+	 * Initializes with several received messages
+	 * 
+	 * @param actual
+	 *            received messages
+	 * @param parent
+	 *            the parent
+	 */
+	public SmsAssert(List&lt;S&gt; actual, P parent) {
+<span class="fc" id="L54">		super(parent);</span>
+<span class="fc" id="L55">		this.actual = actual;</span>
+<span class="fc" id="L56">	}</span>
 
 	/**
 	 * Make assertions on the content of the message(s).
@@ -49,14 +75,14 @@ public class SmsAssert&lt;P&gt; extends HasParent&lt;P&gt; {
 	 * &quot;hello world&quot;.
 	 * 
 	 * &lt;pre&gt;
-	 * .receivedMessages().forEach()
+	 * .receivedMessages().every()
 	 *    .content(allOf(notNullValue(), is(&quot;hello world&quot;))
 	 * &lt;/pre&gt;
 	 * 
 	 * Or:
 	 * 
 	 * &lt;pre&gt;
-	 * .receivedMessages().forEach()
+	 * .receivedMessages().every()
 	 *    .content(notNullValue())
 	 *    .content(is(&quot;hello world&quot;))
 	 * &lt;/pre&gt;
@@ -68,13 +94,101 @@ public class SmsAssert&lt;P&gt; extends HasParent&lt;P&gt; {
 	 *            the assertion to apply on message content
 	 * @return the fluent API for chaining assertions on received message(s)
 	 */
-	public SmsAssert&lt;P&gt; content(Matcher&lt;String&gt; matcher) {
-<span class="fc" id="L72">		String desc = &quot;content of message ${messageIndex}&quot;;</span>
-<span class="fc" id="L73">		int index = 0;</span>
-<span class="fc bfc" id="L74" title="All 2 branches covered.">		for (SubmitSm message : actual) {</span>
-<span class="fc" id="L75">			assertThat(getSmsContent(message), usingContext(desc, new SingleMessageContext(index++), matcher));</span>
-<span class="fc" id="L76">		}</span>
-<span class="fc" id="L77">		return this;</span>
+	public SmsAssert&lt;P, S&gt; content(Matcher&lt;String&gt; matcher) {
+<span class="fc" id="L98">		String desc = &quot;content of message ${messageIndex}&quot;;</span>
+<span class="fc" id="L99">		int index = 0;</span>
+<span class="fc bfc" id="L100" title="All 2 branches covered.">		for (S message : actual) {</span>
+<span class="fc" id="L101">			assertThat(getSmsContent(message), usingContext(desc, new SingleMessageContext(index++), matcher));</span>
+<span class="fc" id="L102">		}</span>
+<span class="fc" id="L103">		return this;</span>
+	}
+
+	/**
+	 * Make assertions on the short message (raw content in byte array) of the
+	 * message(s). User Data Header bytes may be included.
+	 * 
+	 * &lt;pre&gt;
+	 * .receivedMessages().message(0)
+	 *    .shortMessage(allOf(notNullValue(), hasSize(10))
+	 * &lt;/pre&gt;
+	 * 
+	 * Or:
+	 * 
+	 * &lt;pre&gt;
+	 * .receivedMessages().message(0)
+	 *    .shortMessage(notNullValue())
+	 *    .shortMessage(hasSize(10))
+	 * &lt;/pre&gt;
+	 * 
+	 * Will check if the content of the first message is not null and its size
+	 * is exactly 10 bytes.
+	 * 
+	 * &lt;pre&gt;
+	 * .receivedMessages().every()
+	 *    .shortMessage(allOf(notNullValue(), hasSize(10))
+	 * &lt;/pre&gt;
+	 * 
+	 * Or:
+	 * 
+	 * &lt;pre&gt;
+	 * .receivedMessages().every()
+	 *    .shortMessage(notNullValue())
+	 *    .shortMessage(hasSize(10))
+	 * &lt;/pre&gt;
+	 * 
+	 * Will check if the content of every message is not null and its size is
+	 * exactly 10 bytes.
+	 * 
+	 * @param matcher
+	 *            the assertion to apply on message content
+	 * @return the fluent API for chaining assertions on received message(s)
+	 */
+	public SmsAssert&lt;P, S&gt; shortMessage(Matcher&lt;byte[]&gt; matcher) {
+<span class="nc" id="L147">		String desc = &quot;raw content of message ${messageIndex}&quot;;</span>
+<span class="nc" id="L148">		int index = 0;</span>
+<span class="nc bnc" id="L149" title="All 2 branches missed.">		for (S message : actual) {</span>
+<span class="nc" id="L150">			assertThat(message.getShortMessage(), usingContext(desc, new SingleMessageContext(index++), matcher));</span>
+<span class="nc" id="L151">		}</span>
+<span class="nc" id="L152">		return this;</span>
+	}
+
+	/**
+	 * Make assertions on the raw request ({@link SubmitSm}) of the message(s)
+	 * using fluent API.
+	 * 
+	 * &lt;pre&gt;
+	 * .receivedMessages().message(0).rawRequest()
+	 *   .alphabet(is(Alphabet.ALPHA_DEFAULT))
+	 *   .shortMessage()
+	 *     .header(array(equalTo(0x01), equalTo(0x02), equalTo(0x03))))
+	 *     .payload(arrayWithSize(10))
+	 * &lt;/pre&gt;
+	 * 
+	 * Will check if the received byte array of the first message has a header
+	 * with some expected bytes, the alphabet used to encode the message is
+	 * ALPHA_DEFAULT and the payload has exactly 10 bytes.
+	 * 
+	 * &lt;pre&gt;
+	 * .receivedMessages().every().rawRequest()
+	 *   .alphabet(is(Alphabet.ALPHA_DEFAULT))
+	 *   .shortMessage()
+	 *     .header(array(equalTo(0x01), equalTo(0x02), equalTo(0x03))))
+	 *     .payload(arrayWithSize(10))
+	 * &lt;/pre&gt;
+	 * 
+	 * Will check if the received byte array of every message has a header with
+	 * some expected bytes, the alphabet used to encode the message is
+	 * ALPHA_DEFAULT and the payload has exactly 10 bytes.
+	 * 
+	 * @return the fluent API for chaining assertions on received message(s)
+	 */
+	public PduRequestAssert&lt;SmsAssert&lt;P, S&gt;, S&gt; rawRequest() {
+<span class="fc" id="L186">		List&lt;PduRequestWithContext&lt;S&gt;&gt; requests = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L187">		int index = 0;</span>
+<span class="fc bfc" id="L188" title="All 2 branches covered.">		for (S request : actual) {</span>
+<span class="fc" id="L189">			requests.add(new PduRequestWithContext&lt;&gt;(request, &quot;raw request&quot;, new SingleMessageContext(index++)));</span>
+<span class="fc" id="L190">		}</span>
+<span class="fc" id="L191">		return new PduRequestAssert&lt;&gt;(requests, this);</span>
 	}
 
 	/**
@@ -88,7 +202,7 @@ public class SmsAssert&lt;P&gt; extends HasParent&lt;P&gt; {
 	 * Will check if the sender phone number of the first message is not null.
 	 * 
 	 * &lt;pre&gt;
-	 * .receivedMessages().forEach()
+	 * .receivedMessages().every()
 	 *    .from(notNullValue())
 	 * &lt;/pre&gt;
 	 * 
@@ -98,14 +212,14 @@ public class SmsAssert&lt;P&gt; extends HasParent&lt;P&gt; {
 	 *            the assertion to apply on the phone number
 	 * @return the fluent API for chaining assertions on received message(s)
 	 */
-	public SmsAssert&lt;P&gt; from(Matcher&lt;PhoneNumberInfo&gt; matcher) {
-<span class="nc" id="L102">		String desc = &quot;sender of message ${messageIndex}&quot;;</span>
-<span class="nc" id="L103">		int index = 0;</span>
-<span class="nc bnc" id="L104" title="All 2 branches missed.">		for (SubmitSm message : actual) {</span>
-<span class="nc" id="L105">			PhoneNumberInfo number = new PhoneNumberInfo(message.getSourceAddr(), message.getSourceAddrNpi(), message.getSourceAddrTon());</span>
-<span class="nc" id="L106">			assertThat(number, usingContext(desc, new SingleMessageContext(index++), matcher));</span>
-<span class="nc" id="L107">		}</span>
-<span class="nc" id="L108">		return this;</span>
+	public SmsAssert&lt;P, S&gt; from(Matcher&lt;PhoneNumberInfo&gt; matcher) {
+<span class="nc" id="L216">		String desc = &quot;sender of message ${messageIndex}&quot;;</span>
+<span class="nc" id="L217">		int index = 0;</span>
+<span class="nc bnc" id="L218" title="All 2 branches missed.">		for (S message : actual) {</span>
+<span class="nc" id="L219">			PhoneNumberInfo number = new PhoneNumberInfo(message.getSourceAddress());</span>
+<span class="nc" id="L220">			assertThat(number, usingContext(desc, new SingleMessageContext(index++), matcher));</span>
+<span class="nc" id="L221">		}</span>
+<span class="nc" id="L222">		return this;</span>
 	}
 
 	/**
@@ -122,7 +236,7 @@ public class SmsAssert&lt;P&gt; extends HasParent&lt;P&gt; {
 	 * international number.
 	 * 
 	 * &lt;pre&gt;
-	 * .receivedMessages().forEach().from()
+	 * .receivedMessages().every().from()
 	 *    .number(is(&quot;+33102030405&quot;))
 	 *    .typeOfNumber(is(TypeOfNumber.INTERNATIONAL))
 	 * &lt;/pre&gt;
@@ -133,14 +247,14 @@ public class SmsAssert&lt;P&gt; extends HasParent&lt;P&gt; {
 	 * 
 	 * @return the fluent API for chaining assertions on received message(s)
 	 */
-	public PhoneNumberAssert&lt;SmsAssert&lt;P&gt;&gt; from() {
-<span class="fc" id="L137">		List&lt;PhoneNumberWithContext&gt; numbers = new ArrayList&lt;&gt;();</span>
-<span class="fc" id="L138">		int index = 0;</span>
-<span class="fc bfc" id="L139" title="All 2 branches covered.">		for (SubmitSm message : actual) {</span>
-<span class="fc" id="L140">			PhoneNumberInfo number = new PhoneNumberInfo(message.getSourceAddr(), message.getSourceAddrNpi(), message.getSourceAddrTon());</span>
-<span class="fc" id="L141">			numbers.add(new PhoneNumberWithContext(number, &quot;sender&quot;, new SingleMessageContext(index++)));</span>
-<span class="fc" id="L142">		}</span>
-<span class="fc" id="L143">		return new PhoneNumberAssert&lt;&gt;(numbers, this);</span>
+	public PhoneNumberAssert&lt;SmsAssert&lt;P, S&gt;&gt; from() {
+<span class="fc" id="L251">		List&lt;PhoneNumberWithContext&gt; numbers = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L252">		int index = 0;</span>
+<span class="fc bfc" id="L253" title="All 2 branches covered.">		for (S message : actual) {</span>
+<span class="fc" id="L254">			PhoneNumberInfo number = new PhoneNumberInfo(message.getSourceAddress());</span>
+<span class="fc" id="L255">			numbers.add(new PhoneNumberWithContext(number, &quot;sender&quot;, new SingleMessageContext(index++)));</span>
+<span class="fc" id="L256">		}</span>
+<span class="fc" id="L257">		return new PhoneNumberAssert&lt;&gt;(numbers, this);</span>
 	}
 
 	/**
@@ -155,7 +269,7 @@ public class SmsAssert&lt;P&gt; extends HasParent&lt;P&gt; {
 	 * null.
 	 * 
 	 * &lt;pre&gt;
-	 * .receivedMessages().forEach()
+	 * .receivedMessages().every()
 	 *    .to(notNullValue())
 	 * &lt;/pre&gt;
 	 * 
@@ -165,14 +279,14 @@ public class SmsAssert&lt;P&gt; extends HasParent&lt;P&gt; {
 	 *            the assertion to apply on the phone number
 	 * @return the fluent API for chaining assertions on received message(s)
 	 */
-	public SmsAssert&lt;P&gt; to(Matcher&lt;PhoneNumberInfo&gt; matcher) {
-<span class="nc" id="L169">		String desc = &quot;dest of message ${messageIndex}&quot;;</span>
-<span class="nc" id="L170">		int index = 0;</span>
-<span class="nc bnc" id="L171" title="All 2 branches missed.">		for (SubmitSm message : actual) {</span>
-<span class="nc" id="L172">			PhoneNumberInfo number = new PhoneNumberInfo(message.getDestAddress(), message.getDestAddrNpi(), message.getDestAddrTon());</span>
-<span class="nc" id="L173">			assertThat(number, usingContext(desc, new SingleMessageContext(index++), matcher));</span>
-<span class="nc" id="L174">		}</span>
-<span class="nc" id="L175">		return this;</span>
+	public SmsAssert&lt;P, S&gt; to(Matcher&lt;PhoneNumberInfo&gt; matcher) {
+<span class="nc" id="L283">		String desc = &quot;dest of message ${messageIndex}&quot;;</span>
+<span class="nc" id="L284">		int index = 0;</span>
+<span class="nc bnc" id="L285" title="All 2 branches missed.">		for (S message : actual) {</span>
+<span class="nc" id="L286">			PhoneNumberInfo number = new PhoneNumberInfo(message.getDestAddress());</span>
+<span class="nc" id="L287">			assertThat(number, usingContext(desc, new SingleMessageContext(index++), matcher));</span>
+<span class="nc" id="L288">		}</span>
+<span class="nc" id="L289">		return this;</span>
 	}
 
 	/**
@@ -189,7 +303,7 @@ public class SmsAssert&lt;P&gt; extends HasParent&lt;P&gt; {
 	 * international number.
 	 * 
 	 * &lt;pre&gt;
-	 * .receivedMessages().forEach().to()
+	 * .receivedMessages().every().to()
 	 *    .number(is(&quot;+33102030405&quot;))
 	 *    .typeOfNumber(is(TypeOfNumber.INTERNATIONAL))
 	 * &lt;/pre&gt;
@@ -200,14 +314,14 @@ public class SmsAssert&lt;P&gt; extends HasParent&lt;P&gt; {
 	 * 
 	 * @return the fluent API for chaining assertions on received message(s)
 	 */
-	public PhoneNumberAssert&lt;SmsAssert&lt;P&gt;&gt; to() {
-<span class="fc" id="L204">		List&lt;PhoneNumberWithContext&gt; numbers = new ArrayList&lt;&gt;();</span>
-<span class="fc" id="L205">		int index = 0;</span>
-<span class="fc bfc" id="L206" title="All 2 branches covered.">		for (SubmitSm message : actual) {</span>
-<span class="fc" id="L207">			PhoneNumberInfo number = new PhoneNumberInfo(message.getDestAddress(), message.getDestAddrNpi(), message.getDestAddrTon());</span>
-<span class="fc" id="L208">			numbers.add(new PhoneNumberWithContext(number, &quot;dest&quot;, new SingleMessageContext(index++)));</span>
-<span class="fc" id="L209">		}</span>
-<span class="fc" id="L210">		return new PhoneNumberAssert&lt;&gt;(numbers, this);</span>
+	public PhoneNumberAssert&lt;SmsAssert&lt;P, S&gt;&gt; to() {
+<span class="fc" id="L318">		List&lt;PhoneNumberWithContext&gt; numbers = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L319">		int index = 0;</span>
+<span class="fc bfc" id="L320" title="All 2 branches covered.">		for (S message : actual) {</span>
+<span class="fc" id="L321">			PhoneNumberInfo number = new PhoneNumberInfo(message.getDestAddress());</span>
+<span class="fc" id="L322">			numbers.add(new PhoneNumberWithContext(number, &quot;dest&quot;, new SingleMessageContext(index++)));</span>
+<span class="fc" id="L323">		}</span>
+<span class="fc" id="L324">		return new PhoneNumberAssert&lt;&gt;(numbers, this);</span>
 	}
 
 }

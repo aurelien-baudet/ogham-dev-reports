@@ -74,7 +74,7 @@ public final class DelegateSendGridClient implements SendGridClient {
 		}
 	}
 
-	private Request prepareRequest(final Mail email) throws SendGridException {
+	private static Request prepareRequest(final Mail email) throws SendGridException {
 <span class="fc" id="L78">		Request request = new Request();</span>
 <span class="fc" id="L79">		request.setMethod(Method.POST);</span>
 <span class="fc" id="L80">		request.setEndpoint(&quot;mail/send&quot;);</span>
@@ -86,11 +86,11 @@ public final class DelegateSendGridClient implements SendGridClient {
 <span class="fc" id="L86">		return request;</span>
 	}
 
-	private boolean isSuccess(int statusCode) {
+	private static boolean isSuccess(int statusCode) {
 <span class="pc bpc" id="L90" title="1 of 4 branches missed.">		return statusCode &gt;= 200 &amp;&amp; statusCode &lt; 300;</span>
 	}
 
-	private String debug(Email address) {
+	private static String debug(Email address) {
 <span class="fc bfc" id="L94" title="All 2 branches covered.">		if (address == null) {</span>
 <span class="fc" id="L95">			return null;</span>
 		}
@@ -100,11 +100,17 @@ public final class DelegateSendGridClient implements SendGridClient {
 <span class="fc" id="L100">		return address.getEmail();</span>
 	}
 
-	private List&lt;String&gt; debug(final Mail email) {
+	private static List&lt;String&gt; debug(final Mail email) {
 <span class="fc bfc" id="L104" title="All 2 branches covered.">		if (email.getPersonalization() == null) {</span>
 <span class="fc" id="L105">			return null; // NOSONAR</span>
 		}
-<span class="pc bpc" id="L107" title="1 of 2 branches missed.">		return email.getPersonalization().stream().flatMap(p -&gt; p.getTos() == null ? Stream.empty() : p.getTos().stream()).map(this::debug).collect(toList());</span>
+		// @formatter:off
+<span class="fc" id="L108">		return email.getPersonalization()</span>
+<span class="fc" id="L109">				.stream()</span>
+<span class="pc bpc" id="L110" title="1 of 2 branches missed.">				.flatMap(p -&gt; p.getTos() == null ? Stream.empty() : p.getTos().stream())</span>
+<span class="fc" id="L111">				.map(DelegateSendGridClient::debug)</span>
+<span class="fc" id="L112">				.collect(toList());</span>
+		// @formatter:on
 	}
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

@@ -328,42 +328,40 @@ public class ImageInliningBuilder extends AbstractParent&lt;ImageHandlingBuilder
 
 	@Override
 	public ContentTranslator build() {
-<span class="fc" id="L331">		ResourceResolver resourceResolver = buildResolver();</span>
-<span class="fc" id="L332">		ImageInliner imageInliner = buildInliner();</span>
-<span class="fc" id="L333">		MimeTypeProvider mimetypeProvider = buildMimetypeProvider();</span>
-<span class="pc bpc" id="L334" title="1 of 2 branches missed.">		if (mimetypeProvider == null) {</span>
-<span class="nc" id="L335">			LOG.info(&quot;Images won't be inlined because no mimetype detector is configured&quot;);</span>
-<span class="nc" id="L336">			return null;</span>
+<span class="fc" id="L331">		MimeTypeProvider mimetypeProvider = buildMimetypeProvider();</span>
+<span class="pc bpc" id="L332" title="1 of 2 branches missed.">		if (mimetypeProvider == null) {</span>
+<span class="nc" id="L333">			LOG.info(&quot;Images won't be inlined because no mimetype detector is configured&quot;);</span>
+<span class="nc" id="L334">			return null;</span>
 		}
-<span class="fc" id="L338">		LOG.info(&quot;Images will be inlined&quot;);</span>
-<span class="fc" id="L339">		return new InlineImageTranslator(imageInliner, resourceResolver, mimetypeProvider, buildRelativePathProvider());</span>
+<span class="fc" id="L336">		LOG.info(&quot;Images will be inlined&quot;);</span>
+<span class="fc" id="L337">		return new InlineImageTranslator(buildInliner(), buildResolver(), mimetypeProvider, buildRelativePathProvider());</span>
 	}
 
 	private MimeTypeProvider buildMimetypeProvider() {
-<span class="pc bpc" id="L343" title="1 of 2 branches missed.">		if (mimetypeBuilder == null) {</span>
-<span class="nc" id="L344">			return null;</span>
+<span class="pc bpc" id="L341" title="1 of 2 branches missed.">		if (mimetypeBuilder == null) {</span>
+<span class="nc" id="L342">			return null;</span>
 		}
-<span class="fc" id="L346">		return mimetypeBuilder.build();</span>
+<span class="fc" id="L344">		return mimetypeBuilder.build();</span>
 	}
 
 	private ImageInliner buildInliner() {
-<span class="fc" id="L350">		EveryImageInliner inliner = new EveryImageInliner();</span>
-<span class="pc bpc" id="L351" title="1 of 2 branches missed.">		if (attachBuilder != null) {</span>
-<span class="fc" id="L352">			inliner.addInliner(attachBuilder.build());</span>
+<span class="fc" id="L348">		EveryImageInliner inliner = new EveryImageInliner();</span>
+<span class="pc bpc" id="L349" title="1 of 2 branches missed.">		if (attachBuilder != null) {</span>
+<span class="fc" id="L350">			inliner.addInliner(attachBuilder.build());</span>
 		}
-<span class="pc bpc" id="L354" title="1 of 2 branches missed.">		if (base64Builder != null) {</span>
-<span class="fc" id="L355">			inliner.addInliner(base64Builder.build());</span>
+<span class="fc bfc" id="L352" title="All 2 branches covered.">		if (base64Builder != null) {</span>
+<span class="fc" id="L353">			inliner.addInliner(base64Builder.build());</span>
 		}
-<span class="fc" id="L357">		return inliner;</span>
+<span class="fc" id="L355">		return inliner;</span>
 	}
 
 	private ResourceResolver buildResolver() {
-<span class="fc" id="L361">		List&lt;ResourceResolver&gt; resolvers = resourceResolutionBuilderHelper.buildResolvers();</span>
-<span class="fc" id="L362">		return new FirstSupportingResourceResolver(resolvers);</span>
+<span class="fc" id="L359">		List&lt;ResourceResolver&gt; resolvers = resourceResolutionBuilderHelper.buildResolvers();</span>
+<span class="fc" id="L360">		return new FirstSupportingResourceResolver(resolvers);</span>
 	}
 
 	private RelativePathResolver buildRelativePathProvider() {
-<span class="fc" id="L366">		return new LookupAwareRelativePathResolver(resourceResolutionBuilderHelper.getAllLookups());</span>
+<span class="fc" id="L364">		return new LookupAwareRelativePathResolver(resourceResolutionBuilderHelper.getAllLookups());</span>
 	}
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

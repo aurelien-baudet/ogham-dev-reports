@@ -6,9 +6,15 @@ import org.thymeleaf.templateresolver.ITemplateResolver;
 import fr.sii.ogham.core.builder.env.EnvironmentBuilder;
 import fr.sii.ogham.core.template.detector.TemplateEngineDetector;
 import fr.sii.ogham.sms.builder.SmsBuilder;
+import fr.sii.ogham.template.thymeleaf.common.TemplateResolverOptions;
+import fr.sii.ogham.template.thymeleaf.common.adapter.ClassPathResolverAdapter;
+import fr.sii.ogham.template.thymeleaf.common.adapter.FileResolverAdapter;
+import fr.sii.ogham.template.thymeleaf.common.adapter.FirstSupportingResolverAdapter;
+import fr.sii.ogham.template.thymeleaf.common.adapter.TemplateResolverAdapter;
 import fr.sii.ogham.template.thymeleaf.common.buider.AbstractThymeleafBuilder;
 import fr.sii.ogham.template.thymeleaf.v3.ThymeLeafV3FirstSupportingTemplateResolver;
 import fr.sii.ogham.template.thymeleaf.v3.ThymeleafV3TemplateDetector;
+import fr.sii.ogham.template.thymeleaf.v3.adapter.StringResolverAdapter;
 
 /**
  * Configures parsing of templates using Thymeleaf.
@@ -56,8 +62,8 @@ public class ThymeleafV3SmsBuilder extends AbstractThymeleafBuilder&lt;Thymeleaf
 	 * &lt;strong&gt;WARNING: use is only if you know what you are doing !&lt;/strong&gt;
 	 */
 	public ThymeleafV3SmsBuilder() {
-<span class="fc" id="L59">		super(ThymeleafV3SmsBuilder.class);</span>
-<span class="fc" id="L60">	}</span>
+<span class="fc" id="L65">		super(ThymeleafV3SmsBuilder.class);</span>
+<span class="fc" id="L66">	}</span>
 
 	/**
 	 * Initializes the builder with a parent builder. The parent builder is used
@@ -70,22 +76,35 @@ public class ThymeleafV3SmsBuilder extends AbstractThymeleafBuilder&lt;Thymeleaf
 	 *            the configuration for property resolution and evaluation
 	 */
 	public ThymeleafV3SmsBuilder(SmsBuilder parent, EnvironmentBuilder&lt;?&gt; environmentBuilder) {
-<span class="fc" id="L73">		super(ThymeleafV3SmsBuilder.class, parent, environmentBuilder);</span>
-<span class="fc" id="L74">	}</span>
+<span class="fc" id="L79">		super(ThymeleafV3SmsBuilder.class, parent, environmentBuilder);</span>
+<span class="fc" id="L80">	}</span>
 
 	@Override
 	protected TemplateEngineDetector createTemplateDetector() {
-<span class="fc" id="L78">		return new ThymeleafV3TemplateDetector(buildResolver());</span>
+<span class="fc" id="L84">		return new ThymeleafV3TemplateDetector(buildResolver());</span>
 	}
 
 	@Override
 	protected ITemplateResolver buildTemplateResolver(TemplateEngine builtEngine) {
-<span class="fc" id="L83">		return new ThymeLeafV3FirstSupportingTemplateResolver(buildResolver(), buildAdapters());</span>
+<span class="fc" id="L89">		return new ThymeLeafV3FirstSupportingTemplateResolver(buildResolver(), buildAdapters());</span>
 	}
 
 	@Override
 	protected ThymeleafV3EngineConfigBuilder&lt;ThymeleafV3SmsBuilder&gt; getThymeleafEngineConfigBuilder() {
-<span class="nc" id="L88">		return new ThymeleafV3EngineConfigBuilder&lt;&gt;(myself);</span>
+<span class="nc" id="L94">		return new ThymeleafV3EngineConfigBuilder&lt;&gt;(myself);</span>
+	}
+	
+	@Override
+	protected FirstSupportingResolverAdapter buildAdapters() {
+<span class="fc" id="L99">		FirstSupportingResolverAdapter adapter = new FirstSupportingResolverAdapter();</span>
+<span class="pc bpc" id="L100" title="1 of 2 branches missed.">		for (TemplateResolverAdapter custom : customAdapters) {</span>
+<span class="nc" id="L101">			adapter.addAdapter(custom);</span>
+<span class="nc" id="L102">		}</span>
+<span class="fc" id="L103">		adapter.addAdapter(new ClassPathResolverAdapter());</span>
+<span class="fc" id="L104">		adapter.addAdapter(new FileResolverAdapter());</span>
+<span class="fc" id="L105">		adapter.addAdapter(new StringResolverAdapter());</span>
+<span class="fc" id="L106">		adapter.setOptions(new TemplateResolverOptions());</span>
+<span class="fc" id="L107">		return adapter;</span>
 	}
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>
