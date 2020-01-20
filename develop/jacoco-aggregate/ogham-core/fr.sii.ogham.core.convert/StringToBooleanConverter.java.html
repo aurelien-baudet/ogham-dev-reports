@@ -45,27 +45,33 @@ import fr.sii.ogham.core.exception.convert.ConversionException;
 <span class="fc" id="L45">		falseValues.add(&quot;0&quot;);</span>
 <span class="fc" id="L46">	}</span>
 
-	@SuppressWarnings(&quot;unchecked&quot;)
 	@Override
 	public &lt;T&gt; T convert(Object source, Class&lt;T&gt; targetType) {
-<span class="fc" id="L51">		String value = ((String) source).trim();</span>
-<span class="pc bpc" id="L52" title="1 of 2 branches missed.">		if (&quot;&quot;.equals(value)) {</span>
-<span class="nc" id="L53">			return null;</span>
+<span class="fc bfc" id="L50" title="All 2 branches covered.">		if (source == null) {</span>
+<span class="fc" id="L51">			return null;</span>
 		}
-<span class="fc" id="L55">		value = value.toLowerCase(ENGLISH);</span>
-<span class="fc bfc" id="L56" title="All 2 branches covered.">		if (trueValues.contains(value)) {</span>
-<span class="fc" id="L57">			return (T) Boolean.TRUE;</span>
-<span class="pc bpc" id="L58" title="1 of 2 branches missed.">		} else if (falseValues.contains(value)) {</span>
-<span class="fc" id="L59">			return (T) Boolean.FALSE;</span>
-		} else {
-<span class="nc" id="L61">			throw new ConversionException(&quot;Invalid boolean value '&quot; + source + &quot;'&quot;);</span>
+<span class="fc" id="L53">		String value = ((String) source).trim();</span>
+<span class="fc bfc" id="L54" title="All 2 branches covered.">		if (&quot;&quot;.equals(value)) {</span>
+<span class="fc" id="L55">			return null;</span>
 		}
+<span class="fc" id="L57">		return toBoolean(source, value);</span>
 	}
 
 	@Override
 	public boolean supports(Class&lt;?&gt; sourceType, Class&lt;?&gt; targetType) {
-<span class="pc bpc" id="L67" title="1 of 4 branches missed.">		return String.class.isAssignableFrom(sourceType) &amp;&amp; Boolean.class.isAssignableFrom(targetType);</span>
+<span class="fc bfc" id="L62" title="All 4 branches covered.">		return String.class.isAssignableFrom(sourceType) &amp;&amp; Boolean.class.isAssignableFrom(targetType);</span>
 	}
 
+	@SuppressWarnings(&quot;unchecked&quot;)
+	private static &lt;T&gt; T toBoolean(Object source, String value) {
+<span class="fc" id="L67">		value = value.toLowerCase(ENGLISH);</span>
+<span class="fc bfc" id="L68" title="All 2 branches covered.">		if (trueValues.contains(value)) {</span>
+<span class="fc" id="L69">			return (T) Boolean.TRUE;</span>
+<span class="fc bfc" id="L70" title="All 2 branches covered.">		} else if (falseValues.contains(value)) {</span>
+<span class="fc" id="L71">			return (T) Boolean.FALSE;</span>
+		} else {
+<span class="fc" id="L73">			throw new ConversionException(&quot;Invalid boolean value '&quot; + source + &quot;'&quot;);</span>
+		}
+	}
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>
