@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>SimpleRetryExecutor.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">reporting</a> &gt; <a href="../index.html" class="el_bundle">ogham-core</a> &gt; <a href="index.source.html" class="el_package">fr.sii.ogham.core.retry</a> &gt; <span class="el_source">SimpleRetryExecutor.java</span></div><h1>SimpleRetryExecutor.java</h1><pre class="source lang-java linenums">package fr.sii.ogham.core.retry;
+
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.Callable;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import fr.sii.ogham.core.async.Awaiter;
+import fr.sii.ogham.core.exception.async.WaitException;
+import fr.sii.ogham.core.exception.retry.ExecutionFailedNotRetriedException;
+import fr.sii.ogham.core.exception.retry.MaximumAttemptsReachedException;
+import fr.sii.ogham.core.exception.retry.RetryException;
+import fr.sii.ogham.core.exception.retry.RetryExecutionInterruptedException;
+
+/**
+ * A simple implementation that tries to execute the action, if it fails (any
+ * exception), it waits using {@link Thread#sleep(long)}. Once the sleep is
+ * expired, the action is executed again.
+ * 
+ * This process is executed until the retry strategy tells that the retries
+ * should stop. Once stopped, it means that no execution of the action succeeded
+ * so the last exception is thrown.
+ * 
+ * @author Aurélien Baudet
+ *
+ */
+public class SimpleRetryExecutor implements RetryExecutor {
+<span class="fc" id="L31">	private static final Logger LOG = LoggerFactory.getLogger(SimpleRetryExecutor.class);</span>
+
+	/**
+	 * Use a provider in order to use a fresh {@link RetryStrategy} strategy
+	 * each time the execute method is called. This is mandatory to be able to
+	 * use the {@link RetryExecutor} in a multi-threaded application. This
+	 * avoids sharing same instance between several {@link #execute(Callable)}
+	 * calls.
+	 */
+	private final RetryStrategyProvider retryProvider;
+
+	/**
+	 * Implementation that waits for some time between retries
+	 */
+	private final Awaiter awaiter;
+
+	/**
+	 * Initializes with a provider in order to use a fresh {@link RetryStrategy}
+	 * strategy each time the execute method is called. This is mandatory to be
+	 * able to use the {@link RetryExecutor} in a multi-threaded application.
+	 * This avoids sharing same instance between several
+	 * {@link #execute(Callable)} calls.
+	 * 
+	 * @param retryProvider
+	 *            the provider that will provide the retry strategy
+	 * @param awaiter
+	 *            the waiter that waits some time between retries
+	 */
+	public SimpleRetryExecutor(RetryStrategyProvider retryProvider, Awaiter awaiter) {
+<span class="fc" id="L60">		super();</span>
+<span class="fc" id="L61">		this.retryProvider = retryProvider;</span>
+<span class="fc" id="L62">		this.awaiter = awaiter;</span>
+<span class="fc" id="L63">	}</span>
+
+	@Override
+	public &lt;V&gt; V execute(Callable&lt;V&gt; actionToRetry) throws RetryException {
+		// new instance for each execution
+<span class="fc" id="L68">		RetryStrategy retry = retryProvider.provide();</span>
+<span class="fc bfc" id="L69" title="All 2 branches covered.">		if (retry == null) {</span>
+<span class="fc" id="L70">			return executeWithoutRetry(actionToRetry);</span>
+		}
+<span class="fc" id="L72">		return executeWithRetry(actionToRetry, retry);</span>
+	}
+
+	private &lt;V&gt; V executeWithRetry(Callable&lt;V&gt; actionToRetry, RetryStrategy retry) throws RetryExecutionInterruptedException, MaximumAttemptsReachedException {
+<span class="fc" id="L76">		List&lt;Exception&gt; failures = new ArrayList&lt;&gt;();</span>
+		do {
+			try {
+<span class="fc" id="L79">				return actionToRetry.call();</span>
+<span class="fc" id="L80">			} catch (Exception e) {</span>
+<span class="fc" id="L81">				failures.add(e);</span>
+<span class="fc" id="L82">				Instant nextDate = retry.nextDate();</span>
+<span class="fc" id="L83">				LOG.debug(&quot;{} failed ({}). Cause: {}. Retrying at {}...&quot;, e.getMessage(), e.getClass(), getActionName(actionToRetry), nextDate);</span>
+<span class="fc" id="L84">				LOG.trace(&quot;{}&quot;, e.getMessage(), e);</span>
+<span class="fc" id="L85">				pauseUntil(nextDate);</span>
+			}
+<span class="fc bfc" id="L87" title="All 2 branches covered.">		} while (!retry.terminated());</span>
+		// action couldn't be executed
+<span class="fc" id="L89">		throw new MaximumAttemptsReachedException(&quot;Maximum attempts to execute action &quot; + getActionName(actionToRetry) + &quot; is reached&quot;, failures);</span>
+	}
+
+	private &lt;V&gt; V executeWithoutRetry(Callable&lt;V&gt; actionToRetry) throws ExecutionFailedNotRetriedException {
+		try {
+<span class="fc" id="L94">			return actionToRetry.call();</span>
+<span class="fc" id="L95">		} catch (Exception e) {</span>
+<span class="fc" id="L96">			throw new ExecutionFailedNotRetriedException(&quot;Failed to execute action &quot; + getActionName(actionToRetry) + &quot; and no retry strategy configured&quot;, e);</span>
+		}
+	}
+
+	private void pauseUntil(Instant nextDate) throws RetryExecutionInterruptedException {
+		try {
+<span class="fc" id="L102">			awaiter.waitUntil(nextDate);</span>
+<span class="nc" id="L103">		} catch (WaitException e) {</span>
+<span class="nc" id="L104">			throw new RetryExecutionInterruptedException(e);</span>
+<span class="fc" id="L105">		}</span>
+<span class="fc" id="L106">	}</span>
+
+	private static &lt;V&gt; String getActionName(Callable&lt;V&gt; actionToRetry) {
+<span class="fc bfc" id="L109" title="All 2 branches covered.">		if (actionToRetry instanceof NamedCallable) {</span>
+<span class="fc" id="L110">			return ((NamedCallable&lt;?&gt;) actionToRetry).getName();</span>
+		}
+<span class="fc" id="L112">		return &quot;unnamed&quot;;</span>
+	}
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>
