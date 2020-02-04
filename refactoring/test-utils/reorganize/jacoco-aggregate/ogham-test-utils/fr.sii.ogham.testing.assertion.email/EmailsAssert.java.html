@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>EmailsAssert.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">reporting</a> &gt; <a href="../index.html" class="el_bundle">ogham-test-utils</a> &gt; <a href="index.source.html" class="el_package">fr.sii.ogham.testing.assertion.email</a> &gt; <span class="el_source">EmailsAssert.java</span></div><h1>EmailsAssert.java</h1><pre class="source lang-java linenums">package fr.sii.ogham.testing.assertion.email;
 
 import static fr.sii.ogham.testing.assertion.util.AssertionHelper.assertThat;
+import static fr.sii.ogham.testing.assertion.util.AssertionHelper.overrideDescription;
+import static org.hamcrest.Matchers.lessThan;
 
 import java.util.List;
 
@@ -8,6 +10,7 @@ import javax.mail.Message;
 
 import org.hamcrest.Matcher;
 
+import fr.sii.ogham.testing.assertion.util.AssertionRegistry;
 import fr.sii.ogham.testing.util.HasParent;
 
 public class EmailsAssert&lt;P&gt; extends HasParent&lt;P&gt; {
@@ -15,11 +18,17 @@ public class EmailsAssert&lt;P&gt; extends HasParent&lt;P&gt; {
 	 * The list of messages that will be used for assertions
 	 */
 	private final List&lt;? extends Message&gt; actual;
+	/**
+	 * Registry to register assertions
+	 */
+	private final AssertionRegistry registry;
 
-	public EmailsAssert(List&lt;? extends Message&gt; actual, P parent) {
-<span class="fc" id="L20">		super(parent);</span>
-<span class="fc" id="L21">		this.actual = actual;</span>
-<span class="fc" id="L22">	}</span>
+
+	public EmailsAssert(List&lt;? extends Message&gt; actual, P parent, AssertionRegistry registry) {
+<span class="fc" id="L28">		super(parent);</span>
+<span class="fc" id="L29">		this.actual = actual;</span>
+<span class="fc" id="L30">		this.registry = registry;</span>
+<span class="fc" id="L31">	}</span>
 
 	/**
 	 * Assertion on the number of received messages:
@@ -33,8 +42,8 @@ public class EmailsAssert&lt;P&gt; extends HasParent&lt;P&gt; {
 	 * @return the fluent API for chaining assertions on received messages
 	 */
 	public EmailsAssert&lt;P&gt; count(Matcher&lt;Integer&gt; matcher) {
-<span class="fc" id="L36">		assertThat(&quot;Received messages count&quot;, actual.size(), matcher);</span>
-<span class="fc" id="L37">		return this;</span>
+<span class="fc" id="L45">		registry.register(() -&gt; assertThat(&quot;Received messages count&quot;, actual.size(), matcher));</span>
+<span class="fc" id="L46">		return this;</span>
 	}
 
 	/**
@@ -59,10 +68,8 @@ public class EmailsAssert&lt;P&gt; extends HasParent&lt;P&gt; {
 	 * @return the fluent API for chaining assertions on received messages
 	 */
 	public EmailAssert&lt;EmailsAssert&lt;P&gt;&gt; message(int index) {
-<span class="fc bfc" id="L62" title="All 2 branches covered.">		if (index &gt;= actual.size()) {</span>
-<span class="fc" id="L63">			throw new AssertionError(&quot;Assertions on message &quot;+index+&quot; can't be executed because &quot;+actual.size()+&quot; messages were received&quot;);</span>
-		}
-<span class="fc" id="L65">		return new EmailAssert&lt;&gt;(actual.get(index), index, this);</span>
+<span class="fc" id="L71">		registry.register(() -&gt; assertThat(index, overrideDescription(&quot;Assertions on message &quot;+index+&quot; can't be executed because &quot;+actual.size()+&quot; messages were received&quot;, lessThan(actual.size()))));</span>
+<span class="fc bfc" id="L72" title="All 2 branches covered.">		return new EmailAssert&lt;&gt;(index&lt;actual.size() ? actual.get(index) : null, index, this, registry);</span>
 	}
 
 	/**
@@ -91,7 +98,7 @@ public class EmailsAssert&lt;P&gt; extends HasParent&lt;P&gt; {
 	 * @return the fluent API for chaining assertions on received messages
 	 */
 	public EmailAssert&lt;EmailsAssert&lt;P&gt;&gt; every() {
-<span class="fc" id="L94">		return new EmailAssert&lt;&gt;(actual, this);</span>
+<span class="fc" id="L101">		return new EmailAssert&lt;&gt;(actual, this, registry);</span>
 	}
 
 	/**
@@ -122,7 +129,7 @@ public class EmailsAssert&lt;P&gt; extends HasParent&lt;P&gt; {
 	 */
 	@Deprecated
 	public EmailAssert&lt;EmailsAssert&lt;P&gt;&gt; forEach() {
-<span class="nc" id="L125">		return new EmailAssert&lt;&gt;(actual, this);</span>
+<span class="nc" id="L132">		return new EmailAssert&lt;&gt;(actual, this, registry);</span>
 	}
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

@@ -130,7 +130,7 @@ public final class EmailUtils {
 	 *             when message can't be read
 	 */
 	public static BodyPart getAttachment(Multipart multipart, final String filename) throws MessagingException {
-<span class="nc" id="L133">		return getAttachment(multipart, new FileNamePredicate(filename));</span>
+<span class="fc" id="L133">		return getAttachment(multipart, new FileNamePredicate(filename));</span>
 	}
 
 	/**
@@ -146,8 +146,8 @@ public final class EmailUtils {
 	 *             when message can't be read
 	 */
 	public static BodyPart getAttachment(Multipart multipart, Predicate&lt;Part&gt; filter) throws MessagingException {
-<span class="nc" id="L149">		List&lt;BodyPart&gt; attachments = getAttachments(multipart, filter);</span>
-<span class="nc bnc" id="L150" title="All 2 branches missed.">		return attachments.isEmpty() ? null : attachments.get(0);</span>
+<span class="fc" id="L149">		List&lt;BodyPart&gt; attachments = getAttachments(multipart, filter);</span>
+<span class="fc bfc" id="L150" title="All 2 branches covered.">		return attachments.isEmpty() ? null : attachments.get(0);</span>
 	}
 
 	/**
@@ -162,14 +162,17 @@ public final class EmailUtils {
 	 *             when message can't be read
 	 */
 	public static List&lt;BodyPart&gt; getAttachments(Multipart multipart, Predicate&lt;Part&gt; filter) throws MessagingException {
-<span class="nc" id="L165">		List&lt;BodyPart&gt; found = new ArrayList&lt;&gt;();</span>
-<span class="nc bnc" id="L166" title="All 2 branches missed.">		for (int i = 0; i &lt; multipart.getCount(); i++) {</span>
-<span class="nc" id="L167">			BodyPart bodyPart = multipart.getBodyPart(i);</span>
-<span class="nc bnc" id="L168" title="All 2 branches missed.">			if (filter.test(bodyPart)) {</span>
-<span class="nc" id="L169">				found.add(bodyPart);</span>
+<span class="fc bfc" id="L165" title="All 2 branches covered.">		if (multipart == null) {</span>
+<span class="fc" id="L166">			throw new IllegalStateException(&quot;The multipart can't be null&quot;);</span>
+		}
+<span class="fc" id="L168">		List&lt;BodyPart&gt; found = new ArrayList&lt;&gt;();</span>
+<span class="fc bfc" id="L169" title="All 2 branches covered.">		for (int i = 0; i &lt; multipart.getCount(); i++) {</span>
+<span class="fc" id="L170">			BodyPart bodyPart = multipart.getBodyPart(i);</span>
+<span class="fc bfc" id="L171" title="All 2 branches covered.">			if (filter.test(bodyPart)) {</span>
+<span class="fc" id="L172">				found.add(bodyPart);</span>
 			}
 		}
-<span class="nc" id="L172">		return found;</span>
+<span class="fc" id="L175">		return found;</span>
 	}
 
 	/**
@@ -182,7 +185,7 @@ public final class EmailUtils {
 	 *             when message can't be read
 	 */
 	public static List&lt;BodyPart&gt; getAttachments(Part message) throws MessagingException {
-<span class="fc" id="L185">		return getAttachments(message, new DefaultAttachmentPredicate());</span>
+<span class="fc" id="L188">		return getAttachments(message, new DefaultAttachmentPredicate());</span>
 	}
 
 	/**
@@ -200,9 +203,9 @@ public final class EmailUtils {
 	 *             when message can't be read
 	 */
 	public static &lt;T extends Part&gt; List&lt;T&gt; getAttachments(Part message, Predicate&lt;Part&gt; filter) throws MessagingException {
-<span class="fc" id="L203">		List&lt;T&gt; attachments = new ArrayList&lt;&gt;();</span>
-<span class="fc" id="L204">		findBodyParts(message, filter, attachments);</span>
-<span class="fc" id="L205">		return attachments;</span>
+<span class="fc" id="L206">		List&lt;T&gt; attachments = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L207">		findBodyParts(message, filter, attachments);</span>
+<span class="fc" id="L208">		return attachments;</span>
 	}
 
 	/**
@@ -215,9 +218,9 @@ public final class EmailUtils {
 	 */
 	public static boolean isMultipart(Part part) {
 		try {
-<span class="fc" id="L218">			return part.isMimeType(&quot;multipart/*&quot;);</span>
-<span class="nc" id="L219">		} catch (MessagingException e) {</span>
-<span class="nc" id="L220">			throw new MessagingRuntimeException(&quot;Failed to retrieve Content-Type of part&quot;, e);</span>
+<span class="fc" id="L221">			return part.isMimeType(&quot;multipart/*&quot;);</span>
+<span class="nc" id="L222">		} catch (MessagingException e) {</span>
+<span class="nc" id="L223">			throw new MessagingRuntimeException(&quot;Failed to retrieve Content-Type of part&quot;, e);</span>
 		}
 	}
 
@@ -232,48 +235,48 @@ public final class EmailUtils {
 	 */
 	public static boolean isTextualContent(Part part) {
 		try {
-<span class="fc" id="L235">			return TEXT_OR_HTML_MIMETYPES.matcher(part.getContentType()).matches();</span>
-<span class="nc" id="L236">		} catch (MessagingException e) {</span>
-<span class="nc" id="L237">			throw new MessagingRuntimeException(&quot;Failed to retrieve Content-Type of part&quot;, e);</span>
+<span class="fc" id="L238">			return TEXT_OR_HTML_MIMETYPES.matcher(part.getContentType()).matches();</span>
+<span class="nc" id="L239">		} catch (MessagingException e) {</span>
+<span class="nc" id="L240">			throw new MessagingRuntimeException(&quot;Failed to retrieve Content-Type of part&quot;, e);</span>
 		}
 	}
 
 	private static &lt;T extends Part&gt; List&lt;T&gt; getBodyParts(Part actualEmail, Predicate&lt;Part&gt; filter) throws MessagingException {
-<span class="fc" id="L242">		List&lt;T&gt; founds = new ArrayList&lt;&gt;();</span>
-<span class="fc" id="L243">		findBodyParts(actualEmail, filter, founds);</span>
-<span class="fc" id="L244">		return founds;</span>
+<span class="fc" id="L245">		List&lt;T&gt; founds = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L246">		findBodyParts(actualEmail, filter, founds);</span>
+<span class="fc" id="L247">		return founds;</span>
 	}
 
 	private static &lt;T extends Part&gt; void findBodyParts(Part actualEmail, Predicate&lt;Part&gt; filter, List&lt;T&gt; founds) throws MessagingException {
-<span class="fc" id="L248">		LOG.trace(&quot;---------------------------&quot;);</span>
-<span class="fc" id="L249">		findBodyParts(actualEmail, filter, founds, &quot;&quot;);</span>
-<span class="fc" id="L250">	}</span>
+<span class="fc" id="L251">		LOG.trace(&quot;---------------------------&quot;);</span>
+<span class="fc" id="L252">		findBodyParts(actualEmail, filter, founds, &quot;&quot;);</span>
+<span class="fc" id="L253">	}</span>
 
 	private static &lt;T extends Part&gt; void findBodyParts(Part actualEmail, Predicate&lt;Part&gt; filter, List&lt;T&gt; founds, String indent) throws MessagingException {
 		try {
-<span class="fc" id="L254">			Object content = actualEmail.getContent();</span>
-<span class="pc bpc" id="L255" title="1 of 2 branches missed.">			if (content instanceof Multipart) {</span>
-<span class="fc" id="L256">				Multipart mp = (Multipart) content;</span>
-<span class="fc" id="L257">				LOG.trace(&quot;{}find {}&quot;, indent, mp.getContentType());</span>
-<span class="fc bfc" id="L258" title="All 2 branches covered.">				for (int i = 0; i &lt; mp.getCount(); i++) {</span>
-<span class="fc" id="L259">					BodyPart part = mp.getBodyPart(i);</span>
-<span class="fc" id="L260">					addPart(filter, founds, indent, part);</span>
+<span class="fc" id="L257">			Object content = actualEmail.getContent();</span>
+<span class="pc bpc" id="L258" title="1 of 2 branches missed.">			if (content instanceof Multipart) {</span>
+<span class="fc" id="L259">				Multipart mp = (Multipart) content;</span>
+<span class="fc" id="L260">				LOG.trace(&quot;{}find {}&quot;, indent, mp.getContentType());</span>
+<span class="fc bfc" id="L261" title="All 2 branches covered.">				for (int i = 0; i &lt; mp.getCount(); i++) {</span>
+<span class="fc" id="L262">					BodyPart part = mp.getBodyPart(i);</span>
+<span class="fc" id="L263">					addPart(filter, founds, indent, part);</span>
 				}
 			}
-<span class="nc" id="L263">		} catch (IOException e) {</span>
-<span class="nc" id="L264">			throw new MessagingException(&quot;Failed to access content of the mail&quot;, e);</span>
-<span class="fc" id="L265">		}</span>
-<span class="fc" id="L266">	}</span>
+<span class="nc" id="L266">		} catch (IOException e) {</span>
+<span class="nc" id="L267">			throw new MessagingException(&quot;Failed to access content of the mail&quot;, e);</span>
+<span class="fc" id="L268">		}</span>
+<span class="fc" id="L269">	}</span>
 
 	@SuppressWarnings(&quot;unchecked&quot;)
 	private static &lt;T extends Part&gt; void addPart(Predicate&lt;Part&gt; filter, List&lt;T&gt; founds, String indent, BodyPart part) throws MessagingException {
-<span class="fc bfc" id="L270" title="All 2 branches covered.">		if (isMultipart(part)) {</span>
-<span class="fc" id="L271">			findBodyParts(part, filter, founds, indent + &quot;   &quot;);</span>
-<span class="fc bfc" id="L272" title="All 2 branches covered.">		} else if (filter.test(part)) {</span>
-<span class="fc" id="L273">			LOG.trace(&quot;{}add {}&quot;, indent + &quot;   &quot;, part.getContentType());</span>
-<span class="fc" id="L274">			founds.add((T) part);</span>
+<span class="fc bfc" id="L273" title="All 2 branches covered.">		if (isMultipart(part)) {</span>
+<span class="fc" id="L274">			findBodyParts(part, filter, founds, indent + &quot;   &quot;);</span>
+<span class="fc bfc" id="L275" title="All 2 branches covered.">		} else if (filter.test(part)) {</span>
+<span class="fc" id="L276">			LOG.trace(&quot;{}add {}&quot;, indent + &quot;   &quot;, part.getContentType());</span>
+<span class="fc" id="L277">			founds.add((T) part);</span>
 		}
-<span class="fc" id="L276">	}</span>
+<span class="fc" id="L279">	}</span>
 
 	private EmailUtils() {
 		super();
@@ -283,8 +286,8 @@ public final class EmailUtils {
 		private static final long serialVersionUID = 1L;
 
 		public MessagingRuntimeException(String message, Throwable cause) {
-<span class="nc" id="L286">			super(message, cause);</span>
-<span class="nc" id="L287">		}</span>
+<span class="nc" id="L289">			super(message, cause);</span>
+<span class="nc" id="L290">		}</span>
 	}
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

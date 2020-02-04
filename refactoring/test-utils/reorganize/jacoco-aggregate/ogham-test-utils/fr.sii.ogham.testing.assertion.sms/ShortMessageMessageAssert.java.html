@@ -10,6 +10,7 @@ import java.util.List;
 
 import org.hamcrest.Matcher;
 
+import fr.sii.ogham.testing.assertion.util.AssertionRegistry;
 import fr.sii.ogham.testing.sms.simulator.bean.SubmitSm;
 import fr.sii.ogham.testing.util.HasParent;
 
@@ -25,6 +26,7 @@ import fr.sii.ogham.testing.util.HasParent;
  */
 public class ShortMessageMessageAssert&lt;P, S extends SubmitSm&gt; extends HasParent&lt;P&gt; {
 	private final List&lt;ShortMessageWithContext&lt;S&gt;&gt; actual;
+	private final AssertionRegistry registry;
 
 	/**
 	 * Initializes with the list of short messages and the parent.
@@ -34,11 +36,14 @@ public class ShortMessageMessageAssert&lt;P, S extends SubmitSm&gt; extends HasP
 	 *            reporting)
 	 * @param parent
 	 *            the parent (used by {@link #and()})
+	 * @param registry
+	 *            used to register assertions
 	 */
-	public ShortMessageMessageAssert(List&lt;ShortMessageWithContext&lt;S&gt;&gt; actual, P parent) {
-<span class="fc" id="L39">		super(parent);</span>
-<span class="fc" id="L40">		this.actual = unmodifiableList(actual);</span>
-<span class="fc" id="L41">	}</span>
+	public ShortMessageMessageAssert(List&lt;ShortMessageWithContext&lt;S&gt;&gt; actual, P parent, AssertionRegistry registry) {
+<span class="fc" id="L43">		super(parent);</span>
+<span class="fc" id="L44">		this.actual = unmodifiableList(actual);</span>
+<span class="fc" id="L45">		this.registry = registry;</span>
+<span class="fc" id="L46">	}</span>
 
 	/**
 	 * Make assertions on the header byte array of short message field of the
@@ -75,12 +80,12 @@ public class ShortMessageMessageAssert&lt;P, S extends SubmitSm&gt; extends HasP
 	 * @return the fluent API for chaining assertions on received message(s)
 	 */
 	public ShortMessageMessageAssert&lt;P, S&gt; header(Matcher&lt;? super Byte[]&gt; matcher) {
-<span class="fc" id="L78">		String message = &quot;header of ${name} of message ${messageIndex}&quot;;</span>
-<span class="fc bfc" id="L79" title="All 2 branches covered.">		for (ShortMessageWithContext&lt;S&gt; shortMessageWithContext : actual) {</span>
-<span class="fc" id="L80">			S msg = shortMessageWithContext.getRequest();</span>
-<span class="fc" id="L81">			assertThat(toObject(getHeader(msg)), usingContext(message, shortMessageWithContext, matcher));</span>
-<span class="fc" id="L82">		}</span>
-<span class="fc" id="L83">		return this;</span>
+<span class="fc" id="L83">		String message = &quot;header of ${name} of message ${messageIndex}&quot;;</span>
+<span class="fc bfc" id="L84" title="All 2 branches covered.">		for (ShortMessageWithContext&lt;S&gt; shortMessageWithContext : actual) {</span>
+<span class="fc" id="L85">			S msg = shortMessageWithContext.getRequest();</span>
+<span class="fc" id="L86">			registry.register(() -&gt; assertThat(toObject(getHeader(msg)), usingContext(message, shortMessageWithContext, matcher)));</span>
+<span class="fc" id="L87">		}</span>
+<span class="fc" id="L88">		return this;</span>
 	}
 
 	/**
@@ -116,33 +121,33 @@ public class ShortMessageMessageAssert&lt;P, S extends SubmitSm&gt; extends HasP
 	 * @return the fluent API for chaining assertions on received message(s)
 	 */
 	public ShortMessageMessageAssert&lt;P, S&gt; payload(Matcher&lt;? super Byte[]&gt; matcher) {
-<span class="fc" id="L119">		String message = &quot;payload of ${name} of message ${messageIndex}&quot;;</span>
-<span class="fc bfc" id="L120" title="All 2 branches covered.">		for (ShortMessageWithContext&lt;S&gt; shortMessageWithContext : actual) {</span>
-<span class="fc" id="L121">			S msg = shortMessageWithContext.getRequest();</span>
-<span class="fc" id="L122">			assertThat(toObject(getPayload(msg)), usingContext(message, shortMessageWithContext, matcher));</span>
-<span class="fc" id="L123">		}</span>
-<span class="fc" id="L124">		return this;</span>
+<span class="fc" id="L124">		String message = &quot;payload of ${name} of message ${messageIndex}&quot;;</span>
+<span class="fc bfc" id="L125" title="All 2 branches covered.">		for (ShortMessageWithContext&lt;S&gt; shortMessageWithContext : actual) {</span>
+<span class="fc" id="L126">			S msg = shortMessageWithContext.getRequest();</span>
+<span class="fc" id="L127">			registry.register(() -&gt; assertThat(toObject(getPayload(msg)), usingContext(message, shortMessageWithContext, matcher)));</span>
+<span class="fc" id="L128">		}</span>
+<span class="fc" id="L129">		return this;</span>
 	}
 
 	@SuppressWarnings(&quot;squid:S1168&quot;)
 	private byte[] getHeader(S msg) {
-<span class="fc" id="L129">		byte[] shortMessage = msg.getShortMessage();</span>
-<span class="fc bfc" id="L130" title="All 2 branches covered.">		if (msg.isUdhi()) {</span>
-<span class="fc" id="L131">			return Arrays.copyOfRange(shortMessage, 0, headerLength(shortMessage));</span>
+<span class="fc" id="L134">		byte[] shortMessage = msg.getShortMessage();</span>
+<span class="fc bfc" id="L135" title="All 2 branches covered.">		if (msg.isUdhi()) {</span>
+<span class="fc" id="L136">			return Arrays.copyOfRange(shortMessage, 0, headerLength(shortMessage));</span>
 		}
-<span class="fc" id="L133">		return null;</span>
+<span class="fc" id="L138">		return null;</span>
 	}
 
 	private static int headerLength(byte[] shortMessage) {
-<span class="fc" id="L137">		return shortMessage[0] + 1;</span>
+<span class="fc" id="L142">		return shortMessage[0] + 1;</span>
 	}
 
 	private byte[] getPayload(S msg) {
-<span class="fc" id="L141">		byte[] shortMessage = msg.getShortMessage();</span>
-<span class="fc bfc" id="L142" title="All 2 branches covered.">		if (msg.isUdhi()) {</span>
-<span class="fc" id="L143">			return Arrays.copyOfRange(shortMessage, headerLength(shortMessage), shortMessage.length);</span>
+<span class="fc" id="L146">		byte[] shortMessage = msg.getShortMessage();</span>
+<span class="fc bfc" id="L147" title="All 2 branches covered.">		if (msg.isUdhi()) {</span>
+<span class="fc" id="L148">			return Arrays.copyOfRange(shortMessage, headerLength(shortMessage), shortMessage.length);</span>
 		}
-<span class="fc" id="L145">		return shortMessage;</span>
+<span class="fc" id="L150">		return shortMessage;</span>
 	}
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

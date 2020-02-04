@@ -9,6 +9,7 @@ import java.util.List;
 
 import org.hamcrest.Matcher;
 
+import fr.sii.ogham.testing.assertion.util.AssertionRegistry;
 import fr.sii.ogham.testing.sms.simulator.bean.Alphabet;
 import fr.sii.ogham.testing.sms.simulator.bean.OptionalParameter;
 import fr.sii.ogham.testing.sms.simulator.bean.SubmitSm;
@@ -27,6 +28,7 @@ import fr.sii.ogham.testing.util.HasParent;
  */
 public class PduRequestAssert&lt;P, S extends SubmitSm&gt; extends HasParent&lt;P&gt; {
 	private final List&lt;PduRequestWithContext&lt;S&gt;&gt; actual;
+	private final AssertionRegistry registry;
 
 	/**
 	 * 
@@ -34,11 +36,14 @@ public class PduRequestAssert&lt;P, S extends SubmitSm&gt; extends HasParent&lt;
 	 *            the received messages
 	 * @param parent
 	 *            the parent
+	 * @param registry
+	 *            used to register assertions
 	 */
-	public PduRequestAssert(List&lt;PduRequestWithContext&lt;S&gt;&gt; actual, P parent) {
-<span class="fc" id="L39">		super(parent);</span>
-<span class="fc" id="L40">		this.actual = actual;</span>
-<span class="fc" id="L41">	}</span>
+	public PduRequestAssert(List&lt;PduRequestWithContext&lt;S&gt;&gt; actual, P parent, AssertionRegistry registry) {
+<span class="fc" id="L43">		super(parent);</span>
+<span class="fc" id="L44">		this.actual = actual;</span>
+<span class="fc" id="L45">		this.registry = registry;</span>
+<span class="fc" id="L46">	}</span>
 
 	/**
 	 * Make assertions on the encoding byte of the message(s) using fluent API.
@@ -64,12 +69,12 @@ public class PduRequestAssert&lt;P, S extends SubmitSm&gt; extends HasParent&lt;
 	 * @return the fluent API for chaining assertions on received message(s)
 	 */
 	public PduRequestAssert&lt;P, S&gt; encoding(Matcher&lt;Byte&gt; matcher) {
-<span class="fc" id="L67">		String message = &quot;encoding of ${name} of message ${messageIndex}&quot;;</span>
-<span class="fc bfc" id="L68" title="All 2 branches covered.">		for (PduRequestWithContext&lt;S&gt; rawContentWithContext : actual) {</span>
-<span class="fc" id="L69">			S msg = rawContentWithContext.getRequest();</span>
-<span class="fc" id="L70">			assertThat(org.jsmpp.bean.Alphabet.parseDataCoding(msg.getDataCoding()).value(), usingContext(message, rawContentWithContext, matcher));</span>
-<span class="fc" id="L71">		}</span>
-<span class="fc" id="L72">		return this;</span>
+<span class="fc" id="L72">		String message = &quot;encoding of ${name} of message ${messageIndex}&quot;;</span>
+<span class="fc bfc" id="L73" title="All 2 branches covered.">		for (PduRequestWithContext&lt;S&gt; rawContentWithContext : actual) {</span>
+<span class="fc" id="L74">			S msg = rawContentWithContext.getRequest();</span>
+<span class="fc" id="L75">			registry.register(() -&gt; assertThat(org.jsmpp.bean.Alphabet.parseDataCoding(msg.getDataCoding()).value(), usingContext(message, rawContentWithContext, matcher)));</span>
+<span class="fc" id="L76">		}</span>
+<span class="fc" id="L77">		return this;</span>
 	}
 
 	/**
@@ -102,12 +107,12 @@ public class PduRequestAssert&lt;P, S extends SubmitSm&gt; extends HasParent&lt;
 	 * @return the fluent API for chaining assertions on received message(s)
 	 */
 	public PduRequestAssert&lt;P, S&gt; alphabet(Matcher&lt;Alphabet&gt; matcher) {
-<span class="fc" id="L105">		String message = &quot;alphabet of ${name} of message ${messageIndex}&quot;;</span>
-<span class="fc bfc" id="L106" title="All 2 branches covered.">		for (PduRequestWithContext&lt;S&gt; rawContentWithContext : actual) {</span>
-<span class="fc" id="L107">			S msg = rawContentWithContext.getRequest();</span>
-<span class="fc" id="L108">			assertThat(Alphabet.from(org.jsmpp.bean.Alphabet.parseDataCoding(msg.getDataCoding()).value()), usingContext(message, rawContentWithContext, matcher));</span>
-<span class="fc" id="L109">		}</span>
-<span class="fc" id="L110">		return this;</span>
+<span class="fc" id="L110">		String message = &quot;alphabet of ${name} of message ${messageIndex}&quot;;</span>
+<span class="fc bfc" id="L111" title="All 2 branches covered.">		for (PduRequestWithContext&lt;S&gt; rawContentWithContext : actual) {</span>
+<span class="fc" id="L112">			S msg = rawContentWithContext.getRequest();</span>
+<span class="fc" id="L113">			registry.register(() -&gt; assertThat(Alphabet.from(org.jsmpp.bean.Alphabet.parseDataCoding(msg.getDataCoding()).value()), usingContext(message, rawContentWithContext, matcher)));</span>
+<span class="fc" id="L114">		}</span>
+<span class="fc" id="L115">		return this;</span>
 	}
 
 	/**
@@ -144,12 +149,12 @@ public class PduRequestAssert&lt;P, S extends SubmitSm&gt; extends HasParent&lt;
 	 * @return the fluent API for chaining assertions on received message(s)
 	 */
 	public PduRequestAssert&lt;P, S&gt; shortMessage(Matcher&lt;? super Byte[]&gt; matcher) {
-<span class="fc" id="L147">		String message = &quot;shortMessage of ${name} of message ${messageIndex}&quot;;</span>
-<span class="fc bfc" id="L148" title="All 2 branches covered.">		for (PduRequestWithContext&lt;S&gt; rawContentWithContext : actual) {</span>
-<span class="fc" id="L149">			S msg = rawContentWithContext.getRequest();</span>
-<span class="fc" id="L150">			assertThat(toObject(msg.getShortMessage()), usingContext(message, rawContentWithContext, matcher));</span>
-<span class="fc" id="L151">		}</span>
-<span class="fc" id="L152">		return this;</span>
+<span class="fc" id="L152">		String message = &quot;shortMessage of ${name} of message ${messageIndex}&quot;;</span>
+<span class="fc bfc" id="L153" title="All 2 branches covered.">		for (PduRequestWithContext&lt;S&gt; rawContentWithContext : actual) {</span>
+<span class="fc" id="L154">			S msg = rawContentWithContext.getRequest();</span>
+<span class="fc" id="L155">			registry.register(() -&gt; assertThat(toObject(msg.getShortMessage()), usingContext(message, rawContentWithContext, matcher)));</span>
+<span class="fc" id="L156">		}</span>
+<span class="fc" id="L157">		return this;</span>
 	}
 
 	/**
@@ -186,12 +191,12 @@ public class PduRequestAssert&lt;P, S extends SubmitSm&gt; extends HasParent&lt;
 	 * @return the fluent API for chaining assertions on received message(s)
 	 */
 	public ShortMessageMessageAssert&lt;PduRequestAssert&lt;P, S&gt;, S&gt; shortMessage() {
-<span class="fc" id="L189">		List&lt;ShortMessageWithContext&lt;S&gt;&gt; shortMessages = new ArrayList&lt;&gt;();</span>
-<span class="fc bfc" id="L190" title="All 2 branches covered.">		for (PduRequestWithContext&lt;S&gt; rawContentWithContext : actual) {</span>
-<span class="fc" id="L191">			S msg = rawContentWithContext.getRequest();</span>
-<span class="fc" id="L192">			shortMessages.add(new ShortMessageWithContext&lt;&gt;(msg, rawContentWithContext));</span>
-<span class="fc" id="L193">		}</span>
-<span class="fc" id="L194">		return new ShortMessageMessageAssert&lt;&gt;(shortMessages, this);</span>
+<span class="fc" id="L194">		List&lt;ShortMessageWithContext&lt;S&gt;&gt; shortMessages = new ArrayList&lt;&gt;();</span>
+<span class="fc bfc" id="L195" title="All 2 branches covered.">		for (PduRequestWithContext&lt;S&gt; rawContentWithContext : actual) {</span>
+<span class="fc" id="L196">			S msg = rawContentWithContext.getRequest();</span>
+<span class="fc" id="L197">			shortMessages.add(new ShortMessageWithContext&lt;&gt;(msg, rawContentWithContext));</span>
+<span class="fc" id="L198">		}</span>
+<span class="fc" id="L199">		return new ShortMessageMessageAssert&lt;&gt;(shortMessages, this, registry);</span>
 	}
 
 	/**
@@ -224,16 +229,16 @@ public class PduRequestAssert&lt;P, S extends SubmitSm&gt; extends HasParent&lt;
 	 * @return the fluent API for chaining assertions on received message(s)
 	 */
 	public OptionalParameterAssert&lt;PduRequestAssert&lt;P, S&gt;&gt; optionalParameter(Tag withTag) {
-<span class="fc" id="L227">		List&lt;OptionalParameterWithContext&gt; parameters = new ArrayList&lt;&gt;();</span>
-<span class="fc bfc" id="L228" title="All 2 branches covered.">		for (PduRequestWithContext&lt;S&gt; rawContentWithContext : actual) {</span>
-<span class="fc" id="L229">			OptionalParameter parameter = getOptionalParameter(rawContentWithContext.getRequest(), withTag);</span>
-<span class="fc" id="L230">			parameters.add(new OptionalParameterWithContext(withTag, parameter, rawContentWithContext));</span>
-<span class="fc" id="L231">		}</span>
-<span class="fc" id="L232">		return new OptionalParameterAssert&lt;&gt;(this, parameters);</span>
+<span class="fc" id="L232">		List&lt;OptionalParameterWithContext&gt; parameters = new ArrayList&lt;&gt;();</span>
+<span class="fc bfc" id="L233" title="All 2 branches covered.">		for (PduRequestWithContext&lt;S&gt; rawContentWithContext : actual) {</span>
+<span class="fc" id="L234">			OptionalParameter parameter = getOptionalParameter(rawContentWithContext.getRequest(), withTag);</span>
+<span class="fc" id="L235">			parameters.add(new OptionalParameterWithContext(withTag, parameter, rawContentWithContext));</span>
+<span class="fc" id="L236">		}</span>
+<span class="fc" id="L237">		return new OptionalParameterAssert&lt;&gt;(this, parameters, registry);</span>
 	}
 
 	private OptionalParameter getOptionalParameter(S msg, Tag tag) {
-<span class="fc" id="L236">		return msg.getOptionalParameter(tag);</span>
+<span class="fc" id="L241">		return msg.getOptionalParameter(tag);</span>
 	}
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

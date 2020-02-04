@@ -6,6 +6,7 @@ import fr.sii.ogham.testing.extension.junit.sms.config.ServerConfig;
 import fr.sii.ogham.testing.sms.simulator.SmppServerSimulator;
 import fr.sii.ogham.testing.sms.simulator.config.SimulatorConfiguration;
 import fr.sii.ogham.testing.sms.simulator.jsmpp.JSMPPServer;
+import fr.sii.ogham.testing.sms.simulator.jsmpp.SubmitSmAdapter;
 
 /**
  * JUnit rule that start a SMPP server based on JSMPP implementation.
@@ -19,8 +20,8 @@ public class JsmppServerRule extends SmppServerRule&lt;SubmitSm&gt; {
 	 * ({@link SmppServerRule#DEFAULT_PORT}).
 	 */
 	public JsmppServerRule() {
-<span class="fc" id="L22">		this(SmppServerRule.DEFAULT_PORT);</span>
-<span class="fc" id="L23">	}</span>
+<span class="fc" id="L23">		this(SmppServerRule.DEFAULT_PORT);</span>
+<span class="fc" id="L24">	}</span>
 
 	/**
 	 * Initialize the server with the provided port.
@@ -29,8 +30,8 @@ public class JsmppServerRule extends SmppServerRule&lt;SubmitSm&gt; {
 	 *            the port used by the server
 	 */
 	public JsmppServerRule(int port) {
-<span class="fc" id="L32">		this(port, new ServerConfig());</span>
-<span class="fc" id="L33">	}</span>
+<span class="fc" id="L33">		this(port, new ServerConfig());</span>
+<span class="fc" id="L34">	}</span>
 
 	/**
 	 * Initialize the server with the default port
@@ -40,8 +41,8 @@ public class JsmppServerRule extends SmppServerRule&lt;SubmitSm&gt; {
 	 *            the server configuration to simulate some behavior
 	 */
 	public JsmppServerRule(ServerConfig config) {
-<span class="fc" id="L43">		this(SmppServerRule.DEFAULT_PORT, config);</span>
-<span class="fc" id="L44">	}</span>
+<span class="fc" id="L44">		this(SmppServerRule.DEFAULT_PORT, config);</span>
+<span class="fc" id="L45">	}</span>
 
 	/**
 	 * Initialize the server with the provided port.
@@ -52,12 +53,17 @@ public class JsmppServerRule extends SmppServerRule&lt;SubmitSm&gt; {
 	 *            the server configuration to simulate some behavior
 	 */
 	public JsmppServerRule(int port, ServerConfig config) {
-<span class="fc" id="L55">		super(port, config);</span>
-<span class="fc" id="L56">	}</span>
+<span class="fc" id="L56">		super(port, config);</span>
+<span class="fc" id="L57">	}</span>
 
 	@Override
 	protected SmppServerSimulator&lt;SubmitSm&gt; initServer(SimulatorConfiguration config) {
-<span class="fc" id="L60">		return new JSMPPServer(getPort(), config);</span>
+<span class="fc" id="L61">		return new JSMPPServer(getPort(), config);</span>
+	}
+
+	@Override
+	protected fr.sii.ogham.testing.sms.simulator.bean.SubmitSm convert(SubmitSm raw) {
+<span class="fc" id="L66">		return new SubmitSmAdapter(raw);</span>
 	}
 
 }

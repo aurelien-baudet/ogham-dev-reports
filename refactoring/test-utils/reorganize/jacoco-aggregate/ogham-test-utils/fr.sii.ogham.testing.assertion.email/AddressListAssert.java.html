@@ -10,6 +10,7 @@ import javax.mail.internet.InternetAddress;
 
 import org.hamcrest.Matcher;
 
+import fr.sii.ogham.testing.assertion.util.AssertionRegistry;
 import fr.sii.ogham.testing.util.HasParent;
 
 public class AddressListAssert&lt;P&gt; extends HasParent&lt;P&gt; {
@@ -17,11 +18,16 @@ public class AddressListAssert&lt;P&gt; extends HasParent&lt;P&gt; {
 	 * The list of addresses that will be used for assertions
 	 */
 	private List&lt;AddressesWithContext&gt; actual;
+	/**
+	 * Registry to register assertions
+	 */
+	private final AssertionRegistry registry;
 
-	public AddressListAssert(List&lt;AddressesWithContext&gt; actual, P parent) {
-<span class="fc" id="L22">		super(parent);</span>
-<span class="fc" id="L23">		this.actual = actual;</span>
-<span class="fc" id="L24">	}</span>
+	public AddressListAssert(List&lt;AddressesWithContext&gt; actual, P parent, AssertionRegistry registry) {
+<span class="fc" id="L27">		super(parent);</span>
+<span class="fc" id="L28">		this.actual = actual;</span>
+<span class="fc" id="L29">		this.registry = registry;</span>
+<span class="fc" id="L30">	}</span>
 
 	/**
 	 * Make assertions on the email addresses (without personal).
@@ -55,15 +61,15 @@ public class AddressListAssert&lt;P&gt; extends HasParent&lt;P&gt; {
 	 * @return the fluent API for chaining assertions on received message(s)
 	 */
 	public AddressListAssert&lt;P&gt; address(Matcher&lt;? super Iterable&lt;String&gt;&gt; matcher) {
-<span class="fc" id="L58">		String desc = &quot;email addresses of '${fieldName}' field of message ${messageIndex}&quot;;</span>
-<span class="fc bfc" id="L59" title="All 2 branches covered.">		for (AddressesWithContext addresses : actual) {</span>
-<span class="fc" id="L60">			List&lt;String&gt; addressesStr = new ArrayList&lt;&gt;();</span>
-<span class="fc bfc" id="L61" title="All 2 branches covered.">			for (InternetAddress address : addresses.getAddresses()) {</span>
-<span class="fc" id="L62">				addressesStr.add(address.getAddress());</span>
-<span class="fc" id="L63">			}</span>
-<span class="fc" id="L64">			assertThat(addressesStr, usingContext(desc, addresses, matcher));</span>
-<span class="fc" id="L65">		}</span>
-<span class="fc" id="L66">		return this;</span>
+<span class="fc" id="L64">		String desc = &quot;email addresses of '${fieldName}' field of message ${messageIndex}&quot;;</span>
+<span class="fc bfc" id="L65" title="All 2 branches covered.">		for (AddressesWithContext addresses : actual) {</span>
+<span class="fc" id="L66">			List&lt;String&gt; addressesStr = new ArrayList&lt;&gt;();</span>
+<span class="fc bfc" id="L67" title="All 2 branches covered.">			for (InternetAddress address : addresses.getAddresses()) {</span>
+<span class="fc" id="L68">				addressesStr.add(address.getAddress());</span>
+<span class="fc" id="L69">			}</span>
+<span class="fc" id="L70">			registry.register(() -&gt; assertThat(addressesStr, usingContext(desc, addresses, matcher)));</span>
+<span class="fc" id="L71">		}</span>
+<span class="fc" id="L72">		return this;</span>
 	}
 
 	/**
@@ -100,15 +106,15 @@ public class AddressListAssert&lt;P&gt; extends HasParent&lt;P&gt; {
 	 * @return the fluent API for chaining assertions on received message(s)
 	 */
 	public AddressListAssert&lt;P&gt; textual(Matcher&lt;? super Iterable&lt;String&gt;&gt; matcher) {
-<span class="fc" id="L103">		String desc = &quot;textual addresses of '${fieldName}' field of message ${messageIndex}&quot;;</span>
-<span class="fc bfc" id="L104" title="All 2 branches covered.">		for (AddressesWithContext addresses : actual) {</span>
-<span class="fc" id="L105">			List&lt;String&gt; addressesStr = new ArrayList&lt;&gt;();</span>
-<span class="fc bfc" id="L106" title="All 2 branches covered.">			for (InternetAddress address : addresses.getAddresses()) {</span>
-<span class="fc" id="L107">				addressesStr.add(address.toString());</span>
-<span class="fc" id="L108">			}</span>
-<span class="fc" id="L109">			assertThat(addressesStr, usingContext(desc, addresses, matcher));</span>
-<span class="fc" id="L110">		}</span>
-<span class="fc" id="L111">		return this;</span>
+<span class="fc" id="L109">		String desc = &quot;textual addresses of '${fieldName}' field of message ${messageIndex}&quot;;</span>
+<span class="fc bfc" id="L110" title="All 2 branches covered.">		for (AddressesWithContext addresses : actual) {</span>
+<span class="fc" id="L111">			List&lt;String&gt; addressesStr = new ArrayList&lt;&gt;();</span>
+<span class="fc bfc" id="L112" title="All 2 branches covered.">			for (InternetAddress address : addresses.getAddresses()) {</span>
+<span class="fc" id="L113">				addressesStr.add(address.toString());</span>
+<span class="fc" id="L114">			}</span>
+<span class="fc" id="L115">			registry.register(() -&gt; assertThat(addressesStr, usingContext(desc, addresses, matcher)));</span>
+<span class="fc" id="L116">		}</span>
+<span class="fc" id="L117">		return this;</span>
 	}
 
 	/**
@@ -135,15 +141,15 @@ public class AddressListAssert&lt;P&gt; extends HasParent&lt;P&gt; {
 	 * @return the fluent API for chaining assertions on received message(s)
 	 */
 	public AddressListAssert&lt;P&gt; type(Matcher&lt;? super Iterable&lt;String&gt;&gt; matcher) {
-<span class="fc" id="L138">		String desc = &quot;address types of '${fieldName}' field of message ${messageIndex}&quot;;</span>
-<span class="fc bfc" id="L139" title="All 2 branches covered.">		for (AddressesWithContext addresses : actual) {</span>
-<span class="fc" id="L140">			List&lt;String&gt; addressesStr = new ArrayList&lt;&gt;();</span>
-<span class="fc bfc" id="L141" title="All 2 branches covered.">			for (InternetAddress address : addresses.getAddresses()) {</span>
-<span class="fc" id="L142">				addressesStr.add(address.getType());</span>
-<span class="fc" id="L143">			}</span>
-<span class="fc" id="L144">			assertThat(addressesStr, usingContext(desc, addresses, matcher));</span>
-<span class="fc" id="L145">		}</span>
-<span class="fc" id="L146">		return this;</span>
+<span class="fc" id="L144">		String desc = &quot;address types of '${fieldName}' field of message ${messageIndex}&quot;;</span>
+<span class="fc bfc" id="L145" title="All 2 branches covered.">		for (AddressesWithContext addresses : actual) {</span>
+<span class="fc" id="L146">			List&lt;String&gt; addressesStr = new ArrayList&lt;&gt;();</span>
+<span class="fc bfc" id="L147" title="All 2 branches covered.">			for (InternetAddress address : addresses.getAddresses()) {</span>
+<span class="fc" id="L148">				addressesStr.add(address.getType());</span>
+<span class="fc" id="L149">			}</span>
+<span class="fc" id="L150">			registry.register(() -&gt; assertThat(addressesStr, usingContext(desc, addresses, matcher)));</span>
+<span class="fc" id="L151">		}</span>
+<span class="fc" id="L152">		return this;</span>
 	}
 
 	/**
@@ -178,15 +184,15 @@ public class AddressListAssert&lt;P&gt; extends HasParent&lt;P&gt; {
 	 * @return the fluent API for chaining assertions on received message(s)
 	 */
 	public AddressListAssert&lt;P&gt; personal(Matcher&lt;? super Iterable&lt;String&gt;&gt; matcher) {
-<span class="fc" id="L181">		String desc = &quot;personal of '${fieldName}' field of message ${messageIndex}&quot;;</span>
-<span class="fc bfc" id="L182" title="All 2 branches covered.">		for (AddressesWithContext addresses : actual) {</span>
-<span class="fc" id="L183">			List&lt;String&gt; addressesStr = new ArrayList&lt;&gt;();</span>
-<span class="fc bfc" id="L184" title="All 2 branches covered.">			for (InternetAddress address : addresses.getAddresses()) {</span>
-<span class="fc" id="L185">				addressesStr.add(address.getPersonal());</span>
-<span class="fc" id="L186">			}</span>
-<span class="fc" id="L187">			assertThat(addressesStr, usingContext(desc, addresses, matcher));</span>
-<span class="fc" id="L188">		}</span>
-<span class="fc" id="L189">		return this;</span>
+<span class="fc" id="L187">		String desc = &quot;personal of '${fieldName}' field of message ${messageIndex}&quot;;</span>
+<span class="fc bfc" id="L188" title="All 2 branches covered.">		for (AddressesWithContext addresses : actual) {</span>
+<span class="fc" id="L189">			List&lt;String&gt; addressesStr = new ArrayList&lt;&gt;();</span>
+<span class="fc bfc" id="L190" title="All 2 branches covered.">			for (InternetAddress address : addresses.getAddresses()) {</span>
+<span class="fc" id="L191">				addressesStr.add(address.getPersonal());</span>
+<span class="fc" id="L192">			}</span>
+<span class="fc" id="L193">			registry.register(() -&gt; assertThat(addressesStr, usingContext(desc, addresses, matcher)));</span>
+<span class="fc" id="L194">		}</span>
+<span class="fc" id="L195">		return this;</span>
 	}
 
 }

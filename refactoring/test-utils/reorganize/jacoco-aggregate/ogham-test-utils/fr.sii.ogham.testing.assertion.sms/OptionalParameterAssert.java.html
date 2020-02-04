@@ -8,6 +8,7 @@ import java.util.List;
 
 import org.hamcrest.Matcher;
 
+import fr.sii.ogham.testing.assertion.util.AssertionRegistry;
 import fr.sii.ogham.testing.sms.simulator.bean.OptionalParameter;
 import fr.sii.ogham.testing.sms.simulator.bean.SubmitSm;
 import fr.sii.ogham.testing.util.HasParent;
@@ -21,7 +22,8 @@ import fr.sii.ogham.testing.util.HasParent;
  *            The parent type
  */
 public class OptionalParameterAssert&lt;P&gt; extends HasParent&lt;P&gt; {
-	private List&lt;OptionalParameterWithContext&gt; actual;
+	private final List&lt;OptionalParameterWithContext&gt; actual;
+	private final AssertionRegistry registry;
 
 	/**
 	 * Initializes with the parent instance and optional parameters for each
@@ -31,11 +33,14 @@ public class OptionalParameterAssert&lt;P&gt; extends HasParent&lt;P&gt; {
 	 *            the parent instance
 	 * @param parameters
 	 *            the optional parameters (with some contextual information)
+	 * @param registry
+	 *            used to regsiter assertions
 	 */
-	public OptionalParameterAssert(P parent, List&lt;OptionalParameterWithContext&gt; parameters) {
-<span class="fc" id="L36">		super(parent);</span>
-<span class="fc" id="L37">		this.actual = parameters;</span>
-<span class="fc" id="L38">	}</span>
+	public OptionalParameterAssert(P parent, List&lt;OptionalParameterWithContext&gt; parameters, AssertionRegistry registry) {
+<span class="fc" id="L40">		super(parent);</span>
+<span class="fc" id="L41">		this.actual = parameters;</span>
+<span class="fc" id="L42">		this.registry = registry;</span>
+<span class="fc" id="L43">	}</span>
 
 	/**
 	 * Make assertions on the whole optional parameter.
@@ -65,12 +70,12 @@ public class OptionalParameterAssert&lt;P&gt; extends HasParent&lt;P&gt; {
 	 * @return the fluent API for chaining assertions on received message(s)
 	 */
 	public OptionalParameterAssert&lt;P&gt; parameter(Matcher&lt;? super OptionalParameter&gt; matcher) {
-<span class="fc" id="L68">		String message = &quot;optional parameter '${tagName}'${found} of ${name} of message ${messageIndex}&quot;;</span>
-<span class="fc bfc" id="L69" title="All 2 branches covered.">		for (OptionalParameterWithContext parameterWithContext : actual) {</span>
-<span class="fc" id="L70">			OptionalParameter parameter = parameterWithContext.getParameter();</span>
-<span class="fc" id="L71">			assertThat(parameter, usingContext(message, parameterWithContext, matcher));</span>
-<span class="fc" id="L72">		}</span>
-<span class="fc" id="L73">		return this;</span>
+<span class="fc" id="L73">		String message = &quot;optional parameter '${tagName}'${found} of ${name} of message ${messageIndex}&quot;;</span>
+<span class="fc bfc" id="L74" title="All 2 branches covered.">		for (OptionalParameterWithContext parameterWithContext : actual) {</span>
+<span class="fc" id="L75">			OptionalParameter parameter = parameterWithContext.getParameter();</span>
+<span class="fc" id="L76">			registry.register(() -&gt; assertThat(parameter, usingContext(message, parameterWithContext, matcher)));</span>
+<span class="fc" id="L77">		}</span>
+<span class="fc" id="L78">		return this;</span>
 	}
 
 	/**
@@ -101,12 +106,12 @@ public class OptionalParameterAssert&lt;P&gt; extends HasParent&lt;P&gt; {
 	 * @return the fluent API for chaining assertions on received message(s)
 	 */
 	public OptionalParameterAssert&lt;P&gt; value(Matcher&lt;? super Byte[]&gt; matcher) {
-<span class="fc" id="L104">		String message = &quot;optional parameter '${tagName}'${found} value of ${name} of message ${messageIndex}&quot;;</span>
-<span class="fc bfc" id="L105" title="All 2 branches covered.">		for (OptionalParameterWithContext parameterWithContext : actual) {</span>
-<span class="fc" id="L106">			OptionalParameter parameter = parameterWithContext.getParameter();</span>
-<span class="fc" id="L107">			assertThat(toObject(parameter.getValue()), usingContext(message, parameterWithContext, matcher));</span>
-<span class="fc" id="L108">		}</span>
-<span class="fc" id="L109">		return this;</span>
+<span class="fc" id="L109">		String message = &quot;optional parameter '${tagName}'${found} value of ${name} of message ${messageIndex}&quot;;</span>
+<span class="fc bfc" id="L110" title="All 2 branches covered.">		for (OptionalParameterWithContext parameterWithContext : actual) {</span>
+<span class="fc" id="L111">			OptionalParameter parameter = parameterWithContext.getParameter();</span>
+<span class="fc" id="L112">			registry.register(() -&gt; assertThat(toObject(parameter.getValue()), usingContext(message, parameterWithContext, matcher)));</span>
+<span class="fc" id="L113">		}</span>
+<span class="fc" id="L114">		return this;</span>
 	}
 
 	/**
@@ -137,12 +142,12 @@ public class OptionalParameterAssert&lt;P&gt; extends HasParent&lt;P&gt; {
 	 * @return the fluent API for chaining assertions on received message(s)
 	 */
 	public OptionalParameterAssert&lt;P&gt; length(Matcher&lt;? super Integer&gt; matcher) {
-<span class="fc" id="L140">		String message = &quot;optional parameter '${tagName}'${found} length of ${name} of message ${messageIndex}&quot;;</span>
-<span class="fc bfc" id="L141" title="All 2 branches covered.">		for (OptionalParameterWithContext parameterWithContext : actual) {</span>
-<span class="fc" id="L142">			OptionalParameter parameter = parameterWithContext.getParameter();</span>
-<span class="fc" id="L143">			assertThat(parameter.getLength(), usingContext(message, parameterWithContext, matcher));</span>
-<span class="fc" id="L144">		}</span>
-<span class="fc" id="L145">		return this;</span>
+<span class="fc" id="L145">		String message = &quot;optional parameter '${tagName}'${found} length of ${name} of message ${messageIndex}&quot;;</span>
+<span class="fc bfc" id="L146" title="All 2 branches covered.">		for (OptionalParameterWithContext parameterWithContext : actual) {</span>
+<span class="fc" id="L147">			OptionalParameter parameter = parameterWithContext.getParameter();</span>
+<span class="fc" id="L148">			registry.register(() -&gt; assertThat(parameter.getLength(), usingContext(message, parameterWithContext, matcher)));</span>
+<span class="fc" id="L149">		}</span>
+<span class="fc" id="L150">		return this;</span>
 	}
 
 }

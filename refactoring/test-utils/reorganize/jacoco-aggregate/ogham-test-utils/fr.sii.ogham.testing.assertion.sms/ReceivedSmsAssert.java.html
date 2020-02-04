@@ -1,11 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>ReceivedSmsAssert.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">reporting</a> &gt; <a href="../index.html" class="el_bundle">ogham-test-utils</a> &gt; <a href="index.source.html" class="el_package">fr.sii.ogham.testing.assertion.sms</a> &gt; <span class="el_source">ReceivedSmsAssert.java</span></div><h1>ReceivedSmsAssert.java</h1><pre class="source lang-java linenums">package fr.sii.ogham.testing.assertion.sms;
 
+import static fr.sii.ogham.testing.assertion.util.AssertionHelper.assertThat;
+import static fr.sii.ogham.testing.assertion.util.AssertionHelper.overrideDescription;
+import static org.hamcrest.Matchers.lessThan;
+
 import java.util.Collection;
 import java.util.List;
 
 import org.hamcrest.Matcher;
-import org.hamcrest.MatcherAssert;
 
+import fr.sii.ogham.testing.assertion.util.AssertionRegistry;
 import fr.sii.ogham.testing.sms.simulator.bean.SubmitSm;
 
 /**
@@ -21,16 +25,23 @@ public class ReceivedSmsAssert&lt;S extends SubmitSm&gt; {
 	 * List of received messages
 	 */
 	private final List&lt;S&gt; actual;
+	/**
+	 * the registry for assertions
+	 */
+	private final AssertionRegistry registry;
 
 	/**
 	 * Initializes with the list of received messages
 	 * 
 	 * @param actual
 	 *            received messages
+	 * @param registry
+	 *            used to register assertions
 	 */
-<span class="fc" id="L31">	public ReceivedSmsAssert(List&lt;S&gt; actual) {</span>
-<span class="fc" id="L32">		this.actual = actual;</span>
-<span class="fc" id="L33">	}</span>
+<span class="fc" id="L41">	public ReceivedSmsAssert(List&lt;S&gt; actual, AssertionRegistry registry) {</span>
+<span class="fc" id="L42">		this.actual = actual;</span>
+<span class="fc" id="L43">		this.registry = registry;</span>
+<span class="fc" id="L44">	}</span>
 
 	/**
 	 * Access fluent API to write assertions on a particular received message.
@@ -50,7 +61,8 @@ public class ReceivedSmsAssert&lt;S extends SubmitSm&gt; {
 	 * @return the fluent API for assertions on the particular message
 	 */
 	public SmsAssert&lt;ReceivedSmsAssert&lt;S&gt;, S&gt; receivedMessage(int index) {
-<span class="fc" id="L53">		return new SmsAssert&lt;&gt;(actual.get(index), index, this);</span>
+<span class="fc" id="L64">		registry.register(() -&gt; assertThat(index, overrideDescription(&quot;Assertions on message &quot;+index+&quot; can't be executed because &quot;+actual.size()+&quot; messages were received&quot;, lessThan(actual.size()))));</span>
+<span class="pc bpc" id="L65" title="1 of 2 branches missed.">		return new SmsAssert&lt;&gt;(index&lt;actual.size() ? actual.get(index) : null, index, this, registry);</span>
 	}
 
 	/**
@@ -93,7 +105,7 @@ public class ReceivedSmsAssert&lt;S extends SubmitSm&gt; {
 	 * @return the fluent API for assertions on messages
 	 */
 	public SmsListAssert&lt;ReceivedSmsAssert&lt;S&gt;, S&gt; receivedMessages() {
-<span class="fc" id="L96">		return new SmsListAssert&lt;&gt;(actual, this);</span>
+<span class="fc" id="L108">		return new SmsListAssert&lt;&gt;(actual, this, registry);</span>
 	}
 
 	/**
@@ -112,8 +124,8 @@ public class ReceivedSmsAssert&lt;S extends SubmitSm&gt; {
 	 * @return the fluent API for assertions on messages
 	 */
 	public SmsListAssert&lt;ReceivedSmsAssert&lt;S&gt;, S&gt; receivedMessages(Matcher&lt;Collection&lt;? extends S&gt;&gt; matcher) {
-<span class="nc" id="L115">		MatcherAssert.assertThat(actual, matcher);</span>
-<span class="nc" id="L116">		return receivedMessages();</span>
+<span class="nc" id="L127">		registry.register(() -&gt; assertThat(&quot;received messages&quot;, actual, matcher));</span>
+<span class="nc" id="L128">		return receivedMessages();</span>
 	}
 
 }
