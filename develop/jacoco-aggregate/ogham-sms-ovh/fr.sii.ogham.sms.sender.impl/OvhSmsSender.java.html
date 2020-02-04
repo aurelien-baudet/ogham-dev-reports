@@ -116,8 +116,8 @@ public class OvhSmsSender extends AbstractSpecializedSender&lt;Sms&gt; {
 <span class="nc" id="L116">			throw new MessageException(&quot;Failed to read response when sending SMS through OVH&quot;, message, e);</span>
 <span class="nc" id="L117">		} catch (HttpException e) {</span>
 <span class="nc" id="L118">			throw new MessageException(&quot;Failed to send SMS through OVH&quot;, message, e);</span>
-<span class="nc" id="L119">		} catch (PhoneNumberException e) {</span>
-<span class="nc" id="L120">			throw new MessageException(&quot;Failed to send SMS through OVH (invalid phone number)&quot;, message, e);</span>
+<span class="fc" id="L119">		} catch (PhoneNumberException e) {</span>
+<span class="fc" id="L120">			throw new MessageException(&quot;Failed to send SMS through OVH (invalid phone number)&quot;, message, e);</span>
 <span class="fc" id="L121">		}</span>
 <span class="fc" id="L122">	}</span>
 
@@ -127,8 +127,8 @@ public class OvhSmsSender extends AbstractSpecializedSender&lt;Sms&gt; {
 	}
 
 	private SmsCoding getSmsCoding(String message) {
-<span class="pc bpc" id="L130" title="1 of 2 branches missed.">		if (options.getSmsCoding() != null) {</span>
-<span class="nc" id="L131">			return options.getSmsCoding();</span>
+<span class="fc bfc" id="L130" title="All 2 branches covered.">		if (options.getSmsCoding() != null) {</span>
+<span class="fc" id="L131">			return options.getSmsCoding();</span>
 		}
 <span class="fc" id="L133">		return smsCodingDetector.detect(message);</span>
 	}
@@ -218,12 +218,12 @@ public class OvhSmsSender extends AbstractSpecializedSender&lt;Sms&gt; {
 	 */
 	private static String toInternational(PhoneNumber phoneNumber) throws PhoneNumberException {
 <span class="fc" id="L220">		String number = phoneNumber.getNumber();</span>
-<span class="pc bpc" id="L221" title="1 of 4 branches missed.">		if (number.startsWith(&quot;+&quot;) || number.length() == INTERNATIONAL_FORMAT_LENGTH) {</span>
+<span class="fc bfc" id="L221" title="All 4 branches covered.">		if (number.startsWith(&quot;+&quot;) || number.length() == INTERNATIONAL_FORMAT_LENGTH) {</span>
 <span class="fc" id="L222">			String withoutPlus = number.replace(&quot;+&quot;, &quot;&quot;);</span>
 <span class="fc" id="L223">			String withoutSpaces = SPACES.matcher(withoutPlus).replaceAll(&quot;&quot;);</span>
 <span class="fc" id="L224">			return StringUtils.leftPad(withoutSpaces, INTERNATIONAL_FORMAT_LENGTH, '0');</span>
 		} else {
-<span class="nc" id="L226">			throw new PhoneNumberException(&quot;Invalid phone number. OVH only accepts international phone numbers. Please write the phone number with the country prefix. &quot;</span>
+<span class="fc" id="L226">			throw new PhoneNumberException(&quot;Invalid phone number. OVH only accepts international phone numbers. Please write the phone number with the country prefix. &quot;</span>
 					+ &quot;For example, if the number is 0601020304 and it is a French number, then the international number is +33601020304&quot;);
 		}
 	}

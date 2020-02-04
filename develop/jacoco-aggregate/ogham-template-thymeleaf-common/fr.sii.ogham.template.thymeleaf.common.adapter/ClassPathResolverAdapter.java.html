@@ -14,18 +14,22 @@ import fr.sii.ogham.core.resource.resolver.ResourceResolver;
  * @author Aurélien Baudet
  *
  */
-<span class="fc" id="L17">public class ClassPathResolverAdapter extends AbstractTemplateResolverOptionsAdapter {</span>
+public class ClassPathResolverAdapter extends AbstractTemplateResolverOptionsAdapter {
+	public ClassPathResolverAdapter(TemplateResolverOptionsApplier optionsSetter) {
+<span class="fc" id="L19">		super(optionsSetter);</span>
+<span class="fc" id="L20">	}</span>
+
 	@Override
 	public boolean supports(ResourceResolver resolver) {
-<span class="fc bfc" id="L20" title="All 2 branches covered.">		ResourceResolver actualResolver = resolver instanceof DelegateResourceResolver ? ((DelegateResourceResolver) resolver).getActualResourceResolver() : resolver;</span>
-<span class="fc" id="L21">		return actualResolver instanceof ClassPathResolver;</span>
+<span class="fc bfc" id="L24" title="All 2 branches covered.">		ResourceResolver actualResolver = resolver instanceof DelegateResourceResolver ? ((DelegateResourceResolver) resolver).getActualResourceResolver() : resolver;</span>
+<span class="fc" id="L25">		return actualResolver instanceof ClassPathResolver;</span>
 	}
 
 	@Override
 	public ITemplateResolver adapt(ResourceResolver resolver) {
-<span class="fc" id="L26">		ClassLoaderTemplateResolver templateResolver = new ClassLoaderTemplateResolver();</span>
-<span class="fc" id="L27">		applyOptions(templateResolver);</span>
-<span class="fc" id="L28">		return templateResolver;</span>
+<span class="fc" id="L30">		ClassLoaderTemplateResolver templateResolver = new ClassLoaderTemplateResolver();</span>
+<span class="fc" id="L31">		applyOptions(templateResolver);</span>
+<span class="fc" id="L32">		return templateResolver;</span>
 	}
 
 }

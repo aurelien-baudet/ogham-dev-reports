@@ -68,52 +68,49 @@ import fr.sii.ogham.core.exception.convert.ConversionException;
 
 	private static boolean isHexOrOctalNumber(String value) {
 <span class="fc bfc" id="L70" title="All 2 branches covered.">		int index = value.startsWith(&quot;-&quot;) ? 1 : 0;</span>
-<span class="fc bfc" id="L71" title="All 2 branches covered.">		return value.startsWith(&quot;0x&quot;, index) </span>
-<span class="fc bfc" id="L72" title="All 2 branches covered.">				|| value.startsWith(&quot;0X&quot;, index) </span>
-<span class="fc bfc" id="L73" title="All 2 branches covered.">				|| value.startsWith(&quot;#&quot;, index) </span>
-<span class="fc bfc" id="L74" title="All 2 branches covered.">				|| value.startsWith(&quot;0&quot;, index);</span>
+<span class="fc bfc" id="L71" title="All 4 branches covered.">		return value.startsWith(&quot;#&quot;, index) || value.startsWith(&quot;0&quot;, index);</span>
 	}
 
 	private static String trimAllWhitespace(String str) {
-<span class="fc bfc" id="L78" title="All 4 branches covered.">		if (str == null || str.length() == 0) {</span>
-<span class="fc" id="L79">			return null;</span>
+<span class="fc bfc" id="L75" title="All 4 branches covered.">		if (str == null || str.length() == 0) {</span>
+<span class="fc" id="L76">			return null;</span>
 		}
-<span class="fc" id="L81">		int len = str.length();</span>
-<span class="fc" id="L82">		StringBuilder sb = new StringBuilder(str.length());</span>
-<span class="fc bfc" id="L83" title="All 2 branches covered.">		for (int i = 0; i &lt; len; i++) {</span>
-<span class="fc" id="L84">			char c = str.charAt(i);</span>
-<span class="fc bfc" id="L85" title="All 2 branches covered.">			if (!Character.isWhitespace(c)) {</span>
-<span class="fc" id="L86">				sb.append(c);</span>
+<span class="fc" id="L78">		int len = str.length();</span>
+<span class="fc" id="L79">		StringBuilder sb = new StringBuilder(str.length());</span>
+<span class="fc bfc" id="L80" title="All 2 branches covered.">		for (int i = 0; i &lt; len; i++) {</span>
+<span class="fc" id="L81">			char c = str.charAt(i);</span>
+<span class="fc bfc" id="L82" title="All 2 branches covered.">			if (!Character.isWhitespace(c)) {</span>
+<span class="fc" id="L83">				sb.append(c);</span>
 			}
 		}
-<span class="fc" id="L89">		return sb.toString();</span>
+<span class="fc" id="L86">		return sb.toString();</span>
 	}
 
 	private static BigInteger decodeBigInteger(String value) {
-<span class="fc" id="L93">		int radix = 10;</span>
-<span class="fc" id="L94">		int index = 0;</span>
-<span class="fc" id="L95">		boolean negative = false;</span>
+<span class="fc" id="L90">		int radix = 10;</span>
+<span class="fc" id="L91">		int index = 0;</span>
+<span class="fc" id="L92">		boolean negative = false;</span>
 
 		// Handle minus sign, if present.
-<span class="fc bfc" id="L98" title="All 2 branches covered.">		if (value.startsWith(&quot;-&quot;)) {</span>
-<span class="fc" id="L99">			negative = true;</span>
-<span class="fc" id="L100">			index++;</span>
+<span class="fc bfc" id="L95" title="All 2 branches covered.">		if (value.startsWith(&quot;-&quot;)) {</span>
+<span class="fc" id="L96">			negative = true;</span>
+<span class="fc" id="L97">			index++;</span>
 		}
 
 		// Handle radix specifier, if present.
-<span class="fc bfc" id="L104" title="All 4 branches covered.">		if (value.startsWith(&quot;0x&quot;, index) || value.startsWith(&quot;0X&quot;, index)) {</span>
-<span class="fc" id="L105">			index += 2;</span>
+<span class="fc bfc" id="L101" title="All 4 branches covered.">		if (value.startsWith(&quot;0x&quot;, index) || value.startsWith(&quot;0X&quot;, index)) {</span>
+<span class="fc" id="L102">			index += 2;</span>
+<span class="fc" id="L103">			radix = 16;</span>
+<span class="fc bfc" id="L104" title="All 2 branches covered.">		} else if (value.startsWith(&quot;#&quot;, index)) {</span>
+<span class="fc" id="L105">			index++;</span>
 <span class="fc" id="L106">			radix = 16;</span>
-<span class="fc bfc" id="L107" title="All 2 branches covered.">		} else if (value.startsWith(&quot;#&quot;, index)) {</span>
+<span class="pc bpc" id="L107" title="2 of 4 branches missed.">		} else if (value.startsWith(&quot;0&quot;, index) &amp;&amp; value.length() &gt; 1 + index) {</span>
 <span class="fc" id="L108">			index++;</span>
-<span class="fc" id="L109">			radix = 16;</span>
-<span class="pc bpc" id="L110" title="2 of 4 branches missed.">		} else if (value.startsWith(&quot;0&quot;, index) &amp;&amp; value.length() &gt; 1 + index) {</span>
-<span class="fc" id="L111">			index++;</span>
-<span class="fc" id="L112">			radix = 8;</span>
+<span class="fc" id="L109">			radix = 8;</span>
 		}
 
-<span class="fc" id="L115">		BigInteger result = new BigInteger(value.substring(index), radix);</span>
-<span class="fc bfc" id="L116" title="All 2 branches covered.">		return (negative ? result.negate() : result);</span>
+<span class="fc" id="L112">		BigInteger result = new BigInteger(value.substring(index), radix);</span>
+<span class="fc bfc" id="L113" title="All 2 branches covered.">		return negative ? result.negate() : result;</span>
 	}
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

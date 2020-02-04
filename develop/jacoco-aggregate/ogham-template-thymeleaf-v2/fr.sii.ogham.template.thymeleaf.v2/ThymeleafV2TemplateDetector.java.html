@@ -47,8 +47,8 @@ public class ThymeleafV2TemplateDetector implements TemplateEngineDetector {
 	public boolean canParse(ResourcePath template, Context ctx) throws EngineDetectionException {
 <span class="fc" id="L48">		LOG.debug(&quot;Checking if Thymeleaf can handle the template {}&quot;, template);</span>
 <span class="fc" id="L49">		Resource resolvedTemplate = getTemplate(template);</span>
-<span class="pc bpc" id="L50" title="1 of 2 branches missed.">		if (resolvedTemplate == null) {</span>
-<span class="nc" id="L51">			return false;</span>
+<span class="fc bfc" id="L50" title="All 2 branches covered.">		if (resolvedTemplate == null) {</span>
+<span class="fc" id="L51">			return false;</span>
 		}
 <span class="fc" id="L53">		try (BufferedReader br = new BufferedReader(new InputStreamReader(resolvedTemplate.getInputStream()))) {</span>
 <span class="fc" id="L54">			boolean containsThymeleafNamespace = containsThymeleafNamespace(br);</span>
@@ -57,7 +57,7 @@ public class ThymeleafV2TemplateDetector implements TemplateEngineDetector {
 			} else {
 <span class="fc" id="L58">				LOG.debug(&quot;The template {} doesn't contain the namespace http://www.thymeleaf.org. Thymeleaf can't be used&quot;, template);</span>
 			}
-<span class="pc bpc" id="L60" title="1 of 4 branches missed.">			return containsThymeleafNamespace || isEmptyTemplate(resolvedTemplate);</span>
+<span class="fc bfc" id="L60" title="All 4 branches covered.">			return containsThymeleafNamespace || isEmptyTemplate(resolvedTemplate);</span>
 <span class="nc" id="L61">		} catch (IOException e) {</span>
 <span class="nc" id="L62">			throw new EngineDetectionException(&quot;Failed to detect if template can be read by thymeleaf&quot;, e);</span>
 		}
@@ -77,16 +77,16 @@ public class ThymeleafV2TemplateDetector implements TemplateEngineDetector {
 
 	private static boolean isEmptyTemplate(Resource template) throws IOException {
 <span class="fc" id="L79">		try (InputStream stream = template.getInputStream()) {</span>
-<span class="pc bpc" id="L80" title="1 of 2 branches missed.">			return stream.read() == -1;</span>
+<span class="fc bfc" id="L80" title="All 2 branches covered.">			return stream.read() == -1;</span>
 		}
 	}
 
 	private Resource getTemplate(ResourcePath templateName) {
 		try {
 <span class="fc" id="L86">			return resolver.getResource(templateName);</span>
-<span class="nc" id="L87">		} catch (ResourceResolutionException e) {</span>
-<span class="nc" id="L88">			LOG.trace(&quot;Thymeleaf detector can't be applied because &quot; + templateName + &quot; couldn't be resolved&quot;, e);</span>
-<span class="nc" id="L89">			return null;</span>
+<span class="fc" id="L87">		} catch (ResourceResolutionException e) {</span>
+<span class="fc" id="L88">			LOG.trace(&quot;Thymeleaf detector can't be applied because &quot; + templateName + &quot; couldn't be resolved&quot;, e);</span>
+<span class="fc" id="L89">			return null;</span>
 		}
 	}
 

@@ -67,12 +67,12 @@ public class SimpleRetryExecutor implements RetryExecutor {
 		// new instance for each execution
 <span class="fc" id="L68">		RetryStrategy retry = retryProvider.provide();</span>
 <span class="fc bfc" id="L69" title="All 2 branches covered.">		if (retry == null) {</span>
-			try {
-<span class="fc" id="L71">				return actionToRetry.call();</span>
-<span class="fc" id="L72">			} catch (Exception e) {</span>
-<span class="fc" id="L73">				throw new ExecutionFailedNotRetriedException(&quot;Failed to execute action &quot; + getActionName(actionToRetry) + &quot; and no retry strategy configured&quot;, e);</span>
-			}
+<span class="fc" id="L70">			return executeWithoutRetry(actionToRetry);</span>
 		}
+<span class="fc" id="L72">		return executeWithRetry(actionToRetry, retry);</span>
+	}
+
+	private &lt;V&gt; V executeWithRetry(Callable&lt;V&gt; actionToRetry, RetryStrategy retry) throws RetryExecutionInterruptedException, MaximumAttemptsReachedException {
 <span class="fc" id="L76">		List&lt;Exception&gt; failures = new ArrayList&lt;&gt;();</span>
 		do {
 			try {
@@ -89,19 +89,27 @@ public class SimpleRetryExecutor implements RetryExecutor {
 <span class="fc" id="L89">		throw new MaximumAttemptsReachedException(&quot;Maximum attempts to execute action &quot; + getActionName(actionToRetry) + &quot; is reached&quot;, failures);</span>
 	}
 
+	private &lt;V&gt; V executeWithoutRetry(Callable&lt;V&gt; actionToRetry) throws ExecutionFailedNotRetriedException {
+		try {
+<span class="fc" id="L94">			return actionToRetry.call();</span>
+<span class="fc" id="L95">		} catch (Exception e) {</span>
+<span class="fc" id="L96">			throw new ExecutionFailedNotRetriedException(&quot;Failed to execute action &quot; + getActionName(actionToRetry) + &quot; and no retry strategy configured&quot;, e);</span>
+		}
+	}
+
 	private void pauseUntil(Instant nextDate) throws RetryExecutionInterruptedException {
 		try {
-<span class="fc" id="L94">			awaiter.waitUntil(nextDate);</span>
-<span class="nc" id="L95">		} catch (WaitException e) {</span>
-<span class="nc" id="L96">			throw new RetryExecutionInterruptedException(e);</span>
-<span class="fc" id="L97">		}</span>
-<span class="fc" id="L98">	}</span>
+<span class="fc" id="L102">			awaiter.waitUntil(nextDate);</span>
+<span class="nc" id="L103">		} catch (WaitException e) {</span>
+<span class="nc" id="L104">			throw new RetryExecutionInterruptedException(e);</span>
+<span class="fc" id="L105">		}</span>
+<span class="fc" id="L106">	}</span>
 
 	private static &lt;V&gt; String getActionName(Callable&lt;V&gt; actionToRetry) {
-<span class="fc bfc" id="L101" title="All 2 branches covered.">		if (actionToRetry instanceof NamedCallable) {</span>
-<span class="fc" id="L102">			return ((NamedCallable&lt;?&gt;) actionToRetry).getName();</span>
+<span class="fc bfc" id="L109" title="All 2 branches covered.">		if (actionToRetry instanceof NamedCallable) {</span>
+<span class="fc" id="L110">			return ((NamedCallable&lt;?&gt;) actionToRetry).getName();</span>
 		}
-<span class="fc" id="L104">		return &quot;unnamed&quot;;</span>
+<span class="fc" id="L112">		return &quot;unnamed&quot;;</span>
 	}
 
 }

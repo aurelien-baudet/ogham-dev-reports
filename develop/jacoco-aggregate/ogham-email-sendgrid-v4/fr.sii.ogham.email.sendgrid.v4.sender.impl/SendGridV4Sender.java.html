@@ -130,28 +130,28 @@ public final class SendGridV4Sender extends AbstractSpecializedSender&lt;Email&g
 
 <span class="fc" id="L131">		sendGridMail.setFrom(new com.sendgrid.helpers.mail.objects.Email(message.getFrom().getAddress(), message.getFrom().getPersonal()));</span>
 
-<span class="fc bfc" id="L133" title="All 2 branches covered.">		for (Recipient recipient : message.getRecipients()) {</span>
-<span class="fc" id="L134">			sendGridMail.addPersonalization(toPersonalization(recipient));</span>
-<span class="fc" id="L135">		}</span>
+<span class="fc" id="L133">		sendGridMail.addPersonalization(toPersonalization(message));</span>
 
-<span class="fc" id="L137">		handler.setContent(message, sendGridMail, message.getContent());</span>
+<span class="fc" id="L135">		handler.setContent(message, sendGridMail, message.getContent());</span>
 
-<span class="fc bfc" id="L139" title="All 2 branches covered.">		for (Attachment attachment : message.getAttachments()) {</span>
-<span class="fc" id="L140">			addAttachment(sendGridMail, attachment);</span>
-<span class="fc" id="L141">		}</span>
+<span class="fc bfc" id="L137" title="All 2 branches covered.">		for (Attachment attachment : message.getAttachments()) {</span>
+<span class="fc" id="L138">			addAttachment(sendGridMail, attachment);</span>
+<span class="fc" id="L139">		}</span>
 
-<span class="fc" id="L143">		return sendGridMail;</span>
+<span class="fc" id="L141">		return sendGridMail;</span>
 	}
 
-	private Personalization toPersonalization(Recipient recipient) {
-<span class="fc" id="L147">		Personalization personalization = new Personalization();</span>
-<span class="fc" id="L148">		addRecipient(personalization, recipient);</span>
+	private static Personalization toPersonalization(final Email message) {
+<span class="fc" id="L145">		Personalization personalization = new Personalization();</span>
+<span class="fc bfc" id="L146" title="All 2 branches covered.">		for (Recipient recipient : message.getRecipients()) {</span>
+<span class="fc" id="L147">			addRecipient(personalization, recipient);</span>
+<span class="fc" id="L148">		}</span>
 <span class="fc" id="L149">		return personalization;</span>
 	}
 
 	private static void addRecipient(Personalization personalization, Recipient recipient) {
 <span class="fc" id="L153">		final EmailAddress address = recipient.getAddress();</span>
-<span class="pc bpc" id="L154" title="2 of 4 branches missed.">		switch (recipient.getType()) {</span>
+<span class="pc bpc" id="L154" title="1 of 4 branches missed.">		switch (recipient.getType()) {</span>
 			case TO:
 <span class="fc" id="L156">				personalization.addTo(new com.sendgrid.helpers.mail.objects.Email(address.getAddress(), address.getPersonal()));</span>
 <span class="fc" id="L157">				break;</span>
@@ -159,7 +159,7 @@ public final class SendGridV4Sender extends AbstractSpecializedSender&lt;Email&g
 <span class="fc" id="L159">				personalization.addCc(new com.sendgrid.helpers.mail.objects.Email(address.getAddress(), address.getPersonal()));</span>
 <span class="fc" id="L160">				break;</span>
 			case BCC:
-<span class="nc" id="L162">				personalization.addBcc(new com.sendgrid.helpers.mail.objects.Email(address.getAddress(), address.getPersonal()));</span>
+<span class="fc" id="L162">				personalization.addBcc(new com.sendgrid.helpers.mail.objects.Email(address.getAddress(), address.getPersonal()));</span>
 				break;
 		}
 <span class="fc" id="L165">	}</span>

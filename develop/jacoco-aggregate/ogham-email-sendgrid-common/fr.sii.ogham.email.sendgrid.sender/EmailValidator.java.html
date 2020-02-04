@@ -6,32 +6,51 @@ import java.util.Set;
 import fr.sii.ogham.email.message.Email;
 import fr.sii.ogham.email.message.Recipient;
 
+/**
+ * Validate the email fields.
+ * 
+ * @author Aurélien Baudet
+ *
+ */
 public final class EmailValidator {
+	/**
+	 * Ensure that email can be sent:
+	 * &lt;ul&gt;
+	 * &lt;li&gt;Content is required&lt;/li&gt;
+	 * &lt;li&gt;Subject is required&lt;/li&gt;
+	 * &lt;li&gt;Sender address is required&lt;/li&gt;
+	 * &lt;li&gt;At least one recipient is required&lt;/li&gt;
+	 * &lt;/ul&gt;
+	 * 
+	 * @param message
+	 *            the email to validate
+	 * @return the violations if not valid or an empty list if valid
+	 */
 	public static Set&lt;String&gt; validate(final Email message) {
-<span class="fc" id="L11">		final Set&lt;String&gt; violations = new HashSet&lt;&gt;();</span>
+<span class="fc" id="L30">		final Set&lt;String&gt; violations = new HashSet&lt;&gt;();</span>
 
-<span class="fc bfc" id="L13" title="All 2 branches covered.">		if (message.getContent() == null) {</span>
-<span class="fc" id="L14">			violations.add(&quot;Missing content&quot;);</span>
+<span class="fc bfc" id="L32" title="All 2 branches covered.">		if (message.getContent() == null) {</span>
+<span class="fc" id="L33">			violations.add(&quot;Missing content&quot;);</span>
 		}
-<span class="fc bfc" id="L16" title="All 2 branches covered.">		if (message.getSubject() == null) {</span>
-<span class="fc" id="L17">			violations.add(&quot;Missing subject&quot;);</span>
-		}
-
-<span class="fc bfc" id="L20" title="All 2 branches covered.">		if (message.getFrom() == null) {</span>
-<span class="fc" id="L21">			violations.add(&quot;Missing sender email address&quot;);</span>
+<span class="fc bfc" id="L35" title="All 2 branches covered.">		if (message.getSubject() == null) {</span>
+<span class="fc" id="L36">			violations.add(&quot;Missing subject&quot;);</span>
 		}
 
-<span class="fc bfc" id="L24" title="All 2 branches covered.">		if (message.getRecipients().isEmpty()) {</span>
-<span class="fc" id="L25">			violations.add(&quot;Missing recipients&quot;);</span>
+<span class="fc bfc" id="L39" title="All 2 branches covered.">		if (message.getFrom() == null) {</span>
+<span class="fc" id="L40">			violations.add(&quot;Missing sender email address&quot;);</span>
 		}
 
-<span class="fc bfc" id="L28" title="All 2 branches covered.">		for (Recipient recipient : message.getRecipients()) {</span>
-<span class="pc bpc" id="L29" title="1 of 2 branches missed.">			if (recipient.getAddress().getAddress() == null) {</span>
-<span class="nc" id="L30">				violations.add(&quot;Missing recipient address &quot; + recipient);</span>
+<span class="fc bfc" id="L43" title="All 2 branches covered.">		if (message.getRecipients().isEmpty()) {</span>
+<span class="fc" id="L44">			violations.add(&quot;Missing recipients&quot;);</span>
+		}
+
+<span class="fc bfc" id="L47" title="All 2 branches covered.">		for (Recipient recipient : message.getRecipients()) {</span>
+<span class="pc bpc" id="L48" title="1 of 2 branches missed.">			if (recipient.getAddress().getAddress() == null) {</span>
+<span class="nc" id="L49">				violations.add(&quot;Missing recipient address &quot; + recipient);</span>
 			}
-<span class="fc" id="L32">		}</span>
+<span class="fc" id="L51">		}</span>
 
-<span class="fc" id="L34">		return violations;</span>
+<span class="fc" id="L53">		return violations;</span>
 	}
 
 	private EmailValidator() {
