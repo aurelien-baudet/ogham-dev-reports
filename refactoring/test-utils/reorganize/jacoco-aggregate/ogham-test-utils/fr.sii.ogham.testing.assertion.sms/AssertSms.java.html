@@ -38,7 +38,7 @@ public final class AssertSms {
 	 */
 	public static void assertEquals(ExpectedSms expected, SubmitSm actual) {
 <span class="fc" id="L40">		AssertionRegistry registry = new FailAtEndRegistry();</span>
-<span class="fc" id="L41">		assertEquals(expected, actual, registry);</span>
+<span class="fc" id="L41">		assertEquals(&quot;1/1&quot;, expected, actual, registry);</span>
 <span class="fc" id="L42">		registry.execute();</span>
 <span class="fc" id="L43">	}</span>
 
@@ -67,7 +67,7 @@ public final class AssertSms {
 	public static void assertEquals(ExpectedSms expected, List&lt;SubmitSm&gt; receivedMessages) {
 <span class="fc" id="L68">		AssertionRegistry registry = new FailAtEndRegistry();</span>
 <span class="fc" id="L69">		registry.register(() -&gt; Assert.assertEquals(&quot;should have received exactly one message&quot;, 1, receivedMessages.size()));</span>
-<span class="pc bpc" id="L70" title="1 of 2 branches missed.">		assertEquals(expected, receivedMessages.size()==1 ? receivedMessages.get(0) : null, registry);</span>
+<span class="fc bfc" id="L70" title="All 2 branches covered.">		assertEquals(&quot;1/1&quot;, expected, receivedMessages.size()==1 ? receivedMessages.get(0) : null, registry);</span>
 <span class="nc" id="L71">		registry.execute();</span>
 <span class="nc" id="L72">	}</span>
 
@@ -123,28 +123,28 @@ public final class AssertSms {
 	 *            the received SMS
 	 */
 	public static void assertEquals(SplitSms expected, List&lt;SubmitSm&gt; receivedMessages) {
-<span class="nc" id="L126">		AssertionRegistry registry = new FailAtEndRegistry();</span>
-<span class="nc" id="L127">		assertEquals(expected.getParts(), receivedMessages, registry);</span>
-<span class="nc" id="L128">		registry.execute();</span>
-<span class="nc" id="L129">	}</span>
+<span class="fc" id="L126">		AssertionRegistry registry = new FailAtEndRegistry();</span>
+<span class="fc" id="L127">		assertEquals(expected.getParts(), receivedMessages, registry);</span>
+<span class="fc" id="L128">		registry.execute();</span>
+<span class="fc" id="L129">	}</span>
 
 	private static void assertEquals(List&lt;ExpectedSms&gt; expected, List&lt;SubmitSm&gt; receivedMessages, AssertionRegistry registry) {
-<span class="fc" id="L132">		registry.register(() -&gt; Assert.assertEquals(&quot;should have received exactly &quot; + expected.size() + &quot; messages&quot;, expected.size(), receivedMessages.size()));</span>
+<span class="fc" id="L132">		registry.register(() -&gt; Assert.assertEquals(&quot;should have received exactly &quot; + expected.size() + &quot; message(s)&quot;, expected.size(), receivedMessages.size()));</span>
 <span class="fc bfc" id="L133" title="All 2 branches covered.">		for (int i = 0; i &lt; expected.size(); i++) {</span>
-<span class="pc bpc" id="L134" title="1 of 2 branches missed.">			assertEquals(expected.get(i), i&lt;receivedMessages.size() ? receivedMessages.get(i) : null, registry);</span>
+<span class="fc bfc" id="L134" title="All 2 branches covered.">			assertEquals((i+1)+&quot;/&quot;+expected.size(), expected.get(i), i&lt;receivedMessages.size() ? receivedMessages.get(i) : null, registry);</span>
 		}
 <span class="fc" id="L136">	}</span>
 
-	private static void assertEquals(ExpectedSms expected, SubmitSm actual, AssertionRegistry registry) {
-<span class="fc" id="L139">		registry.register(() -&gt; Assert.assertEquals(&quot;Sender number should be &quot; + expected.getSenderNumber().getNumber(), expected.getSenderNumber().getNumber(), getValue(actual, SubmitSm::getSourceAddress, Address::getAddress)));</span>
-<span class="fc" id="L140">		registry.register(() -&gt; Assert.assertEquals(&quot;Sender ton should be &quot; + expected.getSenderNumber().getTon(), (Byte) expected.getSenderNumber().getTon(), getValue(actual, SubmitSm::getSourceAddress, Address::getTon)));</span>
-<span class="fc" id="L141">		registry.register(() -&gt; Assert.assertEquals(&quot;Sender npi should be &quot; + expected.getSenderNumber().getNpi(), (Byte) expected.getSenderNumber().getNpi(), getValue(actual, SubmitSm::getSourceAddress, Address::getNpi)));</span>
+	private static void assertEquals(String msgIdx, ExpectedSms expected, SubmitSm actual, AssertionRegistry registry) {
+<span class="fc" id="L139">		registry.register(() -&gt; Assert.assertEquals(&quot;Sender number of message &quot;+ msgIdx + &quot; should be &quot; + expected.getSenderNumber().getNumber(), expected.getSenderNumber().getNumber(), getValue(actual, SubmitSm::getSourceAddress, Address::getAddress)));</span>
+<span class="fc" id="L140">		registry.register(() -&gt; Assert.assertEquals(&quot;Sender ton of message &quot;+ msgIdx + &quot; should be &quot; + expected.getSenderNumber().getTon(), (Byte) expected.getSenderNumber().getTon(), getValue(actual, SubmitSm::getSourceAddress, Address::getTon)));</span>
+<span class="fc" id="L141">		registry.register(() -&gt; Assert.assertEquals(&quot;Sender npi of message &quot;+ msgIdx + &quot; should be &quot; + expected.getSenderNumber().getNpi(), (Byte) expected.getSenderNumber().getNpi(), getValue(actual, SubmitSm::getSourceAddress, Address::getNpi)));</span>
 
-<span class="fc" id="L143">		registry.register(() -&gt; Assert.assertEquals(&quot;Receiver number should be &quot; + expected.getReceiverNumber().getNumber(), expected.getReceiverNumber().getNumber(), getValue(actual, SubmitSm::getDestAddress, Address::getAddress)));</span>
-<span class="fc" id="L144">		registry.register(() -&gt; Assert.assertEquals(&quot;Receiver ton should be &quot; + expected.getReceiverNumber().getTon(), (Byte) expected.getReceiverNumber().getTon(), getValue(actual, SubmitSm::getDestAddress, Address::getTon)));</span>
-<span class="fc" id="L145">		registry.register(() -&gt; Assert.assertEquals(&quot;Receiver npi should be &quot; + expected.getReceiverNumber().getNpi(), (Byte) expected.getReceiverNumber().getNpi(), getValue(actual, SubmitSm::getDestAddress, Address::getNpi)));</span>
+<span class="fc" id="L143">		registry.register(() -&gt; Assert.assertEquals(&quot;Receiver number of message &quot;+ msgIdx + &quot; should be &quot; + expected.getReceiverNumber().getNumber(), expected.getReceiverNumber().getNumber(), getValue(actual, SubmitSm::getDestAddress, Address::getAddress)));</span>
+<span class="fc" id="L144">		registry.register(() -&gt; Assert.assertEquals(&quot;Receiver ton of message &quot;+ msgIdx + &quot;  should be &quot; + expected.getReceiverNumber().getTon(), (Byte) expected.getReceiverNumber().getTon(), getValue(actual, SubmitSm::getDestAddress, Address::getTon)));</span>
+<span class="fc" id="L145">		registry.register(() -&gt; Assert.assertEquals(&quot;Receiver npi of message &quot;+ msgIdx + &quot;  should be &quot; + expected.getReceiverNumber().getNpi(), (Byte) expected.getReceiverNumber().getNpi(), getValue(actual, SubmitSm::getDestAddress, Address::getNpi)));</span>
 
-<span class="fc bfc" id="L147" title="All 2 branches covered.">		registry.register(() -&gt; Assert.assertEquals(&quot;Message not consistent with expected&quot;, expected.getMessage(), actual==null ? null : getSmsContent(actual)));</span>
+<span class="fc bfc" id="L147" title="All 2 branches covered.">		registry.register(() -&gt; Assert.assertEquals(&quot;Message &quot; + msgIdx + &quot; not consistent with expected&quot;, expected.getMessage(), actual==null ? null : getSmsContent(actual)));</span>
 <span class="fc" id="L148">	}</span>
 
 	private static &lt;T&gt; T getValue(SubmitSm actual, Function&lt;SubmitSm, Address&gt; addressAccessor, Function&lt;Address, T&gt; valueAccessor) {

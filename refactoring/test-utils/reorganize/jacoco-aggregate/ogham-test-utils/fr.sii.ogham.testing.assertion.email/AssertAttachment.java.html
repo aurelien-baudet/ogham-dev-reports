@@ -38,7 +38,7 @@ public final class AssertAttachment {
 	public static void assertEquals(ExpectedAttachment expected, Message[] actual) throws Exception {
 <span class="fc" id="L39">		AssertionRegistry registry = new FailAtEndRegistry();</span>
 <span class="fc" id="L40">		registry.register(() -&gt; Assert.assertEquals(&quot;should have only one message&quot;, 1, actual.length));</span>
-<span class="fc" id="L41">		assertEquals(expected, actual[0], registry);</span>
+<span class="fc bfc" id="L41" title="All 2 branches covered.">		assertEquals(expected, actual.length==1 ? actual[0] : null, registry);</span>
 <span class="nc" id="L42">		registry.execute();</span>
 <span class="nc" id="L43">	}</span>
 
@@ -85,10 +85,10 @@ public final class AssertAttachment {
 	 *             when access to part has failed
 	 */
 	public static void assertEquals(ExpectedAttachment expected, BodyPart attachment) throws Exception {
-<span class="nc" id="L88">		AssertionRegistry registry = new FailAtEndRegistry();</span>
-<span class="nc" id="L89">		assertEquals(expected, attachment, registry);</span>
-<span class="nc" id="L90">		registry.execute();</span>
-<span class="nc" id="L91">	}</span>
+<span class="fc" id="L88">		AssertionRegistry registry = new FailAtEndRegistry();</span>
+<span class="fc" id="L89">		assertEquals(expected, attachment, registry);</span>
+<span class="fc" id="L90">		registry.execute();</span>
+<span class="fc" id="L91">	}</span>
 
 	private static void assertEquals(ExpectedAttachment expected, Message actual, AssertionRegistry registry) throws Exception {
 <span class="fc bfc" id="L94" title="All 2 branches covered.">		Object content = actual==null ? null : actual.getContent();</span>
@@ -118,9 +118,9 @@ public final class AssertAttachment {
 	private static BodyPart getAttachmentOrNull(Multipart multipart, final String filename, AssertionRegistry registry) throws MessagingException {
 		try {
 <span class="fc" id="L120">			return getAttachment(multipart, filename);</span>
-<span class="nc" id="L121">		} catch(MessagingException e) {</span>
-<span class="nc" id="L122">			registry.register(failure(e));</span>
-<span class="nc" id="L123">			return null;</span>
+<span class="fc" id="L121">		} catch(MessagingException e) {</span>
+<span class="fc" id="L122">			registry.register(failure(e));</span>
+<span class="fc" id="L123">			return null;</span>
 <span class="fc" id="L124">		} catch(IllegalStateException e) {</span>
 <span class="fc" id="L125">			registry.register(failure(e));</span>
 <span class="fc" id="L126">			return null;</span>

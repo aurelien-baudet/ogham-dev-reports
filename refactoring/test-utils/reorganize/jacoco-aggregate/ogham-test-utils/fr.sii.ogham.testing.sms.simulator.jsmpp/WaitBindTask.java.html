@@ -37,8 +37,8 @@ class WaitBindTask implements Runnable {
 <span class="nc" id="L37">			LOG.error(&quot;System error&quot;, e);</span>
 <span class="nc" id="L38">		} catch (TimeoutException e) {</span>
 <span class="nc" id="L39">			LOG.warn(&quot;Wait for bind has reach timeout&quot;, e);</span>
-<span class="fc" id="L40">		} catch (IOException e) {</span>
-<span class="fc" id="L41">			LOG.error(&quot;Failed accepting bind request for session {}&quot;, serverSession.getSessionId(), e);</span>
+<span class="nc" id="L40">		} catch (IOException e) {</span>
+<span class="nc" id="L41">			LOG.error(&quot;Failed accepting bind request for session {}&quot;, serverSession.getSessionId(), e);</span>
 <span class="pc" id="L42">		}</span>
 <span class="fc" id="L43">	}</span>
 
@@ -57,12 +57,12 @@ class WaitBindTask implements Runnable {
 
 	private boolean checkPassword(BindRequest bindRequest) {
 		// no credentials registered =&gt; allow requests
-<span class="fc bfc" id="L60" title="All 2 branches covered.">		if (serverCredentials.isEmpty()) {</span>
+<span class="fc bfc" id="L60" title="All 4 branches covered.">		if (serverCredentials == null || serverCredentials.isEmpty()) {</span>
 <span class="fc" id="L61">			return true;</span>
 		}
 <span class="fc bfc" id="L63" title="All 2 branches covered.">		for (Credentials creds : serverCredentials) {</span>
-<span class="pc bpc" id="L64" title="1 of 4 branches missed.">			if (Objects.equals(creds.getSystemId(), bindRequest.getSystemId()) &amp;&amp; Objects.equals(creds.getPassword(), bindRequest.getPassword())) {</span>
-<span class="nc" id="L65">				return true;</span>
+<span class="fc bfc" id="L64" title="All 4 branches covered.">			if (Objects.equals(creds.getSystemId(), bindRequest.getSystemId()) &amp;&amp; Objects.equals(creds.getPassword(), bindRequest.getPassword())) {</span>
+<span class="fc" id="L65">				return true;</span>
 			}
 <span class="fc" id="L67">		}</span>
 <span class="fc" id="L68">		return false;</span>

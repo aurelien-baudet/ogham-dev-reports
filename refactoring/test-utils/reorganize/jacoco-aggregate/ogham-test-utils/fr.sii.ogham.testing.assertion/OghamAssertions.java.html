@@ -9,10 +9,10 @@ import javax.mail.internet.MimeMessage;
 
 import com.icegreen.greenmail.junit.GreenMailRule;
 
-import fr.sii.ogham.testing.assertion.email.EmailsAssert;
-import fr.sii.ogham.testing.assertion.email.ReceivedEmailsAssert;
-import fr.sii.ogham.testing.assertion.sms.ReceivedSmsAssert;
-import fr.sii.ogham.testing.assertion.sms.SmsListAssert;
+import fr.sii.ogham.testing.assertion.email.FluentEmailsAssert;
+import fr.sii.ogham.testing.assertion.email.FluentReceivedEmailsAssert;
+import fr.sii.ogham.testing.assertion.sms.FluentReceivedSmsAssert;
+import fr.sii.ogham.testing.assertion.sms.FluentSmsListAssert;
 import fr.sii.ogham.testing.assertion.util.AssertionRegistry;
 import fr.sii.ogham.testing.assertion.util.FailAtEndRegistry;
 import fr.sii.ogham.testing.assertion.util.FailImmediatelyRegistry;
@@ -105,7 +105,7 @@ public final class OghamAssertions {
 	 *            email server that stores received messages
 	 * @return builder for fluent assertions on received messages
 	 */
-	public static ReceivedEmailsAssert assertThat(GreenMailRule greenMail) {
+	public static FluentReceivedEmailsAssert assertThat(GreenMailRule greenMail) {
 <span class="fc" id="L109">		return assertThat(greenMail, new FailImmediatelyRegistry());</span>
 	}
 
@@ -145,8 +145,8 @@ public final class OghamAssertions {
 	 *            the registry used to register assertions
 	 * @return builder for fluent assertions on received messages
 	 */
-	public static ReceivedEmailsAssert assertThat(GreenMailRule greenMail, AssertionRegistry registry) {
-<span class="fc" id="L149">		return new ReceivedEmailsAssert(asList(greenMail.getReceivedMessages()), registry);</span>
+	public static FluentReceivedEmailsAssert assertThat(GreenMailRule greenMail, AssertionRegistry registry) {
+<span class="fc" id="L149">		return new FluentReceivedEmailsAssert(asList(greenMail.getReceivedMessages()), registry);</span>
 	}
 
 	/**
@@ -177,8 +177,8 @@ public final class OghamAssertions {
 	 *            list of messages received by the email server
 	 * @return builder for fluent assertions on received messages
 	 */
-	public static EmailsAssert&lt;Void&gt; assertThat(MimeMessage[] receivedEmails) {
-<span class="nc" id="L181">		return assertThat(receivedEmails, new FailImmediatelyRegistry());</span>
+	public static FluentEmailsAssert&lt;Void&gt; assertThat(MimeMessage[] receivedEmails) {
+<span class="fc" id="L181">		return assertThat(receivedEmails, new FailImmediatelyRegistry());</span>
 	}
 
 	/**
@@ -217,8 +217,8 @@ public final class OghamAssertions {
 	 *            the registry used to register assertions
 	 * @return builder for fluent assertions on received messages
 	 */
-	public static EmailsAssert&lt;Void&gt; assertThat(MimeMessage[] receivedEmails, AssertionRegistry registry) {
-<span class="nc" id="L221">		return new EmailsAssert&lt;&gt;(asList(receivedEmails), null, registry);</span>
+	public static FluentEmailsAssert&lt;Void&gt; assertThat(MimeMessage[] receivedEmails, AssertionRegistry registry) {
+<span class="fc" id="L221">		return new FluentEmailsAssert&lt;&gt;(asList(receivedEmails), null, registry);</span>
 	}
 
 	/**
@@ -247,7 +247,7 @@ public final class OghamAssertions {
 	 *            the type of messages handled by the server
 	 * @return builder for fluent assertions on received messages
 	 */
-	public static &lt;M&gt; ReceivedSmsAssert&lt;SubmitSm&gt; assertThat(SmppServerRule&lt;M&gt; smsServer) {
+	public static &lt;M&gt; FluentReceivedSmsAssert&lt;SubmitSm&gt; assertThat(SmppServerRule&lt;M&gt; smsServer) {
 <span class="fc" id="L251">		return assertThat(smsServer, new FailImmediatelyRegistry());</span>
 	}
 
@@ -285,8 +285,8 @@ public final class OghamAssertions {
 	 *            the type of messages handled by the server
 	 * @return builder for fluent assertions on received messages
 	 */
-	public static &lt;M&gt; ReceivedSmsAssert&lt;SubmitSm&gt; assertThat(SmppServerRule&lt;M&gt; smsServer, AssertionRegistry registry) {
-<span class="fc" id="L289">		return new ReceivedSmsAssert&lt;&gt;(smsServer.getReceivedMessages(), registry);</span>
+	public static &lt;M&gt; FluentReceivedSmsAssert&lt;SubmitSm&gt; assertThat(SmppServerRule&lt;M&gt; smsServer, AssertionRegistry registry) {
+<span class="fc" id="L289">		return new FluentReceivedSmsAssert&lt;&gt;(smsServer.getReceivedMessages(), registry);</span>
 	}
 
 	/**
@@ -313,8 +313,8 @@ public final class OghamAssertions {
 	 *            The list of messages received by the SMS server
 	 * @return builder for fluent assertions on received messages
 	 */
-	public static SmsListAssert&lt;Void, SubmitSm&gt; assertThat(List&lt;SubmitSm&gt; receivedSms) {
-<span class="nc" id="L317">		return assertThat(receivedSms, new FailImmediatelyRegistry());</span>
+	public static FluentSmsListAssert&lt;Void, SubmitSm&gt; assertThat(List&lt;SubmitSm&gt; receivedSms) {
+<span class="fc" id="L317">		return assertThat(receivedSms, new FailImmediatelyRegistry());</span>
 	}
 
 	/**
@@ -349,8 +349,8 @@ public final class OghamAssertions {
 	 *            the registry used to register assertions
 	 * @return builder for fluent assertions on received messages
 	 */
-	public static SmsListAssert&lt;Void, SubmitSm&gt; assertThat(List&lt;SubmitSm&gt; receivedSms, AssertionRegistry registry) {
-<span class="nc" id="L353">		return new SmsListAssert&lt;&gt;(receivedSms, null, registry);</span>
+	public static FluentSmsListAssert&lt;Void, SubmitSm&gt; assertThat(List&lt;SubmitSm&gt; receivedSms, AssertionRegistry registry) {
+<span class="fc" id="L353">		return new FluentSmsListAssert&lt;&gt;(receivedSms, null, registry);</span>
 	}
 
 	/**
