@@ -65,51 +65,52 @@ public class ConfigurableSMPPServerSessionListener extends SMPPServerSessionList
 <span class="fc" id="L65">		return new SMPPServerSession(conn, getSessionStateListener(), getMessageReceiverListener(), responseDeliveryListener, getPduProcessorDegree(), createPduSender(), createPduReader());</span>
 	}
 
+	@Override
 	public void setResponseDeliveryListener(ServerResponseDeliveryListener responseDeliveryListener) {
-<span class="nc" id="L69">		super.setResponseDeliveryListener(responseDeliveryListener);</span>
-<span class="nc" id="L70">		this.responseDeliveryListener = responseDeliveryListener;</span>
-<span class="nc" id="L71">	}</span>
+<span class="nc" id="L70">		super.setResponseDeliveryListener(responseDeliveryListener);</span>
+<span class="nc" id="L71">		this.responseDeliveryListener = responseDeliveryListener;</span>
+<span class="nc" id="L72">	}</span>
 
 	protected PDUSender createPduSender() {
-<span class="pc bpc" id="L74" title="1 of 2 branches missed.">		if (delays == null) {</span>
-<span class="nc" id="L75">			return new SynchronizedPDUSender(new DefaultPDUSender());</span>
+<span class="pc bpc" id="L75" title="1 of 2 branches missed.">		if (delays == null) {</span>
+<span class="nc" id="L76">			return new SynchronizedPDUSender(new DefaultPDUSender());</span>
 		}
-<span class="fc" id="L77">		return new SlowPduSender(new SynchronizedPDUSender(new DefaultPDUSender()), delays);</span>
+<span class="fc" id="L78">		return new SlowPduSender(new SynchronizedPDUSender(new DefaultPDUSender()), delays);</span>
 	}
 
 	protected PDUReader createPduReader() {
-<span class="fc" id="L81">		return new DefaultPDUReader();</span>
+<span class="fc" id="L82">		return new DefaultPDUReader();</span>
 	}
 
 	@Override
 	public int getTimeout(int timeout) throws IOException {
-<span class="nc" id="L86">		return serverConn.getSoTimeout();</span>
+<span class="nc" id="L87">		return serverConn.getSoTimeout();</span>
 	}
 
 	@Override
 	public void setTimeout(int timeout) throws IOException {
-<span class="nc" id="L91">		serverConn.setSoTimeout(timeout);</span>
-<span class="nc" id="L92">	}</span>
+<span class="nc" id="L92">		serverConn.setSoTimeout(timeout);</span>
+<span class="nc" id="L93">	}</span>
 
 	@Override
 	public void close() throws IOException {
-<span class="fc" id="L96">		serverConn.close();</span>
-<span class="fc" id="L97">	}</span>
+<span class="fc" id="L97">		serverConn.close();</span>
+<span class="fc" id="L98">	}</span>
 
 	private static class NullServerConnectionFactory implements ServerConnectionFactory {
 		@Override
 		public ServerConnection listen(int port) throws IOException {
-<span class="fc" id="L102">			return null;</span>
+<span class="fc" id="L103">			return null;</span>
 		}
 
 		@Override
 		public ServerConnection listen(int port, int timeout) throws IOException {
-<span class="nc" id="L107">			return null;</span>
+<span class="nc" id="L108">			return null;</span>
 		}
 
 		@Override
 		public ServerConnection listen(int port, int timeout, int backlog) throws IOException {
-<span class="nc" id="L112">			return null;</span>
+<span class="nc" id="L113">			return null;</span>
 		}
 	}
 }
