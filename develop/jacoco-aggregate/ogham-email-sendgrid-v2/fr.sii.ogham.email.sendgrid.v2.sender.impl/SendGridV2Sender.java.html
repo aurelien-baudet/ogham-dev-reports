@@ -4,7 +4,6 @@ import static fr.sii.ogham.core.util.LogUtils.summarize;
 import static fr.sii.ogham.email.sendgrid.sender.EmailValidator.validate;
 
 import java.io.IOException;
-import java.util.Set;
 import java.util.regex.Pattern;
 
 import org.slf4j.Logger;
@@ -30,8 +29,8 @@ import fr.sii.ogham.email.sendgrid.v2.sender.impl.sendgrid.handler.SendGridConte
  * SendGrid-backed implementation of the email sender.
  */
 public final class SendGridV2Sender extends AbstractSpecializedSender&lt;Email&gt; implements SendGridSender {
-<span class="fc" id="L33">	private static final Logger LOG = LoggerFactory.getLogger(SendGridV2Sender.class);</span>
-<span class="fc" id="L34">	private static final Pattern CID = Pattern.compile(&quot;^&lt;(.+)&gt;$&quot;);</span>
+<span class="fc" id="L32">	private static final Logger LOG = LoggerFactory.getLogger(SendGridV2Sender.class);</span>
+<span class="fc" id="L33">	private static final Pattern CID = Pattern.compile(&quot;^&lt;(.+)&gt;$&quot;);</span>
 
 	private final SendGridClient delegate;
 	private final SendGridContentHandler handler;
@@ -47,8 +46,8 @@ public final class SendGridV2Sender extends AbstractSpecializedSender&lt;Email&g
 	 *            into something the {@link SendGridClient} can work with
 	 */
 	public SendGridV2Sender(final SendGridClient service, final SendGridContentHandler handler) {
-<span class="fc" id="L50">		this(service, handler, null);</span>
-<span class="fc" id="L51">	}</span>
+<span class="fc" id="L49">		this(service, handler, null);</span>
+<span class="fc" id="L50">	}</span>
 
 	/**
 	 * Constructor.
@@ -61,95 +60,92 @@ public final class SendGridV2Sender extends AbstractSpecializedSender&lt;Email&g
 	 * @param interceptor
 	 *            an extension point for customizing the email to send
 	 */
-<span class="fc" id="L64">	public SendGridV2Sender(final SendGridClient service, final SendGridContentHandler handler, SendGridInterceptor interceptor) {</span>
-<span class="fc bfc" id="L65" title="All 2 branches covered.">		if (service == null) {</span>
-<span class="fc" id="L66">			throw new IllegalArgumentException(&quot;[service] cannot be null&quot;);</span>
+<span class="fc" id="L63">	public SendGridV2Sender(final SendGridClient service, final SendGridContentHandler handler, SendGridInterceptor interceptor) {</span>
+<span class="fc bfc" id="L64" title="All 2 branches covered.">		if (service == null) {</span>
+<span class="fc" id="L65">			throw new IllegalArgumentException(&quot;[service] cannot be null&quot;);</span>
 		}
-<span class="fc bfc" id="L68" title="All 2 branches covered.">		if (handler == null) {</span>
-<span class="fc" id="L69">			throw new IllegalArgumentException(&quot;[handler] cannot be null&quot;);</span>
+<span class="fc bfc" id="L67" title="All 2 branches covered.">		if (handler == null) {</span>
+<span class="fc" id="L68">			throw new IllegalArgumentException(&quot;[handler] cannot be null&quot;);</span>
 		}
 
-<span class="fc" id="L72">		this.delegate = service;</span>
-<span class="fc" id="L73">		this.handler = handler;</span>
-<span class="fc" id="L74">		this.interceptor = interceptor;</span>
-<span class="fc" id="L75">	}</span>
+<span class="fc" id="L71">		this.delegate = service;</span>
+<span class="fc" id="L72">		this.handler = handler;</span>
+<span class="fc" id="L73">		this.interceptor = interceptor;</span>
+<span class="fc" id="L74">	}</span>
 
 	@Override
 	public void send(final Email message) throws MessageException {
-<span class="fc bfc" id="L79" title="All 2 branches covered.">		if (message == null) {</span>
-<span class="fc" id="L80">			throw new IllegalArgumentException(&quot;[message] cannot be null&quot;);</span>
+<span class="fc bfc" id="L78" title="All 2 branches covered.">		if (message == null) {</span>
+<span class="fc" id="L79">			throw new IllegalArgumentException(&quot;[message] cannot be null&quot;);</span>
 		}
-<span class="fc" id="L82">		final Set&lt;String&gt; violations = validate(message);</span>
-<span class="fc bfc" id="L83" title="All 2 branches covered.">		if (!violations.isEmpty()) {</span>
-<span class="fc" id="L84">			throw new MessageException(&quot;The provided email is invalid. (Violations: &quot; + violations + &quot;)&quot;, message);</span>
-		}
+<span class="fc" id="L81">		validate(message);</span>
 
 		try {
-<span class="fc" id="L88">			LOG.debug(&quot;Preparing to send email using SendGrid: {}&quot;, summarize(message));</span>
-<span class="fc" id="L89">			final SendGrid.Email sgEmail = intercept(toSendGridEmail(message), message);</span>
+<span class="fc" id="L84">			LOG.debug(&quot;Preparing to send email using SendGrid: {}&quot;, summarize(message));</span>
+<span class="fc" id="L85">			final SendGrid.Email sgEmail = intercept(toSendGridEmail(message), message);</span>
 
-<span class="fc" id="L91">			LOG.debug(&quot;Sending email...\n{}&quot;, summarize(message));</span>
-<span class="fc" id="L92">			LOG.trace(&quot;SendGrid email: {}&quot;, sgEmail);</span>
-<span class="fc" id="L93">			delegate.send(sgEmail);</span>
-<span class="fc" id="L94">			LOG.debug(&quot;Email has been successfully sent&quot;);</span>
-<span class="nc" id="L95">		} catch (ContentHandlerException e) {</span>
-<span class="nc" id="L96">			throw new MessageException(&quot;A content-related error occurred when trying to build an email&quot;, message, e);</span>
-<span class="fc" id="L97">		} catch (AttachmentReadException e) {</span>
-<span class="fc" id="L98">			throw new MessageException(&quot;Attaching file to email failed when trying to send an email&quot;, message, e);</span>
-<span class="fc" id="L99">		} catch (SendGridException e) {</span>
-<span class="fc" id="L100">			throw new MessageException(&quot;A SendGrid-related error occurred when trying to send an email&quot;, message, e);</span>
-<span class="fc" id="L101">		}</span>
-<span class="fc" id="L102">	}</span>
+<span class="fc" id="L87">			LOG.debug(&quot;Sending email...\n{}&quot;, summarize(message));</span>
+<span class="fc" id="L88">			LOG.trace(&quot;SendGrid email: {}&quot;, sgEmail);</span>
+<span class="fc" id="L89">			delegate.send(sgEmail);</span>
+<span class="fc" id="L90">			LOG.debug(&quot;Email has been successfully sent&quot;);</span>
+<span class="nc" id="L91">		} catch (ContentHandlerException e) {</span>
+<span class="nc" id="L92">			throw new MessageException(&quot;A content-related error occurred when trying to build an email&quot;, message, e);</span>
+<span class="fc" id="L93">		} catch (AttachmentReadException e) {</span>
+<span class="fc" id="L94">			throw new MessageException(&quot;Attaching file to email failed when trying to send an email&quot;, message, e);</span>
+<span class="fc" id="L95">		} catch (SendGridException e) {</span>
+<span class="fc" id="L96">			throw new MessageException(&quot;A SendGrid-related error occurred when trying to send an email&quot;, message, e);</span>
+<span class="fc" id="L97">		}</span>
+<span class="fc" id="L98">	}</span>
 
 	private SendGrid.Email intercept(SendGrid.Email sendGridEmail, Email source) {
-<span class="pc bpc" id="L105" title="1 of 2 branches missed.">		if (interceptor == null) {</span>
-<span class="fc" id="L106">			return sendGridEmail;</span>
+<span class="pc bpc" id="L101" title="1 of 2 branches missed.">		if (interceptor == null) {</span>
+<span class="fc" id="L102">			return sendGridEmail;</span>
 		}
-<span class="nc" id="L108">		return interceptor.intercept(sendGridEmail, source);</span>
+<span class="nc" id="L104">		return interceptor.intercept(sendGridEmail, source);</span>
 	}
 
 	private SendGrid.Email toSendGridEmail(final Email message) throws ContentHandlerException, AttachmentReadException {
-<span class="fc" id="L112">		final SendGrid.Email ret = new SendGrid.Email();</span>
-<span class="fc" id="L113">		ret.setSubject(message.getSubject());</span>
+<span class="fc" id="L108">		final SendGrid.Email ret = new SendGrid.Email();</span>
+<span class="fc" id="L109">		ret.setSubject(message.getSubject());</span>
 
-<span class="fc" id="L115">		ret.setFrom(message.getFrom().getAddress());</span>
-<span class="fc bfc" id="L116" title="All 2 branches covered.">		ret.setFromName(message.getFrom().getPersonal() == null ? &quot;&quot; : message.getFrom().getPersonal());</span>
+<span class="fc" id="L111">		ret.setFrom(message.getFrom().getAddress());</span>
+<span class="fc bfc" id="L112" title="All 2 branches covered.">		ret.setFromName(message.getFrom().getPersonal() == null ? &quot;&quot; : message.getFrom().getPersonal());</span>
 
-<span class="fc" id="L118">		final String[] tos = new String[message.getRecipients().size()];</span>
-<span class="fc" id="L119">		final String[] toNames = new String[message.getRecipients().size()];</span>
-<span class="fc" id="L120">		int i = 0;</span>
-<span class="fc bfc" id="L121" title="All 2 branches covered.">		for (Recipient recipient : message.getRecipients()) {</span>
-<span class="fc" id="L122">			final EmailAddress address = recipient.getAddress();</span>
-<span class="fc" id="L123">			tos[i] = address.getAddress();</span>
-<span class="fc bfc" id="L124" title="All 2 branches covered.">			toNames[i] = address.getPersonal() == null ? &quot;&quot; : address.getPersonal();</span>
-<span class="fc" id="L125">			i++;</span>
-<span class="fc" id="L126">		}</span>
-<span class="fc" id="L127">		ret.setTo(tos);</span>
-<span class="fc" id="L128">		ret.setToName(toNames);</span>
+<span class="fc" id="L114">		final String[] tos = new String[message.getRecipients().size()];</span>
+<span class="fc" id="L115">		final String[] toNames = new String[message.getRecipients().size()];</span>
+<span class="fc" id="L116">		int i = 0;</span>
+<span class="fc bfc" id="L117" title="All 2 branches covered.">		for (Recipient recipient : message.getRecipients()) {</span>
+<span class="fc" id="L118">			final EmailAddress address = recipient.getAddress();</span>
+<span class="fc" id="L119">			tos[i] = address.getAddress();</span>
+<span class="fc bfc" id="L120" title="All 2 branches covered.">			toNames[i] = address.getPersonal() == null ? &quot;&quot; : address.getPersonal();</span>
+<span class="fc" id="L121">			i++;</span>
+<span class="fc" id="L122">		}</span>
+<span class="fc" id="L123">		ret.setTo(tos);</span>
+<span class="fc" id="L124">		ret.setToName(toNames);</span>
 
-<span class="fc" id="L130">		handler.setContent(message, ret, message.getContent());</span>
+<span class="fc" id="L126">		handler.setContent(message, ret, message.getContent());</span>
 
-<span class="fc bfc" id="L132" title="All 2 branches covered.">		for (Attachment attachment : message.getAttachments()) {</span>
-<span class="fc" id="L133">			addAttachment(ret, attachment);</span>
-<span class="fc" id="L134">		}</span>
+<span class="fc bfc" id="L128" title="All 2 branches covered.">		for (Attachment attachment : message.getAttachments()) {</span>
+<span class="fc" id="L129">			addAttachment(ret, attachment);</span>
+<span class="fc" id="L130">		}</span>
 
-<span class="fc" id="L136">		return ret;</span>
+<span class="fc" id="L132">		return ret;</span>
 	}
 
 	private static void addAttachment(final SendGrid.Email ret, final Attachment attachment) throws AttachmentReadException {
 		try {
-<span class="fc" id="L141">			ret.addAttachment(attachment.getResource().getName(), attachment.getResource().getInputStream());</span>
-<span class="fc bfc" id="L142" title="All 2 branches covered.">			if (attachment.getContentId() != null) {</span>
-<span class="fc" id="L143">				String id = CID.matcher(attachment.getContentId()).replaceAll(&quot;$1&quot;);</span>
-<span class="fc" id="L144">				ret.addContentId(attachment.getResource().getName(), id);</span>
+<span class="fc" id="L137">			ret.addAttachment(attachment.getResource().getName(), attachment.getResource().getInputStream());</span>
+<span class="fc bfc" id="L138" title="All 2 branches covered.">			if (attachment.getContentId() != null) {</span>
+<span class="fc" id="L139">				String id = CID.matcher(attachment.getContentId()).replaceAll(&quot;$1&quot;);</span>
+<span class="fc" id="L140">				ret.addContentId(attachment.getResource().getName(), id);</span>
 			}
-<span class="fc" id="L146">		} catch (IOException e) {</span>
-<span class="fc" id="L147">			throw new AttachmentReadException(&quot;Failed to attach email attachment named &quot; + attachment.getResource().getName(), attachment, e);</span>
-<span class="fc" id="L148">		}</span>
-<span class="fc" id="L149">	}</span>
+<span class="fc" id="L142">		} catch (IOException e) {</span>
+<span class="fc" id="L143">			throw new AttachmentReadException(&quot;Failed to attach email attachment named &quot; + attachment.getResource().getName(), attachment, e);</span>
+<span class="fc" id="L144">		}</span>
+<span class="fc" id="L145">	}</span>
 
 	public SendGridClient getDelegate() {
-<span class="nc" id="L152">		return delegate;</span>
+<span class="nc" id="L148">		return delegate;</span>
 	}
 
 }

@@ -3,6 +3,7 @@
 import java.util.HashSet;
 import java.util.Set;
 
+import fr.sii.ogham.core.exception.InvalidMessageException;
 import fr.sii.ogham.email.message.Email;
 import fr.sii.ogham.email.message.Recipient;
 
@@ -24,34 +25,37 @@ public final class EmailValidator {
 	 * 
 	 * @param message
 	 *            the email to validate
-	 * @return the violations if not valid or an empty list if valid
+	 * @throws InvalidMessageException
+	 *             when the email is not valid
 	 */
-	public static Set&lt;String&gt; validate(final Email message) {
-<span class="fc" id="L30">		final Set&lt;String&gt; violations = new HashSet&lt;&gt;();</span>
+	public static void validate(final Email message) throws InvalidMessageException {
+<span class="fc" id="L32">		final Set&lt;String&gt; violations = new HashSet&lt;&gt;();</span>
 
-<span class="fc bfc" id="L32" title="All 2 branches covered.">		if (message.getContent() == null) {</span>
-<span class="fc" id="L33">			violations.add(&quot;Missing content&quot;);</span>
+<span class="fc bfc" id="L34" title="All 2 branches covered.">		if (message.getContent() == null) {</span>
+<span class="fc" id="L35">			violations.add(&quot;Missing content&quot;);</span>
 		}
-<span class="fc bfc" id="L35" title="All 2 branches covered.">		if (message.getSubject() == null) {</span>
-<span class="fc" id="L36">			violations.add(&quot;Missing subject&quot;);</span>
-		}
-
-<span class="fc bfc" id="L39" title="All 2 branches covered.">		if (message.getFrom() == null) {</span>
-<span class="fc" id="L40">			violations.add(&quot;Missing sender email address&quot;);</span>
+<span class="fc bfc" id="L37" title="All 2 branches covered.">		if (message.getSubject() == null) {</span>
+<span class="fc" id="L38">			violations.add(&quot;Missing subject&quot;);</span>
 		}
 
-<span class="fc bfc" id="L43" title="All 2 branches covered.">		if (message.getRecipients().isEmpty()) {</span>
-<span class="fc" id="L44">			violations.add(&quot;Missing recipients&quot;);</span>
+<span class="fc bfc" id="L41" title="All 2 branches covered.">		if (message.getFrom() == null) {</span>
+<span class="fc" id="L42">			violations.add(&quot;Missing sender email address&quot;);</span>
 		}
 
-<span class="fc bfc" id="L47" title="All 2 branches covered.">		for (Recipient recipient : message.getRecipients()) {</span>
-<span class="pc bpc" id="L48" title="1 of 2 branches missed.">			if (recipient.getAddress().getAddress() == null) {</span>
-<span class="nc" id="L49">				violations.add(&quot;Missing recipient address &quot; + recipient);</span>
+<span class="fc bfc" id="L45" title="All 2 branches covered.">		if (message.getRecipients().isEmpty()) {</span>
+<span class="fc" id="L46">			violations.add(&quot;Missing recipients&quot;);</span>
+		}
+
+<span class="fc bfc" id="L49" title="All 2 branches covered.">		for (Recipient recipient : message.getRecipients()) {</span>
+<span class="pc bpc" id="L50" title="1 of 2 branches missed.">			if (recipient.getAddress().getAddress() == null) {</span>
+<span class="nc" id="L51">				violations.add(&quot;Missing recipient address &quot; + recipient);</span>
 			}
-<span class="fc" id="L51">		}</span>
+<span class="fc" id="L53">		}</span>
 
-<span class="fc" id="L53">		return violations;</span>
-	}
+<span class="fc bfc" id="L55" title="All 2 branches covered.">		if (!violations.isEmpty()) {</span>
+<span class="fc" id="L56">			throw new InvalidMessageException(&quot;The provided email is invalid. (Violations: &quot; + violations + &quot;)&quot;, message, violations);</span>
+		}
+<span class="fc" id="L58">	}</span>
 
 	private EmailValidator() {
 		super();

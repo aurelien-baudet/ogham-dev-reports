@@ -339,9 +339,16 @@ public class MessageSplitterBuilder extends AbstractParent&lt;CloudhopperBuilder
 <span class="fc" id="L339">		registry.register(buildStandardSplitter(supportedCharsetName, maxSizes), priority);</span>
 <span class="fc" id="L340">	}</span>
 
-	private static MessageSplitter buildStandardSplitter(String supportingCharset, SegmentSizes maxSizes) {
+	private MessageSplitter buildStandardSplitter(String supportingCharset, SegmentSizes maxSizes) {
 <span class="fc" id="L343">		SupportingEncoder encoder = new CloudhopperCharsetSupportingEncoder(NamedCharset.from(supportingCharset));</span>
-<span class="fc" id="L344">		return new SupportedEncoderConditionalSplitter(encoder, new GsmMessageSplitter(encoder, maxSizes, new RandomReferenceNumberGenerator()));</span>
+<span class="fc" id="L344">		return new SupportedEncoderConditionalSplitter(encoder, new GsmMessageSplitter(encoder, maxSizes, buildReferenceNumberGenerator()));</span>
+	}
+
+	private ReferenceNumberGenerator buildReferenceNumberGenerator() {
+<span class="fc bfc" id="L348" title="All 2 branches covered.">		if (referenceNumberBuilder != null) {</span>
+<span class="fc" id="L349">			return referenceNumberBuilder.build();</span>
+		}
+<span class="fc" id="L351">		return new RandomReferenceNumberGenerator();</span>
 	}
 
 }
