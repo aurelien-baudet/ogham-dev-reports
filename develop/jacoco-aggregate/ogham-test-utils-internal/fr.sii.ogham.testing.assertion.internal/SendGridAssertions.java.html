@@ -4,6 +4,8 @@ import static fr.sii.ogham.testing.assertion.internal.helper.ImplementationFinde
 import static fr.sii.ogham.testing.assertion.util.AssertionHelper.assertThat;
 import static org.apache.commons.lang3.reflect.FieldUtils.readField;
 
+import java.util.Map;
+
 import org.hamcrest.Matcher;
 
 import com.sendgrid.SendGrid;
@@ -26,9 +28,9 @@ public class SendGridAssertions extends HasParent&lt;MessagingServiceAssertions&
 	private final SendGridSender sendGridSender;
 
 	public SendGridAssertions(MessagingServiceAssertions parent, SendGridSender sendGridSender) {
-<span class="fc" id="L29">		super(parent);</span>
-<span class="fc" id="L30">		this.sendGridSender = sendGridSender;</span>
-<span class="fc" id="L31">	}</span>
+<span class="fc" id="L31">		super(parent);</span>
+<span class="fc" id="L32">		this.sendGridSender = sendGridSender;</span>
+<span class="fc" id="L33">	}</span>
 
 	/**
 	 * Ensures that SendGrid apiKey is correctly configured.
@@ -39,8 +41,8 @@ public class SendGridAssertions extends HasParent&lt;MessagingServiceAssertions&
 	 * @return this instance for fluent chaining
 	 */
 	public SendGridAssertions apiKey(Matcher&lt;String&gt; matcher) {
-<span class="fc" id="L42">		assertThat(getApiKey(sendGridSender), matcher);</span>
-<span class="fc" id="L43">		return this;</span>
+<span class="fc" id="L44">		assertThat(getApiKey(sendGridSender), matcher);</span>
+<span class="fc" id="L45">		return this;</span>
 	}
 
 	/**
@@ -54,8 +56,8 @@ public class SendGridAssertions extends HasParent&lt;MessagingServiceAssertions&
 	 * @return this instance for fluent chaining
 	 */
 	public &lt;T&gt; SendGridAssertions client(Matcher&lt;? super SendGrid&gt; matcher) {
-<span class="fc" id="L57">		assertThat(getClient(sendGridSender), matcher);</span>
-<span class="fc" id="L58">		return this;</span>
+<span class="fc" id="L59">		assertThat(getClient(sendGridSender), matcher);</span>
+<span class="fc" id="L60">		return this;</span>
 	}
 
 	/**
@@ -69,7 +71,7 @@ public class SendGridAssertions extends HasParent&lt;MessagingServiceAssertions&
 	 * @return the found instance
 	 */
 	public static SendGridSender getSendGridSender(MessagingService messagingService, Class&lt;? extends SendGridSender&gt; senderClass) {
-<span class="nc" id="L72">		return findSender(messagingService, senderClass);</span>
+<span class="nc" id="L74">		return findSender(messagingService, senderClass);</span>
 	}
 
 	/**
@@ -83,44 +85,63 @@ public class SendGridAssertions extends HasParent&lt;MessagingServiceAssertions&
 	 */
 	public static SendGridSender getSendGridSender(MessagingService messagingService) {
 		try {
-<span class="fc" id="L86">			return findSender(messagingService, SendGridV4Sender.class);</span>
-<span class="fc" id="L87">		} catch (IllegalStateException e) { // NOSONAR</span>
+<span class="fc" id="L88">			return findSender(messagingService, SendGridV4Sender.class);</span>
+<span class="fc" id="L89">		} catch (IllegalStateException e) { // NOSONAR</span>
 			// skip
 		}
 		try {
-<span class="fc" id="L91">			return findSender(messagingService, SendGridV2Sender.class);</span>
-<span class="nc" id="L92">		} catch (IllegalStateException e) { // NOSONAR</span>
+<span class="fc" id="L93">			return findSender(messagingService, SendGridV2Sender.class);</span>
+<span class="nc" id="L94">		} catch (IllegalStateException e) { // NOSONAR</span>
 			// skip
 		}
-<span class="nc" id="L95">		throw new IllegalStateException(&quot;No SendGridSender available&quot;);</span>
+<span class="nc" id="L97">		throw new IllegalStateException(&quot;No SendGridSender available&quot;);</span>
 	}
 
 	private static String getApiKey(SendGridSender sendGridSender) {
-<span class="fc" id="L99">		SendGrid client = getClient(sendGridSender);</span>
+<span class="fc" id="L101">		SendGrid client = getClient(sendGridSender);</span>
 		try {
-<span class="fc bfc" id="L101" title="All 2 branches covered.">			if (sendGridSender instanceof SendGridV2Sender) {</span>
-<span class="fc" id="L102">				return (String) readField(client, &quot;password&quot;, true);</span>
+<span class="fc bfc" id="L103" title="All 2 branches covered.">			if (sendGridSender instanceof SendGridV2Sender) {</span>
+<span class="fc" id="L104">				return (String) readField(client, &quot;password&quot;, true);</span>
 			}
-<span class="fc" id="L104">			return (String) readField(client, &quot;apiKey&quot;, true);</span>
-<span class="nc" id="L105">		} catch (IllegalAccessException e) {</span>
-<span class="nc" id="L106">			throw new IllegalStateException(&quot;Failed to read 'apiKey' of SendGrid&quot;, e);</span>
+<span class="fc" id="L106">			return getApiKeyFromFieldOrHeaders(client);</span>
+<span class="nc" id="L107">		} catch (IllegalAccessException e) {</span>
+<span class="nc" id="L108">			throw new IllegalStateException(&quot;Failed to read 'apiKey' of SendGrid&quot;, e);</span>
+		}
+	}
+
+	@SuppressWarnings({ &quot;squid:S1166&quot;, &quot;unchecked&quot; })
+	private static String getApiKeyFromFieldOrHeaders(SendGrid client) throws IllegalAccessException {
+		try {
+<span class="nc" id="L115">			return (String) readField(client, &quot;apiKey&quot;, true);</span>
+<span class="fc" id="L116">		} catch (IllegalArgumentException e) {</span>
+<span class="fc" id="L117">			Map&lt;String, String&gt; requestHeaders = (Map&lt;String, String&gt;) readField(client, &quot;requestHeaders&quot;, true);</span>
+<span class="fc" id="L118">			String authHeader = requestHeaders.get(&quot;Authorization&quot;);</span>
+<span class="pc bpc" id="L119" title="1 of 2 branches missed.">			if (authHeader == null) {</span>
+<span class="nc" id="L120">				return null;</span>
+			}
+<span class="fc" id="L122">			String apiKey = authHeader.substring(7);</span>
+			// special case to be compatible with previous versions
+<span class="fc bfc" id="L124" title="All 2 branches covered.">			if (&quot;null&quot;.equals(apiKey)) {</span>
+<span class="fc" id="L125">				return null;</span>
+			}
+<span class="fc" id="L127">			return apiKey;</span>
 		}
 	}
 
 	private static SendGrid getClient(SendGridSender sendGridSender) {
 		try {
-<span class="fc bfc" id="L112" title="All 2 branches covered.">			if (sendGridSender instanceof SendGridV2Sender) {</span>
-<span class="fc" id="L113">				SendGridClient wrapper = (SendGridClient) readField(sendGridSender, DELEGATE_FIELD, true);</span>
-<span class="fc" id="L114">				return (SendGrid) readField(wrapper, DELEGATE_FIELD, true);</span>
-<span class="pc bpc" id="L115" title="1 of 2 branches missed.">			} else if (sendGridSender instanceof SendGridV4Sender) {</span>
-<span class="fc" id="L116">				fr.sii.ogham.email.sendgrid.v4.sender.impl.sendgrid.client.SendGridClient wrapper = (fr.sii.ogham.email.sendgrid.v4.sender.impl.sendgrid.client.SendGridClient) readField(</span>
+<span class="fc bfc" id="L133" title="All 2 branches covered.">			if (sendGridSender instanceof SendGridV2Sender) {</span>
+<span class="fc" id="L134">				SendGridClient wrapper = (SendGridClient) readField(sendGridSender, DELEGATE_FIELD, true);</span>
+<span class="fc" id="L135">				return (SendGrid) readField(wrapper, DELEGATE_FIELD, true);</span>
+<span class="pc bpc" id="L136" title="1 of 2 branches missed.">			} else if (sendGridSender instanceof SendGridV4Sender) {</span>
+<span class="fc" id="L137">				fr.sii.ogham.email.sendgrid.v4.sender.impl.sendgrid.client.SendGridClient wrapper = (fr.sii.ogham.email.sendgrid.v4.sender.impl.sendgrid.client.SendGridClient) readField(</span>
 						sendGridSender, DELEGATE_FIELD, true);
-<span class="fc" id="L118">				return (SendGrid) readField(wrapper, DELEGATE_FIELD, true);</span>
+<span class="fc" id="L139">				return (SendGrid) readField(wrapper, DELEGATE_FIELD, true);</span>
 			}
-<span class="nc" id="L120">		} catch (IllegalAccessException e) {</span>
-<span class="nc" id="L121">			throw new IllegalStateException(&quot;Failed to read 'delegate' of SendGridClient&quot;, e);</span>
-<span class="nc" id="L122">		}</span>
-<span class="nc" id="L123">		return null;</span>
+<span class="nc" id="L141">		} catch (IllegalAccessException e) {</span>
+<span class="nc" id="L142">			throw new IllegalStateException(&quot;Failed to read 'delegate' of SendGridClient&quot;, e);</span>
+<span class="nc" id="L143">		}</span>
+<span class="nc" id="L144">		return null;</span>
 	}
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>
