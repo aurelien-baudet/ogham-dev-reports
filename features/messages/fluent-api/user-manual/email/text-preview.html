@@ -29,7 +29,10 @@
 <div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
-<p>Sending an email with HTML content <strong>and</strong> text content might be really important, at least for smartphones. When a smartphone receives an email, it displays the sender, the subject and also a preview of the message, using the text alternative. If the message is only HTML, the preview might be unreadable.</p>
+<p>Sending an email with HTML content <strong>and</strong> text content might be really important, at least for
+smartphones. When a smartphone receives an email, it displays the sender, the subject and also a
+preview of the message, using the text alternative. If the message is only HTML, the preview might
+be unreadable.</p>
 </div>
 <div class="paragraph tab-container no-max-height">
 <p>Sample using HTML and text</p>
@@ -37,7 +40,7 @@
 <div class="paragraph tab">
 <p><span class="image"><img src="../../images//icons/java-logo.png" alt="java logo" width="16" height="30"></span> Java</p>
 </div>
-<div class="listingblock collapse-lines:1-10 irrelevant-lines:1-10,12-21,24-31 highlight-lines:40">
+<div class="listingblock collapse-lines:1-9 irrelevant-lines:1-9,11-20,23-30 highlight-lines:39-40">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">fr.sii.ogham.sample.standard.email</span>;
 
@@ -88,7 +91,40 @@
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>The content is using the type <code>MultiContent</code> with a text and HTML content</td>
+<td>Explicitly set the textual content (used as alternative body). The alternative body is used when
+the email client doesn&#8217;t support HTML or as a preview of the email.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Explicitly set the HTML content (used as main body)</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>The call order between <code>text()</code> and <code>html()</code> doesn&#8217;t matter.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>The underlying <code>Content</code> is a <code>MultiContent</code>.</p>
+</div>
+</td>
 </tr>
 </table>
 </div>
@@ -99,10 +135,9 @@
 <p>-</p>
 </div>
 <div class="paragraph">
-<p>Just switching to a <code>MultiContent</code> let you provide a main content and an alternative content.</p>
-</div>
-<div class="paragraph">
-<p>Obviously, you can use templates too. Even better, the following sample shows the shorthand version that avoids specifying twice the path to the templates (a single path without extension for both HTML and text template files).</p>
+<p>Obviously, you can use templates too. Even better, the following sample shows the shorthand version
+that avoids specifying twice the path to the templates (a single path without extension for both HTML
+and text template files).</p>
 </div>
 <div class="paragraph tab-container no-max-height">
 <p>Sample using HTML and text templates</p>
@@ -110,7 +145,7 @@
 <div class="paragraph tab">
 <p><span class="image"><img src="../../images//icons/java-logo.png" alt="java logo" width="16" height="30"></span> Java</p>
 </div>
-<div class="listingblock collapse-lines:1-10,38-50 irrelevant-lines:1-10,13-20 highlight-lines:32-33">
+<div class="listingblock collapse-lines:1-9,37-49 irrelevant-lines:1-9,12-19 highlight-lines:31-32">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">fr.sii.ogham.sample.standard.email</span>;
 
@@ -169,11 +204,28 @@
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>The content is using the type <code>MultiTemplateContent</code> with only a path to the template files (without extension)</td>
+<td>The body contains two parts (main body and alternative body) because there are two templates (one
+for HTML located at <code>/template/thymeleaf/simple.html</code> and one for text located at
+<code>/template/thymeleaf/simple.txt</code>). Only a single path is specified for both template files (without
+extension).</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
 <td>The object used for evaluation as usual when using templates (same object used for both HTML and text)</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>The underlying <code>Content</code> is a <code>MultiTemplateContent</code>.</p>
+</div>
+</td>
 </tr>
 </table>
 </div>
@@ -219,7 +271,8 @@
 <p>-</p>
 </div>
 <div class="paragraph">
-<p>Ogham will automatically determine file extensions to append according to the kind of message you are sending. For email, Ogham will search a HTML and a text file by default:</p>
+<p>Ogham will automatically determine file extensions to append according to the kind of message you
+are sending. For email, Ogham will search a HTML and a text file by default:</p>
 </div>
 <div class="ulist">
 <ul>
@@ -232,10 +285,15 @@
 </ul>
 </div>
 <div class="paragraph">
-<p>If you are using a <code>MultiTemplateContent</code> and you only provide one template (only <code>HTML</code> for example). Ogham will not fail by default (configurable). Therefore, you can start your code with only a HTML template and add the text template later when you need it. That way, your Java code doesn&#8217;t require any change.</p>
+<p>If you are using <code>body()</code> (or explicitly using <code>content(new MultiTemplateContent(&#8230;&#8203;))</code>) and you only
+provide one template (only <code>HTML</code> for example). Ogham will not fail by default (configurable).
+Therefore, you can start your code with only a HTML template and add the text template later when you
+need it. That way, your Java code doesn&#8217;t require any change.</p>
 </div>
 <div class="paragraph">
-<p>It is possible to mix templates in the same application. Even better, you can use a template engine that is better suited for HTML like Thymeleaf and FreeMarker that is better for textual version for the same email. Just write your templates with the engine you want.</p>
+<p>It is possible to mix templates in the same application. Even better, you can use a template engine
+that is better suited for HTML like Thymeleaf and FreeMarker that is better for textual version for
+the same email. Just write your templates with the engine you want.</p>
 </div>
 <div class="paragraph tab-container no-max-height">
 <p>Sample using HTML with ThymeLeaf and text with FreeMarker</p>
@@ -243,7 +301,7 @@
 <div class="paragraph tab">
 <p><span class="image"><img src="../../images//icons/java-logo.png" alt="java logo" width="16" height="30"></span> Java</p>
 </div>
-<div class="listingblock collapse-lines:1-10,38-50 irrelevant-lines:1-10,13-20 highlight-lines:32-33">
+<div class="listingblock collapse-lines:1-9,37-49 irrelevant-lines:1-9,12-19 highlight-lines:31-32">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">fr.sii.ogham.sample.standard.email</span>;
 
@@ -302,7 +360,10 @@
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>The content is using the type <code>MultiTemplateContent</code> with only a path to the template files (without extension)</td>
+<td>The body contains two parts (main body and alternative body) because there are two templates (one
+for HTML located at <code>/template/thymeleaf/simple.html</code> and one for text located at
+<code>/template/thymeleaf/simple.txt.ftl</code>). Only a single path is specified for both template files (without
+extension). The HTML template uses Thymeleaf while the text template uses FreeMarker.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
@@ -350,14 +411,15 @@
 <p>-</p>
 </div>
 <div class="paragraph">
-<p>You can notice that the Java code has not changed at all (only the path for the sample). The aim is to use the template engine that best suits your needs.</p>
+<p>You can notice that the Java code has not changed at all (only the path for the sample). The aim is
+to use the template engine that best suits your needs.</p>
 </div>
 </div>
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-02-26 11:21:45 UTC
+Last updated 2020-02-26 14:32:33 UTC
 </div>
 </div>
 </body>
