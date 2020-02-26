@@ -69,53 +69,49 @@ public class ExtensionMappingVariantResolver implements VariantResolver {
 	}
 
 	public ExtensionMappingVariantResolver register(Variant variant, String extension) {
-<span class="fc" id="L72">		List&lt;String&gt; extensions = mapping.get(variant);</span>
-<span class="fc bfc" id="L73" title="All 2 branches covered.">		if (extensions == null) {</span>
-<span class="fc" id="L74">			extensions = new ArrayList&lt;String&gt;();</span>
-<span class="fc" id="L75">			mapping.put(variant, extensions);</span>
-		}
-<span class="pc bpc" id="L77" title="1 of 2 branches missed.">		String normalized = extension.startsWith(&quot;.&quot;) ? extension : (&quot;.&quot; + extension);</span>
-<span class="fc" id="L78">		extensions.add(normalized);</span>
-<span class="fc" id="L79">		return this;</span>
+<span class="fc" id="L72">		List&lt;String&gt; extensions = mapping.computeIfAbsent(variant, (k) -&gt; new ArrayList&lt;&gt;());</span>
+<span class="pc bpc" id="L73" title="1 of 2 branches missed.">		String normalized = extension.startsWith(&quot;.&quot;) ? extension : (&quot;.&quot; + extension);</span>
+<span class="fc" id="L74">		extensions.add(normalized);</span>
+<span class="fc" id="L75">		return this;</span>
 	}
 
 	@Override
 	public boolean variantExists(TemplateContent template) {
-<span class="pc bpc" id="L84" title="1 of 2 branches missed.">		if (!(template instanceof HasVariant)) {</span>
-<span class="nc" id="L85">			return false;</span>
+<span class="pc bpc" id="L80" title="1 of 2 branches missed.">		if (!(template instanceof HasVariant)) {</span>
+<span class="nc" id="L81">			return false;</span>
 		}
 
-<span class="fc" id="L88">		List&lt;String&gt; extensions = mapping.get(((HasVariant) template).getVariant());</span>
-<span class="fc bfc" id="L89" title="All 2 branches covered.">		if (extensions == null) {</span>
-<span class="fc" id="L90">			return false;</span>
+<span class="fc" id="L84">		List&lt;String&gt; extensions = mapping.get(((HasVariant) template).getVariant());</span>
+<span class="fc bfc" id="L85" title="All 2 branches covered.">		if (extensions == null) {</span>
+<span class="fc" id="L86">			return false;</span>
 		}
 
-<span class="fc" id="L93">		ResourcePath templatePath = template.getPath();</span>
-<span class="fc bfc" id="L94" title="All 2 branches covered.">		for (String extension : extensions) {</span>
+<span class="fc" id="L89">		ResourcePath templatePath = template.getPath();</span>
+<span class="fc bfc" id="L90" title="All 2 branches covered.">		for (String extension : extensions) {</span>
 			try {
-<span class="fc" id="L96">				resourceResolver.getResource(resolveVariantPath(template.getPath().getOriginalPath(), extension));</span>
-<span class="fc" id="L97">				return true;</span>
-<span class="fc" id="L98">			} catch (ResourceResolutionException e) {</span>
-<span class="fc" id="L99">				LOG.trace(&quot;template {}.{} not found&quot;, templatePath, extension, e);</span>
+<span class="fc" id="L92">				resourceResolver.getResource(resolveVariantPath(template.getPath().getOriginalPath(), extension));</span>
+<span class="fc" id="L93">				return true;</span>
+<span class="fc" id="L94">			} catch (ResourceResolutionException e) {</span>
+<span class="fc" id="L95">				LOG.trace(&quot;template {}.{} not found&quot;, templatePath, extension, e);</span>
 			}
-<span class="fc" id="L101">		}</span>
-<span class="fc" id="L102">		return false;</span>
+<span class="fc" id="L97">		}</span>
+<span class="fc" id="L98">		return false;</span>
 	}
 
 	private ResourcePath resolveVariantPath(String originalPath, String extension) {
 		// if extension already explicitly set, try without adding the extension provided by variant
-<span class="fc" id="L107">		ResolvedPath path = useExplicitExtensionIfSameAsVariant(originalPath, extension);</span>
-<span class="fc bfc" id="L108" title="All 2 branches covered.">		if (path != null) {</span>
-<span class="fc" id="L109">			return path;</span>
+<span class="fc" id="L103">		ResolvedPath path = useExplicitExtensionIfSameAsVariant(originalPath, extension);</span>
+<span class="fc bfc" id="L104" title="All 2 branches covered.">		if (path != null) {</span>
+<span class="fc" id="L105">			return path;</span>
 		}
-<span class="fc" id="L111">		return resourceResolver.resolve(new UnresolvedPath(originalPath + extension));</span>
+<span class="fc" id="L107">		return resourceResolver.resolve(new UnresolvedPath(originalPath + extension));</span>
 	}
 	
 	private ResolvedPath useExplicitExtensionIfSameAsVariant(String originalPath, String extension) {
-<span class="fc bfc" id="L115" title="All 2 branches covered.">		if (originalPath.endsWith(extension)) {</span>
-<span class="fc" id="L116">			return resourceResolver.resolve(new UnresolvedPath(originalPath));</span>
+<span class="fc bfc" id="L111" title="All 2 branches covered.">		if (originalPath.endsWith(extension)) {</span>
+<span class="fc" id="L112">			return resourceResolver.resolve(new UnresolvedPath(originalPath));</span>
 		}
-<span class="fc" id="L118">		return null;</span>
+<span class="fc" id="L114">		return null;</span>
 	}
 
 
