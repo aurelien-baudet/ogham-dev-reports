@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>CloudhopperSMPPSender.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">reporting</a> &gt; <a href="../index.html" class="el_bundle">ogham-sms-cloudhopper</a> &gt; <a href="index.source.html" class="el_package">fr.sii.ogham.sms.sender.impl</a> &gt; <span class="el_source">CloudhopperSMPPSender.java</span></div><h1>CloudhopperSMPPSender.java</h1><pre class="source lang-java linenums">package fr.sii.ogham.sms.sender.impl;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.cloudhopper.smpp.SmppClient;
+import com.cloudhopper.smpp.SmppSession;
+import com.cloudhopper.smpp.SmppSessionConfiguration;
+import com.cloudhopper.smpp.SmppSessionHandler;
+import com.cloudhopper.smpp.pdu.SubmitSm;
+import com.cloudhopper.smpp.type.RecoverablePduException;
+import com.cloudhopper.smpp.type.SmppChannelException;
+import com.cloudhopper.smpp.type.SmppTimeoutException;
+import com.cloudhopper.smpp.type.UnrecoverablePduException;
+
+import fr.sii.ogham.core.clean.Cleanable;
+import fr.sii.ogham.core.exception.MessageException;
+import fr.sii.ogham.core.exception.retry.MaximumAttemptsReachedException;
+import fr.sii.ogham.core.exception.retry.RetryException;
+import fr.sii.ogham.core.exception.retry.RetryExecutionInterruptedException;
+import fr.sii.ogham.core.retry.NamedCallable;
+import fr.sii.ogham.core.retry.RetryExecutor;
+import fr.sii.ogham.core.sender.AbstractSpecializedSender;
+import fr.sii.ogham.sms.builder.cloudhopper.SmppClientSupplier;
+import fr.sii.ogham.sms.builder.cloudhopper.SmppSessionHandlerSupplier;
+import fr.sii.ogham.sms.message.Sms;
+import fr.sii.ogham.sms.sender.impl.cloudhopper.CloudhopperOptions;
+import fr.sii.ogham.sms.sender.impl.cloudhopper.preparator.MessagePreparator;
+
+/**
+ * Implementation based on
+ * &lt;a href=&quot;https://github.com/twitter/cloudhopper-smpp&quot;&gt;cloudhopper-smpp&lt;/a&gt;
+ * library.
+ * 
+ * @author Aurélien Baudet
+ */
+public class CloudhopperSMPPSender extends AbstractSpecializedSender&lt;Sms&gt; implements Cleanable {
+<span class="fc" id="L38">	private static final Logger LOG = LoggerFactory.getLogger(CloudhopperSMPPSender.class);</span>
+
+	/** Configuration to bind an SmppSession as an ESME to an SMSC. */
+	private final SmppSessionConfiguration smppSessionConfiguration;
+
+	/** Additional options. */
+	private final CloudhopperOptions options;
+
+	/**
+	 * Prepare message for sending it
+	 */
+	private final MessagePreparator messagePreparator;
+
+	/**
+	 * A supplier that provides an instance of a {@link SmppClient}
+	 */
+	private final SmppClientSupplier clientSupplier;
+
+	/**
+	 * A supplier that provides an instance of a {@link SmppSessionHandler}
+	 */
+	private final SmppSessionHandlerSupplier smppSessionHandlerSupplier;
+
+	/**
+	 * The current connected session if any
+	 */
+	private SmppSession currentSession;
+
+	/**
+	 * The current client if any
+	 */
+	private SmppClient currentClient;
+
+	/**
+	 * Initializes a CloudhopperSMPPSender with SMPP session configuration and
+	 * some options.
+	 * 
+	 * @param smppSessionConfiguration
+	 *            SMPP session configuration
+	 * @param options
+	 *            Dedicated CloudHopper options split message in several parts
+	 *            if needed
+	 * @param messagePreparator
+	 *            Prepares the message before sending it (encode message, split
+	 *            message if needed, convert raw phone numbers to addressed
+	 *            phone numbers, ...)
+	 * @param clientSupplier
+	 *            provides an instance of a {@link SmppClient}
+	 * @param smppSessionHandlerSupplier
+	 *            provides and instance of a {@link SmppSessionHandler}.
+	 *            Supplier may return null.
+	 */
+	public CloudhopperSMPPSender(SmppSessionConfiguration smppSessionConfiguration, CloudhopperOptions options, MessagePreparator messagePreparator, SmppClientSupplier clientSupplier,
+			SmppSessionHandlerSupplier smppSessionHandlerSupplier) {
+<span class="fc" id="L92">		super();</span>
+<span class="fc" id="L93">		this.smppSessionConfiguration = smppSessionConfiguration;</span>
+<span class="fc" id="L94">		this.options = options;</span>
+<span class="fc" id="L95">		this.messagePreparator = messagePreparator;</span>
+<span class="fc" id="L96">		this.clientSupplier = clientSupplier;</span>
+<span class="fc" id="L97">		this.smppSessionHandlerSupplier = smppSessionHandlerSupplier;</span>
+<span class="fc" id="L98">	}</span>
+
+	/**
+	 * Initializes a CloudhopperSMPPSender with SMPP session configuration and
+	 * some options. Uses the default supplier for {@link SmppSessionHandler}.
+	 * 
+	 * @param smppSessionConfiguration
+	 *            SMPP session configuration
+	 * @param options
+	 *            Dedicated CloudHopper options
+	 * @param messagePreparator
+	 *            Prepares the message before sending it (encode message, split
+	 *            message if needed, convert raw phone numbers to addressed
+	 *            phone numbers, ...)
+	 * @param clientSupplier
+	 *            provides an instance of a {@link SmppClient}
+	 */
+	public CloudhopperSMPPSender(SmppSessionConfiguration smppSessionConfiguration, CloudhopperOptions options, MessagePreparator messagePreparator, SmppClientSupplier clientSupplier) {
+<span class="nc" id="L116">		this(smppSessionConfiguration, options, messagePreparator, clientSupplier, () -&gt; null);</span>
+<span class="nc" id="L117">	}</span>
+
+	@Override
+	public void send(Sms message) throws MessageException {
+		try {
+<span class="fc" id="L122">			LOG.debug(&quot;Creating a new SMPP session...&quot;);</span>
+<span class="fc" id="L123">			SmppSession session = connectOrReuseSession();</span>
+<span class="fc" id="L124">			LOG.info(&quot;SMPP session bounded&quot;);</span>
+<span class="fc" id="L125">			send(message, session);</span>
+<span class="nc" id="L126">		} catch (RetryExecutionInterruptedException e) {</span>
+<span class="nc" id="L127">			Thread.currentThread().interrupt();</span>
+<span class="nc" id="L128">			throw new MessageException(&quot;Failed to initialize SMPP session (interrupted)&quot;, message, e);</span>
+<span class="fc" id="L129">		} catch (MaximumAttemptsReachedException e) {</span>
+<span class="fc" id="L130">			throw new MessageException(&quot;Failed to initialize SMPP session after maximum retries reached&quot;, message, e);</span>
+<span class="nc" id="L131">		} catch (RetryException e) {</span>
+<span class="nc" id="L132">			throw new MessageException(&quot;Failed to initialize SMPP session&quot;, message, e);</span>
+		} finally {
+<span class="fc" id="L134">			autoclean();</span>
+		}
+<span class="fc" id="L136">	}</span>
+
+	@Override
+	public void clean() {
+<span class="fc bfc" id="L140" title="All 2 branches covered.">		if (currentSession != null) {</span>
+<span class="fc" id="L141">			LOG.debug(&quot;Closing SMPP session&quot;);</span>
+<span class="fc" id="L142">			currentSession.unbind(options.getUnbindTimeout());</span>
+<span class="fc" id="L143">			currentSession.destroy();</span>
+<span class="fc" id="L144">			currentSession = null;</span>
+		}
+<span class="fc bfc" id="L146" title="All 2 branches covered.">		if (currentClient != null) {</span>
+<span class="fc" id="L147">			LOG.debug(&quot;Destroying SMPP client&quot;);</span>
+<span class="fc" id="L148">			currentClient.destroy();</span>
+<span class="fc" id="L149">			currentClient = null;</span>
+		}
+<span class="fc" id="L151">	}</span>
+	
+	private SmppSession connectOrReuseSession() throws RetryException {
+		// if no client or always use a new client =&gt; create a new instance
+<span class="pc bpc" id="L155" title="1 of 4 branches missed.">		if (currentClient == null || !options.isKeepSession()) {</span>
+<span class="fc" id="L156">			LOG.debug(&quot;Requesting a new SmppClient instance&quot;);</span>
+<span class="fc" id="L157">			currentClient = clientSupplier.get();</span>
+		}
+		// if no session or always use a new session =&gt; connect to force a new
+		// session
+<span class="pc bpc" id="L161" title="1 of 4 branches missed.">		if (currentSession == null || !options.isKeepSession()) {</span>
+<span class="fc" id="L162">			LOG.debug(&quot;Requesting a new SMPP session&quot;);</span>
+<span class="fc" id="L163">			currentSession = connect(currentClient);</span>
+		}
+<span class="fc" id="L165">		return currentSession;</span>
+	}
+	
+	private void autoclean() {
+		// do not close and destroy anything if session should stay open
+<span class="fc bfc" id="L170" title="All 2 branches covered.">		if (options.isKeepSession()) {</span>
+<span class="fc" id="L171">			LOG.debug(&quot;Keep current SMPP session open&quot;);</span>
+<span class="fc" id="L172">			return;</span>
+		}
+<span class="fc" id="L174">		clean();</span>
+<span class="fc" id="L175">	}</span>
+
+	private void send(Sms message, SmppSession session) throws MessageException {
+		try {
+<span class="fc bfc" id="L179" title="All 2 branches covered.">			for (SubmitSm msg : messagePreparator.prepareMessages(message)) {</span>
+<span class="fc" id="L180">				session.submit(msg, options.getResponseTimeout());</span>
+<span class="fc" id="L181">			}</span>
+<span class="fc" id="L182">		} catch (RecoverablePduException | UnrecoverablePduException | SmppTimeoutException | SmppChannelException e) {</span>
+<span class="fc" id="L183">			throw new MessageException(&quot;Failed to send SMPP message&quot;, message, e);</span>
+<span class="nc" id="L184">		} catch (InterruptedException e) {</span>
+<span class="nc" id="L185">			Thread.currentThread().interrupt();</span>
+<span class="nc" id="L186">			throw new MessageException(&quot;Failed to send SMPP message (interrupted)&quot;, message, e);</span>
+<span class="fc" id="L187">		}</span>
+<span class="fc" id="L188">	}</span>
+
+	private SmppSession connect(final SmppClient client) throws RetryException {
+<span class="fc" id="L191">		RetryExecutor retry = options.getConnectRetry();</span>
+<span class="fc" id="L192">		return retry.execute(new NamedCallable&lt;&gt;(&quot;Connection to SMPP server&quot;, () -&gt; client.bind(smppSessionConfiguration, smppSessionHandlerSupplier.get())));</span>
+
+	}
+
+	@Override
+	public String toString() {
+<span class="fc" id="L198">		return &quot;CloudhopperSMPPSender&quot;;</span>
+	}
+
+	/**
+	 * Get the configuration really applied for SMPP session
+	 * 
+	 * @return the SMPP session configuration
+	 */
+	public SmppSessionConfiguration getSmppSessionConfiguration() {
+<span class="fc" id="L207">		return smppSessionConfiguration;</span>
+	}
+
+	/**
+	 * Get the options really applied for Cloudhopper
+	 * 
+	 * @return the options
+	 */
+	public CloudhopperOptions getOptions() {
+<span class="nc" id="L216">		return options;</span>
+	}
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>
