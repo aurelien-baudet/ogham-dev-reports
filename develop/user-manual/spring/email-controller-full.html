@@ -57,7 +57,7 @@ The following sample shows a Spring Web that exposes one simple endpoint for sen
 <div class="paragraph tab">
 <p><span class="image"><img src="../../images//icons/java-logo.png" alt="java logo" width="16" height="30"></span> Java</p>
 </div>
-<div class="listingblock collapse-lines:1-18,48-60 irrelevant-lines:1-18 highlight-lines:33,34,40-43">
+<div class="listingblock collapse-lines:1-16,46-58 irrelevant-lines:1-16 highlight-lines:31,32,38-41">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">fr.sii.ogham.sample.springboot.email</span>;
 
@@ -66,14 +66,12 @@ The following sample shows a Spring Web that exposes one simple endpoint for sen
 <span class="keyword">import</span> <span class="include">org.springframework.boot.autoconfigure.SpringBootApplication</span>;
 <span class="keyword">import</span> <span class="include">org.springframework.context.annotation.PropertySource</span>;
 <span class="keyword">import</span> <span class="include">org.springframework.http.HttpStatus</span>;
-<span class="keyword">import</span> <span class="include">org.springframework.web.bind.annotation.RequestMapping</span>;
-<span class="keyword">import</span> <span class="include">org.springframework.web.bind.annotation.RequestMethod</span>;
+<span class="keyword">import</span> <span class="include">org.springframework.web.bind.annotation.PostMapping</span>;
 <span class="keyword">import</span> <span class="include">org.springframework.web.bind.annotation.RequestParam</span>;
 <span class="keyword">import</span> <span class="include">org.springframework.web.bind.annotation.ResponseStatus</span>;
 <span class="keyword">import</span> <span class="include">org.springframework.web.bind.annotation.RestController</span>;
 
 <span class="keyword">import</span> <span class="include">fr.sii.ogham.core.exception.MessagingException</span>;
-<span class="keyword">import</span> <span class="include">fr.sii.ogham.core.message.content.MultiTemplateContent</span>;
 <span class="keyword">import</span> <span class="include">fr.sii.ogham.core.service.MessagingService</span>;
 <span class="keyword">import</span> <span class="include">fr.sii.ogham.email.message.Email</span>;
 
@@ -94,14 +92,14 @@ The following sample shows a Spring Web that exposes one simple endpoint for sen
     <span class="annotation">@Autowired</span>
     MessagingService messagingService;                              <i class="conum" data-value="1"></i><b>(1)</b>
 
-    <span class="annotation">@RequestMapping</span>(value=<span class="string"><span class="delimiter">&quot;</span><span class="content">api/email/multitemplate/mixed</span><span class="delimiter">&quot;</span></span>, method=RequestMethod.POST)
+    <span class="annotation">@PostMapping</span>(value=<span class="string"><span class="delimiter">&quot;</span><span class="content">api/email/multitemplate/mixed</span><span class="delimiter">&quot;</span></span>)
     <span class="annotation">@ResponseStatus</span>(HttpStatus.CREATED)
     <span class="directive">public</span> <span class="type">void</span> sendEmail(<span class="annotation">@RequestParam</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">to</span><span class="delimiter">&quot;</span></span>) <span class="predefined-type">String</span> to, <span class="annotation">@RequestParam</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">name</span><span class="delimiter">&quot;</span></span>) <span class="predefined-type">String</span> name, <span class="annotation">@RequestParam</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">value</span><span class="delimiter">&quot;</span></span>) <span class="type">int</span> value) <span class="directive">throws</span> MessagingException {
       <span class="comment">// using fluent API</span>
-      messagingService.send(<span class="keyword">new</span> Email()                           <i class="conum" data-value="2"></i><b>(2)</b>
-                  .content(<span class="keyword">new</span> MultiTemplateContent(<span class="string"><span class="delimiter">&quot;</span><span class="content">mixed</span><span class="delimiter">&quot;</span></span>,            <i class="conum" data-value="3"></i><b>(3)</b>
-                                  <span class="keyword">new</span> SimpleBean(name, value))) <i class="conum" data-value="4"></i><b>(4)</b>
-                  .to(to));                           <i class="conum" data-value="5"></i><b>(5)</b>
+      messagingService.send(<span class="keyword">new</span> Email()                     <i class="conum" data-value="2"></i><b>(2)</b>
+                  .body().template(<span class="string"><span class="delimiter">&quot;</span><span class="content">mixed</span><span class="delimiter">&quot;</span></span>,               <i class="conum" data-value="3"></i><b>(3)</b>
+                            <span class="keyword">new</span> SimpleBean(name, value))  <i class="conum" data-value="4"></i><b>(4)</b>
+                  .to(to));                     <i class="conum" data-value="5"></i><b>(5)</b>
     }
   }
 
@@ -251,7 +249,7 @@ spring.freemarker.prefix=/email/    <i class="conum" data-value="5"></i><b>(5)</
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-02-24 07:42:57 UTC
+Last updated 2020-02-29 15:34:16 UTC
 </div>
 </div>
 </body>

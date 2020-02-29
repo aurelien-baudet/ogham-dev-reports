@@ -2,7 +2,10 @@
 
 import java.util.function.Predicate;
 
+import javax.mail.Message;
+import javax.mail.MessagingException;
 import javax.mail.Part;
+import javax.mail.internet.MimePart;
 
 import fr.sii.ogham.testing.assertion.util.EmailUtils;
 
@@ -14,11 +17,41 @@ import fr.sii.ogham.testing.assertion.util.EmailUtils;
  * 
  * @author Aurélien Baudet
  */
-<span class="fc" id="L17">public class DefaultAttachmentPredicate implements Predicate&lt;Part&gt; {</span>
+<span class="fc" id="L20">public class DefaultAttachmentPredicate implements Predicate&lt;Part&gt; {</span>
 
 	@Override
 	public boolean test(Part p) {
-<span class="pc bpc" id="L21" title="1 of 4 branches missed.">		return !EmailUtils.isTextualContent(p) &amp;&amp; !EmailUtils.isMultipart(p);</span>
+<span class="fc bfc" id="L24" title="All 2 branches covered.">		if (p instanceof Message) {</span>
+<span class="fc" id="L25">			return false;</span>
+		}
+<span class="pc bpc" id="L27" title="1 of 6 branches missed.">		return !EmailUtils.isMultipart(p) &amp;&amp; (isDownloadableAttachment(p) || isEmbeddableAttachment(p)); </span>
+	}
+
+	private boolean isDownloadableAttachment(Part p) {
+		try {
+<span class="fc bfc" id="L32" title="All 4 branches covered.">			return Part.ATTACHMENT.equalsIgnoreCase(p.getDisposition()) || p.getFileName() != null;</span>
+<span class="nc" id="L33">		} catch(MessagingException e) {</span>
+<span class="nc" id="L34">			throw new RuntimeException(e);</span>
+		}
+	}
+
+	private boolean isEmbeddableAttachment(Part p) {
+		try {
+<span class="pc bpc" id="L40" title="2 of 4 branches missed.">			return Part.INLINE.equalsIgnoreCase(p.getDisposition()) || hasContentID(p);</span>
+<span class="nc" id="L41">		} catch(MessagingException e) {</span>
+<span class="nc" id="L42">			throw new RuntimeException(e);</span>
+		}
+	}
+
+	private boolean hasContentID(Part p) {
+		try {
+<span class="pc bpc" id="L48" title="1 of 2 branches missed.">			if (p instanceof MimePart) {</span>
+<span class="pc bpc" id="L49" title="1 of 2 branches missed.">				return ((MimePart) p).getContentID() != null;</span>
+			}
+<span class="nc" id="L51">			return false;</span>
+<span class="nc" id="L52">		} catch(MessagingException e) {</span>
+<span class="nc" id="L53">			throw new RuntimeException(e);</span>
+		}
 	}
 
 }

@@ -2,7 +2,7 @@
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,24 +15,28 @@ import org.slf4j.LoggerFactory;
  * {@code &lt;name&gt;}n&lt;/li&gt;
  * &lt;/ul&gt;
  * 
- * NOTE: name is URL encoded
+ * &lt;p&gt;
+ * Name is URL encoded
  * 
+ * &lt;p&gt;
+ * If the generated id is greater than {@link Long#MAX_VALUE}, then it restarts
+ * from 0.
  * 
  * @author Aurélien Baudet
  *
  */
 public class SequentialIdGenerator implements IdGenerator {
-<span class="fc" id="L25">	private static final Logger LOG = LoggerFactory.getLogger(SequentialIdGenerator.class);</span>
-	
-	private final AtomicInteger idx;
+<span class="fc" id="L29">	private static final Logger LOG = LoggerFactory.getLogger(SequentialIdGenerator.class);</span>
+
+	private final AtomicLong idx;
 	private final boolean useNamePrefix;
 
 	/**
 	 * The sequence starts at 0 and doesn't use the name (only a number).
 	 */
 	public SequentialIdGenerator() {
-<span class="fc" id="L34">		this(false);</span>
-<span class="fc" id="L35">	}</span>
+<span class="fc" id="L38">		this(false);</span>
+<span class="fc" id="L39">	}</span>
 
 	/**
 	 * The sequence starts at 0 and use the name only if {@code useNamePrefix}
@@ -42,8 +46,8 @@ public class SequentialIdGenerator implements IdGenerator {
 	 *            use the name in the generated sequence
 	 */
 	public SequentialIdGenerator(boolean useNamePrefix) {
-<span class="fc" id="L45">		this(useNamePrefix, 0);</span>
-<span class="fc" id="L46">	}</span>
+<span class="fc" id="L49">		this(useNamePrefix, 0);</span>
+<span class="fc" id="L50">	}</span>
 
 	/**
 	 * The sequence starts at {@code initial} parameter value and use the name
@@ -55,25 +59,29 @@ public class SequentialIdGenerator implements IdGenerator {
 	 *            the sequence start value
 	 */
 	public SequentialIdGenerator(boolean useNamePrefix, int initial) {
-<span class="fc" id="L58">		super();</span>
-<span class="fc" id="L59">		this.idx = new AtomicInteger(initial);</span>
-<span class="fc" id="L60">		this.useNamePrefix = useNamePrefix;</span>
-<span class="fc" id="L61">	}</span>
+<span class="fc" id="L62">		super();</span>
+<span class="fc" id="L63">		this.idx = new AtomicLong(initial);</span>
+<span class="fc" id="L64">		this.useNamePrefix = useNamePrefix;</span>
+<span class="fc" id="L65">	}</span>
 
 	@Override
 	public String generate(String name) {
-<span class="fc" id="L65">		return namePrefix(name) + idx.getAndIncrement();</span>
+<span class="fc" id="L69">		long id = idx.getAndIncrement();</span>
+<span class="pc bpc" id="L70" title="1 of 2 branches missed.">		if (id &lt; 0) {</span>
+<span class="nc" id="L71">			id = id + Long.MIN_VALUE;</span>
+		}
+<span class="fc" id="L73">		return namePrefix(name) + id;</span>
 	}
 
 	private String namePrefix(String name) {
-<span class="pc bpc" id="L69" title="1 of 2 branches missed.">		if (!useNamePrefix) {</span>
-<span class="nc" id="L70">			return &quot;&quot;;</span>
+<span class="pc bpc" id="L77" title="1 of 2 branches missed.">		if (!useNamePrefix) {</span>
+<span class="nc" id="L78">			return &quot;&quot;;</span>
 		}
 		try {
-<span class="fc" id="L73">			return URLEncoder.encode(name, &quot;UTF-8&quot;);</span>
-<span class="nc" id="L74">		} catch (UnsupportedEncodingException e) {</span>
-<span class="nc" id="L75">			LOG.warn(&quot;Failed to use &quot;+name+&quot; as id prefix =&gt; no prefix used&quot;, e);</span>
-<span class="nc" id="L76">			return &quot;&quot;;</span>
+<span class="fc" id="L81">			return URLEncoder.encode(name, &quot;UTF-8&quot;);</span>
+<span class="nc" id="L82">		} catch (UnsupportedEncodingException e) {</span>
+<span class="nc" id="L83">			LOG.warn(&quot;Failed to use &quot; + name + &quot; as id prefix =&gt; no prefix used&quot;, e);</span>
+<span class="nc" id="L84">			return &quot;&quot;;</span>
 		}
 	}
 

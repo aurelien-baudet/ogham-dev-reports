@@ -168,7 +168,7 @@ public final class SendGridV4Sender extends AbstractSpecializedSender&lt;Email&g
 <span class="fc" id="L168">			sendGridAttachment.setContentId(toCid(attachment.getContentId()));</span>
 <span class="fc" id="L169">			sendGridAttachment.setDisposition(attachment.getDisposition());</span>
 <span class="fc" id="L170">			sendGridAttachment.setFilename(attachment.getResource().getName());</span>
-<span class="fc" id="L171">			sendGridAttachment.setType(mimetypeProvider.detect(new ByteArrayInputStream(bytes)).toString());</span>
+<span class="fc" id="L171">			sendGridAttachment.setType(getMimetype(attachment, bytes));</span>
 <span class="fc" id="L172">			sendGridMail.addAttachments(sendGridAttachment);</span>
 <span class="fc" id="L173">		} catch (IOException e) {</span>
 <span class="fc" id="L174">			throw new AttachmentReadException(&quot;Failed to attach email attachment named &quot; + attachment.getResource().getName(), attachment, e);</span>
@@ -177,15 +177,22 @@ public final class SendGridV4Sender extends AbstractSpecializedSender&lt;Email&g
 <span class="fc" id="L177">		}</span>
 <span class="fc" id="L178">	}</span>
 
-	private static String toCid(final String contentId) {
-<span class="fc bfc" id="L181" title="All 2 branches covered.">		if (contentId == null) {</span>
-<span class="fc" id="L182">			return null;</span>
+	private String getMimetype(Attachment attachment, byte[] bytes) throws MimeTypeDetectionException {
+<span class="fc bfc" id="L181" title="All 2 branches covered.">		if (attachment.getContentType() != null) {</span>
+<span class="fc" id="L182">			return attachment.getContentType();</span>
 		}
-<span class="fc" id="L184">		return CID.matcher(contentId).replaceAll(&quot;$1&quot;);</span>
+<span class="fc" id="L184">		return mimetypeProvider.detect(new ByteArrayInputStream(bytes)).toString();</span>
+	}
+
+	private static String toCid(final String contentId) {
+<span class="fc bfc" id="L188" title="All 2 branches covered.">		if (contentId == null) {</span>
+<span class="fc" id="L189">			return null;</span>
+		}
+<span class="fc" id="L191">		return CID.matcher(contentId).replaceAll(&quot;$1&quot;);</span>
 	}
 
 	public SendGridClient getDelegate() {
-<span class="fc" id="L188">		return delegate;</span>
+<span class="fc" id="L195">		return delegate;</span>
 	}
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

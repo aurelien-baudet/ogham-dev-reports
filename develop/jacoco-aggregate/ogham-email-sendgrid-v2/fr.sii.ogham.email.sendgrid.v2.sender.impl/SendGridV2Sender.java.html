@@ -135,17 +135,18 @@ public final class SendGridV2Sender extends AbstractSpecializedSender&lt;Email&g
 	private static void addAttachment(final SendGrid.Email ret, final Attachment attachment) throws AttachmentReadException {
 		try {
 <span class="fc" id="L137">			ret.addAttachment(attachment.getResource().getName(), attachment.getResource().getInputStream());</span>
-<span class="fc bfc" id="L138" title="All 2 branches covered.">			if (attachment.getContentId() != null) {</span>
-<span class="fc" id="L139">				String id = CID.matcher(attachment.getContentId()).replaceAll(&quot;$1&quot;);</span>
-<span class="fc" id="L140">				ret.addContentId(attachment.getResource().getName(), id);</span>
+			// TODO: how to set Content-Type per attachment with SendGrid v2 API ?
+<span class="fc bfc" id="L139" title="All 2 branches covered.">			if (attachment.getContentId() != null) {</span>
+<span class="fc" id="L140">				String id = CID.matcher(attachment.getContentId()).replaceAll(&quot;$1&quot;);</span>
+<span class="fc" id="L141">				ret.addContentId(attachment.getResource().getName(), id);</span>
 			}
-<span class="fc" id="L142">		} catch (IOException e) {</span>
-<span class="fc" id="L143">			throw new AttachmentReadException(&quot;Failed to attach email attachment named &quot; + attachment.getResource().getName(), attachment, e);</span>
-<span class="fc" id="L144">		}</span>
-<span class="fc" id="L145">	}</span>
+<span class="fc" id="L143">		} catch (IOException e) {</span>
+<span class="fc" id="L144">			throw new AttachmentReadException(&quot;Failed to attach email attachment named &quot; + attachment.getResource().getName(), attachment, e);</span>
+<span class="fc" id="L145">		}</span>
+<span class="fc" id="L146">	}</span>
 
 	public SendGridClient getDelegate() {
-<span class="nc" id="L148">		return delegate;</span>
+<span class="nc" id="L149">		return delegate;</span>
 	}
 
 }

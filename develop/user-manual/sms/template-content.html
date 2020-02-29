@@ -37,7 +37,7 @@
 <div class="paragraph tab">
 <p><span class="image"><img src="../../images//icons/java-logo.png" alt="java logo" width="16" height="30"></span> Java</p>
 </div>
-<div class="listingblock collapse-lines:1-10,36-48 irrelevant-lines:1-10,13-22 highlight-lines:30,31">
+<div class="listingblock collapse-lines:1-9,35-47 irrelevant-lines:1-9,12-21 highlight-lines:29,30">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">fr.sii.ogham.sample.standard.sms</span>;
 
@@ -45,7 +45,6 @@
 
 <span class="keyword">import</span> <span class="include">fr.sii.ogham.core.builder.MessagingBuilder</span>;
 <span class="keyword">import</span> <span class="include">fr.sii.ogham.core.exception.MessagingException</span>;
-<span class="keyword">import</span> <span class="include">fr.sii.ogham.core.message.content.TemplateContent</span>;
 <span class="keyword">import</span> <span class="include">fr.sii.ogham.core.service.MessagingService</span>;
 <span class="keyword">import</span> <span class="include">fr.sii.ogham.sms.message.Sms</span>;
 
@@ -61,15 +60,15 @@
     properties.setProperty(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.sms.from</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;phone number to display for the sender&gt;</span><span class="delimiter">&quot;</span></span>);
     <span class="comment">// Instantiate the messaging service using default behavior and</span>
     <span class="comment">// provided properties</span>
-    MessagingService service = MessagingBuilder.standard()                    <i class="conum" data-value="1"></i><b>(1)</b>
+    MessagingService service = MessagingBuilder.standard()                <i class="conum" data-value="1"></i><b>(1)</b>
         .environment()
-          .properties(properties)                             <i class="conum" data-value="2"></i><b>(2)</b>
+          .properties(properties)                         <i class="conum" data-value="2"></i><b>(2)</b>
           .and()
-        .build();                                     <i class="conum" data-value="3"></i><b>(3)</b>
+        .build();                                 <i class="conum" data-value="3"></i><b>(3)</b>
     <span class="comment">// send the sms using fluent API</span>
-    service.send(<span class="keyword">new</span> Sms()                                    <i class="conum" data-value="4"></i><b>(4)</b>
-            .content(<span class="keyword">new</span> TemplateContent(<span class="string"><span class="delimiter">&quot;</span><span class="content">classpath:/template/thymeleaf/simple.txt</span><span class="delimiter">&quot;</span></span>,  <i class="conum" data-value="5"></i><b>(5)</b>
-                          <span class="keyword">new</span> SimpleBean(<span class="string"><span class="delimiter">&quot;</span><span class="content">foo</span><span class="delimiter">&quot;</span></span>, <span class="integer">42</span>)))           <i class="conum" data-value="6"></i><b>(6)</b>
+    service.send(<span class="keyword">new</span> Sms()                                <i class="conum" data-value="4"></i><b>(4)</b>
+            .message().template(<span class="string"><span class="delimiter">&quot;</span><span class="content">classpath:/template/thymeleaf/simple.txt</span><span class="delimiter">&quot;</span></span>,   <i class="conum" data-value="5"></i><b>(5)</b>
+                          <span class="keyword">new</span> SimpleBean(<span class="string"><span class="delimiter">&quot;</span><span class="content">foo</span><span class="delimiter">&quot;</span></span>, <span class="integer">42</span>))        <i class="conum" data-value="6"></i><b>(6)</b>
             .to(<span class="string"><span class="delimiter">&quot;</span><span class="content">+33752962193</span><span class="delimiter">&quot;</span></span>));
   }
 
@@ -139,8 +138,9 @@
 <p>-</p>
 </div>
 <div class="paragraph">
-<p>Using a template is straightforward. Instead of providing a string content, you provide a <code>TemplateContent</code>.
-The <code>TemplateContent</code> requires two information:</p>
+<p>Using a template is straightforward. Instead of providing a string content (using <code>.message().string(&#8230;&#8203;)</code>),
+you call <code>.message().template(&#8230;&#8203;, &#8230;&#8203;)</code>.
+The <code>template</code> method requires two pieces of information:</p>
 </div>
 <div class="ulist">
 <ul>
@@ -153,17 +153,21 @@ The <code>TemplateContent</code> requires two information:</p>
 </ul>
 </div>
 <div class="paragraph">
-<p>The path to the template is a string with a <strong>lookup</strong> prefix. The lookup prefix is used to indicate where to search the template (from file system, from classpath or anywhere else). Here we explicitly ask to load the template from classpath (using prefix <code>classpath:</code>). If no lookup is defined, classpath is used by default. See <a href="#resource-resolution">Resource resolution section</a> for more information.</p>
+<p>The path to the template is a string with a <strong>lookup</strong> prefix. The lookup prefix is used to indicate
+where to search the template (from file system, from classpath or anywhere else). Here we explicitly
+ask to load the template from classpath (using prefix <code>classpath:</code>). If no lookup is defined,
+classpath is used by default. See <a href="#resource-resolution">Resource resolution section</a> for more information.</p>
 </div>
 <div class="paragraph">
-<p>The variables are any object you are using in your application. No need to convert your object to a particular format. Directly use what you want.</p>
+<p>The variables are any object you are using in your application. No need to convert your object to
+a particular format. Directly use what you want.</p>
 </div>
 </div>
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-02-24 07:42:57 UTC
+Last updated 2020-02-29 15:34:16 UTC
 </div>
 </div>
 </body>
