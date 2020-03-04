@@ -97,57 +97,70 @@ import fr.sii.ogham.spring.common.OghamTemplateProperties;
 		 * explicitly defined on the email, Ogham will use this value.
 		 */
 		private String defaultValue;
-		/**
-		 * Subject can be determined using the first line of text template if
-		 * prefixed by this value. Set to empty string to disable
-		 */
-<span class="fc" id="L104">		private String firstLinePrefix = &quot;Subject:&quot;;</span>
-<span class="fc" id="L105">		@NestedConfigurationProperty</span>
+<span class="fc" id="L100">		@NestedConfigurationProperty</span>
+		private ExtractFromTextProperties extractFromText = new ExtractFromTextProperties();
+<span class="fc" id="L102">		@NestedConfigurationProperty</span>
 		private ExtractHtmlTitleProperties extractHtmlTitle = new ExtractHtmlTitleProperties();
 
 		public String getDefaultValue() {
-<span class="nc" id="L109">			return defaultValue;</span>
+<span class="nc" id="L106">			return defaultValue;</span>
 		}
 
 		public void setDefaultValue(String defaultValue) {
-<span class="fc" id="L113">			this.defaultValue = defaultValue;</span>
-<span class="fc" id="L114">		}</span>
+<span class="fc" id="L110">			this.defaultValue = defaultValue;</span>
+<span class="fc" id="L111">		}</span>
 
-		public String getFirstLinePrefix() {
-<span class="nc" id="L117">			return firstLinePrefix;</span>
+		public ExtractFromTextProperties getExtractFromText() {
+<span class="fc" id="L114">			return extractFromText;</span>
 		}
 
-		public void setFirstLinePrefix(String firstLinePrefix) {
-<span class="fc" id="L121">			this.firstLinePrefix = firstLinePrefix;</span>
-<span class="fc" id="L122">		}</span>
+		public void setExtractFromText(ExtractFromTextProperties extractFromText) {
+<span class="fc" id="L118">			this.extractFromText = extractFromText;</span>
+<span class="fc" id="L119">		}</span>
 
 		public ExtractHtmlTitleProperties getExtractHtmlTitle() {
-<span class="fc" id="L125">			return extractHtmlTitle;</span>
+<span class="fc" id="L122">			return extractHtmlTitle;</span>
 		}
 
 		public void setExtractHtmlTitle(ExtractHtmlTitleProperties extractHtmlTitle) {
-<span class="fc" id="L129">			this.extractHtmlTitle = extractHtmlTitle;</span>
-<span class="fc" id="L130">		}</span>
+<span class="fc" id="L126">			this.extractHtmlTitle = extractHtmlTitle;</span>
+<span class="fc" id="L127">		}</span>
 
 	}
 
-<span class="fc" id="L134">	public static class ExtractHtmlTitleProperties {</span>
+<span class="fc" id="L131">	public static class ExtractHtmlTitleProperties {</span>
 		/**
 		 * Subject can be determined by extracting the text declared in
 		 * &amp;gt;title&amp;lt; node of the HTML. Enabled by default
 		 */
-<span class="fc" id="L139">		private boolean enable = true;</span>
+<span class="fc" id="L136">		private boolean enable = true;</span>
 
 		public boolean isEnable() {
-<span class="nc" id="L142">			return enable;</span>
+<span class="nc" id="L139">			return enable;</span>
 		}
 
 		public void setEnable(boolean enable) {
-<span class="fc" id="L146">			this.enable = enable;</span>
-<span class="fc" id="L147">		}</span>
+<span class="fc" id="L143">			this.enable = enable;</span>
+<span class="fc" id="L144">		}</span>
 	}
 
-<span class="fc" id="L150">	public static class FromProperties {</span>
+<span class="fc" id="L147">	public static class ExtractFromTextProperties {</span>
+		/**
+		 * Subject can be determined using the first line of text template if
+		 * prefixed by this value. Set to empty string to disable
+		 */
+<span class="fc" id="L152">		private String firstLinePrefix = &quot;Subject:&quot;;</span>
+
+		public String getFirstLinePrefix() {
+<span class="nc" id="L155">			return firstLinePrefix;</span>
+		}
+
+		public void setFirstLinePrefix(String firstLinePrefix) {
+<span class="fc" id="L159">			this.firstLinePrefix = firstLinePrefix;</span>
+<span class="fc" id="L160">		}</span>
+	}
+	
+<span class="fc" id="L163">	public static class FromProperties {</span>
 		/**
 		 * Configures how to handle missing email sender address: if no sender
 		 * address is explicitly defined on the email, Ogham will use this
@@ -156,15 +169,15 @@ import fr.sii.ogham.spring.common.OghamTemplateProperties;
 		private String defaultValue;
 
 		public String getDefaultValue() {
-<span class="nc" id="L159">			return defaultValue;</span>
+<span class="nc" id="L172">			return defaultValue;</span>
 		}
 
 		public void setDefaultValue(String defaultValue) {
-<span class="fc" id="L163">			this.defaultValue = defaultValue;</span>
-<span class="fc" id="L164">		}</span>
+<span class="fc" id="L176">			this.defaultValue = defaultValue;</span>
+<span class="fc" id="L177">		}</span>
 	}
 
-<span class="fc" id="L167">	public static class ToProperties {</span>
+<span class="fc" id="L180">	public static class ToProperties {</span>
 		/**
 		 * Configures how to handle missing email recipient address: if no &quot;to&quot;
 		 * address is explicitly defined on the email, Ogham will use this
@@ -173,15 +186,15 @@ import fr.sii.ogham.spring.common.OghamTemplateProperties;
 		private String defaultValue;
 
 		public String getDefaultValue() {
-<span class="nc" id="L176">			return defaultValue;</span>
+<span class="nc" id="L189">			return defaultValue;</span>
 		}
 
 		public void setDefaultValue(String defaultValue) {
-<span class="fc" id="L180">			this.defaultValue = defaultValue;</span>
-<span class="fc" id="L181">		}</span>
+<span class="fc" id="L193">			this.defaultValue = defaultValue;</span>
+<span class="fc" id="L194">		}</span>
 	}
 
-<span class="fc" id="L184">	public static class CcProperties {</span>
+<span class="fc" id="L197">	public static class CcProperties {</span>
 		/**
 		 * Configures how to handle missing email recipient address: if no &quot;cc&quot;
 		 * address is explicitly defined on the email, Ogham will use this
@@ -190,15 +203,15 @@ import fr.sii.ogham.spring.common.OghamTemplateProperties;
 		private String defaultValue;
 
 		public String getDefaultValue() {
-<span class="nc" id="L193">			return defaultValue;</span>
+<span class="nc" id="L206">			return defaultValue;</span>
 		}
 
 		public void setDefaultValue(String defaultValue) {
-<span class="fc" id="L197">			this.defaultValue = defaultValue;</span>
-<span class="fc" id="L198">		}</span>
+<span class="fc" id="L210">			this.defaultValue = defaultValue;</span>
+<span class="fc" id="L211">		}</span>
 	}
 
-<span class="fc" id="L201">	public static class BccProperties {</span>
+<span class="fc" id="L214">	public static class BccProperties {</span>
 		/**
 		 * Configures how to handle missing email recipient address: if no &quot;bcc&quot;
 		 * address is explicitly defined on the email, Ogham will use this
@@ -207,12 +220,12 @@ import fr.sii.ogham.spring.common.OghamTemplateProperties;
 		private String defaultValue;
 
 		public String getDefaultValue() {
-<span class="nc" id="L210">			return defaultValue;</span>
+<span class="nc" id="L223">			return defaultValue;</span>
 		}
 
 		public void setDefaultValue(String defaultValue) {
-<span class="fc" id="L214">			this.defaultValue = defaultValue;</span>
-<span class="fc" id="L215">		}</span>
+<span class="fc" id="L227">			this.defaultValue = defaultValue;</span>
+<span class="fc" id="L228">		}</span>
 	}
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

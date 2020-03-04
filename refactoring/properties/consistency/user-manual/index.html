@@ -477,7 +477,7 @@ Finally, the last line sends the email. The specified email is really basic. It 
 </tr>
 <tr>
 <td><i class="conum" data-value="4"></i><b>4</b></td>
-<td>Send an email with a subject and a simple body. The sender address is automatically set using <code>ogham.email.from</code> property</td>
+<td>Send an email with a subject and a simple body. The sender address is automatically set using <code>ogham.email.from.default-value</code> property</td>
 </tr>
 </table>
 </div>
@@ -573,7 +573,7 @@ Finally, the last line sends the email. The specified email is really basic. It 
 </tr>
 <tr>
 <td><i class="conum" data-value="4"></i><b>4</b></td>
-<td>Send an email with an explicit subject. The sender address is automatically set using <code>ogham.email.from</code> property</td>
+<td>Send an email with an explicit subject. The sender address is automatically set using <code>ogham.email.from.default-value</code> property</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="5"></i><b>5</b></td>
@@ -3320,7 +3320,7 @@ be unreadable.</p>
     <span class="predefined-type">Properties</span> properties = <span class="keyword">new</span> <span class="predefined-type">Properties</span>();
     properties.put(<span class="string"><span class="delimiter">&quot;</span><span class="content">mail.smtp.host</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;your server host&gt;</span><span class="delimiter">&quot;</span></span>);
     properties.put(<span class="string"><span class="delimiter">&quot;</span><span class="content">mail.smtp.port</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;your server port&gt;</span><span class="delimiter">&quot;</span></span>);
-    properties.put(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.email.from.default-valuem</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;email address to display for the sender user&gt;</span><span class="delimiter">&quot;</span></span>);
+    properties.put(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.email.from.default-value</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;email address to display for the sender user&gt;</span><span class="delimiter">&quot;</span></span>);
     <span class="comment">// Instantiate the messaging service using default behavior and</span>
     <span class="comment">// provided properties</span>
     MessagingService service = MessagingBuilder.standard()
@@ -3800,7 +3800,7 @@ disposition is automatically set to <code>ContentDisposition.INLINE</code>.</p>
 <div class="sect4">
 <h5 id="_globally_configure_default_sender"><a class="anchor" href="#_globally_configure_default_sender"></a>3.1.7.1. Globally configure default sender</h5>
 <div class="paragraph">
-<p>You can configure sender address for all sent email by setting the property <code>ogham.email.from</code>.
+<p>You can configure sender address for all sent email by setting the property <code>ogham.email.from.default-value</code>.
 The value can either be an email address (<code>user@domain.host</code>) or an address with personal
 information (<code>User Name &lt;<a href="mailto:user@domain.host">user@domain.host</a>&gt;</code>). This property is used for every implementation (through
 SMTP, through SendGrid, &#8230;&#8203;).</p>
@@ -3898,7 +3898,7 @@ address in the email constructor or using the setter, this value is used instead
 <div class="paragraph">
 <p>As for sender address, you can define globally a default subject for emails if none is explicitly
 provided (neither using <code>.subject(String)</code> method nor defining a subject directly in the template).
-The property is <code>ogham.email.subject</code>.</p>
+The property is <code>ogham.email.subject.default-value</code>.</p>
 </div>
 </div>
 <div class="sect4">
@@ -3909,13 +3909,13 @@ The property is <code>ogham.email.subject</code>.</p>
 <div class="ulist">
 <ul>
 <li>
-<p><code>ogham.email.to</code>: set one or several recipient addresses (<code>to</code> field)</p>
+<p><code>ogham.email.to.default-value</code>: set one or several recipient addresses (<code>to</code> field)</p>
 </li>
 <li>
-<p><code>ogham.email.cc</code>: set one or several recipient addresses (<code>cc</code> field)</p>
+<p><code>ogham.email.cc.default-value</code>: set one or several recipient addresses (<code>cc</code> field)</p>
 </li>
 <li>
-<p><code>ogham.email.bcc</code>: set one or several recipient addresses (<code>bcc</code> field)</p>
+<p><code>ogham.email.bcc.default-value</code>: set one or several recipient addresses (<code>bcc</code> field)</p>
 </li>
 </ul>
 </div>
@@ -4041,7 +4041,7 @@ will never be seen in received emails).</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="java">additional.setProperty(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.email.to</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">  foo@example.com  ,    John Doe &lt;bar@example.com&gt;,   abc@example.com</span><span class="delimiter">&quot;</span></span>);</code></pre>
+<pre class="CodeRay highlight"><code data-lang="java">additional.setProperty(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.email.to.default-value</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">  foo@example.com  ,    John Doe &lt;bar@example.com&gt;,   abc@example.com</span><span class="delimiter">&quot;</span></span>);</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -4330,7 +4330,7 @@ difference is the configuration of Ogham.</p>
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="python"><span class="comment"># ogham additional properties</span>
-ogham.email.sengrid.api-key=&lt;your sendgrid API key&gt;            <i class="conum" data-value="1"></i><b>(1)</b>
+ogham.email.sendgrid.api-key=&lt;your sendgrid API key&gt;           <i class="conum" data-value="1"></i><b>(1)</b>
 ogham.email.from.default-value=&lt;sender email address&gt;          <i class="conum" data-value="2"></i><b>(2)</b>
 ogham.email.template.path-prefix=/template/thymeleaf/email/    <i class="conum" data-value="3"></i><b>(3)</b></code></pre>
 </div>
@@ -4598,7 +4598,8 @@ ogham.email.template.path-prefix=/template/thymeleaf/email/         <i class="co
 </tr>
 <tr>
 <td><i class="conum" data-value="9"></i><b>9</b></td>
-<td>Send a SMS with a simple message. The sender phone number is automatically set using <code>ogham.sms.from</code> property</td>
+<td>Send a SMS with a simple message. The sender phone number is automatically set using
+<code>ogham.sms.from.default-value</code> property</td>
 </tr>
 </table>
 </div>
@@ -4609,7 +4610,8 @@ ogham.email.template.path-prefix=/template/thymeleaf/email/         <i class="co
 <p>-</p>
 </div>
 <div class="paragraph">
-<p>The construction of the SMS is done using a fluent API in order to chain calls and to have a more readable code.</p>
+<p>The construction of the SMS is done using a fluent API in order to chain calls and to have a more
+readable code.</p>
 </div>
 <div class="paragraph">
 <p>Properties are directly provided in the code. You can instead <a href="#properties-handling">use a configuration file</a>.</p>
@@ -4695,7 +4697,8 @@ ogham.email.template.path-prefix=/template/thymeleaf/email/         <i class="co
 </tr>
 <tr>
 <td><i class="conum" data-value="4"></i><b>4</b></td>
-<td>Send a SMS with message that comes from the evaluated template. The sender address is automatically set using <code>ogham.sms.from</code> property</td>
+<td>Send a SMS with message that comes from the evaluated template. The sender address is automatically
+set using <code>ogham.sms.from.default-value</code> property</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="5"></i><b>5</b></td>
@@ -5520,7 +5523,7 @@ By default, Ogham sends the SMS using 8-bit encoding.
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="python">mail.smtp.host=localhost
 mail.smtp.port=<span class="integer">25</span>
-ogham.email.from=foo<span class="decorator">@test.com</span></code></pre>
+ogham.email.from.default-value=foo<span class="decorator">@test.com</span></code></pre>
 </div>
 </div>
 <div class="paragraph tab">
@@ -5539,7 +5542,7 @@ ogham.email.from=foo<span class="decorator">@test.com</span></code></pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code>$ java -Dogham.email.from="bar@domain.com" fr.sii.ogham.sample.standard.PropertiesSample</code></pre>
+<pre class="CodeRay highlight"><code>$ java -Dogham.email.from.default-value="bar@domain.com" fr.sii.ogham.sample.standard.PropertiesSample</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -5566,7 +5569,7 @@ ogham.email.from=foo<span class="decorator">@test.com</span></code></pre>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>10</strong></p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ogham.email.from</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ogham.email.from.default-value</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>bar@domain.com</strong></p></td>
 </tr>
 </tbody>
@@ -5834,7 +5837,7 @@ The property <code>ogham.email.javamail.port</code> takes precedence over <code>
 <div class="ulist">
 <ul>
 <li>
-<p><code>ogham.email.template.path</code></p>
+<p><code>ogham.email.template.path-prefix</code></p>
 </li>
 <li>
 <p><code>ogham.email.thymeleaf.classpath.path-prefix</code></p>
@@ -5849,7 +5852,7 @@ The property <code>ogham.email.javamail.port</code> takes precedence over <code>
 <p><code>ogham.email.template.path-prefix</code></p>
 </li>
 <li>
-<p><code>ogham.sms.template.path</code></p>
+<p><code>ogham.sms.template.path-prefix</code></p>
 </li>
 <li>
 <p><code>ogham.sms.thymeleaf.classpath.path-prefix</code></p>
@@ -5901,7 +5904,7 @@ The last reason is that Ogham properties are more specific:</p>
 <div class="ulist">
 <ul>
 <li>
-<p><code>ogham.email.template.path</code></p>
+<p><code>ogham.email.template.path-prefix</code></p>
 </li>
 <li>
 <p><code>ogham.email.freemarker.classpath.path-prefix</code></p>
@@ -5916,7 +5919,7 @@ The last reason is that Ogham properties are more specific:</p>
 <p><code>ogham.email.template.path-prefix</code></p>
 </li>
 <li>
-<p><code>ogham.sms.template.path</code></p>
+<p><code>ogham.sms.template.path-prefix</code></p>
 </li>
 <li>
 <p><code>ogham.sms.freemarker.classpath.path-prefix</code></p>
@@ -6139,11 +6142,11 @@ The following sample shows a Spring Web that exposes one simple endpoint for sen
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="txt">Unresolved directive in user-manual//spring/email-controller-full.adoc - include::/home/circleci/project/sample-spring-usage/src/main/resources/email/mixed.txt.ftl[]</code></pre>
+<pre class="CodeRay highlight"><code data-lang="txt">${name} ${value}</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p><a href="https://github.com/groupe-sii/ogham/blob/master/sample-spring-usage/src/main/resources/email/mixed.txt.ftl?ts=2">Source code of the text template</a></p>
+<p><a href="https://github.com/groupe-sii/ogham/blob/master/sample-spring-usage/src/main/resources/email/mixed.txt.ftlh?ts=2">Source code of the text template</a></p>
 </div>
 <div class="paragraph tab">
 <p><span class="image"><img src="../images//icons/properties.png" alt="properties" width="37" height="30"></span> Spring properties</p>
@@ -8105,11 +8108,17 @@ Only the setup differs, the test is the same.
 <div class="sect2">
 <h3 id="advanced-smpp-configuration"><a class="anchor" href="#advanced-smpp-configuration"></a>5.2. Catalog of SMPP properties</h3>
 <div class="paragraph">
-<p><a href="http://en.wikipedia.org/wiki/Short_Message_Peer-to-Peer">SMPP</a> is the standard protocol to send SMS. SMPP is quite complex and has many configurable properties:</p>
+<p><a href="http://en.wikipedia.org/wiki/Short_Message_Peer-to-Peer">SMPP</a> is the standard protocol to send SMS.
+SMPP is quite complex and has many configurable properties.</p>
+</div>
+<div class="paragraph">
+<p>There are configuration properties that are dependent of the sender implementation (for example Cloudhopper)
+and configuration properties that are shared between all implementations.</p>
 </div>
 <div class="exampleblock prevent-overflow">
 <div class="content">
 <table class="tableblock frame-all grid-all spread">
+<caption class="title">Table 1. Common SMPP properties</caption>
 <colgroup>
 <col style="width: 25%;">
 <col style="width: 50%;">
@@ -8126,70 +8135,547 @@ Only the setup differs, the test is the same.
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ogham.sms.smpp.host</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The host of the SMPP or SMSC server</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ogham.sms.smpp.host</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The host of the SMPP or SMSC server (IP or address).</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ogham.sms.smpp.port</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ogham.sms.smpp.port</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The port of the SMPP or SMSC server</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ogham.sms.smpp.systemId</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The system identifier used for authenticating</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ogham.sms.smpp.system-id</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The system_id parameter is used to identify an ESME ( External Short Message Entity) or
+  an SMSC (Short Message Service Centre) at bind time. An ESME system_id identifies the ESME
+  or ESME agent to the SMSC. The SMSC system_id provides an identification of the SMSC to the ESME.</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ogham.sms.smpp.password</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The password for the system identifier</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ogham.sms.smpp.password</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The password parameter is used by the SMSC to authenticate the identity of the binding ESME.
+  The Service Provider may require ESME’s to provide a password when binding to the SMSC. This
+  password is normally issued by the SMSC system administrator. The password parameter may also
+  be used by the ESME to authenticate the identity of the binding SMSC (e.g. in the case of the
+  outbind operation).</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ogham.sms.smpp.window.size</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Message exchange may be synchronous, where each peer waits for a response for each PDU being sent, or asynchronous, where multiple requests can be issued 7 without waiting and acknowledged in a skew order by the other peer; the number of unacknowledged requests is called a window</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ogham.sms.smpp.bind-type</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The bind command type: can be <code>TRANSMITTER</code> (send only), <code>RECEIVER</code> (to send messages only, not
+  useful in Ogham context) or <code>TRANSCEIVER</code> (send and receive, may be used for acks).</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>TRANSMITTER</code></p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ogham.sms.smpp.window.monitor.interval</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Time to wait between two window checks</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ogham.sms.smpp.system-type</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The system_type parameter is used to categorize the type of ESME that is binding to the SMSC.
+  Examples include “VMS” (voice mail system) and “OTA” (over-the-air activation system). Specification
+  of the system_type is optional - some SMSC’s may not require ESME’s to provide this detail. In this
+  case, the ESME can set the system_type to NULL. The system_type (optional) may be used to categorize
+  the system, e.g., “EMAIL”, “WWW”, etc.</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">disabled</p></td>
+<td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ogham.sms.smpp.timeout.connection</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The timeout TCP/IP connection for SMPP session</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ogham.sms.smpp.user-data.use-short-message</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Enable/disable use of <code>short_message</code> field to carry text message (named User Data).</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">10 seconds</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code></p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ogham.sms.smpp.timeout.bind</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The maximum time to wait for the bind response</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ogham.sms.smpp.user-data.use-tlv-message-payload</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Enable/disable use of <code>message_payload</code> optional TLV (Tag-Value-Length) parameter to carry
+  text message (named User Data).</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">5 seconds</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ogham.sms.smpp.timeout.unbind</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The maximum time to wait for unbind response</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ogham.sms.smpp.split.enable</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Enable/disable message splitting.</p>
+<p class="tableblock">  SMPP message (<code>short_message</code>) size is limited to 140 octets. Therefore long text messages has to be split
+  into several segments and sent separately. The number of effective characters sent per segment
+  depends on the character encoding (see <a href="../user-manual.html#auto-split-sms">how message split is handled</a>).</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">5 seconds</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code></p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ogham.sms.smpp.timeout.request</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The maximum time to wait for an endpoint to respond to a request</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ogham.sms.smpp.encoder.gsm7bit-packed.priority</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Set priority for encoding text messages using GSM 7-bit encoding. GSM 7-bit encoding and
+  GSM 8-bit encoding use the same character tables. Only 7 bits are necessary to represents
+  characters. In GSM 8-bit encoding a leading 0 is added. However, GSM 7-bit encoding is packed.
+  Every character is "merged" with the next one in order to use more characters for the same number
+  of octets.</p>
+<p class="tableblock">  If priority value is 0 or negative, it disables GSM 7-bit encoding.</p>
+<p class="tableblock">  This encoding is disabled by default since it is not supported by many providers and leads to
+  unexpected characters received by the end-user.</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">disabled</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>0</code> (disabled)</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ogham.sms.smpp.timeout.window</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The maximum time to wait for window response</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ogham.sms.smpp.encoder.gsm8bit.priority</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Set priority for encoding text messages using GSM 8-bit encoding. GSM 7-bit encoding and
+  GSM 8-bit encoding use the same character tables. Only 7 bits are necessary to represents
+  characters. In GSM 8-bit encoding a leading 0 is added.</p>
+<p class="tableblock">  If priority value is 0 or negative, it disables GSM 8-bit encoding.</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">1 minute</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>99000</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ogham.sms.smpp.encoder.latin1.priority</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Set priority for encoding text messages using Latin-1 (ISO-8859-1)</p>
+<p class="tableblock">  If priority value is 0 or negative, it disables Latin-1 encoding.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>98000</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ogham.sms.smpp.encoder.ucs2.priority</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Set priority for encoding text messages using UCS-2. UCS-2 uses two octets per character.</p>
+<p class="tableblock">  If priority value is 0 or negative, it disables UCS-2 encoding.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>90000</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ogham.sms.smpp.encoder.auto-guess.enable</code></p></td>
+<td class="tableblock halign-left valign-top"><div><div class="paragraph">
+<p>Enable/disable automatic guessing of message encoding.</p>
+</div>
+<div class="paragraph">
+<p>If enabled, it automatically guess the best supported encoding in order to use the minimum octets:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>It encodes using GSM 7-bit default alphabet if the message contains only characters defined in the
+table. Message is packed so the message can have a maximum length of 160 characters.</p>
+</li>
+<li>
+<p>It encodes using GSM 8-bit data encoding if the message contains only characters that can be
+encoded on one octet and each character is present in the GSM 8-bit table.</p>
+</li>
+<li>
+<p>It encodes using Latin 1 (ISO-8859-1) data encoding if the message contains only characters
+that can be encoded on one octet.</p>
+</li>
+<li>
+<p>It encodes using UCS-2 encoding if the message contains special characters that can&#8217;t be encoded
+on one octet. Each character is encoded on two octets.</p>
+</li>
+</ul>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ogham.sms.smpp.encoder.default-charset</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Set which Charset should be used if nothing else is configured.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>GSM</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ogham.sms.smpp.data-coding-scheme.auto.enable</code></p></td>
+<td class="tableblock halign-left valign-top"><div><div class="paragraph">
+<p>Enable/disable automatic detection of Data Coding Scheme value according to
+the SMPP interface version.</p>
+</div>
+<div class="paragraph">
+<p>Data Coding Scheme is a one-octet field in Short Messages (SM) and Cell Broadcast Messages (CB)
+which carries a basic information how the recipient handset should process the received message.
+The information includes:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>the character set or message coding which determines the encoding of the message user data</p>
+</li>
+<li>
+<p>the message class which determines to which component of the Mobile
+Station (MS) or User Equipment (UE) should be the message delivered</p>
+</li>
+<li>
+<p>the request to automatically delete the message after reading</p>
+</li>
+<li>
+<p>the state of flags indicating presence of unread voicemail, fax,
+e-mail or other messages</p>
+</li>
+<li>
+<p>the indication that the message content is compressed</p>
+</li>
+<li>
+<p>the language of the cell broadcast message</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The field is described in 3GPP 23.040 and 3GPP 23.038 under the name TP-DCS (see
+<a href="https://en.wikipedia.org/wiki/Data_Coding_Scheme#SMS_Data_Coding_Scheme">SMS Data Coding Scheme</a>).</p>
+</div>
+<div class="paragraph">
+<p>SMPP 3.4 introduced a new list of <code>data_coding</code> values (see
+<a href="https://en.wikipedia.org/wiki/Short_Message_Peer-to-Peer"">Short Message Peer to Peer</a>).</p>
+</div>
+<div class="paragraph">
+<p>Implementation that determines the Data Coding value is selected based on SMPP interface version if
+enabled.</p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ogham.sms.smpp.data-coding-scheme.value</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Use the same Data Coding Scheme value for all messages. If set, disables automatic detection
+(see <code>ogham.sms.smpp.data-coding-scheme.auto.enable</code>)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="exampleblock prevent-overflow">
+<div class="content">
+<table class="tableblock frame-all grid-all spread">
+<caption class="title">Table 2. Cloudhopper specific SMPP properties</caption>
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 50%;">
+<col style="width: 12.5%;">
+<col style="width: 12.5%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ogham.sms.cloudhopper.host</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The host of the SMPP or SMSC server (IP or address).</p>
+<p class="tableblock">  This is an alias of <code>ogham.sms.smpp.host</code> but only used by Cloudhopper.
+  If both are defined, this property takes precedence.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ogham.sms.cloudhopper.port</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The port of the SMPP or SMSC server</p>
+<p class="tableblock">  This is an alias of <code>ogham.sms.smpp.port</code> but only used by Cloudhopper.
+  If both are defined, this property takes precedence.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ogham.sms.cloudhopper.system-id</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The system_id parameter is used to identify an ESME ( External Short Message Entity) or
+  an SMSC (Short Message Service Centre) at bind time. An ESME system_id identifies the ESME
+  or ESME agent to the SMSC. The SMSC system_id provides an identification of the SMSC to the ESME.</p>
+<p class="tableblock">  This is an alias of <code>ogham.sms.smpp.system-id</code> but only used by Cloudhopper.
+  If both are defined, this property takes precedence.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ogham.sms.cloudhopper.password</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The password parameter is used by the SMSC to authenticate the identity of the binding ESME.
+  The Service Provider may require ESME’s to provide a password when binding to the SMSC. This
+  password is normally issued by the SMSC system administrator. The password parameter may also
+  be used by the ESME to authenticate the identity of the binding SMSC (e.g. in the case of the
+  outbind operation).</p>
+<p class="tableblock">  This is an alias of <code>ogham.sms.smpp.password</code> but only used by Cloudhopper.
+  If both are defined, this property takes precedence.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ogham.sms.cloudhopper.bind-type</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The bind command type: can be <code>TRANSMITTER</code> (send only), <code>RECEIVER</code> (to send messages only, not
+  useful in Ogham context) or <code>TRANSCEIVER</code> (send and receive, may be used for acks).</p>
+<p class="tableblock">  This is an alias of <code>ogham.sms.smpp.bind-type</code> but only used by Cloudhopper.
+  If both are defined, this property takes precedence.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>TRANSMITTER</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ogham.sms.cloudhopper.system-type</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The system_type parameter is used to categorize the type of ESME that is binding to the SMSC.
+  Examples include “VMS” (voice mail system) and “OTA” (over-the-air activation system). Specification
+  of the system_type is optional - some SMSC’s may not require ESME’s to provide this detail. In this
+  case, the ESME can set the system_type to NULL. The system_type (optional) may be used to categorize
+  the system, e.g., “EMAIL”, “WWW”, etc.</p>
+<p class="tableblock">  This is an alias of <code>ogham.sms.smpp.system-type</code> but only used by Cloudhopper.
+  If both are defined, this property takes precedence.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ogham.sms.cloudhopper.interface-version</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The SMPP protocol version (either <code>3.3</code>, <code>3.4</code> or <code>5.0</code>)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>3.4</code> (supported by most providers)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ogham.sms.cloudhopper.user-data.use-short-message</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Enable/disable use of <code>short_message</code> field to carry text message (named User Data).</p>
+<p class="tableblock">  This is an alias of <code>ogham.sms.smpp.user-data.use-short-message</code> but only used by Cloudhopper.
+  If both are defined, this property takes precedence.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ogham.sms.cloudhopper.user-data.use-tlv-message-payload</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Enable/disable use of <code>message_payload</code> optional TLV (Tag-Value-Length) parameter to carry
+  text message (named User Data).</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ogham.sms.cloudhopper.split.enable</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Enable/disable message splitting.</p>
+<p class="tableblock">  SMPP message (<code>short_message</code>) size is limited to 140 octets. Therefore long text messages has to be split
+  into several segments and sent separately. The number of effective characters sent per segment
+  depends on the character encoding (see <a href="../user-manual.html#auto-split-sms">how message split is handled</a>).</p>
+<p class="tableblock">  This is an alias of <code>ogham.sms.smpp.split.enable</code> but only used by Cloudhopper.
+  If both are defined, this property takes precedence.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ogham.sms.cloudhopper.encoder.gsm7bit-packed.priority</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Set priority for encoding text messages using GSM 7-bit encoding. GSM 7-bit encoding and
+  GSM 8-bit encoding use the same character tables. Only 7 bits are necessary to represents
+  characters. In GSM 8-bit encoding a leading 0 is added. However, GSM 7-bit encoding is packed.
+  Every character is "merged" with the next one in order to use more characters for the same number
+  of octets.</p>
+<p class="tableblock">  If priority value is 0 or negative, it disables GSM 7-bit encoding.</p>
+<p class="tableblock">  This encoding is disabled by default since it is not supported by many providers and leads to
+  unexpected characters received by the end-user.</p>
+<p class="tableblock">  This is an alias of <code>ogham.sms.smpp.encoder.gsm7bit-packed.priority</code> but only used by Cloudhopper.
+  If both are defined, this property takes precedence.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>0</code> (disabled)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ogham.sms.cloudhopper.encoder.gsm8bit.priority</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Set priority for encoding text messages using GSM 8-bit encoding. GSM 7-bit encoding and
+  GSM 8-bit encoding use the same character tables. Only 7 bits are necessary to represents
+  characters. In GSM 8-bit encoding a leading 0 is added.</p>
+<p class="tableblock">  If priority value is 0 or negative, it disables GSM 8-bit encoding.</p>
+<p class="tableblock">  This is an alias of <code>ogham.sms.smpp.encoder.gsm8bit.priority</code> but only used by Cloudhopper.
+  If both are defined, this property takes precedence.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>99000</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ogham.sms.cloudhopper.encoder.latin1.priority</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Set priority for encoding text messages using Latin-1 (ISO-8859-1)</p>
+<p class="tableblock">  If priority value is 0 or negative, it disables Latin-1 encoding.</p>
+<p class="tableblock">  This is an alias of <code>ogham.sms.smpp.encoder.latin1.priority</code> but only used by Cloudhopper.
+  If both are defined, this property takes precedence.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>98000</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ogham.sms.cloudhopper.encoder.ucs2.priority</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Set priority for encoding text messages using UCS-2. UCS-2 uses two octets per character.</p>
+<p class="tableblock">  If priority value is 0 or negative, it disables UCS-2 encoding.</p>
+<p class="tableblock">  This is an alias of <code>ogham.sms.smpp.encoder.ucs2.priority</code> but only used by Cloudhopper.
+  If both are defined, this property takes precedence.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>90000</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ogham.sms.cloudhopper.encoder.auto-guess.enable</code></p></td>
+<td class="tableblock halign-left valign-top"><div><div class="paragraph">
+<p>Enable/disable automatic guessing of message encoding.</p>
+</div>
+<div class="paragraph">
+<p>If enabled, it automatically guess the best supported encoding in order to use the minimum octets:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>It encodes using GSM 7-bit default alphabet if the message contains only characters defined in the
+table. Message is packed so the message can have a maximum length of 160 characters.</p>
+</li>
+<li>
+<p>It encodes using GSM 8-bit data encoding if the message contains only characters that can be
+encoded on one octet and each character is present in the GSM 8-bit table.</p>
+</li>
+<li>
+<p>It encodes using Latin 1 (ISO-8859-1) data encoding if the message contains only characters
+that can be encoded on one octet.</p>
+</li>
+<li>
+<p>It encodes using UCS-2 encoding if the message contains special characters that can&#8217;t be encoded
+on one octet. Each character is encoded on two octets.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>This is an alias of <code>ogham.sms.smpp.encoder.auto-guess.enable</code> but only used by Cloudhopper.
+If both are defined, this property takes precedence.</p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ogham.sms.cloudhopper.encoder.default-charset</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Set which Charset should be used if nothing else is configured.</p>
+<p class="tableblock">  This is an alias of <code>ogham.sms.smpp.encoder.default-charset</code> but only used by Cloudhopper.
+  If both are defined, this property takes precedence.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>GSM</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ogham.sms.cloudhopper.data-coding-scheme.auto.enable</code></p></td>
+<td class="tableblock halign-left valign-top"><div><div class="paragraph">
+<p>Enable/disable automatic detection of Data Coding Scheme value according to
+the SMPP interface version.</p>
+</div>
+<div class="paragraph">
+<p>Data Coding Scheme is a one-octet field in Short Messages (SM) and Cell Broadcast Messages (CB)
+which carries a basic information how the recipient handset should process the received message.
+The information includes:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>the character set or message coding which determines the encoding of the message user data</p>
+</li>
+<li>
+<p>the message class which determines to which component of the Mobile
+Station (MS) or User Equipment (UE) should be the message delivered</p>
+</li>
+<li>
+<p>the request to automatically delete the message after reading</p>
+</li>
+<li>
+<p>the state of flags indicating presence of unread voicemail, fax,
+e-mail or other messages</p>
+</li>
+<li>
+<p>the indication that the message content is compressed</p>
+</li>
+<li>
+<p>the language of the cell broadcast message</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The field is described in 3GPP 23.040 and 3GPP 23.038 under the name TP-DCS (see
+<a href="https://en.wikipedia.org/wiki/Data_Coding_Scheme#SMS_Data_Coding_Scheme">SMS Data Coding Scheme</a>).</p>
+</div>
+<div class="paragraph">
+<p>SMPP 3.4 introduced a new list of <code>data_coding</code> values (see
+<a href="https://en.wikipedia.org/wiki/Short_Message_Peer-to-Peer"">Short Message Peer to Peer</a>).</p>
+</div>
+<div class="paragraph">
+<p>Implementation that determines the Data Coding value is selected based on SMPP interface version if
+enabled.</p>
+</div>
+<div class="paragraph">
+<p>This is an alias of <code>ogham.sms.smpp.data-coding-scheme.auto.enable</code> but only used by Cloudhopper.
+If both are defined, this property takes precedence.</p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ogham.sms.cloudhopper.data-coding-scheme.value</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Use the same Data Coding Scheme value for all messages. If set, disables automatic detection
+  (see <code>ogham.sms.smpp.data-coding-scheme.auto.enable</code>).</p>
+<p class="tableblock">  This is an alias of <code>ogham.sms.smpp.data-coding-scheme.value</code> but only used by Cloudhopper.
+  If both are defined, this property takes precedence.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ogham.sms.cloudhopper.session.name</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A name for the session (used to name threads).</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ogham.sms.cloudhopper.session.bind-timeout</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Set the maximum amount of time (in milliseconds) to wait for the success of a bind attempt to the SMSC.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>5000</code> (5 seconds)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ogham.sms.cloudhopper.session.connect-timeout</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Set the maximum amount of time (in milliseconds) to wait for a establishing the connection.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>10000</code> (10 seconds)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ogham.sms.cloudhopper.session.request-expiry-timeout</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Set the amount of time (milliseconds) to wait for an endpoint to respond to a request before
+it expires.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>-1</code> (disabled)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ogham.sms.cloudhopper.session.window-monitor-interval</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Sets the amount of time (milliseconds) between executions of monitoring the window for requests
+  that expire. It&#8217;s recommended that this generally either matches or is half the value of
+  <code>ogham.sms.cloudhopper.session.request-expiry-timeout</code>. Therefore, at worst a request would could
+  take up 1.5X the <code>ogham.sms.cloudhopper.session.request-expiry-timeout</code> to clear out.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>-1</code> (disabled)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ogham.sms.cloudhopper.session.window-size</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Message exchange may be synchronous, where each peer waits for a response for each PDU being sent,
+  or asynchronous, where multiple requests can be issued 7 without waiting and acknowledged in a
+  skew order by the other peer; the number of unacknowledged requests is called a window</p>
+<p class="tableblock">  Sets the maximum number of requests permitted to be outstanding (unacknowledged) at a given time.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>1</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ogham.sms.cloudhopper.session.window-wait-timeout</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Set the amount of time (milliseconds) to wait until a slot opens up in the send window.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>60000</code> (1 minute)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ogham.sms.cloudhopper.session.write-timeout</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Set the maximum amount of time (in milliseconds) to wait for bytes to be written when
+  creating a new SMPP session</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>0</code> (no timeout, for backwards compatibility)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ogham.sms.cloudhopper.session.response-timeout</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Set the maximum amount of time (in milliseconds) to wait until a valid response is received when
+  a "submit" request is synchronously sends to the remote endpoint. The timeout value includes both
+  waiting for a "window" slot, the time it takes to transmit the actual bytes on the socket, and for
+  the remote endpoint to send a response back.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>5000</code> (5 seconds)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ogham.sms.cloudhopper.session.unbind-timeout</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Set the maximum amount of time (in milliseconds) to wait until the session is unbounded, waiting
+  up to a specified period of milliseconds for an unbind response from the remote endpoint. Regardless
+  of whether a proper unbind response was received, the socket/channel is closed.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>5000</code> (5 seconds)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ogham.sms.cloudhopper.session.connect-retry.max-attempts</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">If the connection can&#8217;t be established then Ogham can retry several times until it reaches a
+  maximum number of attempts.</p>
+<p class="tableblock">  Set this value to <code>0</code> to disable retry.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>5</code> attempts</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ogham.sms.cloudhopper.session.connect-retry.delay-between-attempts</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Time to wait (in milliseconds) before retrying reconnection. The time to wait is a fixed
+  value.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>500</code></p></td>
 </tr>
 </tbody>
 </table>
@@ -8303,7 +8789,7 @@ Only the setup differs, the test is the same.
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-03-02 11:37:38 UTC
+Last updated 2020-03-04 22:56:04 UTC
 </div>
 </div>
 </body>

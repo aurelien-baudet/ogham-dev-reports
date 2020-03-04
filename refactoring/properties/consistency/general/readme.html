@@ -436,7 +436,7 @@ Finally, the last line sends the email. The specified email is really basic. It 
 </tr>
 <tr>
 <td><i class="conum" data-value="4"></i><b>4</b></td>
-<td>Send an email with a subject and a simple body. The sender address is automatically set using <code>ogham.email.from</code> property</td>
+<td>Send an email with a subject and a simple body. The sender address is automatically set using <code>ogham.email.from.default-value</code> property</td>
 </tr>
 </table>
 </div>
@@ -532,7 +532,7 @@ Finally, the last line sends the email. The specified email is really basic. It 
 </tr>
 <tr>
 <td><i class="conum" data-value="4"></i><b>4</b></td>
-<td>Send an email with an explicit subject. The sender address is automatically set using <code>ogham.email.from</code> property</td>
+<td>Send an email with an explicit subject. The sender address is automatically set using <code>ogham.email.from.default-value</code> property</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="5"></i><b>5</b></td>
@@ -3279,7 +3279,7 @@ be unreadable.</p>
     <span class="predefined-type">Properties</span> properties = <span class="keyword">new</span> <span class="predefined-type">Properties</span>();
     properties.put(<span class="string"><span class="delimiter">&quot;</span><span class="content">mail.smtp.host</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;your server host&gt;</span><span class="delimiter">&quot;</span></span>);
     properties.put(<span class="string"><span class="delimiter">&quot;</span><span class="content">mail.smtp.port</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;your server port&gt;</span><span class="delimiter">&quot;</span></span>);
-    properties.put(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.email.from.default-valuem</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;email address to display for the sender user&gt;</span><span class="delimiter">&quot;</span></span>);
+    properties.put(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.email.from.default-value</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;email address to display for the sender user&gt;</span><span class="delimiter">&quot;</span></span>);
     <span class="comment">// Instantiate the messaging service using default behavior and</span>
     <span class="comment">// provided properties</span>
     MessagingService service = MessagingBuilder.standard()
@@ -3759,7 +3759,7 @@ disposition is automatically set to <code>ContentDisposition.INLINE</code>.</p>
 <div class="sect4">
 <h5 id="_globally_configure_default_sender"><a class="anchor" href="#_globally_configure_default_sender"></a>Globally configure default sender</h5>
 <div class="paragraph">
-<p>You can configure sender address for all sent email by setting the property <code>ogham.email.from</code>.
+<p>You can configure sender address for all sent email by setting the property <code>ogham.email.from.default-value</code>.
 The value can either be an email address (<code>user@domain.host</code>) or an address with personal
 information (<code>User Name &lt;<a href="mailto:user@domain.host">user@domain.host</a>&gt;</code>). This property is used for every implementation (through
 SMTP, through SendGrid, &#8230;&#8203;).</p>
@@ -3857,7 +3857,7 @@ address in the email constructor or using the setter, this value is used instead
 <div class="paragraph">
 <p>As for sender address, you can define globally a default subject for emails if none is explicitly
 provided (neither using <code>.subject(String)</code> method nor defining a subject directly in the template).
-The property is <code>ogham.email.subject</code>.</p>
+The property is <code>ogham.email.subject.default-value</code>.</p>
 </div>
 </div>
 <div class="sect4">
@@ -3868,13 +3868,13 @@ The property is <code>ogham.email.subject</code>.</p>
 <div class="ulist">
 <ul>
 <li>
-<p><code>ogham.email.to</code>: set one or several recipient addresses (<code>to</code> field)</p>
+<p><code>ogham.email.to.default-value</code>: set one or several recipient addresses (<code>to</code> field)</p>
 </li>
 <li>
-<p><code>ogham.email.cc</code>: set one or several recipient addresses (<code>cc</code> field)</p>
+<p><code>ogham.email.cc.default-value</code>: set one or several recipient addresses (<code>cc</code> field)</p>
 </li>
 <li>
-<p><code>ogham.email.bcc</code>: set one or several recipient addresses (<code>bcc</code> field)</p>
+<p><code>ogham.email.bcc.default-value</code>: set one or several recipient addresses (<code>bcc</code> field)</p>
 </li>
 </ul>
 </div>
@@ -4000,7 +4000,7 @@ will never be seen in received emails).</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="java">additional.setProperty(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.email.to</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">  foo@example.com  ,    John Doe &lt;bar@example.com&gt;,   abc@example.com</span><span class="delimiter">&quot;</span></span>);</code></pre>
+<pre class="CodeRay highlight"><code data-lang="java">additional.setProperty(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.email.to.default-value</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">  foo@example.com  ,    John Doe &lt;bar@example.com&gt;,   abc@example.com</span><span class="delimiter">&quot;</span></span>);</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -4289,7 +4289,7 @@ difference is the configuration of Ogham.</p>
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="python"><span class="comment"># ogham additional properties</span>
-ogham.email.sengrid.api-key=&lt;your sendgrid API key&gt;            <i class="conum" data-value="1"></i><b>(1)</b>
+ogham.email.sendgrid.api-key=&lt;your sendgrid API key&gt;           <i class="conum" data-value="1"></i><b>(1)</b>
 ogham.email.from.default-value=&lt;sender email address&gt;          <i class="conum" data-value="2"></i><b>(2)</b>
 ogham.email.template.path-prefix=/template/thymeleaf/email/    <i class="conum" data-value="3"></i><b>(3)</b></code></pre>
 </div>
@@ -4557,7 +4557,8 @@ ogham.email.template.path-prefix=/template/thymeleaf/email/         <i class="co
 </tr>
 <tr>
 <td><i class="conum" data-value="9"></i><b>9</b></td>
-<td>Send a SMS with a simple message. The sender phone number is automatically set using <code>ogham.sms.from</code> property</td>
+<td>Send a SMS with a simple message. The sender phone number is automatically set using
+<code>ogham.sms.from.default-value</code> property</td>
 </tr>
 </table>
 </div>
@@ -4568,7 +4569,8 @@ ogham.email.template.path-prefix=/template/thymeleaf/email/         <i class="co
 <p>-</p>
 </div>
 <div class="paragraph">
-<p>The construction of the SMS is done using a fluent API in order to chain calls and to have a more readable code.</p>
+<p>The construction of the SMS is done using a fluent API in order to chain calls and to have a more
+readable code.</p>
 </div>
 <div class="paragraph">
 <p>Properties are directly provided in the code. You can instead <a href="#properties-handling">use a configuration file</a>.</p>
@@ -4654,7 +4656,8 @@ ogham.email.template.path-prefix=/template/thymeleaf/email/         <i class="co
 </tr>
 <tr>
 <td><i class="conum" data-value="4"></i><b>4</b></td>
-<td>Send a SMS with message that comes from the evaluated template. The sender address is automatically set using <code>ogham.sms.from</code> property</td>
+<td>Send a SMS with message that comes from the evaluated template. The sender address is automatically
+set using <code>ogham.sms.from.default-value</code> property</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="5"></i><b>5</b></td>
@@ -5479,7 +5482,7 @@ By default, Ogham sends the SMS using 8-bit encoding.
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="python">mail.smtp.host=localhost
 mail.smtp.port=<span class="integer">25</span>
-ogham.email.from=foo<span class="decorator">@test.com</span></code></pre>
+ogham.email.from.default-value=foo<span class="decorator">@test.com</span></code></pre>
 </div>
 </div>
 <div class="paragraph tab">
@@ -5498,7 +5501,7 @@ ogham.email.from=foo<span class="decorator">@test.com</span></code></pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code>$ java -Dogham.email.from="bar@domain.com" fr.sii.ogham.sample.standard.PropertiesSample</code></pre>
+<pre class="CodeRay highlight"><code>$ java -Dogham.email.from.default-value="bar@domain.com" fr.sii.ogham.sample.standard.PropertiesSample</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -5525,7 +5528,7 @@ ogham.email.from=foo<span class="decorator">@test.com</span></code></pre>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>10</strong></p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ogham.email.from</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ogham.email.from.default-value</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>bar@domain.com</strong></p></td>
 </tr>
 </tbody>
@@ -5793,7 +5796,7 @@ The property <code>ogham.email.javamail.port</code> takes precedence over <code>
 <div class="ulist">
 <ul>
 <li>
-<p><code>ogham.email.template.path</code></p>
+<p><code>ogham.email.template.path-prefix</code></p>
 </li>
 <li>
 <p><code>ogham.email.thymeleaf.classpath.path-prefix</code></p>
@@ -5808,7 +5811,7 @@ The property <code>ogham.email.javamail.port</code> takes precedence over <code>
 <p><code>ogham.email.template.path-prefix</code></p>
 </li>
 <li>
-<p><code>ogham.sms.template.path</code></p>
+<p><code>ogham.sms.template.path-prefix</code></p>
 </li>
 <li>
 <p><code>ogham.sms.thymeleaf.classpath.path-prefix</code></p>
@@ -5860,7 +5863,7 @@ The last reason is that Ogham properties are more specific:</p>
 <div class="ulist">
 <ul>
 <li>
-<p><code>ogham.email.template.path</code></p>
+<p><code>ogham.email.template.path-prefix</code></p>
 </li>
 <li>
 <p><code>ogham.email.freemarker.classpath.path-prefix</code></p>
@@ -5875,7 +5878,7 @@ The last reason is that Ogham properties are more specific:</p>
 <p><code>ogham.email.template.path-prefix</code></p>
 </li>
 <li>
-<p><code>ogham.sms.template.path</code></p>
+<p><code>ogham.sms.template.path-prefix</code></p>
 </li>
 <li>
 <p><code>ogham.sms.freemarker.classpath.path-prefix</code></p>
@@ -6098,11 +6101,11 @@ The following sample shows a Spring Web that exposes one simple endpoint for sen
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="txt">Unresolved directive in user-manual//spring/email-controller-full.adoc - include::/home/circleci/project/sample-spring-usage/src/main/resources/email/mixed.txt.ftl[]</code></pre>
+<pre class="CodeRay highlight"><code data-lang="txt">${name} ${value}</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p><a href="https://github.com/groupe-sii/ogham/blob/master/sample-spring-usage/src/main/resources/email/mixed.txt.ftl?ts=2">Source code of the text template</a></p>
+<p><a href="https://github.com/groupe-sii/ogham/blob/master/sample-spring-usage/src/main/resources/email/mixed.txt.ftlh?ts=2">Source code of the text template</a></p>
 </div>
 <div class="paragraph tab">
 <p><span class="image"><img src="../images//icons/properties.png" alt="properties" width="37" height="30"></span> Spring properties</p>
@@ -8081,7 +8084,7 @@ Only the setup differs, the test is the same.
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-03-02 11:37:38 UTC
+Last updated 2020-03-04 22:56:04 UTC
 </div>
 </div>
 </body>
