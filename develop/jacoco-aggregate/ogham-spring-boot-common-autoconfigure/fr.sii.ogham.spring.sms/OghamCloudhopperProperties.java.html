@@ -3,8 +3,10 @@
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.NestedConfigurationProperty;
 
+import com.cloudhopper.smpp.SmppBindType;
+
 @ConfigurationProperties(&quot;ogham.sms.cloudhopper&quot;)
-<span class="fc" id="L7">public class OghamCloudhopperProperties {</span>
+<span class="fc" id="L9">public class OghamCloudhopperProperties {</span>
 	/**
 	 * The system_id parameter is used to identify an ESME ( External Short
 	 * Message Entity) or an SMSC (Short Message Service Centre) at bind time.
@@ -44,45 +46,179 @@ import org.springframework.boot.context.properties.NestedConfigurationProperty;
 	/**
 	 * The version of the SMPP protocol
 	 */
-<span class="fc" id="L47">	private String interfaceVersion = &quot;3.4&quot;;</span>
+<span class="fc" id="L49">	private String interfaceVersion = &quot;3.4&quot;;</span>
 	/**
 	 * The default charset used by the Java application. This charset is used
 	 * when charset detection could not accurately detect the charset used by
 	 * the message to send through Ogham
 	 */
-<span class="fc" id="L53">	private String defaultAppCharset = &quot;UTF-8&quot;;</span>
+<span class="fc" id="L55">	private String defaultAppCharset = &quot;UTF-8&quot;;</span>
 	/**
 	 * The charset used by the SMPP protocol. A conversion will be done from the
 	 * charset used by the Java application (see
 	 * ogham.sms.cloudhopper.app-charset for more information) to the
 	 * Cloudhopper charset.
 	 */
-<span class="fc" id="L60">	private String smppCharset = &quot;GSM&quot;;</span>
-<span class="fc" id="L61">	@NestedConfigurationProperty</span>
+<span class="fc" id="L62">	private String smppCharset = &quot;GSM&quot;;</span>
+	/**
+	 * The bind command type. Default to &quot;TRANSMITTER&quot;.
+	 */
+<span class="fc" id="L66">	private SmppBindType bindType = SmppBindType.TRANSMITTER;</span>
+	/**
+	 * The system_type parameter is used to categorize the type of ESME that is
+	 * binding to the SMSC. Examples include “VMS” (voice mail system) and “OTA”
+	 * (over-the-air activation system). Specification of the system_type is
+	 * optional - some SMSC’s may not require ESME’s to provide this detail. In
+	 * this case, the ESME can set the system_type to NULL. The system_type
+	 * (optional) may be used to categorize the system, e.g., “EMAIL”, “WWW”,
+	 * etc.
+	 */
+	private String systemType;
+<span class="fc" id="L77">	@NestedConfigurationProperty</span>
 	private SessionProperties session = new SessionProperties();
+<span class="fc" id="L79">	@NestedConfigurationProperty</span>
+	private DataCodingSchemeProperties dataCodingScheme = new DataCodingSchemeProperties();
+<span class="fc" id="L81">	@NestedConfigurationProperty</span>
+	private EncoderProperties encoder = new EncoderProperties();
+<span class="fc" id="L83">	@NestedConfigurationProperty</span>
+	private UserDataProperties userData = new UserDataProperties();
+<span class="fc" id="L85">	@NestedConfigurationProperty</span>
+	private SplitProperties split = new SplitProperties();
 
-<span class="fc" id="L64">	public static class SessionProperties {</span>
+	public String getSystemId() {
+<span class="fc" id="L89">		return systemId;</span>
+	}
+
+	public void setSystemId(String systemId) {
+<span class="fc" id="L93">		this.systemId = systemId;</span>
+<span class="fc" id="L94">	}</span>
+
+	public String getPassword() {
+<span class="fc" id="L97">		return password;</span>
+	}
+
+	public void setPassword(String password) {
+<span class="fc" id="L101">		this.password = password;</span>
+<span class="fc" id="L102">	}</span>
+
+	public String getHost() {
+<span class="fc" id="L105">		return host;</span>
+	}
+
+	public void setHost(String host) {
+<span class="fc" id="L109">		this.host = host;</span>
+<span class="fc" id="L110">	}</span>
+
+	public Integer getPort() {
+<span class="fc" id="L113">		return port;</span>
+	}
+
+	public void setPort(Integer port) {
+<span class="fc" id="L117">		this.port = port;</span>
+<span class="fc" id="L118">	}</span>
+
+	public String getDefaultAppCharset() {
+<span class="nc" id="L121">		return defaultAppCharset;</span>
+	}
+
+	public void setDefaultAppCharset(String defaultAppCharset) {
+<span class="nc" id="L125">		this.defaultAppCharset = defaultAppCharset;</span>
+<span class="nc" id="L126">	}</span>
+
+	public String getSmppCharset() {
+<span class="nc" id="L129">		return smppCharset;</span>
+	}
+
+	public void setSmppCharset(String smppCharset) {
+<span class="nc" id="L133">		this.smppCharset = smppCharset;</span>
+<span class="nc" id="L134">	}</span>
+
+	public SessionProperties getSession() {
+<span class="fc" id="L137">		return session;</span>
+	}
+
+	public void setSession(SessionProperties session) {
+<span class="fc" id="L141">		this.session = session;</span>
+<span class="fc" id="L142">	}</span>
+
+	public String getInterfaceVersion() {
+<span class="fc" id="L145">		return interfaceVersion;</span>
+	}
+
+	public SmppBindType getBindType() {
+<span class="nc" id="L149">		return bindType;</span>
+	}
+
+	public void setBindType(SmppBindType bindType) {
+<span class="fc" id="L153">		this.bindType = bindType;</span>
+<span class="fc" id="L154">	}</span>
+
+	public String getSystemType() {
+<span class="nc" id="L157">		return systemType;</span>
+	}
+
+	public void setSystemType(String systemType) {
+<span class="fc" id="L161">		this.systemType = systemType;</span>
+<span class="fc" id="L162">	}</span>
+
+	public DataCodingSchemeProperties getDataCodingScheme() {
+<span class="fc" id="L165">		return dataCodingScheme;</span>
+	}
+
+	public void setDataCodingScheme(DataCodingSchemeProperties dataCodingScheme) {
+<span class="fc" id="L169">		this.dataCodingScheme = dataCodingScheme;</span>
+<span class="fc" id="L170">	}</span>
+
+	public EncoderProperties getEncoder() {
+<span class="fc" id="L173">		return encoder;</span>
+	}
+
+	public void setEncoder(EncoderProperties encoder) {
+<span class="fc" id="L177">		this.encoder = encoder;</span>
+<span class="fc" id="L178">	}</span>
+
+	public UserDataProperties getUserData() {
+<span class="fc" id="L181">		return userData;</span>
+	}
+
+	public void setUserData(UserDataProperties userData) {
+<span class="fc" id="L185">		this.userData = userData;</span>
+<span class="fc" id="L186">	}</span>
+
+	public void setInterfaceVersion(String interfaceVersion) {
+<span class="fc" id="L189">		this.interfaceVersion = interfaceVersion;</span>
+<span class="fc" id="L190">	}</span>
+
+	public SplitProperties getSplit() {
+<span class="fc" id="L193">		return split;</span>
+	}
+
+	public void setSplit(SplitProperties split) {
+<span class="fc" id="L197">		this.split = split;</span>
+<span class="fc" id="L198">	}</span>
+
+<span class="fc" id="L200">	public static class SessionProperties {</span>
 		/**
 		 * A name for the session (used to name threads used by Cloudhopper).
 		 */
-		private String sessionName;
+		private String name;
 		/**
 		 * Set the maximum amount of time (in milliseconds) to wait for the
 		 * success of a bind attempt to the SMSC. Defaults to 5000.
 		 */
-<span class="fc" id="L73">		private Long bindTimeout = 5000L;</span>
+<span class="fc" id="L209">		private Long bindTimeout = 5000L;</span>
 		/**
 		 * Set the maximum amount of time (in milliseconds) to wait for a
 		 * establishing the connection. Defaults to 10000.
 		 * 
 		 */
-<span class="fc" id="L79">		private Long connectTimeout = 10000L;</span>
+<span class="fc" id="L215">		private Long connectTimeout = 10000L;</span>
 		/**
 		 * Set the amount of time (milliseconds) to wait for an endpoint to
 		 * respond to a request before it expires. Defaults to disabled (-1).
 		 * 
 		 */
-<span class="fc" id="L85">		private Long requestExpiryTimeout = -1L;</span>
+<span class="fc" id="L221">		private Long requestExpiryTimeout = -1L;</span>
 		/**
 		 * Sets the amount of time (milliseconds) between executions of
 		 * monitoring the window for requests that expire. It's recommended that
@@ -92,26 +228,26 @@ import org.springframework.boot.context.properties.NestedConfigurationProperty;
 		 * (disabled).
 		 * 
 		 */
-<span class="fc" id="L95">		private Long windowMonitorInterval = -1L;</span>
+<span class="fc" id="L231">		private Long windowMonitorInterval = -1L;</span>
 		/**
 		 * Sets the maximum number of requests permitted to be outstanding
 		 * (unacknowledged) at a given time. Must be &gt; 0. Defaults to 1.
 		 * 
 		 */
-<span class="fc" id="L101">		private Integer windowSize = 1;</span>
+<span class="fc" id="L237">		private Integer windowSize = 1;</span>
 		/**
 		 * Set the amount of time (milliseconds) to wait until a slot opens up
 		 * in the sendWindow. Defaults to 60000.
 		 * 
 		 */
-<span class="fc" id="L107">		private Long windowWaitTimeout = 0L;</span>
+<span class="fc" id="L243">		private Long windowWaitTimeout = 0L;</span>
 		/**
 		 * Set the maximum amount of time (in milliseconds) to wait for bytes to
 		 * be written when creating a new SMPP session. Defaults to 0 (no
 		 * timeout, for backwards compatibility).
 		 * 
 		 */
-<span class="fc" id="L114">		private Long writeTimeout = 0L;</span>
+<span class="fc" id="L250">		private Long writeTimeout = 0L;</span>
 		/**
 		 * Set the maximum amount of time (in milliseconds) to wait until a
 		 * valid response is received when a &quot;submit&quot; request is synchronously
@@ -121,7 +257,7 @@ import org.springframework.boot.context.properties.NestedConfigurationProperty;
 		 * Defaults to 5000.
 		 * 
 		 */
-<span class="fc" id="L124">		private Long responseTimeout = 5000L;</span>
+<span class="fc" id="L260">		private Long responseTimeout = 5000L;</span>
 		/**
 		 * Set the maximum amount of time (in milliseconds) to wait until the
 		 * session is unbounded, waiting up to a specified period of
@@ -130,192 +266,127 @@ import org.springframework.boot.context.properties.NestedConfigurationProperty;
 		 * socket/channel is closed. Defaults to 5000.
 		 * 
 		 */
-<span class="fc" id="L133">		private Long unbindTimeout = 5000L;</span>
-<span class="fc" id="L134">		@NestedConfigurationProperty</span>
+<span class="fc" id="L269">		private Long unbindTimeout = 5000L;</span>
+<span class="fc" id="L270">		@NestedConfigurationProperty</span>
 		private ConnectRetryProperties connectRetry = new ConnectRetryProperties();
 
-		public String getSessionName() {
-<span class="fc" id="L138">			return sessionName;</span>
+		public String getName() {
+<span class="fc" id="L274">			return name;</span>
 		}
 
-		public void setSessionName(String sessionName) {
-<span class="nc" id="L142">			this.sessionName = sessionName;</span>
-<span class="nc" id="L143">		}</span>
+		public void setName(String name) {
+<span class="fc" id="L278">			this.name = name;</span>
+<span class="fc" id="L279">		}</span>
 
 		public Long getBindTimeout() {
-<span class="fc" id="L146">			return bindTimeout;</span>
+<span class="fc" id="L282">			return bindTimeout;</span>
 		}
 
 		public void setBindTimeout(Long bindTimeout) {
-<span class="nc" id="L150">			this.bindTimeout = bindTimeout;</span>
-<span class="nc" id="L151">		}</span>
+<span class="fc" id="L286">			this.bindTimeout = bindTimeout;</span>
+<span class="fc" id="L287">		}</span>
 
 		public Long getConnectTimeout() {
-<span class="fc" id="L154">			return connectTimeout;</span>
+<span class="fc" id="L290">			return connectTimeout;</span>
 		}
 
 		public void setConnectTimeout(Long connectTime) {
-<span class="nc" id="L158">			this.connectTimeout = connectTime;</span>
-<span class="nc" id="L159">		}</span>
+<span class="fc" id="L294">			this.connectTimeout = connectTime;</span>
+<span class="fc" id="L295">		}</span>
 
 		public Long getRequestExpiryTimeout() {
-<span class="fc" id="L162">			return requestExpiryTimeout;</span>
+<span class="fc" id="L298">			return requestExpiryTimeout;</span>
 		}
 
 		public void setRequestExpiryTimeout(Long requestExpiryTimeout) {
-<span class="nc" id="L166">			this.requestExpiryTimeout = requestExpiryTimeout;</span>
-<span class="nc" id="L167">		}</span>
+<span class="fc" id="L302">			this.requestExpiryTimeout = requestExpiryTimeout;</span>
+<span class="fc" id="L303">		}</span>
 
 		public Long getWindowMonitorInterval() {
-<span class="fc" id="L170">			return windowMonitorInterval;</span>
+<span class="fc" id="L306">			return windowMonitorInterval;</span>
 		}
 
 		public void setWindowMonitorInterval(Long windowMonitorInterval) {
-<span class="nc" id="L174">			this.windowMonitorInterval = windowMonitorInterval;</span>
-<span class="nc" id="L175">		}</span>
+<span class="fc" id="L310">			this.windowMonitorInterval = windowMonitorInterval;</span>
+<span class="fc" id="L311">		}</span>
 
 		public Integer getWindowSize() {
-<span class="fc" id="L178">			return windowSize;</span>
+<span class="fc" id="L314">			return windowSize;</span>
 		}
 
 		public void setWindowSize(Integer windowSize) {
-<span class="nc" id="L182">			this.windowSize = windowSize;</span>
-<span class="nc" id="L183">		}</span>
+<span class="fc" id="L318">			this.windowSize = windowSize;</span>
+<span class="fc" id="L319">		}</span>
 
 		public Long getWindowWaitTimeout() {
-<span class="fc" id="L186">			return windowWaitTimeout;</span>
+<span class="fc" id="L322">			return windowWaitTimeout;</span>
 		}
 
 		public void setWindowWaitTimeout(Long windowWaitTimeout) {
-<span class="nc" id="L190">			this.windowWaitTimeout = windowWaitTimeout;</span>
-<span class="nc" id="L191">		}</span>
+<span class="fc" id="L326">			this.windowWaitTimeout = windowWaitTimeout;</span>
+<span class="fc" id="L327">		}</span>
 
 		public Long getWriteTimeout() {
-<span class="fc" id="L194">			return writeTimeout;</span>
+<span class="fc" id="L330">			return writeTimeout;</span>
 		}
 
 		public void setWriteTimeout(Long writeTimeout) {
-<span class="nc" id="L198">			this.writeTimeout = writeTimeout;</span>
-<span class="nc" id="L199">		}</span>
+<span class="fc" id="L334">			this.writeTimeout = writeTimeout;</span>
+<span class="fc" id="L335">		}</span>
 
 		public Long getResponseTimeout() {
-<span class="fc" id="L202">			return responseTimeout;</span>
+<span class="fc" id="L338">			return responseTimeout;</span>
 		}
 
 		public void setResponseTimeout(Long responseTimeout) {
-<span class="nc" id="L206">			this.responseTimeout = responseTimeout;</span>
-<span class="nc" id="L207">		}</span>
+<span class="fc" id="L342">			this.responseTimeout = responseTimeout;</span>
+<span class="fc" id="L343">		}</span>
 
 		public Long getUnbindTimeout() {
-<span class="fc" id="L210">			return unbindTimeout;</span>
+<span class="fc" id="L346">			return unbindTimeout;</span>
 		}
 
 		public void setUnbindTimeout(Long unbindTimeout) {
-<span class="nc" id="L214">			this.unbindTimeout = unbindTimeout;</span>
-<span class="nc" id="L215">		}</span>
+<span class="fc" id="L350">			this.unbindTimeout = unbindTimeout;</span>
+<span class="fc" id="L351">		}</span>
 
 		public ConnectRetryProperties getConnectRetry() {
-<span class="fc" id="L218">			return connectRetry;</span>
+<span class="fc" id="L354">			return connectRetry;</span>
 		}
 
 		public void setConnectRetry(ConnectRetryProperties connectRetry) {
-<span class="nc" id="L222">			this.connectRetry = connectRetry;</span>
-<span class="nc" id="L223">		}</span>
+<span class="fc" id="L358">			this.connectRetry = connectRetry;</span>
+<span class="fc" id="L359">		}</span>
 
 	}
 
-<span class="fc" id="L227">	public static class ConnectRetryProperties {</span>
+<span class="fc" id="L363">	public static class ConnectRetryProperties {</span>
 		/**
 		 * Set the maximum number of attempts for establishing a connection.
 		 */
-<span class="fc" id="L231">		private Integer connectMaxRetry = 10;</span>
+<span class="fc" id="L367">		private Integer maxAttempts = 5;</span>
 		/**
 		 * Set the delay between two attemps for establishing a connection (in
 		 * milliseconds).
 		 */
-<span class="fc" id="L236">		private Long connectRetryDelay = 500L;</span>
+<span class="fc" id="L372">		private Long delayBetweenAttempts = 500L;</span>
 
-		public Integer getConnectMaxRetry() {
-<span class="fc" id="L239">			return connectMaxRetry;</span>
+		public Integer getMaxAttempts() {
+<span class="fc" id="L375">			return maxAttempts;</span>
 		}
 
-		public void setConnectMaxRetry(Integer connectMaxRetry) {
-<span class="nc" id="L243">			this.connectMaxRetry = connectMaxRetry;</span>
-<span class="nc" id="L244">		}</span>
+		public void setMaxAttempts(Integer maxAttempts) {
+<span class="fc" id="L379">			this.maxAttempts = maxAttempts;</span>
+<span class="fc" id="L380">		}</span>
 
-		public Long getConnectRetryDelay() {
-<span class="fc" id="L247">			return connectRetryDelay;</span>
+		public Long getDelayBetweenAttempts() {
+<span class="fc" id="L383">			return delayBetweenAttempts;</span>
 		}
 
-		public void setConnectRetryDelay(Long connectRetryDelay) {
-<span class="nc" id="L251">			this.connectRetryDelay = connectRetryDelay;</span>
-<span class="nc" id="L252">		}</span>
-
+		public void setDelayBetweenAttempts(Long delayBetweenAttempts) {
+<span class="fc" id="L387">			this.delayBetweenAttempts = delayBetweenAttempts;</span>
+<span class="fc" id="L388">		}</span>
 	}
-
-	public String getSystemId() {
-<span class="fc" id="L257">		return systemId;</span>
-	}
-
-	public void setSystemId(String systemId) {
-<span class="nc" id="L261">		this.systemId = systemId;</span>
-<span class="nc" id="L262">	}</span>
-
-	public String getPassword() {
-<span class="fc" id="L265">		return password;</span>
-	}
-
-	public void setPassword(String password) {
-<span class="nc" id="L269">		this.password = password;</span>
-<span class="nc" id="L270">	}</span>
-
-	public String getHost() {
-<span class="fc" id="L273">		return host;</span>
-	}
-
-	public void setHost(String host) {
-<span class="fc" id="L277">		this.host = host;</span>
-<span class="fc" id="L278">	}</span>
-
-	public Integer getPort() {
-<span class="fc" id="L281">		return port;</span>
-	}
-
-	public void setPort(Integer port) {
-<span class="nc" id="L285">		this.port = port;</span>
-<span class="nc" id="L286">	}</span>
-
-	public String getInterfaceVersion() {
-<span class="fc" id="L289">		return interfaceVersion;</span>
-	}
-
-	public void setInterfaceVersion(String interfaceVersion) {
-<span class="fc" id="L293">		this.interfaceVersion = interfaceVersion;</span>
-<span class="fc" id="L294">	}</span>
-
-	public SessionProperties getSession() {
-<span class="fc" id="L297">		return session;</span>
-	}
-
-	public void setSession(SessionProperties session) {
-<span class="nc" id="L301">		this.session = session;</span>
-<span class="nc" id="L302">	}</span>
-
-	public String getDefaultAppCharset() {
-<span class="nc" id="L305">		return defaultAppCharset;</span>
-	}
-
-	public void setDefaultAppCharset(String appEncoding) {
-<span class="nc" id="L309">		this.defaultAppCharset = appEncoding;</span>
-<span class="nc" id="L310">	}</span>
-
-	public String getSmppCharset() {
-<span class="nc" id="L313">		return smppCharset;</span>
-	}
-
-	public void setSmppCharset(String smppEncoding) {
-<span class="nc" id="L317">		this.smppCharset = smppEncoding;</span>
-<span class="nc" id="L318">	}</span>
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

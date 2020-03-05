@@ -110,11 +110,11 @@ import freemarker.template.TemplateExceptionHandler;
  * &lt;/li&gt;
  * &lt;li&gt;Configures static method access from templates:
  * &lt;ul&gt;
- * &lt;li&gt;Uses property value of ${ogham.freemarker.enable-static-method-access} if
+ * &lt;li&gt;Uses property value of ${ogham.freemarker.static-method-access.enable} if
  * provided to enable/disable static method access from templates (default is
  * enabled is nothing is configured)&lt;/li&gt;
  * &lt;li&gt;Uses property value of
- * ${ogham.freemarker.static-method-access-variable-name} if provided to set the
+ * ${ogham.freemarker.static-method-access.variable-name} if provided to set the
  * name used to access static methods from templates (default is 'statics')&lt;/li&gt;
  * &lt;/ul&gt;
  * &lt;/li&gt;
@@ -200,18 +200,20 @@ public final class DefaultFreemarkerEmailConfigurer {
 <span class="fc" id="L200">				.string()</span>
 <span class="fc" id="L201">					.and()</span>
 <span class="fc" id="L202">				.variant(EmailVariant.HTML, &quot;html.ftl&quot;)</span>
-<span class="fc" id="L203">				.variant(EmailVariant.TEXT, &quot;txt.ftl&quot;)</span>
-<span class="fc" id="L204">				.configuration()</span>
-<span class="fc" id="L205">					.defaultEncoding().properties(&quot;${ogham.freemarker.default-encoding}&quot;).defaultValue(overrideIfNotSet(&quot;UTF-8&quot;)).and()</span>
-<span class="fc" id="L206">					.templateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER)</span>
-<span class="fc" id="L207">					.enableStaticMethodAccess().properties(&quot;${ogham.freemarker.enable-static-method-access}&quot;).defaultValue(overrideIfNotSet(true)).and()</span>
-<span class="fc" id="L208">					.staticMethodAccessVariableName().properties(&quot;${ogham.freemarker.static-method-access-variable-name}&quot;).defaultValue(overrideIfNotSet(&quot;statics&quot;));</span>
+<span class="fc" id="L203">				.variant(EmailVariant.HTML, &quot;html.ftlh&quot;)</span>
+<span class="fc" id="L204">				.variant(EmailVariant.TEXT, &quot;txt.ftl&quot;)</span>
+<span class="fc" id="L205">				.variant(EmailVariant.TEXT, &quot;txt.ftlh&quot;)</span>
+<span class="fc" id="L206">				.configuration()</span>
+<span class="fc" id="L207">					.defaultEncoding().properties(&quot;${ogham.freemarker.default-encoding}&quot;).defaultValue(overrideIfNotSet(&quot;UTF-8&quot;)).and()</span>
+<span class="fc" id="L208">					.templateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER)</span>
+<span class="fc" id="L209">					.enableStaticMethodAccess().properties(&quot;${ogham.freemarker.static-method-access.enable}&quot;).defaultValue(overrideIfNotSet(true)).and()</span>
+<span class="fc" id="L210">					.staticMethodAccessVariableName().properties(&quot;${ogham.freemarker.static-method-access.variable-name}&quot;).defaultValue(overrideIfNotSet(&quot;statics&quot;));</span>
 			// @formatter:on
-<span class="fc" id="L210">		}</span>
+<span class="fc" id="L212">		}</span>
 	}
 	
 	private static boolean canUseFreemaker() {
-<span class="pc bpc" id="L214" title="1 of 4 branches missed.">		return ClasspathUtils.exists(&quot;freemarker.template.Configuration&quot;) &amp;&amp; ClasspathUtils.exists(&quot;freemarker.template.Template&quot;);</span>
+<span class="pc bpc" id="L216" title="1 of 4 branches missed.">		return ClasspathUtils.exists(&quot;freemarker.template.Configuration&quot;) &amp;&amp; ClasspathUtils.exists(&quot;freemarker.template.Template&quot;);</span>
 	}
 
 	private DefaultFreemarkerEmailConfigurer() {

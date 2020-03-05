@@ -76,16 +76,16 @@ import fr.sii.ogham.sms.message.Sms;
  * template or using {@code ogham.email.subject} property if defined (see
  * {@link AutofillSubjectBuilder})&lt;/li&gt;
  * &lt;li&gt;Autofill {@link Email} messages with sender address if one of the
- * property {@code ogham.email.from} or {@code mail.smtp.from} is defined (see
- * {@link AutofillDefaultEmailAddressBuilder})&lt;/li&gt;
+ * property {@code ogham.email.from.default-value} or {@code mail.smtp.from} is
+ * defined (see {@link AutofillDefaultEmailAddressBuilder})&lt;/li&gt;
  * &lt;li&gt;Autofill {@link Email} messages with recipient address (to) if the
- * property {@code ogham.email.to} is defined (see
+ * property {@code ogham.email.to.default-value} is defined (see
  * {@link AutofillDefaultEmailAddressBuilder})&lt;/li&gt;
  * &lt;li&gt;Autofill {@link Email} messages with recipient address (cc) if the
- * property {@code ogham.email.cc} is defined (see
+ * property {@code ogham.email.cc.default-value} is defined (see
  * {@link AutofillDefaultEmailAddressBuilder})&lt;/li&gt;
  * &lt;li&gt;Autofill {@link Email} messages with recipient address (bcc) if the
- * property {@code ogham.email.bcc} is defined (see
+ * property {@code ogham.email.bcc.default-value} is defined (see
  * {@link AutofillDefaultEmailAddressBuilder})&lt;/li&gt;
  * &lt;li&gt;Automatically inline CSS styles in the HTML templates (see
  * {@link CssInliningBuilder})&lt;/li&gt;
@@ -96,9 +96,11 @@ import fr.sii.ogham.sms.message.Sms;
  * &lt;li&gt;Configure common SMS behaviors:
  * &lt;ul&gt;
  * &lt;li&gt;Autofill {@link Sms} messages with sender phone number if the property
- * {@code ogham.sms.from} is defined (see {@link AutofillSmsBuilder})&lt;/li&gt;
+ * {@code ogham.sms.from.default-value} is defined (see
+ * {@link AutofillSmsBuilder})&lt;/li&gt;
  * &lt;li&gt;Autofill {@link Sms} messages with recipient phone number if the property
- * {@code ogham.sms.to} is defined (see {@link AutofillSmsBuilder})&lt;/li&gt;
+ * {@code ogham.sms.to.default-value} is defined (see
+ * {@link AutofillSmsBuilder})&lt;/li&gt;
  * &lt;li&gt;Configure phone number formats (see {@link SenderNumberFormatBuilder} and
  * {@link RecipientNumberFormatBuilder})&lt;/li&gt;
  * &lt;/ul&gt;
@@ -117,128 +119,128 @@ import fr.sii.ogham.sms.message.Sms;
  *
  */
 @ConfigurerFor(targetedBuilder = { &quot;minimal&quot;, &quot;standard&quot; }, priority = DEFAULT_MESSAGING_CONFIGURER_PRIORITY)
-<span class="fc" id="L120">public class DefaultMessagingConfigurer extends MessagingConfigurerAdapter {</span>
-<span class="fc" id="L121">	private static final Logger LOG = LoggerFactory.getLogger(DefaultMessagingConfigurer.class);</span>
+<span class="fc" id="L122">public class DefaultMessagingConfigurer extends MessagingConfigurerAdapter {</span>
+<span class="fc" id="L123">	private static final Logger LOG = LoggerFactory.getLogger(DefaultMessagingConfigurer.class);</span>
 
 	@Override
 	public void configure(MessagingBuilder builder) {
-<span class="fc" id="L125">		LOG.debug(&quot;[{}] apply configuration&quot;, this);</span>
-<span class="fc" id="L126">		super.configure(builder);</span>
-<span class="fc" id="L127">		builder.wrapUncaught().properties(&quot;${ogham.wrap-uncaught-exceptions.enable}&quot;).defaultValue(overrideIfNotSet(true));</span>
-<span class="fc" id="L128">	}</span>
+<span class="fc" id="L127">		LOG.debug(&quot;[{}] apply configuration&quot;, this);</span>
+<span class="fc" id="L128">		super.configure(builder);</span>
+<span class="fc" id="L129">		builder.wrapUncaught().properties(&quot;${ogham.wrap-uncaught-exceptions.enable}&quot;).defaultValue(overrideIfNotSet(true));</span>
+<span class="fc" id="L130">	}</span>
 
 	@Override
 	public void configure(EnvironmentBuilder&lt;?&gt; builder) {
 		// @formatter:off
-<span class="fc" id="L133">		builder</span>
-<span class="fc" id="L134">			.systemProperties()</span>
-<span class="fc" id="L135">			.converter()</span>
-<span class="fc" id="L136">				.defaultConverter(overrideIfNotSet(new DefaultConverter()));</span>
+<span class="fc" id="L135">		builder</span>
+<span class="fc" id="L136">			.systemProperties()</span>
+<span class="fc" id="L137">			.converter()</span>
+<span class="fc" id="L138">				.defaultConverter(overrideIfNotSet(new DefaultConverter()));</span>
 		// @formatter:on
-<span class="fc" id="L138">	}</span>
+<span class="fc" id="L140">	}</span>
 
 	@Override
 	public void configure(ResourceResolutionBuilder&lt;?&gt; builder) {
 		// @formatter:off
-<span class="fc" id="L143">		builder</span>
-<span class="fc" id="L144">			.string()</span>
-<span class="fc" id="L145">				.lookup(STRING_LOOKUPS)</span>
-<span class="fc" id="L146">				.and()</span>
-<span class="fc" id="L147">			.file()</span>
-<span class="fc" id="L148">				.lookup(FILE_LOOKUPS)</span>
-<span class="fc" id="L149">				.and()</span>
-<span class="fc" id="L150">			.classpath()</span>
-<span class="fc" id="L151">				.lookup(CLASSPATH_LOOKUPS);</span>
+<span class="fc" id="L145">		builder</span>
+<span class="fc" id="L146">			.string()</span>
+<span class="fc" id="L147">				.lookup(STRING_LOOKUPS)</span>
+<span class="fc" id="L148">				.and()</span>
+<span class="fc" id="L149">			.file()</span>
+<span class="fc" id="L150">				.lookup(FILE_LOOKUPS)</span>
+<span class="fc" id="L151">				.and()</span>
+<span class="fc" id="L152">			.classpath()</span>
+<span class="fc" id="L153">				.lookup(CLASSPATH_LOOKUPS);</span>
 		// @formatter:on
-<span class="fc" id="L153">	}</span>
+<span class="fc" id="L155">	}</span>
 
 	@Override
 	public void configure(EmailBuilder builder) {
 		// configure resource resolution for attachments, css and images
-<span class="fc" id="L158">		configure(builder.attachments());</span>
-<span class="fc" id="L159">		configure(builder.css().inline());</span>
-<span class="fc" id="L160">		configure(builder.images().inline());</span>
+<span class="fc" id="L160">		configure(builder.attachments());</span>
+<span class="fc" id="L161">		configure(builder.css().inline());</span>
+<span class="fc" id="L162">		configure(builder.images().inline());</span>
 		// configure mimetype detection for images
-<span class="fc" id="L162">		configure(builder.images().inline().mimetype());</span>
+<span class="fc" id="L164">		configure(builder.images().inline().mimetype());</span>
 
 		// @formatter:off
-<span class="fc" id="L165">		builder</span>
-<span class="fc" id="L166">			.autofill()</span>
-<span class="fc" id="L167">				.subject()</span>
-<span class="fc" id="L168">					.defaultValue().properties(&quot;${ogham.email.subject}&quot;).and()</span>
-<span class="fc" id="L169">					.htmlTitle().properties(&quot;${ogham.email.subject.extract-html-title.enable&quot;).defaultValue(overrideIfNotSet(true)).and()</span>
-<span class="fc" id="L170">					.text().properties(&quot;${ogham.email.subject.text.first-line-prefix}&quot;).defaultValue(overrideIfNotSet(&quot;Subject:&quot;)).and()</span>
-<span class="fc" id="L171">					.and()</span>
-<span class="fc" id="L172">				.from()</span>
-<span class="fc" id="L173">					.defaultValue().properties(&quot;${ogham.email.from}&quot;, &quot;${mail.smtp.from}&quot;, &quot;${mail.from}&quot;).and()</span>
-<span class="fc" id="L174">					.and()</span>
-<span class="fc" id="L175">				.to()</span>
-<span class="fc" id="L176">					.defaultValue().properties(&quot;${ogham.email.to}&quot;).and()</span>
-<span class="fc" id="L177">					.and()</span>
-<span class="fc" id="L178">				.cc()</span>
-<span class="fc" id="L179">					.defaultValue().properties(&quot;${ogham.email.cc}&quot;).and()</span>
-<span class="fc" id="L180">					.and()</span>
-<span class="fc" id="L181">				.bcc()</span>
-<span class="fc" id="L182">					.defaultValue().properties(&quot;${ogham.email.bcc}&quot;).and()</span>
-<span class="fc" id="L183">					.and()</span>
-<span class="fc" id="L184">				.and()</span>
-<span class="fc" id="L185">			.css()</span>
-<span class="fc" id="L186">				.inline()</span>
-<span class="fc" id="L187">					.jsoup()</span>
-<span class="fc" id="L188">					.and()</span>
-<span class="fc" id="L189">				.and()</span>
-<span class="fc" id="L190">			.images()</span>
-<span class="fc" id="L191">				.inline()</span>
-<span class="fc" id="L192">					.attach()</span>
-<span class="fc" id="L193">						.cid()</span>
-<span class="fc" id="L194">							.sequential()</span>
-<span class="fc" id="L195">							.and()</span>
-<span class="fc" id="L196">						.and()</span>
-<span class="fc" id="L197">					.base64().and()</span>
-<span class="fc" id="L198">					.and()</span>
-<span class="fc" id="L199">				.and()</span>
-<span class="fc" id="L200">			.failIfMissingVariant().defaultValue(overrideIfNotSet(true)).and()</span>
-<span class="fc" id="L201">			.listPossiblePaths().defaultValue(overrideIfNotSet(true));</span>
+<span class="fc" id="L167">		builder</span>
+<span class="fc" id="L168">			.autofill()</span>
+<span class="fc" id="L169">				.subject()</span>
+<span class="fc" id="L170">					.defaultValue().properties(&quot;${ogham.email.subject.default-value}&quot;).and()</span>
+<span class="fc" id="L171">					.htmlTitle().properties(&quot;${ogham.email.subject.extract-html-title.enable}&quot;).defaultValue(overrideIfNotSet(true)).and()</span>
+<span class="fc" id="L172">					.text().properties(&quot;${ogham.email.subject.extract-from-text.first-line-prefix}&quot;).defaultValue(overrideIfNotSet(&quot;Subject:&quot;)).and()</span>
+<span class="fc" id="L173">					.and()</span>
+<span class="fc" id="L174">				.from()</span>
+<span class="fc" id="L175">					.defaultValue().properties(&quot;${ogham.email.from.default-value}&quot;, &quot;${mail.smtp.from}&quot;, &quot;${mail.from}&quot;).and()</span>
+<span class="fc" id="L176">					.and()</span>
+<span class="fc" id="L177">				.to()</span>
+<span class="fc" id="L178">					.defaultValue().properties(&quot;${ogham.email.to.default-value}&quot;).and()</span>
+<span class="fc" id="L179">					.and()</span>
+<span class="fc" id="L180">				.cc()</span>
+<span class="fc" id="L181">					.defaultValue().properties(&quot;${ogham.email.cc.default-value}&quot;).and()</span>
+<span class="fc" id="L182">					.and()</span>
+<span class="fc" id="L183">				.bcc()</span>
+<span class="fc" id="L184">					.defaultValue().properties(&quot;${ogham.email.bcc.default-value}&quot;).and()</span>
+<span class="fc" id="L185">					.and()</span>
+<span class="fc" id="L186">				.and()</span>
+<span class="fc" id="L187">			.css()</span>
+<span class="fc" id="L188">				.inline()</span>
+<span class="fc" id="L189">					.jsoup()</span>
+<span class="fc" id="L190">					.and()</span>
+<span class="fc" id="L191">				.and()</span>
+<span class="fc" id="L192">			.images()</span>
+<span class="fc" id="L193">				.inline()</span>
+<span class="fc" id="L194">					.attach()</span>
+<span class="fc" id="L195">						.cid()</span>
+<span class="fc" id="L196">							.sequential()</span>
+<span class="fc" id="L197">							.and()</span>
+<span class="fc" id="L198">						.and()</span>
+<span class="fc" id="L199">					.base64().and()</span>
+<span class="fc" id="L200">					.and()</span>
+<span class="fc" id="L201">				.and()</span>
+<span class="fc" id="L202">			.failIfMissingVariant().defaultValue(overrideIfNotSet(true)).and()</span>
+<span class="fc" id="L203">			.listPossiblePaths().defaultValue(overrideIfNotSet(true));</span>
 		// @formatter:on
-<span class="fc" id="L203">	}</span>
+<span class="fc" id="L205">	}</span>
 
 	@Override
 	public void configure(SmsBuilder builder) {
 		// @formatter:off
-<span class="fc" id="L208">		builder</span>
-<span class="fc" id="L209">			.autofill()</span>
-<span class="fc" id="L210">				.from()</span>
-<span class="fc" id="L211">					.defaultValue().properties(&quot;${ogham.sms.from}&quot;).and()</span>
-<span class="fc" id="L212">					.and()</span>
-<span class="fc" id="L213">				.to()</span>
-<span class="fc" id="L214">					.defaultValue().properties(&quot;${ogham.sms.to}&quot;).and()</span>
-<span class="fc" id="L215">					.and()</span>
-<span class="fc" id="L216">				.and()</span>
-<span class="fc" id="L217">			.numbers()</span>
-<span class="fc" id="L218">				.from()</span>
-<span class="fc" id="L219">					.format()</span>
-<span class="fc" id="L220">						.alphanumericCode().properties(&quot;${ogham.sms.from-format-enable-alphanumeric}&quot;).defaultValue(overrideIfNotSet(true)).and()</span>
-<span class="fc" id="L221">						.shortCode().properties(&quot;${ogham.sms.from-format-enable-shortcode}&quot;).defaultValue(overrideIfNotSet(true)).and()</span>
-<span class="fc" id="L222">						.internationalNumber().properties(&quot;${ogham.sms.from-format-enable-international}&quot;).defaultValue(overrideIfNotSet(true)).and()</span>
-<span class="fc" id="L223">						.and()</span>
-<span class="fc" id="L224">					.and()</span>
-<span class="fc" id="L225">				.to()</span>
-<span class="fc" id="L226">					.format()</span>
-<span class="fc" id="L227">						.internationalNumber().properties(&quot;${ogham.sms.to-format-enable-international}&quot;).defaultValue(overrideIfNotSet(true));</span>
+<span class="fc" id="L210">		builder</span>
+<span class="fc" id="L211">			.autofill()</span>
+<span class="fc" id="L212">				.from()</span>
+<span class="fc" id="L213">					.defaultValue().properties(&quot;${ogham.sms.from.default-value}&quot;).and()</span>
+<span class="fc" id="L214">					.and()</span>
+<span class="fc" id="L215">				.to()</span>
+<span class="fc" id="L216">					.defaultValue().properties(&quot;${ogham.sms.to.default-value}&quot;).and()</span>
+<span class="fc" id="L217">					.and()</span>
+<span class="fc" id="L218">				.and()</span>
+<span class="fc" id="L219">			.numbers()</span>
+<span class="fc" id="L220">				.from()</span>
+<span class="fc" id="L221">					.format()</span>
+<span class="fc" id="L222">						.alphanumericCode().properties(&quot;${ogham.sms.from.alphanumeric-code-format.enable}&quot;).defaultValue(overrideIfNotSet(true)).and()</span>
+<span class="fc" id="L223">						.shortCode().properties(&quot;${ogham.sms.from.short-code-format.enable}&quot;).defaultValue(overrideIfNotSet(true)).and()</span>
+<span class="fc" id="L224">						.internationalNumber().properties(&quot;${ogham.sms.from.international-format.enable}&quot;).defaultValue(overrideIfNotSet(true)).and()</span>
+<span class="fc" id="L225">						.and()</span>
+<span class="fc" id="L226">					.and()</span>
+<span class="fc" id="L227">				.to()</span>
+<span class="fc" id="L228">					.format()</span>
+<span class="fc" id="L229">						.internationalNumber().properties(&quot;${ogham.sms.to.international-format.enable}&quot;).defaultValue(overrideIfNotSet(true));</span>
 		// @formatter:on
-<span class="fc" id="L229">	}</span>
+<span class="fc" id="L231">	}</span>
 
 	@Override
 	public void configure(MimetypeDetectionBuilder&lt;?&gt; builder) {
 		// @formatter:off
-<span class="fc" id="L234">		builder</span>
-<span class="fc" id="L235">			.tika()</span>
-<span class="fc" id="L236">				.instance(new Tika())</span>
-<span class="fc" id="L237">				.failIfOctetStream().properties(&quot;${ogham.mimetype.tika.fail-if-octet-stream}&quot;).defaultValue(overrideIfNotSet(true)).and()</span>
-<span class="fc" id="L238">				.and()</span>
-<span class="fc" id="L239">			.defaultMimetype().properties(&quot;${ogham.mimetype.default-mimetype}&quot;).defaultValue(overrideIfNotSet(&quot;application/octet-stream&quot;));</span>
+<span class="fc" id="L236">		builder</span>
+<span class="fc" id="L237">			.tika()</span>
+<span class="fc" id="L238">				.instance(new Tika())</span>
+<span class="fc" id="L239">				.failIfOctetStream().properties(&quot;${ogham.mimetype.tika.fail-if-octet-stream}&quot;).defaultValue(overrideIfNotSet(true)).and()</span>
+<span class="fc" id="L240">				.and()</span>
+<span class="fc" id="L241">			.defaultMimetype().properties(&quot;${ogham.mimetype.default-mimetype}&quot;).defaultValue(overrideIfNotSet(&quot;application/octet-stream&quot;));</span>
 		// @formatter:on
-<span class="fc" id="L241">	}</span>
+<span class="fc" id="L243">	}</span>
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

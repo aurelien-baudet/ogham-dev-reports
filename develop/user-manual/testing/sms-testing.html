@@ -70,16 +70,16 @@
   <span class="directive">private</span> MessagingService oghamService;
 
   <span class="annotation">@Rule</span>
-  <span class="directive">public</span> <span class="directive">final</span> SmppServerRule&lt;SubmitSm&gt; smppServer = <span class="keyword">new</span> JsmppServerRule();         <i class="conum" data-value="1"></i><b>(1)</b>
+  <span class="directive">public</span> <span class="directive">final</span> SmppServerRule&lt;SubmitSm&gt; smppServer = <span class="keyword">new</span> JsmppServerRule();    <i class="conum" data-value="1"></i><b>(1)</b>
 
   <span class="annotation">@Before</span>
   <span class="directive">public</span> <span class="type">void</span> setUp() <span class="directive">throws</span> <span class="exception">IOException</span> {
     oghamService = MessagingBuilder.standard()
         .environment()
           .properties()
-            .set(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.sms.from</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">+33603040506</span><span class="delimiter">&quot;</span></span>)
-            .set(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.sms.smpp.host</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">localhost</span><span class="delimiter">&quot;</span></span>)                <i class="conum" data-value="2"></i><b>(2)</b>
-            .set(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.sms.smpp.port</span><span class="delimiter">&quot;</span></span>, smppServer.getPort())           <i class="conum" data-value="3"></i><b>(3)</b>
+            .set(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.sms.from.default-value</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">+33603040506</span><span class="delimiter">&quot;</span></span>)
+            .set(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.sms.smpp.host</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">localhost</span><span class="delimiter">&quot;</span></span>)                 <i class="conum" data-value="2"></i><b>(2)</b>
+            .set(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.sms.smpp.port</span><span class="delimiter">&quot;</span></span>, smppServer.getPort())        <i class="conum" data-value="3"></i><b>(3)</b>
             .and()
           .and()
         .build();
@@ -91,15 +91,15 @@
     oghamService.send(<span class="keyword">new</span> Sms()
               .message().string(<span class="string"><span class="delimiter">&quot;</span><span class="content">sms content</span><span class="delimiter">&quot;</span></span>)
               .to(<span class="string"><span class="delimiter">&quot;</span><span class="content">0601020304</span><span class="delimiter">&quot;</span></span>));
-    assertThat(smppServer).receivedMessages()                       <i class="conum" data-value="4"></i><b>(4)</b>
-      .count(is(<span class="integer">1</span>))                                   <i class="conum" data-value="5"></i><b>(5)</b>
-      .message(<span class="integer">0</span>)                                     <i class="conum" data-value="6"></i><b>(6)</b>
-        .content(is(<span class="string"><span class="delimiter">&quot;</span><span class="content">sms content</span><span class="delimiter">&quot;</span></span>))                           <i class="conum" data-value="7"></i><b>(7)</b>
+    assertThat(smppServer).receivedMessages()                                <i class="conum" data-value="4"></i><b>(4)</b>
+      .count(is(<span class="integer">1</span>))                                                        <i class="conum" data-value="5"></i><b>(5)</b>
+      .message(<span class="integer">0</span>)                                                          <i class="conum" data-value="6"></i><b>(6)</b>
+        .content(is(<span class="string"><span class="delimiter">&quot;</span><span class="content">sms content</span><span class="delimiter">&quot;</span></span>))                                      <i class="conum" data-value="7"></i><b>(7)</b>
         .from()
-          .number(is(<span class="string"><span class="delimiter">&quot;</span><span class="content">+33603040506</span><span class="delimiter">&quot;</span></span>))                         <i class="conum" data-value="8"></i><b>(8)</b>
+          .number(is(<span class="string"><span class="delimiter">&quot;</span><span class="content">+33603040506</span><span class="delimiter">&quot;</span></span>))                                  <i class="conum" data-value="8"></i><b>(8)</b>
           .and()
         .to()
-          .number(is(<span class="string"><span class="delimiter">&quot;</span><span class="content">0601020304</span><span class="delimiter">&quot;</span></span>));                          <i class="conum" data-value="9"></i><b>(9)</b>
+          .number(is(<span class="string"><span class="delimiter">&quot;</span><span class="content">0601020304</span><span class="delimiter">&quot;</span></span>));                                   <i class="conum" data-value="9"></i><b>(9)</b>
     <span class="comment">// @formatter:on</span>
   }
 }</code></pre>
@@ -200,7 +200,7 @@
     oghamService = MessagingBuilder.standard()
         .environment()
           .properties()
-            .set(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.sms.from</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">+33603040506</span><span class="delimiter">&quot;</span></span>)
+            .set(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.sms.from.default-value</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">+33603040506</span><span class="delimiter">&quot;</span></span>)
             .set(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.sms.smpp.host</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">localhost</span><span class="delimiter">&quot;</span></span>)
             .set(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.sms.smpp.port</span><span class="delimiter">&quot;</span></span>, <span class="predefined-type">String</span>.valueOf(smppServer.getPort()))
             .and()
@@ -218,19 +218,19 @@
                   + <span class="string"><span class="delimiter">&quot;</span><span class="content">havior of the sender when message has to be split</span><span class="delimiter">&quot;</span></span>)
               .to(<span class="string"><span class="delimiter">&quot;</span><span class="content">0601020304</span><span class="delimiter">&quot;</span></span>));
     assertThat(smppServer).receivedMessages()
-      .count(is(<span class="integer">2</span>))                                 <i class="conum" data-value="1"></i><b>(1)</b>
-      .message(<span class="integer">0</span>)                                   <i class="conum" data-value="2"></i><b>(2)</b>
-        .content(is(<span class="string"><span class="delimiter">&quot;</span><span class="content">sms content with a very very very looooooooooooooooooo</span><span class="delimiter">&quot;</span></span>    <i class="conum" data-value="3"></i><b>(3)</b>
+      .count(is(<span class="integer">2</span>))                                                                   <i class="conum" data-value="1"></i><b>(1)</b>
+      .message(<span class="integer">0</span>)                                                                     <i class="conum" data-value="2"></i><b>(2)</b>
+        .content(is(<span class="string"><span class="delimiter">&quot;</span><span class="content">sms content with a very very very looooooooooooooooooo</span><span class="delimiter">&quot;</span></span>        <i class="conum" data-value="3"></i><b>(3)</b>
             + <span class="string"><span class="delimiter">&quot;</span><span class="content">onnnnnnnnnnnnnnnnng message that is over 140 characters </span><span class="delimiter">&quot;</span></span>
             + <span class="string"><span class="delimiter">&quot;</span><span class="content">in order to test the beh</span><span class="delimiter">&quot;</span></span>)).and()
-      .message(<span class="integer">1</span>)                                   <i class="conum" data-value="4"></i><b>(4)</b>
-        .content(is(<span class="string"><span class="delimiter">&quot;</span><span class="content">avior of the sender when message has to be split</span><span class="delimiter">&quot;</span></span>)).and()    <i class="conum" data-value="5"></i><b>(5)</b>
-      .every()                                    <i class="conum" data-value="6"></i><b>(6)</b>
+      .message(<span class="integer">1</span>)                                                                     <i class="conum" data-value="4"></i><b>(4)</b>
+        .content(is(<span class="string"><span class="delimiter">&quot;</span><span class="content">avior of the sender when message has to be split</span><span class="delimiter">&quot;</span></span>)).and()      <i class="conum" data-value="5"></i><b>(5)</b>
+      .every()                                                                        <i class="conum" data-value="6"></i><b>(6)</b>
         .from()
-          .number(is(<span class="string"><span class="delimiter">&quot;</span><span class="content">+33603040506</span><span class="delimiter">&quot;</span></span>))                       <i class="conum" data-value="7"></i><b>(7)</b>
+          .number(is(<span class="string"><span class="delimiter">&quot;</span><span class="content">+33603040506</span><span class="delimiter">&quot;</span></span>))                                             <i class="conum" data-value="7"></i><b>(7)</b>
           .and()
         .to()
-          .number(is(<span class="string"><span class="delimiter">&quot;</span><span class="content">0601020304</span><span class="delimiter">&quot;</span></span>));                        <i class="conum" data-value="8"></i><b>(8)</b>
+          .number(is(<span class="string"><span class="delimiter">&quot;</span><span class="content">0601020304</span><span class="delimiter">&quot;</span></span>));                                              <i class="conum" data-value="8"></i><b>(8)</b>
     <span class="comment">// @formatter:on</span>
   }
 }</code></pre>
@@ -283,7 +283,7 @@
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-02-29 15:34:16 UTC
+Last updated 2020-03-05 12:22:10 UTC
 </div>
 </div>
 </body>

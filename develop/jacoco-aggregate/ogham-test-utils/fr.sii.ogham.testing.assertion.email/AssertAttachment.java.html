@@ -38,7 +38,7 @@ public final class AssertAttachment {
 	public static void assertEquals(ExpectedAttachment expected, Message[] actual) throws Exception {
 <span class="fc" id="L39">		AssertionRegistry registry = new FailAtEndRegistry();</span>
 <span class="fc" id="L40">		registry.register(() -&gt; Assert.assertEquals(&quot;should have only one message&quot;, 1, actual.length));</span>
-<span class="fc bfc" id="L41" title="All 2 branches covered.">		assertEquals(expected, actual.length==1 ? actual[0] : null, registry);</span>
+<span class="fc bfc" id="L41" title="All 2 branches covered.">		assertEquals(expected, actual.length == 1 ? actual[0] : null, registry);</span>
 <span class="nc" id="L42">		registry.execute();</span>
 <span class="nc" id="L43">	}</span>
 
@@ -91,7 +91,7 @@ public final class AssertAttachment {
 <span class="fc" id="L91">	}</span>
 
 	private static void assertEquals(ExpectedAttachment expected, Message actual, AssertionRegistry registry) throws Exception {
-<span class="fc bfc" id="L94" title="All 2 branches covered.">		Object content = actual==null ? null : actual.getContent();</span>
+<span class="fc bfc" id="L94" title="All 2 branches covered.">		Object content = actual == null ? null : actual.getContent();</span>
 <span class="fc" id="L95">		registry.register(() -&gt; Assert.assertTrue(&quot;should be multipart message&quot;, content instanceof Multipart));</span>
 <span class="fc" id="L96">		BodyPart part = getAttachmentOrNull((Multipart) content, expected.getName(), registry);</span>
 <span class="fc" id="L97">		assertEquals(expected, part, registry);</span>
@@ -114,25 +114,26 @@ public final class AssertAttachment {
 <span class="fc" id="L114">				attachment == null ? null : getContent(attachment)));</span>
 		// @formatter:on
 <span class="fc" id="L116">	}</span>
-	
+
+	@SuppressWarnings(&quot;squid:S2147&quot;) // false positive: merging exception
+										// doesn't compile in that case or we
+										// are force to throw Exception instead
+										// of MessagingException
 	private static BodyPart getAttachmentOrNull(Multipart multipart, final String filename, AssertionRegistry registry) throws MessagingException {
 		try {
-<span class="fc" id="L120">			return getAttachment(multipart, filename);</span>
-<span class="fc" id="L121">		} catch(MessagingException e) {</span>
-<span class="fc" id="L122">			registry.register(failure(e));</span>
-<span class="fc" id="L123">			return null;</span>
-<span class="fc" id="L124">		} catch(IllegalStateException e) {</span>
-<span class="fc" id="L125">			registry.register(failure(e));</span>
-<span class="fc" id="L126">			return null;</span>
+<span class="fc" id="L124">			return getAttachment(multipart, filename);</span>
+<span class="fc" id="L125">		} catch (MessagingException e) {</span>
+<span class="fc" id="L126">			registry.register(failure(e));</span>
+<span class="fc" id="L127">			return null;</span>
+<span class="fc" id="L128">		} catch (IllegalStateException e) {</span>
+<span class="fc" id="L129">			registry.register(failure(e));</span>
+<span class="fc" id="L130">			return null;</span>
 		}
 	}
 
 	private static &lt;E extends Exception&gt; Executable&lt;E&gt; failure(E exception) {
-<span class="fc" id="L131">		return new Executable&lt;E&gt;() {</span>
-			@Override
-			public void run() throws E {
-<span class="fc" id="L134">				throw exception;</span>
-			}
+<span class="fc" id="L135">		return () -&gt; {</span>
+<span class="fc" id="L136">			throw exception;</span>
 		};
 	}
 

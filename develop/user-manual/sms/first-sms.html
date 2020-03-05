@@ -53,20 +53,20 @@
     <span class="comment">// configure properties (could be stored in a properties file or defined</span>
     <span class="comment">// in System properties)</span>
     <span class="predefined-type">Properties</span> properties = <span class="keyword">new</span> <span class="predefined-type">Properties</span>();
-    properties.setProperty(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.sms.smpp.host</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;your server host&gt;</span><span class="delimiter">&quot;</span></span>);            <i class="conum" data-value="1"></i><b>(1)</b>
-    properties.setProperty(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.sms.smpp.port</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;your server port&gt;</span><span class="delimiter">&quot;</span></span>);            <i class="conum" data-value="2"></i><b>(2)</b>
-    properties.setProperty(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.sms.smpp.system-id</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;your server system ID&gt;</span><span class="delimiter">&quot;</span></span>);        <i class="conum" data-value="3"></i><b>(3)</b>
-    properties.setProperty(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.sms.smpp.password</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;your server password&gt;</span><span class="delimiter">&quot;</span></span>);        <i class="conum" data-value="4"></i><b>(4)</b>
-    properties.setProperty(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.sms.from</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;phone number to display for the sender&gt;</span><span class="delimiter">&quot;</span></span>);   <i class="conum" data-value="5"></i><b>(5)</b>
+    properties.setProperty(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.sms.smpp.host</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;your server host&gt;</span><span class="delimiter">&quot;</span></span>);                                 <i class="conum" data-value="1"></i><b>(1)</b>
+    properties.setProperty(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.sms.smpp.port</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;your server port&gt;</span><span class="delimiter">&quot;</span></span>);                                 <i class="conum" data-value="2"></i><b>(2)</b>
+    properties.setProperty(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.sms.smpp.system-id</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;your server system ID&gt;</span><span class="delimiter">&quot;</span></span>);                       <i class="conum" data-value="3"></i><b>(3)</b>
+    properties.setProperty(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.sms.smpp.password</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;your server password&gt;</span><span class="delimiter">&quot;</span></span>);                         <i class="conum" data-value="4"></i><b>(4)</b>
+    properties.setProperty(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.sms.from.default-value</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;phone number to display for the sender&gt;</span><span class="delimiter">&quot;</span></span>);  <i class="conum" data-value="5"></i><b>(5)</b>
     <span class="comment">// Instantiate the messaging service using default behavior and</span>
     <span class="comment">// provided properties</span>
-    MessagingService service = MessagingBuilder.standard()                    <i class="conum" data-value="6"></i><b>(6)</b>
+    MessagingService service = MessagingBuilder.standard()                                               <i class="conum" data-value="6"></i><b>(6)</b>
         .environment()
-          .properties(properties)                             <i class="conum" data-value="7"></i><b>(7)</b>
+          .properties(properties)                                                                  <i class="conum" data-value="7"></i><b>(7)</b>
           .and()
-        .build();                                     <i class="conum" data-value="8"></i><b>(8)</b>
+        .build();                                                                                    <i class="conum" data-value="8"></i><b>(8)</b>
     <span class="comment">// send the sms using fluent API</span>
-    service.send(<span class="keyword">new</span> Sms()                                    <i class="conum" data-value="9"></i><b>(9)</b>
+    service.send(<span class="keyword">new</span> Sms()                                                                               <i class="conum" data-value="9"></i><b>(9)</b>
             .message().string(<span class="string"><span class="delimiter">&quot;</span><span class="content">sms content</span><span class="delimiter">&quot;</span></span>)
             .to(<span class="string"><span class="delimiter">&quot;</span><span class="content">+33752962193</span><span class="delimiter">&quot;</span></span>));
   }
@@ -110,7 +110,8 @@
 </tr>
 <tr>
 <td><i class="conum" data-value="9"></i><b>9</b></td>
-<td>Send a SMS with a simple message. The sender phone number is automatically set using <code>ogham.sms.from</code> property</td>
+<td>Send a SMS with a simple message. The sender phone number is automatically set using
+<code>ogham.sms.from.default-value</code> property</td>
 </tr>
 </table>
 </div>
@@ -121,7 +122,8 @@
 <p>-</p>
 </div>
 <div class="paragraph">
-<p>The construction of the SMS is done using a fluent API in order to chain calls and to have a more readable code.</p>
+<p>The construction of the SMS is done using a fluent API in order to chain calls and to have a more
+readable code.</p>
 </div>
 <div class="paragraph">
 <p>Properties are directly provided in the code. You can instead <a href="#properties-handling">use a configuration file</a>.</p>
@@ -131,7 +133,7 @@
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-02-29 15:34:16 UTC
+Last updated 2020-03-05 12:22:10 UTC
 </div>
 </div>
 </body>

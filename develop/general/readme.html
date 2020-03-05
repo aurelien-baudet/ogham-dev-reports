@@ -402,17 +402,17 @@ Finally, the last line sends the email. The specified email is really basic. It 
     <span class="predefined-type">Properties</span> properties = <span class="keyword">new</span> <span class="predefined-type">Properties</span>();
     properties.put(<span class="string"><span class="delimiter">&quot;</span><span class="content">mail.smtp.host</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;your server host&gt;</span><span class="delimiter">&quot;</span></span>);
     properties.put(<span class="string"><span class="delimiter">&quot;</span><span class="content">mail.smtp.port</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;your server port&gt;</span><span class="delimiter">&quot;</span></span>);
-    properties.put(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.email.from</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;email address to display for the sender user&gt;</span><span class="delimiter">&quot;</span></span>);
+    properties.put(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.email.from.default-value</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;email address to display for the sender user&gt;</span><span class="delimiter">&quot;</span></span>);
     <span class="comment">// Instantiate the messaging service using default behavior and</span>
     <span class="comment">// provided properties</span>
-    MessagingService service = MessagingBuilder.standard()    <i class="conum" data-value="1"></i><b>(1)</b>
+    MessagingService service = MessagingBuilder.standard()      <i class="conum" data-value="1"></i><b>(1)</b>
         .environment()
-          .properties(properties)             <i class="conum" data-value="2"></i><b>(2)</b>
+          .properties(properties)                         <i class="conum" data-value="2"></i><b>(2)</b>
           .and()
-        .build();                     <i class="conum" data-value="3"></i><b>(3)</b>
+        .build();                                           <i class="conum" data-value="3"></i><b>(3)</b>
     <span class="comment">// send the email using fluent API</span>
-    service.send(<span class="keyword">new</span> Email()                  <i class="conum" data-value="4"></i><b>(4)</b>
-            .subject(<span class="string"><span class="delimiter">&quot;</span><span class="content">subject</span><span class="delimiter">&quot;</span></span>)
+    service.send(<span class="keyword">new</span> Email()                                    <i class="conum" data-value="4"></i><b>(4)</b>
+            .subject(<span class="string"><span class="delimiter">&quot;</span><span class="content">BasicSample</span><span class="delimiter">&quot;</span></span>)
             .body().string(<span class="string"><span class="delimiter">&quot;</span><span class="content">email content</span><span class="delimiter">&quot;</span></span>)
             .to(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham-test@yopmail.com</span><span class="delimiter">&quot;</span></span>));
   }
@@ -436,7 +436,7 @@ Finally, the last line sends the email. The specified email is really basic. It 
 </tr>
 <tr>
 <td><i class="conum" data-value="4"></i><b>4</b></td>
-<td>Send an email with a subject and a simple body. The sender address is automatically set using <code>ogham.email.from</code> property</td>
+<td>Send an email with a subject and a simple body. The sender address is automatically set using <code>ogham.email.from.default-value</code> property</td>
 </tr>
 </table>
 </div>
@@ -482,19 +482,19 @@ Finally, the last line sends the email. The specified email is really basic. It 
     <span class="predefined-type">Properties</span> properties = <span class="keyword">new</span> <span class="predefined-type">Properties</span>();
     properties.setProperty(<span class="string"><span class="delimiter">&quot;</span><span class="content">mail.smtp.host</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;your server host&gt;</span><span class="delimiter">&quot;</span></span>);
     properties.setProperty(<span class="string"><span class="delimiter">&quot;</span><span class="content">mail.smtp.port</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;your server port&gt;</span><span class="delimiter">&quot;</span></span>);
-    properties.setProperty(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.email.from</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;email address to display for the sender user&gt;</span><span class="delimiter">&quot;</span></span>);
+    properties.setProperty(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.email.from.default-value</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;email address to display for the sender user&gt;</span><span class="delimiter">&quot;</span></span>);
     <span class="comment">// Instantiate the messaging service using default behavior and</span>
     <span class="comment">// provided properties</span>
-    MessagingService service = MessagingBuilder.standard()                  <i class="conum" data-value="1"></i><b>(1)</b>
+    MessagingService service = MessagingBuilder.standard()                           <i class="conum" data-value="1"></i><b>(1)</b>
         .environment()
-          .properties(properties)                           <i class="conum" data-value="2"></i><b>(2)</b>
+          .properties(properties)                                              <i class="conum" data-value="2"></i><b>(2)</b>
           .and()
-        .build();                                   <i class="conum" data-value="3"></i><b>(3)</b>
+        .build();                                                                <i class="conum" data-value="3"></i><b>(3)</b>
     <span class="comment">// send the email using fluent API</span>
-    service.send(<span class="keyword">new</span> Email()                                <i class="conum" data-value="4"></i><b>(4)</b>
-            .subject(<span class="string"><span class="delimiter">&quot;</span><span class="content">subject</span><span class="delimiter">&quot;</span></span>)
-            .body().template(<span class="string"><span class="delimiter">&quot;</span><span class="content">classpath:/template/thymeleaf/simple.html</span><span class="delimiter">&quot;</span></span>,       <i class="conum" data-value="5"></i><b>(5)</b>
-                          <span class="keyword">new</span> SimpleBean(<span class="string"><span class="delimiter">&quot;</span><span class="content">foo</span><span class="delimiter">&quot;</span></span>, <span class="integer">42</span>))          <i class="conum" data-value="6"></i><b>(6)</b>
+    service.send(<span class="keyword">new</span> Email()                                                         <i class="conum" data-value="4"></i><b>(4)</b>
+            .subject(<span class="string"><span class="delimiter">&quot;</span><span class="content">HtmlTemplateSample</span><span class="delimiter">&quot;</span></span>)
+            .body().template(<span class="string"><span class="delimiter">&quot;</span><span class="content">classpath:/template/thymeleaf/simple.html</span><span class="delimiter">&quot;</span></span>,    <i class="conum" data-value="5"></i><b>(5)</b>
+                          <span class="keyword">new</span> SimpleBean(<span class="string"><span class="delimiter">&quot;</span><span class="content">foo</span><span class="delimiter">&quot;</span></span>, <span class="integer">42</span>))           <i class="conum" data-value="6"></i><b>(6)</b>
             .to(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham-test@yopmail.com</span><span class="delimiter">&quot;</span></span>));
   }
 
@@ -532,7 +532,7 @@ Finally, the last line sends the email. The specified email is really basic. It 
 </tr>
 <tr>
 <td><i class="conum" data-value="4"></i><b>4</b></td>
-<td>Send an email with an explicit subject. The sender address is automatically set using <code>ogham.email.from</code> property</td>
+<td>Send an email with an explicit subject. The sender address is automatically set using <code>ogham.email.from.default-value</code> property</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="5"></i><b>5</b></td>
@@ -641,7 +641,7 @@ particular format. Directly use what you want.</p>
     <span class="predefined-type">Properties</span> properties = <span class="keyword">new</span> <span class="predefined-type">Properties</span>();
     properties.setProperty(<span class="string"><span class="delimiter">&quot;</span><span class="content">mail.smtp.host</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;your server host&gt;</span><span class="delimiter">&quot;</span></span>);
     properties.setProperty(<span class="string"><span class="delimiter">&quot;</span><span class="content">mail.smtp.port</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;your server port&gt;</span><span class="delimiter">&quot;</span></span>);
-    properties.setProperty(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.email.from</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;email address to display for the sender user&gt;</span><span class="delimiter">&quot;</span></span>);
+    properties.setProperty(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.email.from.default-value</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;email address to display for the sender user&gt;</span><span class="delimiter">&quot;</span></span>);
     <span class="comment">// Instantiate the messaging service using default behavior and</span>
     <span class="comment">// provided properties</span>
     MessagingService service = MessagingBuilder.standard()
@@ -652,7 +652,7 @@ particular format. Directly use what you want.</p>
     <span class="comment">// send the email using fluent API (do not specify subject)</span>
     <span class="comment">// subject is set to null to let automatic mechanism to read the title</span>
     <span class="comment">// of the HTML and use it as subject of your email</span>
-    service.send(<span class="keyword">new</span> Email()                                        <i class="conum" data-value="1"></i><b>(1)</b>
+    service.send(<span class="keyword">new</span> Email()                                                                    <i class="conum" data-value="1"></i><b>(1)</b>
             .body().template(<span class="string"><span class="delimiter">&quot;</span><span class="content">classpath:/template/thymeleaf/simpleWithSubject.html</span><span class="delimiter">&quot;</span></span>,
                           <span class="keyword">new</span> SimpleBean(<span class="string"><span class="delimiter">&quot;</span><span class="content">foo</span><span class="delimiter">&quot;</span></span>, <span class="integer">42</span>))
             .to(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham-test@yopmail.com</span><span class="delimiter">&quot;</span></span>));
@@ -709,7 +709,19 @@ particular format. Directly use what you want.</p>
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>The subject is defined in the template and can use same evaluation context (<code>SimpleBean</code>)</td>
+<td>The subject is defined in the template and can use same evaluation context (<code>SimpleBean</code>).</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+The subject of the email will be <code>Subject of the email - Welcome foo !</code>
+</td>
 </tr>
 </table>
 </div>
@@ -747,7 +759,7 @@ with <code>Subject:</code> (spaces can be added after colon). Other lines are us
     <span class="predefined-type">Properties</span> properties = <span class="keyword">new</span> <span class="predefined-type">Properties</span>();
     properties.setProperty(<span class="string"><span class="delimiter">&quot;</span><span class="content">mail.smtp.host</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;your server host&gt;</span><span class="delimiter">&quot;</span></span>);
     properties.setProperty(<span class="string"><span class="delimiter">&quot;</span><span class="content">mail.smtp.port</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;your server port&gt;</span><span class="delimiter">&quot;</span></span>);
-    properties.setProperty(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.email.from</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;email address to display for the sender user&gt;</span><span class="delimiter">&quot;</span></span>);
+    properties.setProperty(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.email.from.default-value</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;email address to display for the sender user&gt;</span><span class="delimiter">&quot;</span></span>);
     <span class="comment">// Instantiate the messaging service using default behavior and</span>
     <span class="comment">// provided properties</span>
     MessagingService service = MessagingBuilder.standard()
@@ -758,7 +770,7 @@ with <code>Subject:</code> (spaces can be added after colon). Other lines are us
     <span class="comment">// send the email using fluent API (do not specify subject)</span>
     <span class="comment">// subject is set to null to let automatic mechanism to read the title</span>
     <span class="comment">// of the first line if prefixed by &quot;Subject:&quot; and use it as subject of your email</span>
-    service.send(<span class="keyword">new</span> Email()                                        <i class="conum" data-value="1"></i><b>(1)</b>
+    service.send(<span class="keyword">new</span> Email()                                                                       <i class="conum" data-value="1"></i><b>(1)</b>
             .body().template(<span class="string"><span class="delimiter">&quot;</span><span class="content">classpath:/template/freemarker/simpleWithSubject.txt.ftl</span><span class="delimiter">&quot;</span></span>,
                           <span class="keyword">new</span> SimpleBean(<span class="string"><span class="delimiter">&quot;</span><span class="content">foo</span><span class="delimiter">&quot;</span></span>, <span class="integer">42</span>))
             .to(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham-test@yopmail.com</span><span class="delimiter">&quot;</span></span>));
@@ -901,7 +913,7 @@ simplifies image and CSS integration and is able to partially rewrite the HTML.<
     <span class="predefined-type">Properties</span> properties = <span class="keyword">new</span> <span class="predefined-type">Properties</span>();
     properties.setProperty(<span class="string"><span class="delimiter">&quot;</span><span class="content">mail.smtp.host</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;your server host&gt;</span><span class="delimiter">&quot;</span></span>);
     properties.setProperty(<span class="string"><span class="delimiter">&quot;</span><span class="content">mail.smtp.port</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;your server port&gt;</span><span class="delimiter">&quot;</span></span>);
-    properties.setProperty(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.email.from</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;email address to display for the sender user&gt;</span><span class="delimiter">&quot;</span></span>);
+    properties.setProperty(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.email.from.default-value</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;email address to display for the sender user&gt;</span><span class="delimiter">&quot;</span></span>);
     <span class="comment">// Instantiate the messaging service using default behavior and</span>
     <span class="comment">// provided properties</span>
     MessagingService service = MessagingBuilder.standard()
@@ -915,7 +927,7 @@ simplifies image and CSS integration and is able to partially rewrite the HTML.<
     <span class="comment">// for the HTML template and '.txt.ftl' for text template</span>
     service.send(<span class="keyword">new</span> Email()
             .body().template(<span class="string"><span class="delimiter">&quot;</span><span class="content">classpath:/template/withImagesAndCss/resources</span><span class="delimiter">&quot;</span></span>,    <i class="conum" data-value="1"></i><b>(1)</b>
-                              <span class="keyword">new</span> SimpleBean(<span class="string"><span class="delimiter">&quot;</span><span class="content">foo</span><span class="delimiter">&quot;</span></span>, <span class="integer">42</span>))      <i class="conum" data-value="2"></i><b>(2)</b>
+                              <span class="keyword">new</span> SimpleBean(<span class="string"><span class="delimiter">&quot;</span><span class="content">foo</span><span class="delimiter">&quot;</span></span>, <span class="integer">42</span>))        <i class="conum" data-value="2"></i><b>(2)</b>
             .to(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham-test@yopmail.com</span><span class="delimiter">&quot;</span></span>));
   }
 
@@ -962,7 +974,7 @@ simplifies image and CSS integration and is able to partially rewrite the HTML.<
 <span class="tag">&lt;html</span> <span class="attribute-name">xmlns:th</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">http://www.thymeleaf.org</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
 <span class="tag">&lt;head&gt;</span>
 <span class="tag">&lt;meta</span> <span class="attribute-name">http-equiv</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">Content-Type</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">content</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">text/html; charset=UTF-8</span><span class="delimiter">&quot;</span></span> <span class="tag">/&gt;</span>
-<span class="tag">&lt;title&gt;</span>Demystifying Email Design<span class="tag">&lt;/title&gt;</span>
+<span class="tag">&lt;title&gt;</span>HtmlWithImagesAndCssTemplateSample<span class="tag">&lt;/title&gt;</span>
 <span class="tag">&lt;meta</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">viewport</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">content</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">width=device-width, initial-scale=1.0</span><span class="delimiter">&quot;</span></span> <span class="tag">/&gt;</span>
 <span class="tag">&lt;link</span> <span class="attribute-name">href</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">css/layout.css</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">rel</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">stylesheet</span><span class="delimiter">&quot;</span></span> <span class="tag">/&gt;</span>                             <i class="conum" data-value="1"></i><b>(1)</b>
 <span class="tag">&lt;link</span> <span class="attribute-name">href</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">css/theme.css</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">rel</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">stylesheet</span><span class="delimiter">&quot;</span></span> <span class="tag">/&gt;</span>                              <i class="conum" data-value="2"></i><b>(2)</b>
@@ -1332,7 +1344,7 @@ the <code>"attach"</code> value directly on the <code>&lt;img&gt;</code> tag.</p
     <span class="predefined-type">Properties</span> properties = <span class="keyword">new</span> <span class="predefined-type">Properties</span>();
     properties.setProperty(<span class="string"><span class="delimiter">&quot;</span><span class="content">mail.smtp.host</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;your server host&gt;</span><span class="delimiter">&quot;</span></span>);
     properties.setProperty(<span class="string"><span class="delimiter">&quot;</span><span class="content">mail.smtp.port</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;your server port&gt;</span><span class="delimiter">&quot;</span></span>);
-    properties.setProperty(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.email.from</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;email address to display for the sender user&gt;</span><span class="delimiter">&quot;</span></span>);
+    properties.setProperty(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.email.from.default-value</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;email address to display for the sender user&gt;</span><span class="delimiter">&quot;</span></span>);
     <span class="comment">// Instantiate the messaging service using default behavior and</span>
     <span class="comment">// provided properties</span>
     MessagingService service = MessagingBuilder.standard()
@@ -1346,7 +1358,7 @@ the <code>"attach"</code> value directly on the <code>&lt;img&gt;</code> tag.</p
     <span class="comment">// for the HTML template and '.txt.ftl' for text template</span>
     service.send(<span class="keyword">new</span> Email()
             .body().template(<span class="string"><span class="delimiter">&quot;</span><span class="content">classpath:/template/withImagesAndCss/resources</span><span class="delimiter">&quot;</span></span>,    <i class="conum" data-value="1"></i><b>(1)</b>
-                              <span class="keyword">new</span> SimpleBean(<span class="string"><span class="delimiter">&quot;</span><span class="content">foo</span><span class="delimiter">&quot;</span></span>, <span class="integer">42</span>))      <i class="conum" data-value="2"></i><b>(2)</b>
+                              <span class="keyword">new</span> SimpleBean(<span class="string"><span class="delimiter">&quot;</span><span class="content">foo</span><span class="delimiter">&quot;</span></span>, <span class="integer">42</span>))        <i class="conum" data-value="2"></i><b>(2)</b>
             .to(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham-test@yopmail.com</span><span class="delimiter">&quot;</span></span>));
   }
 
@@ -1393,7 +1405,7 @@ the <code>"attach"</code> value directly on the <code>&lt;img&gt;</code> tag.</p
 <span class="tag">&lt;html</span> <span class="attribute-name">xmlns:th</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">http://www.thymeleaf.org</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
 <span class="tag">&lt;head&gt;</span>
 <span class="tag">&lt;meta</span> <span class="attribute-name">http-equiv</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">Content-Type</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">content</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">text/html; charset=UTF-8</span><span class="delimiter">&quot;</span></span> <span class="tag">/&gt;</span>
-<span class="tag">&lt;title&gt;</span>Demystifying Email Design<span class="tag">&lt;/title&gt;</span>
+<span class="tag">&lt;title&gt;</span>HtmlWithImagesAndCssTemplateSample<span class="tag">&lt;/title&gt;</span>
 <span class="tag">&lt;meta</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">viewport</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">content</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">width=device-width, initial-scale=1.0</span><span class="delimiter">&quot;</span></span> <span class="tag">/&gt;</span>
 <span class="tag">&lt;link</span> <span class="attribute-name">href</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">css/layout.css</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">rel</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">stylesheet</span><span class="delimiter">&quot;</span></span> <span class="tag">/&gt;</span>                             <i class="conum" data-value="1"></i><b>(1)</b>
 <span class="tag">&lt;link</span> <span class="attribute-name">href</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">css/theme.css</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">rel</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">stylesheet</span><span class="delimiter">&quot;</span></span> <span class="tag">/&gt;</span>                              <i class="conum" data-value="2"></i><b>(2)</b>
@@ -1666,7 +1678,7 @@ this information for you thanks to <a href="#mimetype-detection">automatic mimet
     <span class="predefined-type">Properties</span> properties = <span class="keyword">new</span> <span class="predefined-type">Properties</span>();
     properties.setProperty(<span class="string"><span class="delimiter">&quot;</span><span class="content">mail.smtp.host</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;your server host&gt;</span><span class="delimiter">&quot;</span></span>);
     properties.setProperty(<span class="string"><span class="delimiter">&quot;</span><span class="content">mail.smtp.port</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;your server port&gt;</span><span class="delimiter">&quot;</span></span>);
-    properties.setProperty(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.email.from</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;email address to display for the sender user&gt;</span><span class="delimiter">&quot;</span></span>);
+    properties.setProperty(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.email.from.default-value</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;email address to display for the sender user&gt;</span><span class="delimiter">&quot;</span></span>);
     <span class="comment">// Instantiate the messaging service using default behavior and</span>
     <span class="comment">// provided properties</span>
     MessagingService service = MessagingBuilder.standard()
@@ -1680,7 +1692,7 @@ this information for you thanks to <a href="#mimetype-detection">automatic mimet
     <span class="comment">// for the HTML template and '.txt.ftl' for text template</span>
     service.send(<span class="keyword">new</span> Email()
             .body().template(<span class="string"><span class="delimiter">&quot;</span><span class="content">classpath:/template/withImagesAndCss/resources</span><span class="delimiter">&quot;</span></span>,    <i class="conum" data-value="1"></i><b>(1)</b>
-                              <span class="keyword">new</span> SimpleBean(<span class="string"><span class="delimiter">&quot;</span><span class="content">foo</span><span class="delimiter">&quot;</span></span>, <span class="integer">42</span>))      <i class="conum" data-value="2"></i><b>(2)</b>
+                              <span class="keyword">new</span> SimpleBean(<span class="string"><span class="delimiter">&quot;</span><span class="content">foo</span><span class="delimiter">&quot;</span></span>, <span class="integer">42</span>))        <i class="conum" data-value="2"></i><b>(2)</b>
             .to(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham-test@yopmail.com</span><span class="delimiter">&quot;</span></span>));
   }
 
@@ -1727,7 +1739,7 @@ this information for you thanks to <a href="#mimetype-detection">automatic mimet
 <span class="tag">&lt;html</span> <span class="attribute-name">xmlns:th</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">http://www.thymeleaf.org</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
 <span class="tag">&lt;head&gt;</span>
 <span class="tag">&lt;meta</span> <span class="attribute-name">http-equiv</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">Content-Type</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">content</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">text/html; charset=UTF-8</span><span class="delimiter">&quot;</span></span> <span class="tag">/&gt;</span>
-<span class="tag">&lt;title&gt;</span>Demystifying Email Design<span class="tag">&lt;/title&gt;</span>
+<span class="tag">&lt;title&gt;</span>HtmlWithImagesAndCssTemplateSample<span class="tag">&lt;/title&gt;</span>
 <span class="tag">&lt;meta</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">viewport</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">content</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">width=device-width, initial-scale=1.0</span><span class="delimiter">&quot;</span></span> <span class="tag">/&gt;</span>
 <span class="tag">&lt;link</span> <span class="attribute-name">href</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">css/layout.css</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">rel</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">stylesheet</span><span class="delimiter">&quot;</span></span> <span class="tag">/&gt;</span>                             <i class="conum" data-value="1"></i><b>(1)</b>
 <span class="tag">&lt;link</span> <span class="attribute-name">href</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">css/theme.css</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">rel</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">stylesheet</span><span class="delimiter">&quot;</span></span> <span class="tag">/&gt;</span>                              <i class="conum" data-value="2"></i><b>(2)</b>
@@ -1964,7 +1976,7 @@ on the <code>&lt;img&gt;</code> tag.</p>
     <span class="predefined-type">Properties</span> properties = <span class="keyword">new</span> <span class="predefined-type">Properties</span>();
     properties.setProperty(<span class="string"><span class="delimiter">&quot;</span><span class="content">mail.smtp.host</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;your server host&gt;</span><span class="delimiter">&quot;</span></span>);
     properties.setProperty(<span class="string"><span class="delimiter">&quot;</span><span class="content">mail.smtp.port</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;your server port&gt;</span><span class="delimiter">&quot;</span></span>);
-    properties.setProperty(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.email.from</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;email address to display for the sender user&gt;</span><span class="delimiter">&quot;</span></span>);
+    properties.setProperty(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.email.from.default-value</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;email address to display for the sender user&gt;</span><span class="delimiter">&quot;</span></span>);
     <span class="comment">// Instantiate the messaging service using default behavior and</span>
     <span class="comment">// provided properties</span>
     MessagingService service = MessagingBuilder.standard()
@@ -1978,7 +1990,7 @@ on the <code>&lt;img&gt;</code> tag.</p>
     <span class="comment">// for the HTML template and '.txt.ftl' for text template</span>
     service.send(<span class="keyword">new</span> Email()
             .body().template(<span class="string"><span class="delimiter">&quot;</span><span class="content">classpath:/template/withImagesAndCss/resources</span><span class="delimiter">&quot;</span></span>,    <i class="conum" data-value="1"></i><b>(1)</b>
-                              <span class="keyword">new</span> SimpleBean(<span class="string"><span class="delimiter">&quot;</span><span class="content">foo</span><span class="delimiter">&quot;</span></span>, <span class="integer">42</span>))      <i class="conum" data-value="2"></i><b>(2)</b>
+                              <span class="keyword">new</span> SimpleBean(<span class="string"><span class="delimiter">&quot;</span><span class="content">foo</span><span class="delimiter">&quot;</span></span>, <span class="integer">42</span>))        <i class="conum" data-value="2"></i><b>(2)</b>
             .to(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham-test@yopmail.com</span><span class="delimiter">&quot;</span></span>));
   }
 
@@ -2025,7 +2037,7 @@ on the <code>&lt;img&gt;</code> tag.</p>
 <span class="tag">&lt;html</span> <span class="attribute-name">xmlns:th</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">http://www.thymeleaf.org</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
 <span class="tag">&lt;head&gt;</span>
 <span class="tag">&lt;meta</span> <span class="attribute-name">http-equiv</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">Content-Type</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">content</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">text/html; charset=UTF-8</span><span class="delimiter">&quot;</span></span> <span class="tag">/&gt;</span>
-<span class="tag">&lt;title&gt;</span>Demystifying Email Design<span class="tag">&lt;/title&gt;</span>
+<span class="tag">&lt;title&gt;</span>HtmlWithImagesAndCssTemplateSample<span class="tag">&lt;/title&gt;</span>
 <span class="tag">&lt;meta</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">viewport</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">content</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">width=device-width, initial-scale=1.0</span><span class="delimiter">&quot;</span></span> <span class="tag">/&gt;</span>
 <span class="tag">&lt;link</span> <span class="attribute-name">href</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">css/layout.css</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">rel</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">stylesheet</span><span class="delimiter">&quot;</span></span> <span class="tag">/&gt;</span>                             <i class="conum" data-value="1"></i><b>(1)</b>
 <span class="tag">&lt;link</span> <span class="attribute-name">href</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">css/theme.css</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">rel</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">stylesheet</span><span class="delimiter">&quot;</span></span> <span class="tag">/&gt;</span>                              <i class="conum" data-value="2"></i><b>(2)</b>
@@ -2412,7 +2424,7 @@ in the HTML are also inlined using <code>style</code> attribute.</p>
     <span class="predefined-type">Properties</span> properties = <span class="keyword">new</span> <span class="predefined-type">Properties</span>();
     properties.setProperty(<span class="string"><span class="delimiter">&quot;</span><span class="content">mail.smtp.host</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;your server host&gt;</span><span class="delimiter">&quot;</span></span>);
     properties.setProperty(<span class="string"><span class="delimiter">&quot;</span><span class="content">mail.smtp.port</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;your server port&gt;</span><span class="delimiter">&quot;</span></span>);
-    properties.setProperty(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.email.from</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;email address to display for the sender user&gt;</span><span class="delimiter">&quot;</span></span>);
+    properties.setProperty(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.email.from.default-value</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;email address to display for the sender user&gt;</span><span class="delimiter">&quot;</span></span>);
     <span class="comment">// Instantiate the messaging service using default behavior and</span>
     <span class="comment">// provided properties</span>
     MessagingService service = MessagingBuilder.standard()
@@ -2426,7 +2438,7 @@ in the HTML are also inlined using <code>style</code> attribute.</p>
     <span class="comment">// for the HTML template and '.txt.ftl' for text template</span>
     service.send(<span class="keyword">new</span> Email()
             .body().template(<span class="string"><span class="delimiter">&quot;</span><span class="content">classpath:/template/withImagesAndCss/resources</span><span class="delimiter">&quot;</span></span>,    <i class="conum" data-value="1"></i><b>(1)</b>
-                              <span class="keyword">new</span> SimpleBean(<span class="string"><span class="delimiter">&quot;</span><span class="content">foo</span><span class="delimiter">&quot;</span></span>, <span class="integer">42</span>))      <i class="conum" data-value="2"></i><b>(2)</b>
+                              <span class="keyword">new</span> SimpleBean(<span class="string"><span class="delimiter">&quot;</span><span class="content">foo</span><span class="delimiter">&quot;</span></span>, <span class="integer">42</span>))        <i class="conum" data-value="2"></i><b>(2)</b>
             .to(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham-test@yopmail.com</span><span class="delimiter">&quot;</span></span>));
   }
 
@@ -2473,7 +2485,7 @@ in the HTML are also inlined using <code>style</code> attribute.</p>
 <span class="tag">&lt;html</span> <span class="attribute-name">xmlns:th</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">http://www.thymeleaf.org</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
 <span class="tag">&lt;head&gt;</span>
 <span class="tag">&lt;meta</span> <span class="attribute-name">http-equiv</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">Content-Type</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">content</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">text/html; charset=UTF-8</span><span class="delimiter">&quot;</span></span> <span class="tag">/&gt;</span>
-<span class="tag">&lt;title&gt;</span>Demystifying Email Design<span class="tag">&lt;/title&gt;</span>
+<span class="tag">&lt;title&gt;</span>HtmlWithImagesAndCssTemplateSample<span class="tag">&lt;/title&gt;</span>
 <span class="tag">&lt;meta</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">viewport</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">content</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">width=device-width, initial-scale=1.0</span><span class="delimiter">&quot;</span></span> <span class="tag">/&gt;</span>
 <span class="tag">&lt;link</span> <span class="attribute-name">href</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">css/layout.css</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">rel</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">stylesheet</span><span class="delimiter">&quot;</span></span> <span class="tag">/&gt;</span>                             <i class="conum" data-value="1"></i><b>(1)</b>
 <span class="tag">&lt;link</span> <span class="attribute-name">href</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">css/theme.css</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">rel</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">stylesheet</span><span class="delimiter">&quot;</span></span> <span class="tag">/&gt;</span>                              <i class="conum" data-value="2"></i><b>(2)</b>
@@ -2817,7 +2829,7 @@ nodes, the whole contained rules are not applied at all.</p>
     <span class="predefined-type">Properties</span> properties = <span class="keyword">new</span> <span class="predefined-type">Properties</span>();
     properties.setProperty(<span class="string"><span class="delimiter">&quot;</span><span class="content">mail.smtp.host</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;your server host&gt;</span><span class="delimiter">&quot;</span></span>);
     properties.setProperty(<span class="string"><span class="delimiter">&quot;</span><span class="content">mail.smtp.port</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;your server port&gt;</span><span class="delimiter">&quot;</span></span>);
-    properties.setProperty(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.email.from</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;email address to display for the sender user&gt;</span><span class="delimiter">&quot;</span></span>);
+    properties.setProperty(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.email.from.default-value</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;email address to display for the sender user&gt;</span><span class="delimiter">&quot;</span></span>);
     <span class="comment">// Instantiate the messaging service using default behavior and</span>
     <span class="comment">// provided properties</span>
     MessagingService service = MessagingBuilder.standard()
@@ -2831,7 +2843,7 @@ nodes, the whole contained rules are not applied at all.</p>
     <span class="comment">// for the HTML template and '.txt.ftl' for text template</span>
     service.send(<span class="keyword">new</span> Email()
             .body().template(<span class="string"><span class="delimiter">&quot;</span><span class="content">classpath:/template/withImagesAndCss/resources</span><span class="delimiter">&quot;</span></span>,    <i class="conum" data-value="1"></i><b>(1)</b>
-                              <span class="keyword">new</span> SimpleBean(<span class="string"><span class="delimiter">&quot;</span><span class="content">foo</span><span class="delimiter">&quot;</span></span>, <span class="integer">42</span>))      <i class="conum" data-value="2"></i><b>(2)</b>
+                              <span class="keyword">new</span> SimpleBean(<span class="string"><span class="delimiter">&quot;</span><span class="content">foo</span><span class="delimiter">&quot;</span></span>, <span class="integer">42</span>))        <i class="conum" data-value="2"></i><b>(2)</b>
             .to(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham-test@yopmail.com</span><span class="delimiter">&quot;</span></span>));
   }
 
@@ -2878,7 +2890,7 @@ nodes, the whole contained rules are not applied at all.</p>
 <span class="tag">&lt;html</span> <span class="attribute-name">xmlns:th</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">http://www.thymeleaf.org</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
 <span class="tag">&lt;head&gt;</span>
 <span class="tag">&lt;meta</span> <span class="attribute-name">http-equiv</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">Content-Type</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">content</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">text/html; charset=UTF-8</span><span class="delimiter">&quot;</span></span> <span class="tag">/&gt;</span>
-<span class="tag">&lt;title&gt;</span>Demystifying Email Design<span class="tag">&lt;/title&gt;</span>
+<span class="tag">&lt;title&gt;</span>HtmlWithImagesAndCssTemplateSample<span class="tag">&lt;/title&gt;</span>
 <span class="tag">&lt;meta</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">viewport</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">content</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">width=device-width, initial-scale=1.0</span><span class="delimiter">&quot;</span></span> <span class="tag">/&gt;</span>
 <span class="tag">&lt;link</span> <span class="attribute-name">href</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">css/layout.css</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">rel</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">stylesheet</span><span class="delimiter">&quot;</span></span> <span class="tag">/&gt;</span>                             <i class="conum" data-value="1"></i><b>(1)</b>
 <span class="tag">&lt;link</span> <span class="attribute-name">href</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">css/theme.css</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">rel</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">stylesheet</span><span class="delimiter">&quot;</span></span> <span class="tag">/&gt;</span>                              <i class="conum" data-value="2"></i><b>(2)</b>
@@ -3267,7 +3279,7 @@ be unreadable.</p>
     <span class="predefined-type">Properties</span> properties = <span class="keyword">new</span> <span class="predefined-type">Properties</span>();
     properties.put(<span class="string"><span class="delimiter">&quot;</span><span class="content">mail.smtp.host</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;your server host&gt;</span><span class="delimiter">&quot;</span></span>);
     properties.put(<span class="string"><span class="delimiter">&quot;</span><span class="content">mail.smtp.port</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;your server port&gt;</span><span class="delimiter">&quot;</span></span>);
-    properties.put(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.email.from</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;email address to display for the sender user&gt;</span><span class="delimiter">&quot;</span></span>);
+    properties.put(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.email.from.default-value</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;email address to display for the sender user&gt;</span><span class="delimiter">&quot;</span></span>);
     <span class="comment">// Instantiate the messaging service using default behavior and</span>
     <span class="comment">// provided properties</span>
     MessagingService service = MessagingBuilder.standard()
@@ -3277,9 +3289,9 @@ be unreadable.</p>
         .build();
     <span class="comment">// send the email using the fluent API</span>
     service.send(<span class="keyword">new</span> Email()
-            .subject(<span class="string"><span class="delimiter">&quot;</span><span class="content">subject</span><span class="delimiter">&quot;</span></span>)
-            .text().string(text)      <i class="conum" data-value="1"></i><b>(1)</b>
-            .html().string(html)      <i class="conum" data-value="2"></i><b>(2)</b>
+            .subject(<span class="string"><span class="delimiter">&quot;</span><span class="content">HtmlAndTextSample</span><span class="delimiter">&quot;</span></span>)
+            .text().string(text)              <i class="conum" data-value="1"></i><b>(1)</b>
+            .html().string(html)              <i class="conum" data-value="2"></i><b>(2)</b>
             .to(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham-test@yopmail.com</span><span class="delimiter">&quot;</span></span>));
   }
 }</code></pre>
@@ -3361,7 +3373,7 @@ and text template files).</p>
     <span class="predefined-type">Properties</span> properties = <span class="keyword">new</span> <span class="predefined-type">Properties</span>();
     properties.setProperty(<span class="string"><span class="delimiter">&quot;</span><span class="content">mail.smtp.host</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;your server host&gt;</span><span class="delimiter">&quot;</span></span>);
     properties.setProperty(<span class="string"><span class="delimiter">&quot;</span><span class="content">mail.smtp.port</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;your server port&gt;</span><span class="delimiter">&quot;</span></span>);
-    properties.setProperty(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.email.from</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;email address to display for the sender user&gt;</span><span class="delimiter">&quot;</span></span>);
+    properties.setProperty(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.email.from.default-value</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;email address to display for the sender user&gt;</span><span class="delimiter">&quot;</span></span>);
     <span class="comment">// Instantiate the messaging service using default behavior and</span>
     <span class="comment">// provided properties</span>
     MessagingService service = MessagingBuilder.standard()
@@ -3374,8 +3386,8 @@ and text template files).</p>
     <span class="comment">// automatically takes the provided path and adds the '.html' extension</span>
     <span class="comment">// for the HTML template and '.txt' for text template</span>
     service.send(<span class="keyword">new</span> Email()
-            .subject(<span class="string"><span class="delimiter">&quot;</span><span class="content">subject</span><span class="delimiter">&quot;</span></span>)
-            .body().template(<span class="string"><span class="delimiter">&quot;</span><span class="content">classpath:/template/thymeleaf/simple</span><span class="delimiter">&quot;</span></span>,      <i class="conum" data-value="1"></i><b>(1)</b>
+            .subject(<span class="string"><span class="delimiter">&quot;</span><span class="content">HtmlAndTextTemplateSample</span><span class="delimiter">&quot;</span></span>)
+            .body().template(<span class="string"><span class="delimiter">&quot;</span><span class="content">classpath:/template/thymeleaf/simple</span><span class="delimiter">&quot;</span></span>,          <i class="conum" data-value="1"></i><b>(1)</b>
                               <span class="keyword">new</span> SimpleBean(<span class="string"><span class="delimiter">&quot;</span><span class="content">foo</span><span class="delimiter">&quot;</span></span>, <span class="integer">42</span>))    <i class="conum" data-value="2"></i><b>(2)</b>
             .to(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham-test@yopmail.com</span><span class="delimiter">&quot;</span></span>));
   }
@@ -3436,9 +3448,7 @@ extension).</td>
 <div class="listingblock">
 <div class="title">Text template located in <code>src/main/resources/template/thymeleaf/simple.txt</code></div>
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="txt">&lt;html xmlns:th=&quot;http://www.thymeleaf.org&quot; th:inline=&quot;text&quot; th:remove=&quot;tag&quot;&gt;
-[[${name}]] [[${value}]]
-&lt;/html&gt;</code></pre>
+<pre class="CodeRay highlight"><code data-lang="txt">[[${name}]] [[${value}]]</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -3517,7 +3527,7 @@ the same email. Just write your templates with the engine you want.</p>
     <span class="predefined-type">Properties</span> properties = <span class="keyword">new</span> <span class="predefined-type">Properties</span>();
     properties.setProperty(<span class="string"><span class="delimiter">&quot;</span><span class="content">mail.smtp.host</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;your server host&gt;</span><span class="delimiter">&quot;</span></span>);
     properties.setProperty(<span class="string"><span class="delimiter">&quot;</span><span class="content">mail.smtp.port</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;your server port&gt;</span><span class="delimiter">&quot;</span></span>);
-    properties.setProperty(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.email.from</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;email address to display for the sender user&gt;</span><span class="delimiter">&quot;</span></span>);
+    properties.setProperty(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.email.from.default-value</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;email address to display for the sender user&gt;</span><span class="delimiter">&quot;</span></span>);
     <span class="comment">// Instantiate the messaging service using default behavior and</span>
     <span class="comment">// provided properties</span>
     MessagingService service = MessagingBuilder.standard()
@@ -3530,9 +3540,9 @@ the same email. Just write your templates with the engine you want.</p>
     <span class="comment">// automatically takes the provided path and adds the '.html' extension</span>
     <span class="comment">// for the HTML template and '.txt.ftl' for text template</span>
     service.send(<span class="keyword">new</span> Email()
-            .subject(<span class="string"><span class="delimiter">&quot;</span><span class="content">subject</span><span class="delimiter">&quot;</span></span>)
-            .body().template(<span class="string"><span class="delimiter">&quot;</span><span class="content">classpath:/template/mixed/simple</span><span class="delimiter">&quot;</span></span>,        <i class="conum" data-value="1"></i><b>(1)</b>
-                              <span class="keyword">new</span> SimpleBean(<span class="string"><span class="delimiter">&quot;</span><span class="content">foo</span><span class="delimiter">&quot;</span></span>, <span class="integer">42</span>))    <i class="conum" data-value="2"></i><b>(2)</b>
+            .subject(<span class="string"><span class="delimiter">&quot;</span><span class="content">HtmlAndTextMixedTemplateEnginesSample</span><span class="delimiter">&quot;</span></span>)
+            .body().template(<span class="string"><span class="delimiter">&quot;</span><span class="content">classpath:/template/mixed/simple</span><span class="delimiter">&quot;</span></span>,                <i class="conum" data-value="1"></i><b>(1)</b>
+                              <span class="keyword">new</span> SimpleBean(<span class="string"><span class="delimiter">&quot;</span><span class="content">foo</span><span class="delimiter">&quot;</span></span>, <span class="integer">42</span>))      <i class="conum" data-value="2"></i><b>(2)</b>
             .to(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham-test@yopmail.com</span><span class="delimiter">&quot;</span></span>));
   }
 
@@ -3641,7 +3651,7 @@ to use the template engine that best suits your needs.</p>
     <span class="predefined-type">Properties</span> properties = <span class="keyword">new</span> <span class="predefined-type">Properties</span>();
     properties.put(<span class="string"><span class="delimiter">&quot;</span><span class="content">mail.smtp.host</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;your server host&gt;</span><span class="delimiter">&quot;</span></span>);
     properties.put(<span class="string"><span class="delimiter">&quot;</span><span class="content">mail.smtp.port</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;your server port&gt;</span><span class="delimiter">&quot;</span></span>);
-    properties.put(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.email.from</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;email address to display for the sender user&gt;</span><span class="delimiter">&quot;</span></span>);
+    properties.put(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.email.from.default-value</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;email address to display for the sender user&gt;</span><span class="delimiter">&quot;</span></span>);
     <span class="comment">// Instantiate the messaging service using default behavior and</span>
     <span class="comment">// provided properties</span>
     MessagingService service = MessagingBuilder.standard()
@@ -3651,11 +3661,11 @@ to use the template engine that best suits your needs.</p>
         .build();
     <span class="comment">// send the email using fluent API</span>
     service.send(<span class="keyword">new</span> Email()
-            .subject(<span class="string"><span class="delimiter">&quot;</span><span class="content">subject</span><span class="delimiter">&quot;</span></span>)
+            .subject(<span class="string"><span class="delimiter">&quot;</span><span class="content">WithAttachmentSample</span><span class="delimiter">&quot;</span></span>)
             .body().string(<span class="string"><span class="delimiter">&quot;</span><span class="content">content of the email</span><span class="delimiter">&quot;</span></span>)
             .to(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham-test@yopmail.com</span><span class="delimiter">&quot;</span></span>)
-            .attach().resource(<span class="string"><span class="delimiter">&quot;</span><span class="content">classpath:/attachment/test.pdf</span><span class="delimiter">&quot;</span></span>)      <i class="conum" data-value="1"></i><b>(1)</b>
-            .attach().stream(<span class="string"><span class="delimiter">&quot;</span><span class="content">from-stream.pdf</span><span class="delimiter">&quot;</span></span>, loadInputStream()));    <i class="conum" data-value="2"></i><b>(2)</b>
+            .attach().resource(<span class="string"><span class="delimiter">&quot;</span><span class="content">classpath:/attachment/test.pdf</span><span class="delimiter">&quot;</span></span>)            <i class="conum" data-value="1"></i><b>(1)</b>
+            .attach().stream(<span class="string"><span class="delimiter">&quot;</span><span class="content">from-stream.pdf</span><span class="delimiter">&quot;</span></span>, loadInputStream()));        <i class="conum" data-value="2"></i><b>(2)</b>
   }
 
   <span class="directive">private</span> <span class="directive">static</span> <span class="predefined-type">InputStream</span> loadInputStream() {
@@ -3749,7 +3759,7 @@ disposition is automatically set to <code>ContentDisposition.INLINE</code>.</p>
 <div class="sect4">
 <h5 id="_globally_configure_default_sender"><a class="anchor" href="#_globally_configure_default_sender"></a>Globally configure default sender</h5>
 <div class="paragraph">
-<p>You can configure sender address for all sent email by setting the property <code>ogham.email.from</code>.
+<p>You can configure sender address for all sent email by setting the property <code>ogham.email.from.default-value</code>.
 The value can either be an email address (<code>user@domain.host</code>) or an address with personal
 information (<code>User Name &lt;<a href="mailto:user@domain.host">user@domain.host</a>&gt;</code>). This property is used for every implementation (through
 SMTP, through SendGrid, &#8230;&#8203;).</p>
@@ -3782,7 +3792,7 @@ address in the email constructor or using the setter, this value is used instead
     <span class="predefined-type">Properties</span> properties = <span class="keyword">new</span> <span class="predefined-type">Properties</span>();
     properties.put(<span class="string"><span class="delimiter">&quot;</span><span class="content">mail.smtp.host</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;your server host&gt;</span><span class="delimiter">&quot;</span></span>);
     properties.put(<span class="string"><span class="delimiter">&quot;</span><span class="content">mail.smtp.port</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;your server port&gt;</span><span class="delimiter">&quot;</span></span>);
-    properties.put(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.email.from</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">foo.bar@test.com</span><span class="delimiter">&quot;</span></span>);       <i class="conum" data-value="1"></i><b>(1)</b>
+    properties.put(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.email.from.default-value</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">foo.bar@test.com</span><span class="delimiter">&quot;</span></span>);  <i class="conum" data-value="1"></i><b>(1)</b>
     <span class="comment">// Instantiate the messaging service using default behavior and</span>
     <span class="comment">// provided properties</span>
     MessagingService service = MessagingBuilder.standard()
@@ -3791,8 +3801,8 @@ address in the email constructor or using the setter, this value is used instead
           .and()
         .build();
     <span class="comment">// send the email using fluent API</span>
-    service.send(<span class="keyword">new</span> Email()                      <i class="conum" data-value="2"></i><b>(2)</b>
-            .subject(<span class="string"><span class="delimiter">&quot;</span><span class="content">subject</span><span class="delimiter">&quot;</span></span>)
+    service.send(<span class="keyword">new</span> Email()                                               <i class="conum" data-value="2"></i><b>(2)</b>
+            .subject(<span class="string"><span class="delimiter">&quot;</span><span class="content">OverrideDefaultSenderSample</span><span class="delimiter">&quot;</span></span>)
             .body().string(<span class="string"><span class="delimiter">&quot;</span><span class="content">email content</span><span class="delimiter">&quot;</span></span>)
             .to(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham-test@yopmail.com</span><span class="delimiter">&quot;</span></span>));
     <span class="comment">// =&gt; the sender address is foo.bar@test.com</span>
@@ -3800,7 +3810,7 @@ address in the email constructor or using the setter, this value is used instead
     service.send(<span class="keyword">new</span> Email()
         .subject(<span class="string"><span class="delimiter">&quot;</span><span class="content">subject</span><span class="delimiter">&quot;</span></span>)
         .body().string(<span class="string"><span class="delimiter">&quot;</span><span class="content">email content</span><span class="delimiter">&quot;</span></span>)
-        .from(<span class="string"><span class="delimiter">&quot;</span><span class="content">override@test.com</span><span class="delimiter">&quot;</span></span>)                  <i class="conum" data-value="3"></i><b>(3)</b>
+        .from(<span class="string"><span class="delimiter">&quot;</span><span class="content">override@test.com</span><span class="delimiter">&quot;</span></span>)                                     <i class="conum" data-value="3"></i><b>(3)</b>
         .to(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham-test@yopmail.com</span><span class="delimiter">&quot;</span></span>));
     <span class="comment">// =&gt; the sender address is now override@test.com</span>
   }
@@ -3847,7 +3857,7 @@ address in the email constructor or using the setter, this value is used instead
 <div class="paragraph">
 <p>As for sender address, you can define globally a default subject for emails if none is explicitly
 provided (neither using <code>.subject(String)</code> method nor defining a subject directly in the template).
-The property is <code>ogham.email.subject</code>.</p>
+The property is <code>ogham.email.subject.default-value</code>.</p>
 </div>
 </div>
 <div class="sect4">
@@ -3858,13 +3868,13 @@ The property is <code>ogham.email.subject</code>.</p>
 <div class="ulist">
 <ul>
 <li>
-<p><code>ogham.email.to</code>: set one or several recipient addresses (<code>to</code> field)</p>
+<p><code>ogham.email.to.default-value</code>: set one or several recipient addresses (<code>to</code> field)</p>
 </li>
 <li>
-<p><code>ogham.email.cc</code>: set one or several recipient addresses (<code>cc</code> field)</p>
+<p><code>ogham.email.cc.default-value</code>: set one or several recipient addresses (<code>cc</code> field)</p>
 </li>
 <li>
-<p><code>ogham.email.bcc</code>: set one or several recipient addresses (<code>bcc</code> field)</p>
+<p><code>ogham.email.bcc.default-value</code>: set one or several recipient addresses (<code>bcc</code> field)</p>
 </li>
 </ul>
 </div>
@@ -3922,10 +3932,10 @@ will never be seen in received emails).</p>
     <span class="predefined-type">Properties</span> additional = <span class="keyword">new</span> <span class="predefined-type">Properties</span>();
     additional.setProperty(<span class="string"><span class="delimiter">&quot;</span><span class="content">mail.smtp.host</span><span class="delimiter">&quot;</span></span>, ServerSetupTest.SMTP.getBindAddress());
     additional.setProperty(<span class="string"><span class="delimiter">&quot;</span><span class="content">mail.smtp.port</span><span class="delimiter">&quot;</span></span>, <span class="predefined-type">String</span>.valueOf(ServerSetupTest.SMTP.getPort()));
-    additional.setProperty(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.email.from</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">test.sender@sii.fr</span><span class="delimiter">&quot;</span></span>);
-    additional.setProperty(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.email.to</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">recipient.to1@sii.fr,  recipient.to2@sii.fr , recipient.to3@sii.fr</span><span class="delimiter">&quot;</span></span>); <i class="conum" data-value="1"></i><b>(1)</b>
-    additional.setProperty(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.email.cc</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">recipient.cc1@sii.fr,recipient.cc2@sii.fr</span><span class="delimiter">&quot;</span></span>);                <i class="conum" data-value="2"></i><b>(2)</b>
-    additional.setProperty(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.email.bcc</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">recipient.bcc@sii.fr</span><span class="delimiter">&quot;</span></span>);                          <i class="conum" data-value="3"></i><b>(3)</b>
+    additional.setProperty(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.email.from.default-value</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">test.sender@sii.fr</span><span class="delimiter">&quot;</span></span>);
+    additional.setProperty(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.email.to.default-value</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">recipient.to1@sii.fr,  recipient.to2@sii.fr , recipient.to3@sii.fr</span><span class="delimiter">&quot;</span></span>);   <i class="conum" data-value="1"></i><b>(1)</b>
+    additional.setProperty(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.email.cc.default-value</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">recipient.cc1@sii.fr,recipient.cc2@sii.fr</span><span class="delimiter">&quot;</span></span>);                            <i class="conum" data-value="2"></i><b>(2)</b>
+    additional.setProperty(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.email.bcc.default-value</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">recipient.bcc@sii.fr</span><span class="delimiter">&quot;</span></span>);                                                <i class="conum" data-value="3"></i><b>(3)</b>
     oghamService = MessagingBuilder.standard()
         .environment()
           .properties(<span class="string"><span class="delimiter">&quot;</span><span class="content">/application.properties</span><span class="delimiter">&quot;</span></span>)
@@ -3990,7 +4000,7 @@ will never be seen in received emails).</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="java">additional.setProperty(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.email.to</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">  foo@example.com  ,    John Doe &lt;bar@example.com&gt;,   abc@example.com</span><span class="delimiter">&quot;</span></span>);</code></pre>
+<pre class="CodeRay highlight"><code data-lang="java">additional.setProperty(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.email.to.default-value</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">  foo@example.com  ,    John Doe &lt;bar@example.com&gt;,   abc@example.com</span><span class="delimiter">&quot;</span></span>);</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -4076,22 +4086,22 @@ will never be seen in received emails).</p>
   <span class="directive">public</span> <span class="directive">static</span> <span class="type">void</span> main(<span class="predefined-type">String</span><span class="type">[]</span> args) <span class="directive">throws</span> MessagingException {
     <span class="comment">// Instantiate the messaging service using default behavior and</span>
     <span class="comment">// provided properties (properties can be externalized)</span>
-    MessagingService service = MessagingBuilder.standard()                    <i class="conum" data-value="1"></i><b>(1)</b>
+    MessagingService service = MessagingBuilder.standard()                                      <i class="conum" data-value="1"></i><b>(1)</b>
       .environment()
-        .properties()                                   <i class="conum" data-value="2"></i><b>(2)</b>
-          .set(<span class="string"><span class="delimiter">&quot;</span><span class="content">mail.smtp.auth</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">true</span><span class="delimiter">&quot;</span></span>)                          <i class="conum" data-value="3"></i><b>(3)</b>
-          .set(<span class="string"><span class="delimiter">&quot;</span><span class="content">mail.smtp.host</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">smtp.gmail.com</span><span class="delimiter">&quot;</span></span>)                    <i class="conum" data-value="4"></i><b>(4)</b>
-          .set(<span class="string"><span class="delimiter">&quot;</span><span class="content">mail.smtp.port</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">465</span><span class="delimiter">&quot;</span></span>)                         <i class="conum" data-value="5"></i><b>(5)</b>
-          .set(<span class="string"><span class="delimiter">&quot;</span><span class="content">mail.smtp.socketFactory.class</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">javax.net.ssl.SSLSocketFactory</span><span class="delimiter">&quot;</span></span>)     <i class="conum" data-value="6"></i><b>(6)</b>
-          .set(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.email.javamail.authenticator.username</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;your gmail username&gt;</span><span class="delimiter">&quot;</span></span>)  <i class="conum" data-value="7"></i><b>(7)</b>
-          .set(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.email.javamail.authenticator.password</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;your gmail password&gt;</span><span class="delimiter">&quot;</span></span>)  <i class="conum" data-value="8"></i><b>(8)</b>
-          .set(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.email.from</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;your gmail address&gt;</span><span class="delimiter">&quot;</span></span>)                <i class="conum" data-value="9"></i><b>(9)</b>
+        .properties()                                                                       <i class="conum" data-value="2"></i><b>(2)</b>
+          .set(<span class="string"><span class="delimiter">&quot;</span><span class="content">mail.smtp.auth</span><span class="delimiter">&quot;</span></span>, <span class="predefined-constant">true</span>)                                                    <i class="conum" data-value="3"></i><b>(3)</b>
+          .set(<span class="string"><span class="delimiter">&quot;</span><span class="content">mail.smtp.host</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">smtp.gmail.com</span><span class="delimiter">&quot;</span></span>)                                        <i class="conum" data-value="4"></i><b>(4)</b>
+          .set(<span class="string"><span class="delimiter">&quot;</span><span class="content">mail.smtp.port</span><span class="delimiter">&quot;</span></span>, <span class="integer">465</span>)                                                     <i class="conum" data-value="5"></i><b>(5)</b>
+          .set(<span class="string"><span class="delimiter">&quot;</span><span class="content">mail.smtp.socketFactory.class</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">javax.net.ssl.SSLSocketFactory</span><span class="delimiter">&quot;</span></span>)         <i class="conum" data-value="6"></i><b>(6)</b>
+          .set(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.email.javamail.authenticator.username</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;your gmail username&gt;</span><span class="delimiter">&quot;</span></span>)    <i class="conum" data-value="7"></i><b>(7)</b>
+          .set(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.email.javamail.authenticator.password</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;your gmail password&gt;</span><span class="delimiter">&quot;</span></span>)    <i class="conum" data-value="8"></i><b>(8)</b>
+          .set(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.email.from.default-value</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;your gmail address&gt;</span><span class="delimiter">&quot;</span></span>)                  <i class="conum" data-value="9"></i><b>(9)</b>
           .and()
         .and()
       .build();
     <span class="comment">// send the mail using fluent API</span>
-    service.send(<span class="keyword">new</span> Email()                                  <i class="conum" data-value="10"></i><b>(10)</b>
-            .subject(<span class="string"><span class="delimiter">&quot;</span><span class="content">subject</span><span class="delimiter">&quot;</span></span>)
+    service.send(<span class="keyword">new</span> Email()                                                                    <i class="conum" data-value="10"></i><b>(10)</b>
+            .subject(<span class="string"><span class="delimiter">&quot;</span><span class="content">GmailSSLBasicSample</span><span class="delimiter">&quot;</span></span>)
             .body().string(<span class="string"><span class="delimiter">&quot;</span><span class="content">email content</span><span class="delimiter">&quot;</span></span>)
             .to(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham-test@yopmail.com</span><span class="delimiter">&quot;</span></span>));
   }
@@ -4228,13 +4238,13 @@ difference is the configuration of Ogham.</p>
     <span class="comment">// provided properties</span>
     MessagingService service = MessagingBuilder.standard()
         .environment()
-          .properties(<span class="string"><span class="delimiter">&quot;</span><span class="content">/sendgrid-template.properties</span><span class="delimiter">&quot;</span></span>)        <i class="conum" data-value="1"></i><b>(1)</b>
+          .properties(<span class="string"><span class="delimiter">&quot;</span><span class="content">/sendgrid-template.properties</span><span class="delimiter">&quot;</span></span>)                <i class="conum" data-value="1"></i><b>(1)</b>
           .and()
         .build();
     <span class="comment">// send the email using fluent API</span>
     <span class="comment">// @formatter:off</span>
     service.send(<span class="keyword">new</span> Email()
-            .body().template(<span class="string"><span class="delimiter">&quot;</span><span class="content">full</span><span class="delimiter">&quot;</span></span>, <span class="keyword">new</span> SimpleBean(<span class="string"><span class="delimiter">&quot;</span><span class="content">foo</span><span class="delimiter">&quot;</span></span>, <span class="integer">42</span>))   <i class="conum" data-value="2"></i><b>(2)</b>
+            .body().template(<span class="string"><span class="delimiter">&quot;</span><span class="content">full</span><span class="delimiter">&quot;</span></span>, <span class="keyword">new</span> SimpleBean(<span class="string"><span class="delimiter">&quot;</span><span class="content">foo</span><span class="delimiter">&quot;</span></span>, <span class="integer">42</span>))     <i class="conum" data-value="2"></i><b>(2)</b>
             .to(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham-test@yopmail.com</span><span class="delimiter">&quot;</span></span>)
             .attach().resource(<span class="string"><span class="delimiter">&quot;</span><span class="content">/attachment/test.pdf</span><span class="delimiter">&quot;</span></span>));
     <span class="comment">// @formatter:on</span>
@@ -4279,9 +4289,9 @@ difference is the configuration of Ogham.</p>
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="python"><span class="comment"># ogham additional properties</span>
-ogham.email.sengrid.api-key=&lt;your sendgrid API key&gt;         <i class="conum" data-value="1"></i><b>(1)</b>
-ogham.email.from=&lt;sender email address&gt;               <i class="conum" data-value="2"></i><b>(2)</b>
-ogham.email.template.path-prefix=/template/thymeleaf/email/     <i class="conum" data-value="3"></i><b>(3)</b></code></pre>
+ogham.email.sendgrid.api-key=&lt;your sendgrid API key&gt;           <i class="conum" data-value="1"></i><b>(1)</b>
+ogham.email.from.default-value=&lt;sender email address&gt;          <i class="conum" data-value="2"></i><b>(2)</b>
+ogham.email.template.path-prefix=/template/thymeleaf/email/    <i class="conum" data-value="3"></i><b>(3)</b></code></pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -4355,13 +4365,13 @@ ogham.email.template.path-prefix=/template/thymeleaf/email/     <i class="conum"
     <span class="comment">// provided properties</span>
     MessagingService service = MessagingBuilder.standard()
         .environment()
-          .properties(<span class="string"><span class="delimiter">&quot;</span><span class="content">/email-template.properties</span><span class="delimiter">&quot;</span></span>)         <i class="conum" data-value="1"></i><b>(1)</b>
+          .properties(<span class="string"><span class="delimiter">&quot;</span><span class="content">/email-template.properties</span><span class="delimiter">&quot;</span></span>)                   <i class="conum" data-value="1"></i><b>(1)</b>
           .and()
         .build();
     <span class="comment">// send the email using fluent API</span>
     <span class="comment">// @formatter:off</span>
     service.send(<span class="keyword">new</span> Email()
-            .body().template(<span class="string"><span class="delimiter">&quot;</span><span class="content">full</span><span class="delimiter">&quot;</span></span>, <span class="keyword">new</span> SimpleBean(<span class="string"><span class="delimiter">&quot;</span><span class="content">foo</span><span class="delimiter">&quot;</span></span>, <span class="integer">42</span>))   <i class="conum" data-value="2"></i><b>(2)</b>
+            .body().template(<span class="string"><span class="delimiter">&quot;</span><span class="content">full</span><span class="delimiter">&quot;</span></span>, <span class="keyword">new</span> SimpleBean(<span class="string"><span class="delimiter">&quot;</span><span class="content">foo</span><span class="delimiter">&quot;</span></span>, <span class="integer">42</span>))     <i class="conum" data-value="2"></i><b>(2)</b>
             .to(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham-test@yopmail.com</span><span class="delimiter">&quot;</span></span>)
             .attach().resource(<span class="string"><span class="delimiter">&quot;</span><span class="content">/attachment/test.pdf</span><span class="delimiter">&quot;</span></span>));
     <span class="comment">// @formatter:on</span>
@@ -4406,8 +4416,8 @@ ogham.email.template.path-prefix=/template/thymeleaf/email/     <i class="conum"
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="python"><span class="comment"># general SMTP server</span>
-mail.smtp.host=&lt;your server host&gt;                   <i class="conum" data-value="1"></i><b>(1)</b>
-mail.smtp.port=&lt;your server port&gt;                   <i class="conum" data-value="2"></i><b>(2)</b>
+mail.smtp.host=&lt;your server host&gt;                                   <i class="conum" data-value="1"></i><b>(1)</b>
+mail.smtp.port=&lt;your server port&gt;                                   <i class="conum" data-value="2"></i><b>(2)</b>
 <span class="comment"># using with Gmail</span>
 <span class="comment">#mail.smtp.auth=true</span>
 <span class="comment">#mail.smtp.host=smtp.gmail.com</span>
@@ -4419,8 +4429,8 @@ mail.smtp.port=&lt;your server port&gt;                   <i class="conum" data-
 
 
 <span class="comment"># ogham additional properties</span>
-ogham.email.from=&lt;sender email address&gt;                 <i class="conum" data-value="3"></i><b>(3)</b>
-ogham.email.template.path-prefix=/template/thymeleaf/email/       <i class="conum" data-value="4"></i><b>(4)</b></code></pre>
+ogham.email.from.default-value=&lt;sender email address&gt;               <i class="conum" data-value="3"></i><b>(3)</b>
+ogham.email.template.path-prefix=/template/thymeleaf/email/         <i class="conum" data-value="4"></i><b>(4)</b></code></pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -4490,20 +4500,20 @@ ogham.email.template.path-prefix=/template/thymeleaf/email/       <i class="conu
     <span class="comment">// configure properties (could be stored in a properties file or defined</span>
     <span class="comment">// in System properties)</span>
     <span class="predefined-type">Properties</span> properties = <span class="keyword">new</span> <span class="predefined-type">Properties</span>();
-    properties.setProperty(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.sms.smpp.host</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;your server host&gt;</span><span class="delimiter">&quot;</span></span>);            <i class="conum" data-value="1"></i><b>(1)</b>
-    properties.setProperty(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.sms.smpp.port</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;your server port&gt;</span><span class="delimiter">&quot;</span></span>);            <i class="conum" data-value="2"></i><b>(2)</b>
-    properties.setProperty(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.sms.smpp.system-id</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;your server system ID&gt;</span><span class="delimiter">&quot;</span></span>);        <i class="conum" data-value="3"></i><b>(3)</b>
-    properties.setProperty(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.sms.smpp.password</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;your server password&gt;</span><span class="delimiter">&quot;</span></span>);        <i class="conum" data-value="4"></i><b>(4)</b>
-    properties.setProperty(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.sms.from</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;phone number to display for the sender&gt;</span><span class="delimiter">&quot;</span></span>);   <i class="conum" data-value="5"></i><b>(5)</b>
+    properties.setProperty(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.sms.smpp.host</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;your server host&gt;</span><span class="delimiter">&quot;</span></span>);                                 <i class="conum" data-value="1"></i><b>(1)</b>
+    properties.setProperty(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.sms.smpp.port</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;your server port&gt;</span><span class="delimiter">&quot;</span></span>);                                 <i class="conum" data-value="2"></i><b>(2)</b>
+    properties.setProperty(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.sms.smpp.system-id</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;your server system ID&gt;</span><span class="delimiter">&quot;</span></span>);                       <i class="conum" data-value="3"></i><b>(3)</b>
+    properties.setProperty(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.sms.smpp.password</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;your server password&gt;</span><span class="delimiter">&quot;</span></span>);                         <i class="conum" data-value="4"></i><b>(4)</b>
+    properties.setProperty(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.sms.from.default-value</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;phone number to display for the sender&gt;</span><span class="delimiter">&quot;</span></span>);  <i class="conum" data-value="5"></i><b>(5)</b>
     <span class="comment">// Instantiate the messaging service using default behavior and</span>
     <span class="comment">// provided properties</span>
-    MessagingService service = MessagingBuilder.standard()                    <i class="conum" data-value="6"></i><b>(6)</b>
+    MessagingService service = MessagingBuilder.standard()                                               <i class="conum" data-value="6"></i><b>(6)</b>
         .environment()
-          .properties(properties)                             <i class="conum" data-value="7"></i><b>(7)</b>
+          .properties(properties)                                                                  <i class="conum" data-value="7"></i><b>(7)</b>
           .and()
-        .build();                                     <i class="conum" data-value="8"></i><b>(8)</b>
+        .build();                                                                                    <i class="conum" data-value="8"></i><b>(8)</b>
     <span class="comment">// send the sms using fluent API</span>
-    service.send(<span class="keyword">new</span> Sms()                                    <i class="conum" data-value="9"></i><b>(9)</b>
+    service.send(<span class="keyword">new</span> Sms()                                                                               <i class="conum" data-value="9"></i><b>(9)</b>
             .message().string(<span class="string"><span class="delimiter">&quot;</span><span class="content">sms content</span><span class="delimiter">&quot;</span></span>)
             .to(<span class="string"><span class="delimiter">&quot;</span><span class="content">+33752962193</span><span class="delimiter">&quot;</span></span>));
   }
@@ -4547,7 +4557,8 @@ ogham.email.template.path-prefix=/template/thymeleaf/email/       <i class="conu
 </tr>
 <tr>
 <td><i class="conum" data-value="9"></i><b>9</b></td>
-<td>Send a SMS with a simple message. The sender phone number is automatically set using <code>ogham.sms.from</code> property</td>
+<td>Send a SMS with a simple message. The sender phone number is automatically set using
+<code>ogham.sms.from.default-value</code> property</td>
 </tr>
 </table>
 </div>
@@ -4558,7 +4569,8 @@ ogham.email.template.path-prefix=/template/thymeleaf/email/       <i class="conu
 <p>-</p>
 </div>
 <div class="paragraph">
-<p>The construction of the SMS is done using a fluent API in order to chain calls and to have a more readable code.</p>
+<p>The construction of the SMS is done using a fluent API in order to chain calls and to have a more
+readable code.</p>
 </div>
 <div class="paragraph">
 <p>Properties are directly provided in the code. You can instead <a href="#properties-handling">use a configuration file</a>.</p>
@@ -4595,18 +4607,18 @@ ogham.email.template.path-prefix=/template/thymeleaf/email/       <i class="conu
     properties.setProperty(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.sms.smpp.port</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;your server port&gt;</span><span class="delimiter">&quot;</span></span>);
     properties.setProperty(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.sms.smpp.system-id</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;your server system ID&gt;</span><span class="delimiter">&quot;</span></span>);
     properties.setProperty(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.sms.smpp.password</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;your server password&gt;</span><span class="delimiter">&quot;</span></span>);
-    properties.setProperty(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.sms.from</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;phone number to display for the sender&gt;</span><span class="delimiter">&quot;</span></span>);
+    properties.setProperty(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.sms.from.default-value</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;phone number to display for the sender&gt;</span><span class="delimiter">&quot;</span></span>);
     <span class="comment">// Instantiate the messaging service using default behavior and</span>
     <span class="comment">// provided properties</span>
-    MessagingService service = MessagingBuilder.standard()                <i class="conum" data-value="1"></i><b>(1)</b>
+    MessagingService service = MessagingBuilder.standard()                              <i class="conum" data-value="1"></i><b>(1)</b>
         .environment()
-          .properties(properties)                         <i class="conum" data-value="2"></i><b>(2)</b>
+          .properties(properties)                                                 <i class="conum" data-value="2"></i><b>(2)</b>
           .and()
-        .build();                                 <i class="conum" data-value="3"></i><b>(3)</b>
+        .build();                                                                   <i class="conum" data-value="3"></i><b>(3)</b>
     <span class="comment">// send the sms using fluent API</span>
-    service.send(<span class="keyword">new</span> Sms()                                <i class="conum" data-value="4"></i><b>(4)</b>
-            .message().template(<span class="string"><span class="delimiter">&quot;</span><span class="content">classpath:/template/thymeleaf/simple.txt</span><span class="delimiter">&quot;</span></span>,   <i class="conum" data-value="5"></i><b>(5)</b>
-                          <span class="keyword">new</span> SimpleBean(<span class="string"><span class="delimiter">&quot;</span><span class="content">foo</span><span class="delimiter">&quot;</span></span>, <span class="integer">42</span>))        <i class="conum" data-value="6"></i><b>(6)</b>
+    service.send(<span class="keyword">new</span> Sms()                                                              <i class="conum" data-value="4"></i><b>(4)</b>
+            .message().template(<span class="string"><span class="delimiter">&quot;</span><span class="content">classpath:/template/thymeleaf/simple.txt</span><span class="delimiter">&quot;</span></span>,     <i class="conum" data-value="5"></i><b>(5)</b>
+                          <span class="keyword">new</span> SimpleBean(<span class="string"><span class="delimiter">&quot;</span><span class="content">foo</span><span class="delimiter">&quot;</span></span>, <span class="integer">42</span>))              <i class="conum" data-value="6"></i><b>(6)</b>
             .to(<span class="string"><span class="delimiter">&quot;</span><span class="content">+33752962193</span><span class="delimiter">&quot;</span></span>));
   }
 
@@ -4644,7 +4656,8 @@ ogham.email.template.path-prefix=/template/thymeleaf/email/       <i class="conu
 </tr>
 <tr>
 <td><i class="conum" data-value="4"></i><b>4</b></td>
-<td>Send a SMS with message that comes from the evaluated template. The sender address is automatically set using <code>ogham.sms.from</code> property</td>
+<td>Send a SMS with message that comes from the evaluated template. The sender address is automatically
+set using <code>ogham.sms.from.default-value</code> property</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="5"></i><b>5</b></td>
@@ -4664,9 +4677,7 @@ ogham.email.template.path-prefix=/template/thymeleaf/email/       <i class="conu
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="html"><span class="tag">&lt;html</span> <span class="attribute-name">xmlns:th</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">http://www.thymeleaf.org</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">th:inline</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">text</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">th:remove</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">tag</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
-[[${name}]] [[${value}]]
-<span class="tag">&lt;/html&gt;</span></code></pre>
+<pre class="CodeRay highlight"><code data-lang="html">[[${name}]] [[${value}]]</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -4736,7 +4747,7 @@ to the message encoding). Therefore, you don&#8217;t need to handle the split of
     properties.setProperty(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.sms.smpp.port</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;your server port&gt;</span><span class="delimiter">&quot;</span></span>);
     properties.setProperty(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.sms.smpp.system-id</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;your server system ID&gt;</span><span class="delimiter">&quot;</span></span>);
     properties.setProperty(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.sms.smpp.password</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;your server password&gt;</span><span class="delimiter">&quot;</span></span>);
-    properties.setProperty(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.sms.from</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;phone number to display for the sender&gt;</span><span class="delimiter">&quot;</span></span>);
+    properties.setProperty(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.sms.from.default-value</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;phone number to display for the sender&gt;</span><span class="delimiter">&quot;</span></span>);
     <span class="comment">// Instantiate the messaging service using default behavior and</span>
     <span class="comment">// provided properties</span>
     MessagingService service = MessagingBuilder.standard()
@@ -4823,19 +4834,19 @@ By default, Ogham sends the SMS using 8-bit encoding.
     <span class="comment">// configure properties (could be stored in a properties file or defined</span>
     <span class="comment">// in System properties)</span>
     <span class="predefined-type">Properties</span> properties = <span class="keyword">new</span> <span class="predefined-type">Properties</span>();
-    properties.setProperty(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.sms.smpp.host</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">smsglobal.com</span><span class="delimiter">&quot;</span></span>);                     <i class="conum" data-value="1"></i><b>(1)</b>
+    properties.setProperty(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.sms.smpp.host</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">smsglobal.com</span><span class="delimiter">&quot;</span></span>);                                         <i class="conum" data-value="1"></i><b>(1)</b>
     properties.setProperty(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.sms.smpp.system-id</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;your smsglobal username available in API keys&gt;</span><span class="delimiter">&quot;</span></span>);  <i class="conum" data-value="2"></i><b>(2)</b>
-    properties.setProperty(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.sms.smpp.password</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;your smsglobal password available in API keys&gt;</span><span class="delimiter">&quot;</span></span>); <i class="conum" data-value="3"></i><b>(3)</b>
-    properties.setProperty(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.sms.from</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;phone number to display for the sender&gt;</span><span class="delimiter">&quot;</span></span>);         <i class="conum" data-value="4"></i><b>(4)</b>
+    properties.setProperty(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.sms.smpp.password</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;your smsglobal password available in API keys&gt;</span><span class="delimiter">&quot;</span></span>);   <i class="conum" data-value="3"></i><b>(3)</b>
+    properties.setProperty(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.sms.from.default-value</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;phone number to display for the sender&gt;</span><span class="delimiter">&quot;</span></span>);     <i class="conum" data-value="4"></i><b>(4)</b>
     <span class="comment">// Instantiate the messaging service using default behavior and</span>
     <span class="comment">// provided properties</span>
-    MessagingService service = MessagingBuilder.standard()                          <i class="conum" data-value="5"></i><b>(5)</b>
+    MessagingService service = MessagingBuilder.standard()                                                  <i class="conum" data-value="5"></i><b>(5)</b>
         .environment()
-          .properties(properties)                                   <i class="conum" data-value="6"></i><b>(6)</b>
+          .properties(properties)                                                                     <i class="conum" data-value="6"></i><b>(6)</b>
           .and()
-        .build();                                           <i class="conum" data-value="7"></i><b>(7)</b>
+        .build();                                                                                       <i class="conum" data-value="7"></i><b>(7)</b>
     <span class="comment">// send the sms using fluent API</span>
-    service.send(<span class="keyword">new</span> Sms()                                          <i class="conum" data-value="8"></i><b>(8)</b>
+    service.send(<span class="keyword">new</span> Sms()                                                                                  <i class="conum" data-value="8"></i><b>(8)</b>
         .message().string(<span class="string"><span class="delimiter">&quot;</span><span class="content">sms content</span><span class="delimiter">&quot;</span></span>)
         .to(<span class="string"><span class="delimiter">&quot;</span><span class="content">+262693493696</span><span class="delimiter">&quot;</span></span>));
   }
@@ -4939,7 +4950,7 @@ By default, Ogham sends the SMS using 8-bit encoding.
     properties.put(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.sms.smpp.port</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;your server port&gt;</span><span class="delimiter">&quot;</span></span>);
     properties.setProperty(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.sms.smpp.system-id</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;your server system ID&gt;</span><span class="delimiter">&quot;</span></span>);
     properties.setProperty(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.sms.smpp.password</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;your server password&gt;</span><span class="delimiter">&quot;</span></span>);
-    properties.put(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.sms.from</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">+33699999999</span><span class="delimiter">&quot;</span></span>);         <i class="conum" data-value="1"></i><b>(1)</b>
+    properties.put(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.sms.from.default-value</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">+33699999999</span><span class="delimiter">&quot;</span></span>);     <i class="conum" data-value="1"></i><b>(1)</b>
     <span class="comment">// Instantiate the messaging service using default behavior and</span>
     <span class="comment">// provided properties</span>
     MessagingService service = MessagingBuilder.standard()
@@ -4948,14 +4959,14 @@ By default, Ogham sends the SMS using 8-bit encoding.
           .and()
         .build();
     <span class="comment">// send the sms using fluent API</span>
-    service.send(<span class="keyword">new</span> Sms()                        <i class="conum" data-value="2"></i><b>(2)</b>
+    service.send(<span class="keyword">new</span> Sms()                                              <i class="conum" data-value="2"></i><b>(2)</b>
         .message().string(<span class="string"><span class="delimiter">&quot;</span><span class="content">sms content</span><span class="delimiter">&quot;</span></span>)
         .to(<span class="string"><span class="delimiter">&quot;</span><span class="content">+33752962193</span><span class="delimiter">&quot;</span></span>));
     <span class="comment">// =&gt; the sender phone number is +33699999999</span>
 
     service.send(<span class="keyword">new</span> Sms()
         .message().string(<span class="string"><span class="delimiter">&quot;</span><span class="content">sms content</span><span class="delimiter">&quot;</span></span>)
-        .from(<span class="string"><span class="delimiter">&quot;</span><span class="content">+33700000000</span><span class="delimiter">&quot;</span></span>)                   <i class="conum" data-value="3"></i><b>(3)</b>
+        .from(<span class="string"><span class="delimiter">&quot;</span><span class="content">+33700000000</span><span class="delimiter">&quot;</span></span>)                                       <i class="conum" data-value="3"></i><b>(3)</b>
         .to(<span class="string"><span class="delimiter">&quot;</span><span class="content">+33752962193</span><span class="delimiter">&quot;</span></span>));
     <span class="comment">// =&gt; the sender phone number is now +33700000000</span>
   }
@@ -5315,16 +5326,16 @@ By default, Ogham sends the SMS using 8-bit encoding.
 <span class="directive">public</span> <span class="type">class</span> <span class="class">PropertiesSample</span> {
   <span class="directive">public</span> <span class="directive">static</span> <span class="type">void</span> main(<span class="predefined-type">String</span><span class="type">[]</span> args) <span class="directive">throws</span> MessagingException, <span class="exception">IOException</span> {
     <span class="predefined-type">Properties</span> props = <span class="keyword">new</span> <span class="predefined-type">Properties</span>();
-    props.setProperty(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.email.from</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">hello@world.com</span><span class="delimiter">&quot;</span></span>);
+    props.setProperty(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.email.from.default-value</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">hello@world.com</span><span class="delimiter">&quot;</span></span>);
     MessagingService service = MessagingBuilder.standard()
         .environment()
-          .properties(props)                    <i class="conum" data-value="1"></i><b>(1)</b>
-          .properties(<span class="string"><span class="delimiter">&quot;</span><span class="content">classpath:email.properties</span><span class="delimiter">&quot;</span></span>)       <i class="conum" data-value="2"></i><b>(2)</b>
-          .properties(<span class="string"><span class="delimiter">&quot;</span><span class="content">file:/etc/app/email.properties</span><span class="delimiter">&quot;</span></span>)     <i class="conum" data-value="3"></i><b>(3)</b>
+          .properties(props)                                   <i class="conum" data-value="1"></i><b>(1)</b>
+          .properties(<span class="string"><span class="delimiter">&quot;</span><span class="content">classpath:email.properties</span><span class="delimiter">&quot;</span></span>)            <i class="conum" data-value="2"></i><b>(2)</b>
+          .properties(<span class="string"><span class="delimiter">&quot;</span><span class="content">file:/etc/app/email.properties</span><span class="delimiter">&quot;</span></span>)        <i class="conum" data-value="3"></i><b>(3)</b>
           .properties()
-            .set(<span class="string"><span class="delimiter">&quot;</span><span class="content">mail.smtp.port</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">10</span><span class="delimiter">&quot;</span></span>)            <i class="conum" data-value="4"></i><b>(4)</b>
+            .set(<span class="string"><span class="delimiter">&quot;</span><span class="content">mail.smtp.port</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">10</span><span class="delimiter">&quot;</span></span>)                     <i class="conum" data-value="4"></i><b>(4)</b>
             .and()
-          .systemProperties()                   <i class="conum" data-value="5"></i><b>(5)</b>
+          .systemProperties()                                  <i class="conum" data-value="5"></i><b>(5)</b>
           .and()
         .build();
     service.send(<span class="comment">/*your message here*/</span><span class="predefined-constant">null</span>);
@@ -5420,16 +5431,16 @@ By default, Ogham sends the SMS using 8-bit encoding.
 <span class="directive">public</span> <span class="type">class</span> <span class="class">PropertiesSample</span> {
   <span class="directive">public</span> <span class="directive">static</span> <span class="type">void</span> main(<span class="predefined-type">String</span><span class="type">[]</span> args) <span class="directive">throws</span> MessagingException, <span class="exception">IOException</span> {
     <span class="predefined-type">Properties</span> props = <span class="keyword">new</span> <span class="predefined-type">Properties</span>();
-    props.setProperty(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.email.from</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">hello@world.com</span><span class="delimiter">&quot;</span></span>);
+    props.setProperty(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.email.from.default-value</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">hello@world.com</span><span class="delimiter">&quot;</span></span>);
     MessagingService service = MessagingBuilder.standard()
         .environment()
-          .properties(props)                    <i class="conum" data-value="1"></i><b>(1)</b>
-          .properties(<span class="string"><span class="delimiter">&quot;</span><span class="content">classpath:email.properties</span><span class="delimiter">&quot;</span></span>)       <i class="conum" data-value="2"></i><b>(2)</b>
-          .properties(<span class="string"><span class="delimiter">&quot;</span><span class="content">file:/etc/app/email.properties</span><span class="delimiter">&quot;</span></span>)     <i class="conum" data-value="3"></i><b>(3)</b>
+          .properties(props)                                   <i class="conum" data-value="1"></i><b>(1)</b>
+          .properties(<span class="string"><span class="delimiter">&quot;</span><span class="content">classpath:email.properties</span><span class="delimiter">&quot;</span></span>)            <i class="conum" data-value="2"></i><b>(2)</b>
+          .properties(<span class="string"><span class="delimiter">&quot;</span><span class="content">file:/etc/app/email.properties</span><span class="delimiter">&quot;</span></span>)        <i class="conum" data-value="3"></i><b>(3)</b>
           .properties()
-            .set(<span class="string"><span class="delimiter">&quot;</span><span class="content">mail.smtp.port</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">10</span><span class="delimiter">&quot;</span></span>)            <i class="conum" data-value="4"></i><b>(4)</b>
+            .set(<span class="string"><span class="delimiter">&quot;</span><span class="content">mail.smtp.port</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">10</span><span class="delimiter">&quot;</span></span>)                     <i class="conum" data-value="4"></i><b>(4)</b>
             .and()
-          .systemProperties()                   <i class="conum" data-value="5"></i><b>(5)</b>
+          .systemProperties()                                  <i class="conum" data-value="5"></i><b>(5)</b>
           .and()
         .build();
     service.send(<span class="comment">/*your message here*/</span><span class="predefined-constant">null</span>);
@@ -5471,7 +5482,7 @@ By default, Ogham sends the SMS using 8-bit encoding.
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="python">mail.smtp.host=localhost
 mail.smtp.port=<span class="integer">25</span>
-ogham.email.from=foo<span class="decorator">@test.com</span></code></pre>
+ogham.email.from.default-value=foo<span class="decorator">@test.com</span></code></pre>
 </div>
 </div>
 <div class="paragraph tab">
@@ -5490,7 +5501,7 @@ ogham.email.from=foo<span class="decorator">@test.com</span></code></pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code>$ java -Dogham.email.from="bar@domain.com" fr.sii.ogham.sample.standard.PropertiesSample</code></pre>
+<pre class="CodeRay highlight"><code>$ java -Dogham.email.from.default-value="bar@domain.com" fr.sii.ogham.sample.standard.PropertiesSample</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -5517,7 +5528,7 @@ ogham.email.from=foo<span class="decorator">@test.com</span></code></pre>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>10</strong></p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ogham.email.from</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ogham.email.from.default-value</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>bar@domain.com</strong></p></td>
 </tr>
 </tbody>
@@ -5785,7 +5796,7 @@ The property <code>ogham.email.javamail.port</code> takes precedence over <code>
 <div class="ulist">
 <ul>
 <li>
-<p><code>ogham.email.template.path</code></p>
+<p><code>ogham.email.template.path-prefix</code></p>
 </li>
 <li>
 <p><code>ogham.email.thymeleaf.classpath.path-prefix</code></p>
@@ -5800,7 +5811,7 @@ The property <code>ogham.email.javamail.port</code> takes precedence over <code>
 <p><code>ogham.email.template.path-prefix</code></p>
 </li>
 <li>
-<p><code>ogham.sms.template.path</code></p>
+<p><code>ogham.sms.template.path-prefix</code></p>
 </li>
 <li>
 <p><code>ogham.sms.thymeleaf.classpath.path-prefix</code></p>
@@ -5852,7 +5863,7 @@ The last reason is that Ogham properties are more specific:</p>
 <div class="ulist">
 <ul>
 <li>
-<p><code>ogham.email.template.path</code></p>
+<p><code>ogham.email.template.path-prefix</code></p>
 </li>
 <li>
 <p><code>ogham.email.freemarker.classpath.path-prefix</code></p>
@@ -5867,7 +5878,7 @@ The last reason is that Ogham properties are more specific:</p>
 <p><code>ogham.email.template.path-prefix</code></p>
 </li>
 <li>
-<p><code>ogham.sms.template.path</code></p>
+<p><code>ogham.sms.template.path-prefix</code></p>
 </li>
 <li>
 <p><code>ogham.sms.freemarker.classpath.path-prefix</code></p>
@@ -5986,16 +5997,16 @@ The following sample shows a Spring Web that exposes one simple endpoint for sen
     <span class="comment">// The configuration files are stored into src/main/resources</span>
     <span class="comment">// The configuration file set the prefix for templates into email folder available in src/main/resources</span>
     <span class="annotation">@Autowired</span>
-    MessagingService messagingService;                              <i class="conum" data-value="1"></i><b>(1)</b>
+    MessagingService messagingService;                                              <i class="conum" data-value="1"></i><b>(1)</b>
 
     <span class="annotation">@PostMapping</span>(value=<span class="string"><span class="delimiter">&quot;</span><span class="content">api/email/multitemplate/mixed</span><span class="delimiter">&quot;</span></span>)
     <span class="annotation">@ResponseStatus</span>(HttpStatus.CREATED)
     <span class="directive">public</span> <span class="type">void</span> sendEmail(<span class="annotation">@RequestParam</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">to</span><span class="delimiter">&quot;</span></span>) <span class="predefined-type">String</span> to, <span class="annotation">@RequestParam</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">name</span><span class="delimiter">&quot;</span></span>) <span class="predefined-type">String</span> name, <span class="annotation">@RequestParam</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">value</span><span class="delimiter">&quot;</span></span>) <span class="type">int</span> value) <span class="directive">throws</span> MessagingException {
       <span class="comment">// using fluent API</span>
-      messagingService.send(<span class="keyword">new</span> Email()                     <i class="conum" data-value="2"></i><b>(2)</b>
-                  .body().template(<span class="string"><span class="delimiter">&quot;</span><span class="content">mixed</span><span class="delimiter">&quot;</span></span>,               <i class="conum" data-value="3"></i><b>(3)</b>
-                            <span class="keyword">new</span> SimpleBean(name, value))  <i class="conum" data-value="4"></i><b>(4)</b>
-                  .to(to));                     <i class="conum" data-value="5"></i><b>(5)</b>
+      messagingService.send(<span class="keyword">new</span> Email()                                           <i class="conum" data-value="2"></i><b>(2)</b>
+                  .body().template(<span class="string"><span class="delimiter">&quot;</span><span class="content">mixed</span><span class="delimiter">&quot;</span></span>,                           <i class="conum" data-value="3"></i><b>(3)</b>
+                            <span class="keyword">new</span> SimpleBean(name, value))    <i class="conum" data-value="4"></i><b>(4)</b>
+                  .to(to));                                           <i class="conum" data-value="5"></i><b>(5)</b>
     }
   }
 
@@ -6094,7 +6105,7 @@ The following sample shows a Spring Web that exposes one simple endpoint for sen
 </div>
 </div>
 <div class="paragraph">
-<p><a href="https://github.com/groupe-sii/ogham/blob/master/sample-spring-usage/src/main/resources/email/mixed.txt.ftl?ts=2">Source code of the text template</a></p>
+<p><a href="https://github.com/groupe-sii/ogham/blob/master/sample-spring-usage/src/main/resources/email/mixed.txt.ftlh?ts=2">Source code of the text template</a></p>
 </div>
 <div class="paragraph tab">
 <p><span class="image"><img src="../images//icons/properties.png" alt="properties" width="37" height="30"></span> Spring properties</p>
@@ -6102,12 +6113,12 @@ The following sample shows a Spring Web that exposes one simple endpoint for sen
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="python"><span class="comment"># configuration for email</span>
-spring.mail.host=&lt;your server host&gt;   <i class="conum" data-value="1"></i><b>(1)</b>
-spring.mail.port=&lt;your server port&gt;   <i class="conum" data-value="2"></i><b>(2)</b>
-ogham.email.from=&lt;your gmail address&gt; <i class="conum" data-value="3"></i><b>(3)</b>
+spring.mail.host=&lt;your server host&gt;                   <i class="conum" data-value="1"></i><b>(1)</b>
+spring.mail.port=&lt;your server port&gt;                   <i class="conum" data-value="2"></i><b>(2)</b>
+ogham.email.from.default-value=&lt;your gmail address&gt;   <i class="conum" data-value="3"></i><b>(3)</b>
 <span class="comment"># configuration for template engines</span>
-spring.thymeleaf.prefix=/email/     <i class="conum" data-value="4"></i><b>(4)</b>
-spring.freemarker.prefix=/email/    <i class="conum" data-value="5"></i><b>(5)</b></code></pre>
+spring.thymeleaf.prefix=/email/                       <i class="conum" data-value="4"></i><b>(4)</b>
+spring.freemarker.prefix=/email/                      <i class="conum" data-value="5"></i><b>(5)</b></code></pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -6204,16 +6215,16 @@ The following sample shows a Spring Web that exposes one simple endpoint for sen
     <span class="comment">// The configuration can be set into application-sms-template.properties</span>
     <span class="comment">// The configuration files are stored into src/main/resources</span>
     <span class="annotation">@Autowired</span>
-    MessagingService messagingService;                        <i class="conum" data-value="1"></i><b>(1)</b>
+    MessagingService messagingService;                                              <i class="conum" data-value="1"></i><b>(1)</b>
 
     <span class="annotation">@PostMapping</span>(value=<span class="string"><span class="delimiter">&quot;</span><span class="content">api/sms/template</span><span class="delimiter">&quot;</span></span>)
     <span class="annotation">@ResponseStatus</span>(HttpStatus.CREATED)
     <span class="directive">public</span> <span class="type">void</span> sendSms(<span class="annotation">@RequestParam</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">to</span><span class="delimiter">&quot;</span></span>) <span class="predefined-type">String</span> to, <span class="annotation">@RequestParam</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">name</span><span class="delimiter">&quot;</span></span>) <span class="predefined-type">String</span> name, <span class="annotation">@RequestParam</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">value</span><span class="delimiter">&quot;</span></span>) <span class="type">int</span> value) <span class="directive">throws</span> MessagingException {
       <span class="comment">// send the SMS using fluent API</span>
-      messagingService.send(<span class="keyword">new</span> Sms()                       <i class="conum" data-value="2"></i><b>(2)</b>
-                  .message().template(<span class="string"><span class="delimiter">&quot;</span><span class="content">register</span><span class="delimiter">&quot;</span></span>,           <i class="conum" data-value="3"></i><b>(3)</b>
-                            <span class="keyword">new</span> SimpleBean(name, value))  <i class="conum" data-value="4"></i><b>(4)</b>
-                  .to(to));                     <i class="conum" data-value="5"></i><b>(5)</b>
+      messagingService.send(<span class="keyword">new</span> Sms()                                             <i class="conum" data-value="2"></i><b>(2)</b>
+                  .message().template(<span class="string"><span class="delimiter">&quot;</span><span class="content">register</span><span class="delimiter">&quot;</span></span>,                     <i class="conum" data-value="3"></i><b>(3)</b>
+                            <span class="keyword">new</span> SimpleBean(name, value))    <i class="conum" data-value="4"></i><b>(4)</b>
+                  .to(to));                                           <i class="conum" data-value="5"></i><b>(5)</b>
     }
   }
 
@@ -6279,13 +6290,13 @@ The following sample shows a Spring Web that exposes one simple endpoint for sen
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="python"><span class="comment"># ogham configuration for SMS</span>
-ogham.sms.smpp.host=&lt;your server host&gt;            <i class="conum" data-value="1"></i><b>(1)</b>
-ogham.sms.smpp.port=&lt;your server port&gt;            <i class="conum" data-value="2"></i><b>(2)</b>
-ogham.sms.smpp.system-id=&lt;your server system ID&gt;      <i class="conum" data-value="3"></i><b>(3)</b>
-ogham.sms.smpp.password=&lt;your server password&gt;        <i class="conum" data-value="4"></i><b>(4)</b>
-ogham.sms.from=&lt;phone number to display <span class="keyword">for</span> the sender&gt;   <i class="conum" data-value="5"></i><b>(5)</b>
-ogham.sms.template.path-prefix=/sms/            <i class="conum" data-value="6"></i><b>(6)</b>
-ogham.sms.template.path-suffix=.txt.ftl           <i class="conum" data-value="7"></i><b>(7)</b></code></pre>
+ogham.sms.smpp.host=&lt;your server host&gt;                                  <i class="conum" data-value="1"></i><b>(1)</b>
+ogham.sms.smpp.port=&lt;your server port&gt;                                  <i class="conum" data-value="2"></i><b>(2)</b>
+ogham.sms.smpp.system-id=&lt;your server system ID&gt;                        <i class="conum" data-value="3"></i><b>(3)</b>
+ogham.sms.smpp.password=&lt;your server password&gt;                          <i class="conum" data-value="4"></i><b>(4)</b>
+ogham.sms.from.default-value=&lt;phone number to display <span class="keyword">for</span> the sender&gt;   <i class="conum" data-value="5"></i><b>(5)</b>
+ogham.sms.template.path-prefix=/sms/                                    <i class="conum" data-value="6"></i><b>(6)</b>
+ogham.sms.template.path-suffix=.txt.ftl                                 <i class="conum" data-value="7"></i><b>(7)</b></code></pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -6564,16 +6575,16 @@ assertions on your email (right recipients, right sender, right body&#8230;&#820
   <span class="directive">private</span> MessagingService oghamService;
 
   <span class="annotation">@Rule</span>
-  <span class="directive">public</span> <span class="directive">final</span> GreenMailRule greenMail = <span class="keyword">new</span> GreenMailRule(SMTP);           <i class="conum" data-value="1"></i><b>(1)</b>
+  <span class="directive">public</span> <span class="directive">final</span> GreenMailRule greenMail = <span class="keyword">new</span> GreenMailRule(SMTP);              <i class="conum" data-value="1"></i><b>(1)</b>
 
   <span class="annotation">@Before</span>
   <span class="directive">public</span> <span class="type">void</span> setUp() <span class="directive">throws</span> <span class="exception">IOException</span> {
     oghamService = MessagingBuilder.standard()
         .environment()
           .properties()
-            .set(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.email.from</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">Sender Name &lt;test.sender@sii.fr&gt;</span><span class="delimiter">&quot;</span></span>)
-            .set(<span class="string"><span class="delimiter">&quot;</span><span class="content">mail.smtp.host</span><span class="delimiter">&quot;</span></span>, SMTP.getBindAddress())         <i class="conum" data-value="2"></i><b>(2)</b>
-            .set(<span class="string"><span class="delimiter">&quot;</span><span class="content">mail.smtp.port</span><span class="delimiter">&quot;</span></span>, <span class="predefined-type">String</span>.valueOf(SMTP.getPort()))      <i class="conum" data-value="3"></i><b>(3)</b>
+            .set(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.email.from.default-value</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">Sender Name &lt;test.sender@sii.fr&gt;</span><span class="delimiter">&quot;</span></span>)
+            .set(<span class="string"><span class="delimiter">&quot;</span><span class="content">mail.smtp.host</span><span class="delimiter">&quot;</span></span>, SMTP.getBindAddress())            <i class="conum" data-value="2"></i><b>(2)</b>
+            .set(<span class="string"><span class="delimiter">&quot;</span><span class="content">mail.smtp.port</span><span class="delimiter">&quot;</span></span>, <span class="predefined-type">String</span>.valueOf(SMTP.getPort()))   <i class="conum" data-value="3"></i><b>(3)</b>
             .and()
           .and()
         .build();
@@ -6586,21 +6597,21 @@ assertions on your email (right recipients, right sender, right body&#8230;&#820
                 .subject(<span class="string"><span class="delimiter">&quot;</span><span class="content">Simple</span><span class="delimiter">&quot;</span></span>)
                 .body().string(<span class="string"><span class="delimiter">&quot;</span><span class="content">string body</span><span class="delimiter">&quot;</span></span>)
                 .to(<span class="string"><span class="delimiter">&quot;</span><span class="content">Recipient Name &lt;recipient@sii.fr&gt;</span><span class="delimiter">&quot;</span></span>));
-    assertThat(greenMail).receivedMessages()                    <i class="conum" data-value="4"></i><b>(4)</b>
-      .count(is(<span class="integer">1</span>))                               <i class="conum" data-value="5"></i><b>(5)</b>
-      .message(<span class="integer">0</span>)                                 <i class="conum" data-value="6"></i><b>(6)</b>
-        .subject(is(<span class="string"><span class="delimiter">&quot;</span><span class="content">Simple</span><span class="delimiter">&quot;</span></span>))                          <i class="conum" data-value="7"></i><b>(7)</b>
+    assertThat(greenMail).receivedMessages()                                 <i class="conum" data-value="4"></i><b>(4)</b>
+      .count(is(<span class="integer">1</span>))                                                        <i class="conum" data-value="5"></i><b>(5)</b>
+      .message(<span class="integer">0</span>)                                                          <i class="conum" data-value="6"></i><b>(6)</b>
+        .subject(is(<span class="string"><span class="delimiter">&quot;</span><span class="content">Simple</span><span class="delimiter">&quot;</span></span>))                                           <i class="conum" data-value="7"></i><b>(7)</b>
         .from()
-          .address(hasItems(<span class="string"><span class="delimiter">&quot;</span><span class="content">test.sender@sii.fr</span><span class="delimiter">&quot;</span></span>))              <i class="conum" data-value="8"></i><b>(8)</b>
-          .personal(hasItems(<span class="string"><span class="delimiter">&quot;</span><span class="content">Sender Name</span><span class="delimiter">&quot;</span></span>)).and()              <i class="conum" data-value="9"></i><b>(9)</b>
+          .address(hasItems(<span class="string"><span class="delimiter">&quot;</span><span class="content">test.sender@sii.fr</span><span class="delimiter">&quot;</span></span>))                     <i class="conum" data-value="8"></i><b>(8)</b>
+          .personal(hasItems(<span class="string"><span class="delimiter">&quot;</span><span class="content">Sender Name</span><span class="delimiter">&quot;</span></span>)).and()                     <i class="conum" data-value="9"></i><b>(9)</b>
         .to()
-          .address(hasItems(<span class="string"><span class="delimiter">&quot;</span><span class="content">recipient@sii.fr</span><span class="delimiter">&quot;</span></span>))                <i class="conum" data-value="10"></i><b>(10)</b>
-          .personal(hasItems(<span class="string"><span class="delimiter">&quot;</span><span class="content">Recipient Name</span><span class="delimiter">&quot;</span></span>)).and()             <i class="conum" data-value="11"></i><b>(11)</b>
+          .address(hasItems(<span class="string"><span class="delimiter">&quot;</span><span class="content">recipient@sii.fr</span><span class="delimiter">&quot;</span></span>))                       <i class="conum" data-value="10"></i><b>(10)</b>
+          .personal(hasItems(<span class="string"><span class="delimiter">&quot;</span><span class="content">Recipient Name</span><span class="delimiter">&quot;</span></span>)).and()                  <i class="conum" data-value="11"></i><b>(11)</b>
         .body()
-          .contentAsString(is(<span class="string"><span class="delimiter">&quot;</span><span class="content">string body</span><span class="delimiter">&quot;</span></span>))                 <i class="conum" data-value="12"></i><b>(12)</b>
-          .contentType(startsWith(<span class="string"><span class="delimiter">&quot;</span><span class="content">text/plain</span><span class="delimiter">&quot;</span></span>)).and()            <i class="conum" data-value="13"></i><b>(13)</b>
-        .alternative(nullValue())                       <i class="conum" data-value="14"></i><b>(14)</b>
-        .attachments(emptyIterable());                      <i class="conum" data-value="15"></i><b>(15)</b>
+          .contentAsString(is(<span class="string"><span class="delimiter">&quot;</span><span class="content">string body</span><span class="delimiter">&quot;</span></span>))                          <i class="conum" data-value="12"></i><b>(12)</b>
+          .contentType(startsWith(<span class="string"><span class="delimiter">&quot;</span><span class="content">text/plain</span><span class="delimiter">&quot;</span></span>)).and()                 <i class="conum" data-value="13"></i><b>(13)</b>
+        .alternative(nullValue())                                        <i class="conum" data-value="14"></i><b>(14)</b>
+        .attachments(emptyIterable());                                   <i class="conum" data-value="15"></i><b>(15)</b>
     <span class="comment">// @formatter:on</span>
   }
 }</code></pre>
@@ -6748,7 +6759,7 @@ the same utility function every time.</p>
     oghamService = MessagingBuilder.standard()
         .environment()
           .properties()
-            .set(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.email.from</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">Sender Name &lt;test.sender@sii.fr&gt;</span><span class="delimiter">&quot;</span></span>)
+            .set(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.email.from.default-value</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">Sender Name &lt;test.sender@sii.fr&gt;</span><span class="delimiter">&quot;</span></span>)
             .set(<span class="string"><span class="delimiter">&quot;</span><span class="content">mail.smtp.host</span><span class="delimiter">&quot;</span></span>, SMTP.getBindAddress())
             .set(<span class="string"><span class="delimiter">&quot;</span><span class="content">mail.smtp.port</span><span class="delimiter">&quot;</span></span>, <span class="predefined-type">String</span>.valueOf(SMTP.getPort()))
             .and()
@@ -6760,8 +6771,8 @@ the same utility function every time.</p>
   <span class="directive">public</span> <span class="type">void</span> registerMessage() <span class="directive">throws</span> MessagingException, javax.mail.MessagingException, <span class="exception">IOException</span> {
     <span class="comment">// @formatter:off</span>
     oghamService.send(<span class="keyword">new</span> Email()
-                .body().template(<span class="string"><span class="delimiter">&quot;</span><span class="content">/template/register.html</span><span class="delimiter">&quot;</span></span>,             <i class="conum" data-value="1"></i><b>(1)</b>
-                              <span class="keyword">new</span> SimpleBean(<span class="string"><span class="delimiter">&quot;</span><span class="content">foo</span><span class="delimiter">&quot;</span></span>, <span class="integer">42</span>))        <i class="conum" data-value="2"></i><b>(2)</b>
+                .body().template(<span class="string"><span class="delimiter">&quot;</span><span class="content">/template/register.html</span><span class="delimiter">&quot;</span></span>,                         <i class="conum" data-value="1"></i><b>(1)</b>
+                              <span class="keyword">new</span> SimpleBean(<span class="string"><span class="delimiter">&quot;</span><span class="content">foo</span><span class="delimiter">&quot;</span></span>, <span class="integer">42</span>))              <i class="conum" data-value="2"></i><b>(2)</b>
                 .to(<span class="string"><span class="delimiter">&quot;</span><span class="content">Recipient Name &lt;recipient@sii.fr&gt;</span><span class="delimiter">&quot;</span></span>));
     assertThat(greenMail).receivedMessages()
       .count(is(<span class="integer">1</span>))
@@ -6915,7 +6926,7 @@ the same utility function every time.</p>
     oghamService = MessagingBuilder.standard()
         .environment()
           .properties()
-            .set(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.email.from</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">Sender Name &lt;test.sender@sii.fr&gt;</span><span class="delimiter">&quot;</span></span>)
+            .set(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.email.from.default-value</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">Sender Name &lt;test.sender@sii.fr&gt;</span><span class="delimiter">&quot;</span></span>)
             .set(<span class="string"><span class="delimiter">&quot;</span><span class="content">mail.smtp.host</span><span class="delimiter">&quot;</span></span>, SMTP.getBindAddress())
             .set(<span class="string"><span class="delimiter">&quot;</span><span class="content">mail.smtp.port</span><span class="delimiter">&quot;</span></span>, <span class="predefined-type">String</span>.valueOf(SMTP.getPort()))
             .and()
@@ -6927,8 +6938,8 @@ the same utility function every time.</p>
   <span class="directive">public</span> <span class="type">void</span> registerMessage() <span class="directive">throws</span> MessagingException, javax.mail.MessagingException, <span class="exception">IOException</span> {
     <span class="comment">// @formatter:off</span>
     oghamService.send(<span class="keyword">new</span> Email()
-                .body().template(<span class="string"><span class="delimiter">&quot;</span><span class="content">/template/register.html</span><span class="delimiter">&quot;</span></span>,             <i class="conum" data-value="1"></i><b>(1)</b>
-                              <span class="keyword">new</span> SimpleBean(<span class="string"><span class="delimiter">&quot;</span><span class="content">foo</span><span class="delimiter">&quot;</span></span>, <span class="integer">42</span>))        <i class="conum" data-value="2"></i><b>(2)</b>
+                .body().template(<span class="string"><span class="delimiter">&quot;</span><span class="content">/template/register.html</span><span class="delimiter">&quot;</span></span>,                         <i class="conum" data-value="1"></i><b>(1)</b>
+                              <span class="keyword">new</span> SimpleBean(<span class="string"><span class="delimiter">&quot;</span><span class="content">foo</span><span class="delimiter">&quot;</span></span>, <span class="integer">42</span>))              <i class="conum" data-value="2"></i><b>(2)</b>
                 .to(<span class="string"><span class="delimiter">&quot;</span><span class="content">Recipient Name &lt;recipient@sii.fr&gt;</span><span class="delimiter">&quot;</span></span>));
     assertThat(greenMail).receivedMessages()
       .count(is(<span class="integer">1</span>))
@@ -7137,7 +7148,7 @@ Spaces, tag closing and attributes order are reported by the comparison window p
     oghamService = MessagingBuilder.standard()
         .environment()
           .properties()
-            .set(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.email.from</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">Sender Name &lt;test.sender@sii.fr&gt;</span><span class="delimiter">&quot;</span></span>)
+            .set(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.email.from.default-value</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">Sender Name &lt;test.sender@sii.fr&gt;</span><span class="delimiter">&quot;</span></span>)
             .set(<span class="string"><span class="delimiter">&quot;</span><span class="content">mail.smtp.host</span><span class="delimiter">&quot;</span></span>, SMTP.getBindAddress())
             .set(<span class="string"><span class="delimiter">&quot;</span><span class="content">mail.smtp.port</span><span class="delimiter">&quot;</span></span>, <span class="predefined-type">String</span>.valueOf(SMTP.getPort()))
             .and()
@@ -7158,12 +7169,12 @@ Spaces, tag closing and attributes order are reported by the comparison window p
         .subject(is(<span class="string"><span class="delimiter">&quot;</span><span class="content">Multi</span><span class="delimiter">&quot;</span></span>))
         .from().address(hasItems(<span class="string"><span class="delimiter">&quot;</span><span class="content">test.sender@sii.fr</span><span class="delimiter">&quot;</span></span>)).and()
         .to().address(hasItems(<span class="string"><span class="delimiter">&quot;</span><span class="content">recipient@sii.fr</span><span class="delimiter">&quot;</span></span>)).and()
-        .body()                                               <i class="conum" data-value="1"></i><b>(1)</b>
-          .contentAsString(isIdenticalHtml(resourceAsString(<span class="string"><span class="delimiter">&quot;</span><span class="content">/expected/simple_bar_42.html</span><span class="delimiter">&quot;</span></span>)))       <i class="conum" data-value="2"></i><b>(2)</b>
-          .contentType(startsWith(<span class="string"><span class="delimiter">&quot;</span><span class="content">text/html</span><span class="delimiter">&quot;</span></span>)).and()                           <i class="conum" data-value="3"></i><b>(3)</b>
-        .alternative()                                            <i class="conum" data-value="4"></i><b>(4)</b>
-          .contentAsString(equalToCompressingWhiteSpace(resourceAsString(<span class="string"><span class="delimiter">&quot;</span><span class="content">/expected/simple_bar_42.txt</span><span class="delimiter">&quot;</span></span>))) <i class="conum" data-value="5"></i><b>(5)</b>
-          .contentType(startsWith(<span class="string"><span class="delimiter">&quot;</span><span class="content">text/plain</span><span class="delimiter">&quot;</span></span>)).and()                          <i class="conum" data-value="6"></i><b>(6)</b>
+        .body()                                                                                              <i class="conum" data-value="1"></i><b>(1)</b>
+          .contentAsString(isIdenticalHtml(resourceAsString(<span class="string"><span class="delimiter">&quot;</span><span class="content">/expected/simple_bar_42.html</span><span class="delimiter">&quot;</span></span>)))              <i class="conum" data-value="2"></i><b>(2)</b>
+          .contentType(startsWith(<span class="string"><span class="delimiter">&quot;</span><span class="content">text/html</span><span class="delimiter">&quot;</span></span>)).and()                                                      <i class="conum" data-value="3"></i><b>(3)</b>
+        .alternative()                                                                                       <i class="conum" data-value="4"></i><b>(4)</b>
+          .contentAsString(equalToCompressingWhiteSpace(resourceAsString(<span class="string"><span class="delimiter">&quot;</span><span class="content">/expected/simple_bar_42.txt</span><span class="delimiter">&quot;</span></span>)))  <i class="conum" data-value="5"></i><b>(5)</b>
+          .contentType(startsWith(<span class="string"><span class="delimiter">&quot;</span><span class="content">text/plain</span><span class="delimiter">&quot;</span></span>)).and()                                                     <i class="conum" data-value="6"></i><b>(6)</b>
         .attachments(emptyIterable());
     <span class="comment">// @formatter:on</span>
   }
@@ -7333,7 +7344,7 @@ Spaces, tag closing and attributes order are reported by the comparison window p
     oghamService = MessagingBuilder.standard()
         .environment()
           .properties()
-            .set(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.email.from</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">Sender Name &lt;test.sender@sii.fr&gt;</span><span class="delimiter">&quot;</span></span>)
+            .set(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.email.from.default-value</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">Sender Name &lt;test.sender@sii.fr&gt;</span><span class="delimiter">&quot;</span></span>)
             .set(<span class="string"><span class="delimiter">&quot;</span><span class="content">mail.smtp.host</span><span class="delimiter">&quot;</span></span>, SMTP.getBindAddress())
             .set(<span class="string"><span class="delimiter">&quot;</span><span class="content">mail.smtp.port</span><span class="delimiter">&quot;</span></span>, <span class="predefined-type">String</span>.valueOf(SMTP.getPort()))
             .and()
@@ -7359,12 +7370,12 @@ Spaces, tag closing and attributes order are reported by the comparison window p
           .contentAsString(is(<span class="string"><span class="delimiter">&quot;</span><span class="content">body</span><span class="delimiter">&quot;</span></span>))
           .contentType(startsWith(<span class="string"><span class="delimiter">&quot;</span><span class="content">text/plain</span><span class="delimiter">&quot;</span></span>)).and()
         .alternative(nullValue())
-        .attachments(hasSize(<span class="integer">1</span>))                  <i class="conum" data-value="1"></i><b>(1)</b>
-        .attachment(<span class="integer">0</span>)                        <i class="conum" data-value="2"></i><b>(2)</b>
-          .content(is(resource(<span class="string"><span class="delimiter">&quot;</span><span class="content">/attachment/test.pdf</span><span class="delimiter">&quot;</span></span>)))      <i class="conum" data-value="3"></i><b>(3)</b>
+        .attachments(hasSize(<span class="integer">1</span>))                              <i class="conum" data-value="1"></i><b>(1)</b>
+        .attachment(<span class="integer">0</span>)                                        <i class="conum" data-value="2"></i><b>(2)</b>
+          .content(is(resource(<span class="string"><span class="delimiter">&quot;</span><span class="content">/attachment/test.pdf</span><span class="delimiter">&quot;</span></span>)))    <i class="conum" data-value="3"></i><b>(3)</b>
           .contentType(startsWith(<span class="string"><span class="delimiter">&quot;</span><span class="content">application/pdf</span><span class="delimiter">&quot;</span></span>))       <i class="conum" data-value="4"></i><b>(4)</b>
-          .filename(is(<span class="string"><span class="delimiter">&quot;</span><span class="content">test.pdf</span><span class="delimiter">&quot;</span></span>))               <i class="conum" data-value="5"></i><b>(5)</b>
-          .disposition(is(ATTACHMENT_DISPOSITION));       <i class="conum" data-value="6"></i><b>(6)</b>
+          .filename(is(<span class="string"><span class="delimiter">&quot;</span><span class="content">test.pdf</span><span class="delimiter">&quot;</span></span>))                         <i class="conum" data-value="5"></i><b>(5)</b>
+          .disposition(is(ATTACHMENT_DISPOSITION));         <i class="conum" data-value="6"></i><b>(6)</b>
     <span class="comment">// @formatter:on</span>
   }
 }</code></pre>
@@ -7453,7 +7464,7 @@ Spaces, tag closing and attributes order are reported by the comparison window p
     oghamService = MessagingBuilder.standard()
         .environment()
           .properties()
-            .set(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.email.from</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">Sender Name &lt;test.sender@sii.fr&gt;</span><span class="delimiter">&quot;</span></span>)
+            .set(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.email.from.default-value</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">Sender Name &lt;test.sender@sii.fr&gt;</span><span class="delimiter">&quot;</span></span>)
             .set(<span class="string"><span class="delimiter">&quot;</span><span class="content">mail.smtp.host</span><span class="delimiter">&quot;</span></span>, SMTP.getBindAddress())
             .set(<span class="string"><span class="delimiter">&quot;</span><span class="content">mail.smtp.port</span><span class="delimiter">&quot;</span></span>, <span class="predefined-type">String</span>.valueOf(SMTP.getPort()))
             .and()
@@ -7471,18 +7482,18 @@ Spaces, tag closing and attributes order are reported by the comparison window p
                 .cc(<span class="string"><span class="delimiter">&quot;</span><span class="content">recipient4@sii.fr</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">recipient5@sii.fr</span><span class="delimiter">&quot;</span></span>)
                 .bcc(<span class="string"><span class="delimiter">&quot;</span><span class="content">recipient6@sii.fr</span><span class="delimiter">&quot;</span></span>));
     assertThat(greenMail).receivedMessages()
-      .count(is(<span class="integer">6</span>))                               <i class="conum" data-value="1"></i><b>(1)</b>
-      .every()                                  <i class="conum" data-value="2"></i><b>(2)</b>
+      .count(is(<span class="integer">6</span>))                                                               <i class="conum" data-value="1"></i><b>(1)</b>
+      .every()                                                                    <i class="conum" data-value="2"></i><b>(2)</b>
         .subject(is(<span class="string"><span class="delimiter">&quot;</span><span class="content">Simple</span><span class="delimiter">&quot;</span></span>))
         .from()
           .address(hasItems(<span class="string"><span class="delimiter">&quot;</span><span class="content">test.sender@sii.fr</span><span class="delimiter">&quot;</span></span>))
           .personal(hasItems(<span class="string"><span class="delimiter">&quot;</span><span class="content">Sender Name</span><span class="delimiter">&quot;</span></span>)).and()
         .to()
-          .address(containsInAnyOrder(<span class="string"><span class="delimiter">&quot;</span><span class="content">recipient1@sii.fr</span><span class="delimiter">&quot;</span></span>,          <i class="conum" data-value="3"></i><b>(3)</b>
+          .address(containsInAnyOrder(<span class="string"><span class="delimiter">&quot;</span><span class="content">recipient1@sii.fr</span><span class="delimiter">&quot;</span></span>,                    <i class="conum" data-value="3"></i><b>(3)</b>
                         <span class="string"><span class="delimiter">&quot;</span><span class="content">recipient2@sii.fr</span><span class="delimiter">&quot;</span></span>,
                         <span class="string"><span class="delimiter">&quot;</span><span class="content">recipient3@sii.fr</span><span class="delimiter">&quot;</span></span>)).and()
         .cc()
-          .address(containsInAnyOrder(<span class="string"><span class="delimiter">&quot;</span><span class="content">recipient4@sii.fr</span><span class="delimiter">&quot;</span></span>,          <i class="conum" data-value="4"></i><b>(4)</b>
+          .address(containsInAnyOrder(<span class="string"><span class="delimiter">&quot;</span><span class="content">recipient4@sii.fr</span><span class="delimiter">&quot;</span></span>,                    <i class="conum" data-value="4"></i><b>(4)</b>
                         <span class="string"><span class="delimiter">&quot;</span><span class="content">recipient5@sii.fr</span><span class="delimiter">&quot;</span></span>)).and()
         .body()
           .contentAsString(is(<span class="string"><span class="delimiter">&quot;</span><span class="content">string body</span><span class="delimiter">&quot;</span></span>))
@@ -7579,7 +7590,7 @@ Spaces, tag closing and attributes order are reported by the comparison window p
     oghamService = MessagingBuilder.standard()
         .environment()
           .properties()
-            .set(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.email.from</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">Sender Name &lt;test.sender@sii.fr&gt;</span><span class="delimiter">&quot;</span></span>)
+            .set(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.email.from.default-value</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">Sender Name &lt;test.sender@sii.fr&gt;</span><span class="delimiter">&quot;</span></span>)
             .set(<span class="string"><span class="delimiter">&quot;</span><span class="content">mail.smtp.host</span><span class="delimiter">&quot;</span></span>, SMTP.getBindAddress())
             .set(<span class="string"><span class="delimiter">&quot;</span><span class="content">mail.smtp.port</span><span class="delimiter">&quot;</span></span>, <span class="predefined-type">String</span>.valueOf(SMTP.getPort()))
             .and()
@@ -7604,7 +7615,7 @@ Spaces, tag closing and attributes order are reported by the comparison window p
                 .to(<span class="string"><span class="delimiter">&quot;</span><span class="content">recipient3@sii.fr</span><span class="delimiter">&quot;</span></span>));
     assertThat(greenMail).receivedMessages()
       .count(is(<span class="integer">3</span>))
-      .every()                          <i class="conum" data-value="1"></i><b>(1)</b>
+      .every()                                                   <i class="conum" data-value="1"></i><b>(1)</b>
         .subject(is(<span class="string"><span class="delimiter">&quot;</span><span class="content">Simple</span><span class="delimiter">&quot;</span></span>))
         .from()
           .address(hasItems(<span class="string"><span class="delimiter">&quot;</span><span class="content">test.sender@sii.fr</span><span class="delimiter">&quot;</span></span>))
@@ -7614,7 +7625,7 @@ Spaces, tag closing and attributes order are reported by the comparison window p
         .alternative(nullValue())
         .attachments(emptyIterable())
         .and()
-      .message(<span class="integer">0</span>)                         <i class="conum" data-value="2"></i><b>(2)</b>
+      .message(<span class="integer">0</span>)                                                <i class="conum" data-value="2"></i><b>(2)</b>
         .body()
           .contentAsString(is(<span class="string"><span class="delimiter">&quot;</span><span class="content">string body 1</span><span class="delimiter">&quot;</span></span>))
           .and()
@@ -7622,7 +7633,7 @@ Spaces, tag closing and attributes order are reported by the comparison window p
           .address(hasItems(<span class="string"><span class="delimiter">&quot;</span><span class="content">recipient1@sii.fr</span><span class="delimiter">&quot;</span></span>))
           .and()
         .and()
-      .message(<span class="integer">1</span>)                         <i class="conum" data-value="3"></i><b>(3)</b>
+      .message(<span class="integer">1</span>)                                                <i class="conum" data-value="3"></i><b>(3)</b>
         .body()
           .contentAsString(is(<span class="string"><span class="delimiter">&quot;</span><span class="content">string body 2</span><span class="delimiter">&quot;</span></span>))
           .and()
@@ -7630,7 +7641,7 @@ Spaces, tag closing and attributes order are reported by the comparison window p
           .address(hasItems(<span class="string"><span class="delimiter">&quot;</span><span class="content">recipient2@sii.fr</span><span class="delimiter">&quot;</span></span>))
           .and()
         .and()
-      .message(<span class="integer">2</span>)                         <i class="conum" data-value="4"></i><b>(4)</b>
+      .message(<span class="integer">2</span>)                                                <i class="conum" data-value="4"></i><b>(4)</b>
         .body()
           .contentAsString(is(<span class="string"><span class="delimiter">&quot;</span><span class="content">string body 3</span><span class="delimiter">&quot;</span></span>))
           .and()
@@ -7836,16 +7847,16 @@ Only the setup differs, the test is the same.
   <span class="directive">private</span> MessagingService oghamService;
 
   <span class="annotation">@Rule</span>
-  <span class="directive">public</span> <span class="directive">final</span> SmppServerRule&lt;SubmitSm&gt; smppServer = <span class="keyword">new</span> JsmppServerRule();         <i class="conum" data-value="1"></i><b>(1)</b>
+  <span class="directive">public</span> <span class="directive">final</span> SmppServerRule&lt;SubmitSm&gt; smppServer = <span class="keyword">new</span> JsmppServerRule();    <i class="conum" data-value="1"></i><b>(1)</b>
 
   <span class="annotation">@Before</span>
   <span class="directive">public</span> <span class="type">void</span> setUp() <span class="directive">throws</span> <span class="exception">IOException</span> {
     oghamService = MessagingBuilder.standard()
         .environment()
           .properties()
-            .set(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.sms.from</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">+33603040506</span><span class="delimiter">&quot;</span></span>)
-            .set(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.sms.smpp.host</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">localhost</span><span class="delimiter">&quot;</span></span>)                <i class="conum" data-value="2"></i><b>(2)</b>
-            .set(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.sms.smpp.port</span><span class="delimiter">&quot;</span></span>, smppServer.getPort())           <i class="conum" data-value="3"></i><b>(3)</b>
+            .set(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.sms.from.default-value</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">+33603040506</span><span class="delimiter">&quot;</span></span>)
+            .set(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.sms.smpp.host</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">localhost</span><span class="delimiter">&quot;</span></span>)                 <i class="conum" data-value="2"></i><b>(2)</b>
+            .set(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.sms.smpp.port</span><span class="delimiter">&quot;</span></span>, smppServer.getPort())        <i class="conum" data-value="3"></i><b>(3)</b>
             .and()
           .and()
         .build();
@@ -7857,15 +7868,15 @@ Only the setup differs, the test is the same.
     oghamService.send(<span class="keyword">new</span> Sms()
               .message().string(<span class="string"><span class="delimiter">&quot;</span><span class="content">sms content</span><span class="delimiter">&quot;</span></span>)
               .to(<span class="string"><span class="delimiter">&quot;</span><span class="content">0601020304</span><span class="delimiter">&quot;</span></span>));
-    assertThat(smppServer).receivedMessages()                       <i class="conum" data-value="4"></i><b>(4)</b>
-      .count(is(<span class="integer">1</span>))                                   <i class="conum" data-value="5"></i><b>(5)</b>
-      .message(<span class="integer">0</span>)                                     <i class="conum" data-value="6"></i><b>(6)</b>
-        .content(is(<span class="string"><span class="delimiter">&quot;</span><span class="content">sms content</span><span class="delimiter">&quot;</span></span>))                           <i class="conum" data-value="7"></i><b>(7)</b>
+    assertThat(smppServer).receivedMessages()                                <i class="conum" data-value="4"></i><b>(4)</b>
+      .count(is(<span class="integer">1</span>))                                                        <i class="conum" data-value="5"></i><b>(5)</b>
+      .message(<span class="integer">0</span>)                                                          <i class="conum" data-value="6"></i><b>(6)</b>
+        .content(is(<span class="string"><span class="delimiter">&quot;</span><span class="content">sms content</span><span class="delimiter">&quot;</span></span>))                                      <i class="conum" data-value="7"></i><b>(7)</b>
         .from()
-          .number(is(<span class="string"><span class="delimiter">&quot;</span><span class="content">+33603040506</span><span class="delimiter">&quot;</span></span>))                         <i class="conum" data-value="8"></i><b>(8)</b>
+          .number(is(<span class="string"><span class="delimiter">&quot;</span><span class="content">+33603040506</span><span class="delimiter">&quot;</span></span>))                                  <i class="conum" data-value="8"></i><b>(8)</b>
           .and()
         .to()
-          .number(is(<span class="string"><span class="delimiter">&quot;</span><span class="content">0601020304</span><span class="delimiter">&quot;</span></span>));                          <i class="conum" data-value="9"></i><b>(9)</b>
+          .number(is(<span class="string"><span class="delimiter">&quot;</span><span class="content">0601020304</span><span class="delimiter">&quot;</span></span>));                                   <i class="conum" data-value="9"></i><b>(9)</b>
     <span class="comment">// @formatter:on</span>
   }
 }</code></pre>
@@ -7964,7 +7975,7 @@ Only the setup differs, the test is the same.
     oghamService = MessagingBuilder.standard()
         .environment()
           .properties()
-            .set(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.sms.from</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">+33603040506</span><span class="delimiter">&quot;</span></span>)
+            .set(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.sms.from.default-value</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">+33603040506</span><span class="delimiter">&quot;</span></span>)
             .set(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.sms.smpp.host</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">localhost</span><span class="delimiter">&quot;</span></span>)
             .set(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.sms.smpp.port</span><span class="delimiter">&quot;</span></span>, <span class="predefined-type">String</span>.valueOf(smppServer.getPort()))
             .and()
@@ -7982,19 +7993,19 @@ Only the setup differs, the test is the same.
                   + <span class="string"><span class="delimiter">&quot;</span><span class="content">havior of the sender when message has to be split</span><span class="delimiter">&quot;</span></span>)
               .to(<span class="string"><span class="delimiter">&quot;</span><span class="content">0601020304</span><span class="delimiter">&quot;</span></span>));
     assertThat(smppServer).receivedMessages()
-      .count(is(<span class="integer">2</span>))                                 <i class="conum" data-value="1"></i><b>(1)</b>
-      .message(<span class="integer">0</span>)                                   <i class="conum" data-value="2"></i><b>(2)</b>
-        .content(is(<span class="string"><span class="delimiter">&quot;</span><span class="content">sms content with a very very very looooooooooooooooooo</span><span class="delimiter">&quot;</span></span>    <i class="conum" data-value="3"></i><b>(3)</b>
+      .count(is(<span class="integer">2</span>))                                                                   <i class="conum" data-value="1"></i><b>(1)</b>
+      .message(<span class="integer">0</span>)                                                                     <i class="conum" data-value="2"></i><b>(2)</b>
+        .content(is(<span class="string"><span class="delimiter">&quot;</span><span class="content">sms content with a very very very looooooooooooooooooo</span><span class="delimiter">&quot;</span></span>        <i class="conum" data-value="3"></i><b>(3)</b>
             + <span class="string"><span class="delimiter">&quot;</span><span class="content">onnnnnnnnnnnnnnnnng message that is over 140 characters </span><span class="delimiter">&quot;</span></span>
             + <span class="string"><span class="delimiter">&quot;</span><span class="content">in order to test the beh</span><span class="delimiter">&quot;</span></span>)).and()
-      .message(<span class="integer">1</span>)                                   <i class="conum" data-value="4"></i><b>(4)</b>
-        .content(is(<span class="string"><span class="delimiter">&quot;</span><span class="content">avior of the sender when message has to be split</span><span class="delimiter">&quot;</span></span>)).and()    <i class="conum" data-value="5"></i><b>(5)</b>
-      .every()                                    <i class="conum" data-value="6"></i><b>(6)</b>
+      .message(<span class="integer">1</span>)                                                                     <i class="conum" data-value="4"></i><b>(4)</b>
+        .content(is(<span class="string"><span class="delimiter">&quot;</span><span class="content">avior of the sender when message has to be split</span><span class="delimiter">&quot;</span></span>)).and()      <i class="conum" data-value="5"></i><b>(5)</b>
+      .every()                                                                        <i class="conum" data-value="6"></i><b>(6)</b>
         .from()
-          .number(is(<span class="string"><span class="delimiter">&quot;</span><span class="content">+33603040506</span><span class="delimiter">&quot;</span></span>))                       <i class="conum" data-value="7"></i><b>(7)</b>
+          .number(is(<span class="string"><span class="delimiter">&quot;</span><span class="content">+33603040506</span><span class="delimiter">&quot;</span></span>))                                             <i class="conum" data-value="7"></i><b>(7)</b>
           .and()
         .to()
-          .number(is(<span class="string"><span class="delimiter">&quot;</span><span class="content">0601020304</span><span class="delimiter">&quot;</span></span>));                        <i class="conum" data-value="8"></i><b>(8)</b>
+          .number(is(<span class="string"><span class="delimiter">&quot;</span><span class="content">0601020304</span><span class="delimiter">&quot;</span></span>));                                              <i class="conum" data-value="8"></i><b>(8)</b>
     <span class="comment">// @formatter:on</span>
   }
 }</code></pre>
@@ -8073,7 +8084,7 @@ Only the setup differs, the test is the same.
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-02-29 15:34:16 UTC
+Last updated 2020-03-05 12:22:10 UTC
 </div>
 </div>
 </body>

@@ -58,17 +58,17 @@ import freemarker.template.ObjectWrapper;
  * {@code @beanName.method(args)}.
  * 
  * &lt;p&gt;
- * If {@code ogham.freemarker.enable-static-method-access} is true (default
+ * If {@code ogham.freemarker.static-method-access.enable} is true (default
  * value), then static methods can be called from templates using
  * 
  * &lt;pre&gt;
  * {@code statics['full.package.name.ClassName'].method(args)}
  * &lt;/pre&gt;
  * 
- * If {@code ogham.freemarker.static-method-access-variable-name} value is
+ * If {@code ogham.freemarker.static-method-access.variable-name} value is
  * changed (default value is 'statics'), then static methods can be called from
  * templates using another variable name. For example, configuring
- * {@code ogham.freemarker.static-method-access-variable-name=global} gives
+ * {@code ogham.freemarker.static-method-access.variable-name=global} gives
  * access to static methods using name global:
  * 
  * &lt;pre&gt;
@@ -127,10 +127,10 @@ public class FreemarkerConfigurer extends MessagingConfigurerAdapter implements 
 <span class="pc bpc" id="L127" title="1 of 2 branches missed.">		if (emailProperties != null) {</span>
 <span class="fc" id="L128">			applyOghamConfiguration(builder, emailProperties);</span>
 		}
-<span class="pc bpc" id="L130" title="1 of 2 branches missed.">		if (oghamFreemarkerProperties.isEnableSpringBeans()) {</span>
+<span class="pc bpc" id="L130" title="1 of 2 branches missed.">		if (oghamFreemarkerProperties.getSpringBeans().isEnable()) {</span>
 <span class="fc" id="L131">			registerSpringBeans(builder, emailConfiguration);</span>
 		}
-<span class="pc bpc" id="L133" title="1 of 2 branches missed.">		if (oghamFreemarkerProperties.isEnableStaticMethodAccess()) {</span>
+<span class="fc bfc" id="L133" title="All 2 branches covered.">		if (oghamFreemarkerProperties.getStaticMethodAccess().isEnable()) {</span>
 <span class="fc" id="L134">			registerStatics(builder, emailConfiguration);</span>
 		}
 <span class="fc" id="L136">	}</span>
@@ -147,10 +147,10 @@ public class FreemarkerConfigurer extends MessagingConfigurerAdapter implements 
 <span class="pc bpc" id="L147" title="1 of 2 branches missed.">		if (smsProperties != null) {</span>
 <span class="fc" id="L148">			applyOghamConfiguration(builder, smsProperties);</span>
 		}
-<span class="pc bpc" id="L150" title="1 of 2 branches missed.">		if (oghamFreemarkerProperties.isEnableSpringBeans()) {</span>
+<span class="pc bpc" id="L150" title="1 of 2 branches missed.">		if (oghamFreemarkerProperties.getSpringBeans().isEnable()) {</span>
 <span class="fc" id="L151">			registerSpringBeans(builder, smsConfiguration);</span>
 		}
-<span class="pc bpc" id="L153" title="1 of 2 branches missed.">		if (oghamFreemarkerProperties.isEnableStaticMethodAccess()) {</span>
+<span class="fc bfc" id="L153" title="All 2 branches covered.">		if (oghamFreemarkerProperties.getStaticMethodAccess().isEnable()) {</span>
 <span class="fc" id="L154">			registerStatics(builder, smsConfiguration);</span>
 		}
 <span class="fc" id="L156">	}</span>
@@ -230,7 +230,7 @@ public class FreemarkerConfigurer extends MessagingConfigurerAdapter implements 
 	}
 
 	private void registerStatics(AbstractFreemarkerBuilder&lt;?, ?&gt; builder, Configuration configuration) {
-<span class="fc" id="L233">		builder.configuration().addSharedVariable(oghamFreemarkerProperties.getStaticMethodAccessVariableName(), getBeansWrapper(configuration).getStaticModels());</span>
+<span class="fc" id="L233">		builder.configuration().addSharedVariable(oghamFreemarkerProperties.getStaticMethodAccess().getVariableName(), getBeansWrapper(configuration).getStaticModels());</span>
 <span class="fc" id="L234">	}</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

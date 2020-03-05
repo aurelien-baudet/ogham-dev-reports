@@ -5,6 +5,8 @@ import static fr.sii.ogham.core.CoreConstants.SERIAL_VERSION_UID;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import fr.sii.ogham.core.message.capability.HasVariant;
+import fr.sii.ogham.core.message.content.TemplateContent;
 import fr.sii.ogham.core.message.content.Variant;
 import fr.sii.ogham.core.resource.path.ResolvedPath;
 import fr.sii.ogham.core.resource.path.ResourcePath;
@@ -16,20 +18,31 @@ public class TemplateVariantNotFoundException extends VariantResolutionException
 
 	private final transient List&lt;ResourcePath&gt; testedPaths;
 
+	public TemplateVariantNotFoundException(String message, TemplateContent template, List&lt;ResourcePath&gt; testedPaths) {
+<span class="fc" id="L22">		this(message, template.getPath(), template.getContext(), getVariant(template), testedPaths);</span>
+<span class="fc" id="L23">	}</span>
+	
 	public TemplateVariantNotFoundException(String message, ResourcePath template, Context context, Variant variant, List&lt;ResourcePath&gt; testedPaths) {
-<span class="fc" id="L20">		super(message, template, context, variant);</span>
-<span class="fc" id="L21">		this.testedPaths = testedPaths;</span>
-<span class="fc" id="L22">	}</span>
+<span class="fc" id="L26">		super(message, template, context, variant);</span>
+<span class="fc" id="L27">		this.testedPaths = testedPaths;</span>
+<span class="fc" id="L28">	}</span>
 
 	public List&lt;ResourcePath&gt; getTestedPaths() {
-<span class="nc" id="L25">		return testedPaths;</span>
+<span class="nc" id="L31">		return testedPaths;</span>
 	}
 	
 	public List&lt;String&gt; getResolvedPaths() {
-<span class="fc" id="L29">		return testedPaths</span>
-<span class="fc" id="L30">				.stream()</span>
-<span class="pc bpc" id="L31" title="1 of 2 branches missed.">				.map(p -&gt; p instanceof ResolvedPath ? ((ResolvedPath) p).getResolvedPath() : p.getOriginalPath())</span>
-<span class="fc" id="L32">				.collect(Collectors.toList());</span>
+<span class="fc" id="L35">		return testedPaths</span>
+<span class="fc" id="L36">				.stream()</span>
+<span class="pc bpc" id="L37" title="1 of 2 branches missed.">				.map(p -&gt; p instanceof ResolvedPath ? ((ResolvedPath) p).getResolvedPath() : p.getOriginalPath())</span>
+<span class="fc" id="L38">				.collect(Collectors.toList());</span>
+	}
+
+	private static Variant getVariant(TemplateContent template) {
+<span class="pc bpc" id="L42" title="1 of 2 branches missed.">		if (template instanceof HasVariant) {</span>
+<span class="fc" id="L43">			return ((HasVariant) template).getVariant();</span>
+		}
+<span class="nc" id="L45">		return null;</span>
 	}
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>
