@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 1.5.6.1">
+<title>3.0.0</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
+<link rel="stylesheet" href="./asciidoctor.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css">
+<link rel="stylesheet" href="./coderay-asciidoctor.css">
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script type="text/javascript" src="..//javascripts/steps.js"></script>
+<script type="text/javascript" src="..//javascripts/sourcecode/source-utils.js"></script>
+<script type="text/javascript" src="..//javascripts/sourcecode/highlight-lines.js"></script>
+<script type="text/javascript" src="..//javascripts/sourcecode/collapse-lines.js"></script>
+<script type="text/javascript" src="..//javascripts/tabcontainer.js"></script>
+<link rel="stylesheet" type="text/css" href="..//styles/custom-styles.css" />
+<link rel="stylesheet" type="text/css" href="..//styles/tabcontainer.css" />
+<link rel="stylesheet" type="text/css" href="..//styles/steps.css" />
+<link rel="stylesheet" type="text/css" href="..//styles/sourcecode/collapse-lines.css" />
+<link rel="stylesheet" type="text/css" href="..//styles/sourcecode/highlight-lines.css" />
+</head>
+<body class="book toc2 toc-left">
+<div id="header">
+<div id="toc" class="toc2">
+<div id="toctitle">Table of Contents</div>
+<ul class="sectlevel1">
+<li><a href="#_3_0_0">3.0.0</a>
+<ul class="sectlevel2">
+<li><a href="#_updates">Updates</a></li>
+<li><a href="#_api_changes">API changes</a></li>
+<li><a href="#_new_features">New features</a></li>
+<li><a href="#_internal_improvements">Internal improvements</a></li>
+</ul>
+</li>
+<li><a href="#_2_0_0_2018_01_03">2.0.0 / 2018-01-03</a>
+<ul class="sectlevel2">
+<li><a href="#_features">Features</a></li>
+<li><a href="#_internal">Internal</a></li>
+</ul>
+</li>
+<li><a href="#_1_1_0_2017_03_14">1.1.0 / 2017-03-14</a>
+<ul class="sectlevel2">
+<li><a href="#_features_2">Features</a></li>
+</ul>
+</li>
+<li><a href="#_1_0_0_2015_10_08">1.0.0 / 2015-10-08</a>
+<ul class="sectlevel2">
+<li><a href="#_features_3">Features</a></li>
+</ul>
+</li>
+<li><a href="#_0_0_1_2015_06_22">0.0.1 / 2015-06-22</a>
+<ul class="sectlevel2">
+<li><a href="#_features_4">Features</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div id="content">
+<div class="sect1">
+<h2 id="_3_0_0"><a class="anchor" href="#_3_0_0"></a>3.0.0</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>This is a major release that drops support of Java 7, upgrade all dependencies
+to be up-to-date with latest library, tools and Spring versions.</p>
+</div>
+<div class="paragraph">
+<p>There are also API and internal improvements.</p>
+</div>
+<div class="paragraph">
+<p>This version introduces breaking changes.
+See detailed migration guide to <a href="../migration-guide.html#v2.0.0-v3.0.0">upgrade from 2.0.0 to 3.0.0</a>.</p>
+</div>
+<div class="sect2">
+<h3 id="_updates"><a class="anchor" href="#_updates"></a>Updates</h3>
+<div class="paragraph">
+<p>Upgrade minimum Java version to Java 8 i.e. drop support of Java 7.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_api_changes"><a class="anchor" href="#_api_changes"></a>API changes</h3>
+<div class="sect3">
+<h4 id="_fluent_builder_consistency_for_property_configuration"><a class="anchor" href="#_fluent_builder_consistency_for_property_configuration"></a>Fluent builder consistency for property configuration</h4>
+
+</div>
+<div class="sect3">
+<h4 id="_rename_inlining_attributes"><a class="anchor" href="#_rename_inlining_attributes"></a>Rename inlining attributes</h4>
+<div class="ulist">
+<ul>
+<li>
+<p>Rename attribute for image inlining (<code>ogham-inline-mode</code> &#8594; <code>data-inline-image</code>)</p>
+</li>
+<li>
+<p>Change attributes for CSS inlining to align with image inlining behavior:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>remove <code>data-skip-inline</code> attribute</p>
+</li>
+<li>
+<p>use <code>data-inline-styles</code> attribute and use the value to select strategy. Currently
+only <code>skip</code> exists but in future versions other may come.</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_properties_consistency"><a class="anchor" href="#_properties_consistency"></a>Properties consistency</h4>
+<div class="ulist">
+<ul>
+<li>
+<p><code>ogham.email.bcc</code> renamed to <code>ogham.email.bcc.default-value</code></p>
+</li>
+<li>
+<p><code>ogham.email.cc</code> renamed to <code>ogham.email.cc.default-value</code></p>
+</li>
+<li>
+<p><code>ogham.email.from</code> renamed to <code>ogham.email.from.default-value</code></p>
+</li>
+<li>
+<p><code>ogham.email.sengrid.api-key</code> renamed to <code>ogham.email.sendgrid.api-key</code> (fix misspelling)</p>
+</li>
+<li>
+<p><code>ogham.email.subject</code> renamed to <code>ogham.email.subject.default-value</code></p>
+</li>
+<li>
+<p><code>ogham.email.subject.text.first-line-prefix</code> renamed to <code>ogham.email.subject.extract-from-text.first-line-prefix</code></p>
+</li>
+<li>
+<p><code>ogham.email.to</code> renamed to <code>ogham.email.to.default-value</code></p>
+</li>
+<li>
+<p><code>ogham.sms.cloudhopper.bind-timeout</code> renamed to <code>ogham.sms.cloudhopper.session.bind-timeout</code></p>
+</li>
+<li>
+<p><code>ogham.sms.cloudhopper.connect-max-retry</code> renamed to <code>ogham.sms.cloudhopper.session.connect-retry.max-attempts</code></p>
+</li>
+<li>
+<p><code>ogham.sms.cloudhopper.connect-retry-delay</code> renamed to <code>ogham.sms.cloudhopper.session.connect-retry.delay-between-attempts</code></p>
+</li>
+<li>
+<p><code>ogham.sms.cloudhopper.connect-timeout</code> renamed to <code>ogham.sms.cloudhopper.session.connect-timeout</code></p>
+</li>
+<li>
+<p><code>ogham.sms.cloudhopper.request-expiry-timeout</code> renamed to <code>ogham.sms.cloudhopper.session.request-expiry-timeout</code></p>
+</li>
+<li>
+<p><code>ogham.sms.cloudhopper.response-timeout</code> renamed to <code>ogham.sms.cloudhopper.session.response-timeout</code></p>
+</li>
+<li>
+<p><code>ogham.sms.cloudhopper.session-name</code> renamed to <code>ogham.sms.cloudhopper.session.name</code></p>
+</li>
+<li>
+<p><code>ogham.sms.cloudhopper.unbind-timeout</code> renamed to <code>ogham.sms.cloudhopper.session.unbind-timeout</code></p>
+</li>
+<li>
+<p><code>ogham.sms.cloudhopper.window-monitor-interval</code> renamed to <code>ogham.sms.cloudhopper.session.window-monitor-interval</code></p>
+</li>
+<li>
+<p><code>ogham.sms.cloudhopper.window-size</code> renamed to <code>ogham.sms.cloudhopper.session.window-size</code></p>
+</li>
+<li>
+<p><code>ogham.sms.cloudhopper.window-wait-timeout</code> renamed to <code>ogham.sms.cloudhopper.session.window-wait-timeout</code></p>
+</li>
+<li>
+<p><code>ogham.sms.cloudhopper.write-timeout</code> renamed to <code>ogham.sms.cloudhopper.session.write-timeout</code></p>
+</li>
+<li>
+<p><code>ogham.sms.freemarker.prefix</code> renamed to <code>ogham.sms.freemarker.path-prefix</code></p>
+</li>
+<li>
+<p><code>ogham.sms.freemarker.suffix</code> renamed to <code>ogham.sms.freemarker.path-suffix</code></p>
+</li>
+<li>
+<p><code>ogham.sms.from-format-enable-alphanumeric</code> renamed to <code>ogham.sms.from.alphanumeric-code-format.enable</code></p>
+</li>
+<li>
+<p><code>ogham.sms.from-format-enable-international</code> renamed to <code>ogham.sms.from.international-format.enable</code></p>
+</li>
+<li>
+<p><code>ogham.sms.from-format-enable-shortcode</code> renamed to <code>ogham.sms.from.short-code-format.enable</code></p>
+</li>
+<li>
+<p><code>ogham.sms.from</code> renamed to <code>ogham.sms.from.default-value</code></p>
+</li>
+<li>
+<p><code>ogham.sms.ovh.no-stop</code> renamed to <code>ogham.sms.ovh.options.no-stop</code></p>
+</li>
+<li>
+<p><code>ogham.sms.ovh.sms-coding</code> renamed to <code>ogham.sms.ovh.options.sms-coding</code></p>
+</li>
+<li>
+<p><code>ogham.sms.ovh.tag</code> renamed to <code>ogham.sms.ovh.options.tag</code></p>
+</li>
+<li>
+<p><code>ogham.sms.to-format-enable-international</code> renamed to <code>ogham.sms.to.international-format.enable</code></p>
+</li>
+<li>
+<p><code>ogham.sms.to</code> renamed to <code>ogham.sms.to.default-value</code></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Align Spring property names to Ogham property names.</p>
+</div>
+<div class="paragraph">
+<p>Samples, tests and documentation are updated.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_sms"><a class="anchor" href="#_sms"></a>SMS</h4>
+<div class="paragraph">
+<p>In previous version, a conversion from a Java charset into a Cloudhopper charset was configured
+using a static mapping using <code>ogham.sms.cloudhopper.default-app-charset</code> and
+<code>ogham.sms.cloudhopper.smpp-charset</code> properties.</p>
+</div>
+<div class="paragraph">
+<p>This behavior has been removed in favor to a better auto-detection mechanism. Therefore the
+<code>ogham.sms.cloudhopper.default-app-charset</code> and <code>ogham.sms.cloudhopper.smpp-charset</code> properties
+have been removed.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_test_utilities"><a class="anchor" href="#_test_utilities"></a>Test utilities</h4>
+<div class="paragraph">
+<p>Rename <code>receivedMessages().forEach()</code> in test utilities (for both email and SMS).</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_new_features"><a class="anchor" href="#_new_features"></a>New features</h3>
+<div class="sect3">
+<h4 id="_fluent_api_for_message_construction"><a class="anchor" href="#_fluent_api_for_message_construction"></a>Fluent API for message construction</h4>
+
+</div>
+<div class="sect3">
+<h4 id="_auto_configuration_lifecycle"><a class="anchor" href="#_auto_configuration_lifecycle"></a>Auto-configuration lifecycle</h4>
+
+</div>
+<div class="sect3">
+<h4 id="_relative_resources"><a class="anchor" href="#_relative_resources"></a>Relative resources</h4>
+
+</div>
+<div class="sect3">
+<h4 id="_templating"><a class="anchor" href="#_templating"></a>Templating</h4>
+
+</div>
+<div class="sect3">
+<h4 id="_sms_2"><a class="anchor" href="#_sms_2"></a>SMS</h4>
+
+</div>
+<div class="sect3">
+<h4 id="_smsglobal"><a class="anchor" href="#_smsglobal"></a>SmsGlobal</h4>
+
+</div>
+<div class="sect3">
+<h4 id="_spring_integration"><a class="anchor" href="#_spring_integration"></a>Spring integration</h4>
+
+</div>
+<div class="sect3">
+<h4 id="_freemarker_integration"><a class="anchor" href="#_freemarker_integration"></a>FreeMarker integration</h4>
+
+</div>
+<div class="sect3">
+<h4 id="_sendgrid"><a class="anchor" href="#_sendgrid"></a>SendGrid</h4>
+
+</div>
+<div class="sect3">
+<h4 id="_miscellaneous"><a class="anchor" href="#_miscellaneous"></a>Miscellaneous</h4>
+
+</div>
+<div class="sect3">
+<h4 id="_test_utilities_2"><a class="anchor" href="#_test_utilities_2"></a>Test utilities</h4>
+
+</div>
+</div>
+<div class="sect2">
+<h3 id="_internal_improvements"><a class="anchor" href="#_internal_improvements"></a>Internal improvements</h3>
+<div class="sect3">
+<h4 id="_java_mail_structure"><a class="anchor" href="#_java_mail_structure"></a>Java Mail structure</h4>
+
+</div>
+<div class="sect3">
+<h4 id="_ci"><a class="anchor" href="#_ci"></a>CI</h4>
+
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_2_0_0_2018_01_03"><a class="anchor" href="#_2_0_0_2018_01_03"></a>2.0.0 / 2018-01-03</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_features"><a class="anchor" href="#_features"></a>Features</h3>
+<div class="ulist">
+<ul>
+<li>
+<p>New builder API</p>
+</li>
+<li>
+<p>Only fluent API (remove all Email/SMS constructors)</p>
+</li>
+<li>
+<p>Follow Spring Boot starter conventions</p>
+</li>
+<li>
+<p>Better Spring Boot integration with existing module (spring-boot-start-mail, spring-boot-starter-thymeleaf, spring-boot-starter-freemarker, spring-boot-starter-sendgrid)</p>
+</li>
+<li>
+<p>Add possibility to create its own configurer</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_internal"><a class="anchor" href="#_internal"></a>Internal</h3>
+<div class="ulist">
+<ul>
+<li>
+<p>Split projects to separate core from implementations</p>
+</li>
+<li>
+<p>Creating a new implementation is easier</p>
+</li>
+<li>
+<p>Add annotations to indicate that an implementation needs some preconditions in order to work</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_1_1_0_2017_03_14"><a class="anchor" href="#_1_1_0_2017_03_14"></a>1.1.0 / 2017-03-14</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_features_2"><a class="anchor" href="#_features_2"></a>Features</h3>
+<div class="ulist">
+<ul>
+<li>
+<p>Support FreeMarker templates</p>
+</li>
+<li>
+<p>It is possible to mix Thymeleaf and FreeMarker templates</p>
+</li>
+<li>
+<p>Tested with Spring Boot 1.3.8+ latest releases (1.3.8, 1.4.5 and 1.5.2)</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_1_0_0_2015_10_08"><a class="anchor" href="#_1_0_0_2015_10_08"></a>1.0.0 / 2015-10-08</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_features_3"><a class="anchor" href="#_features_3"></a>Features</h3>
+<div class="ulist">
+<ul>
+<li>
+<p>[Add Spring integration with Spring Boot](usage/integration.html#integrate-with-spring-boot)</p>
+</li>
+<li>
+<p>[Add Spring integration using Java config or XML config](usage/integration.html#manual-integration-with-spring)</p>
+</li>
+<li>
+<p>Add fluent API</p>
+</li>
+<li>
+<p>Service now wrap all exceptions (even runtime exceptions) into checked exception</p>
+</li>
+<li>
+<p>Add OVH implementation for sending SMS</p>
+</li>
+<li>
+<p>Add basic i18n support</p>
+</li>
+<li>
+<p>Allow to configure different template prefixes/suffixes for each kind of message</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_0_0_1_2015_06_22"><a class="anchor" href="#_0_0_1_2015_06_22"></a>0.0.1 / 2015-06-22</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_features_4"><a class="anchor" href="#_features_4"></a>Features</h3>
+<div class="ulist">
+<ul>
+<li>
+<p>[APIs for multi-implementation support](config/select-implementation.html)</p>
+</li>
+<li>
+<p>[APIs for multi-channel support](usage/index.html)</p>
+</li>
+<li>
+<p>[Send emails using Java Mail API (first implementation)](config/select-implementation.html#email)</p>
+</li>
+<li>
+<p>[Send SMS using Cloudhopper SMPP (first implementation)](config/select-implementation.html#sms)</p>
+</li>
+<li>
+<p>Integrate Thymeleaf as template engine (first integration)</p>
+</li>
+<li>
+<p>[Manage both html and text emails](usage/how-to-send-email.html#both-html-and-text)</p>
+</li>
+<li>
+<p>[Automatically fill email/sms with information from properties](config/properties.html)</p>
+</li>
+<li>
+<p>[Automatically fill subject for emails provided directly in template](usage/how-to-send-email.html#sending-email-with-subject-from-template)</p>
+</li>
+<li>
+<p>[Handle email attachments](usage/how-to-send-email.html#attachments)</p>
+</li>
+<li>
+<p>[Apply basic HTML transformations to make the email work on several email clients](features/hidden-complexity.html)</p>
+</li>
+<li>
+<p>Detect mimetype automatically</p>
+</li>
+<li>
+<p>Simple lookup management for finding templates and template resources</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2020-03-10 18:20:01 UTC
+</div>
+</div>
+</body>
+</html>
