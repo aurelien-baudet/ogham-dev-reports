@@ -25,13 +25,13 @@ import com.cloudhopper.smpp.type.Address;
 import com.cloudhopper.smpp.type.LoggingOptions;
 
 import fr.sii.ogham.core.async.ThreadSleepAwaiter;
-import fr.sii.ogham.core.builder.BuildContext;
 import fr.sii.ogham.core.builder.Builder;
 import fr.sii.ogham.core.builder.MessagingBuilder;
-import fr.sii.ogham.core.builder.DefaultBuildContext;
 import fr.sii.ogham.core.builder.configuration.ConfigurationValueBuilder;
 import fr.sii.ogham.core.builder.configuration.ConfigurationValueBuilderHelper;
 import fr.sii.ogham.core.builder.configurer.Configurer;
+import fr.sii.ogham.core.builder.context.BuildContext;
+import fr.sii.ogham.core.builder.context.DefaultBuildContext;
 import fr.sii.ogham.core.fluent.AbstractParent;
 import fr.sii.ogham.core.retry.RetryExecutor;
 import fr.sii.ogham.core.retry.SimpleRetryExecutor;
@@ -177,7 +177,7 @@ public class CloudhopperBuilder extends AbstractParent&lt;SmsBuilder&gt; impleme
 	 * @param parent
 	 *            the parent builder instance for fluent chaining
 	 * @param buildContext
-	 *            for property resolution and evaluation
+	 *            for registering instances and property evaluation
 	 */
 	public CloudhopperBuilder(SmsBuilder parent, BuildContext buildContext) {
 <span class="fc" id="L183">		super(parent);</span>
@@ -1252,20 +1252,20 @@ public class CloudhopperBuilder extends AbstractParent&lt;SmsBuilder&gt; impleme
 <span class="fc" id="L1252">		CloudhopperOptions options = buildOptions(sessionOpts);</span>
 <span class="fc" id="L1253">		LOG.info(&quot;Sending SMS using Cloudhopper is registered&quot;);</span>
 <span class="fc" id="L1254">		LOG.debug(&quot;SMPP server address: {}:{}&quot;, session.getHost(), session.getPort());</span>
-<span class="fc" id="L1255">		return new CloudhopperSMPPSender(session, options, buildPreparator(), buildClientSupplier(), buildSmppSessionHandler());</span>
+<span class="fc" id="L1255">		return buildContext.register(new CloudhopperSMPPSender(session, options, buildPreparator(), buildClientSupplier(), buildSmppSessionHandler()));</span>
 	}
 
 	private CloudhopperSessionOptions buildSessionOpts() {
 <span class="fc bfc" id="L1259" title="All 2 branches covered.">		if (sessionBuilder != null) {</span>
 <span class="fc" id="L1260">			return sessionBuilder.build();</span>
 		}
-<span class="fc" id="L1262">		CloudhopperSessionOptions cloudhopperSessionOptions = new CloudhopperSessionOptions();</span>
+<span class="fc" id="L1262">		CloudhopperSessionOptions cloudhopperSessionOptions = buildContext.register(new CloudhopperSessionOptions());</span>
 <span class="fc" id="L1263">		cloudhopperSessionOptions.setConnectRetry(noRetry());</span>
 <span class="fc" id="L1264">		return cloudhopperSessionOptions;</span>
 	}
 
 	private SimpleRetryExecutor noRetry() {
-<span class="fc" id="L1268">		return new SimpleRetryExecutor(() -&gt; null, new ThreadSleepAwaiter());</span>
+<span class="fc" id="L1268">		return buildContext.register(new SimpleRetryExecutor(() -&gt; null, buildContext.register(new ThreadSleepAwaiter())));</span>
 	}
 
 	private MessagePreparator buildPreparator() {
@@ -1285,41 +1285,41 @@ public class CloudhopperBuilder extends AbstractParent&lt;SmsBuilder&gt; impleme
 	}
 
 	private MessagePreparator buildShortMessagePreparator() {
-<span class="fc" id="L1288">		return new ShortMessagePreparator(buildSplitter(buildEncoder()), buildDataCodingProvider(), buildPhoneNumberTranslator());</span>
+<span class="fc" id="L1288">		return buildContext.register(new ShortMessagePreparator(buildSplitter(buildEncoder()), buildDataCodingProvider(), buildPhoneNumberTranslator()));</span>
 	}
 
 	private MessagePreparator buildTlvMessagePayloadMessagePreparator() {
-<span class="fc" id="L1292">		return new TlvMessagePayloadMessagePreparator(buildSplitter(buildEncoder()), buildDataCodingProvider(), buildPhoneNumberTranslator());</span>
+<span class="fc" id="L1292">		return buildContext.register(new TlvMessagePayloadMessagePreparator(buildSplitter(buildEncoder()), buildDataCodingProvider(), buildPhoneNumberTranslator()));</span>
 	}
 
 	private Encoder buildEncoder() {
 <span class="fc bfc" id="L1296" title="All 2 branches covered.">		if (encoderBuilder == null) {</span>
-<span class="fc" id="L1297">			return new CloudhopperCharsetSupportingEncoder(NamedCharset.from(NAME_GSM));</span>
+<span class="fc" id="L1297">			return buildContext.register(new CloudhopperCharsetSupportingEncoder(NamedCharset.from(NAME_GSM)));</span>
 		}
 <span class="fc" id="L1299">		return encoderBuilder.build();</span>
 	}
 
 	private DataCodingProvider buildDataCodingProvider() {
 <span class="fc bfc" id="L1303" title="All 2 branches covered.">		if (dataCodingBuilder == null) {</span>
-<span class="fc" id="L1304">			return new CharsetMapToCharacterEncodingGroupDataCodingProvider(true);</span>
+<span class="fc" id="L1304">			return buildContext.register(new CharsetMapToCharacterEncodingGroupDataCodingProvider(true));</span>
 		}
 <span class="fc" id="L1306">		return dataCodingBuilder.build();</span>
 	}
 
 	private MessageSplitter buildSplitter(Encoder encoder) {
 <span class="fc bfc" id="L1310" title="All 2 branches covered.">		if (messageSplitterBuilder == null) {</span>
-<span class="fc" id="L1311">			return new NoSplitMessageSplitter(encoder);</span>
+<span class="fc" id="L1311">			return buildContext.register(new NoSplitMessageSplitter(encoder));</span>
 		}
 <span class="fc" id="L1313">		MessageSplitter splitter = messageSplitterBuilder.build();</span>
 <span class="fc bfc" id="L1314" title="All 2 branches covered.">		if (splitter != null) {</span>
 <span class="fc" id="L1315">			return splitter;</span>
 		}
-<span class="fc" id="L1317">		return new NoSplitMessageSplitter(encoder);</span>
+<span class="fc" id="L1317">		return buildContext.register(new NoSplitMessageSplitter(encoder));</span>
 	}
 
 	private SmppClientSupplier buildClientSupplier() {
 <span class="fc bfc" id="L1321" title="All 2 branches covered.">		if (clientSupplier == null) {</span>
-<span class="fc" id="L1322">			return DefaultSmppClient::new;</span>
+<span class="fc" id="L1322">			return buildContext.register(DefaultSmppClient::new);</span>
 		}
 <span class="fc" id="L1324">		return clientSupplier;</span>
 	}
@@ -1331,16 +1331,16 @@ public class CloudhopperBuilder extends AbstractParent&lt;SmsBuilder&gt; impleme
 <span class="fc" id="L1331">		return smppSessionHandler;</span>
 	}
 
-	private static PhoneNumberTranslator buildPhoneNumberTranslator() {
+	private PhoneNumberTranslator buildPhoneNumberTranslator() {
 		// TODO: allow configuration of fallback phone number translator
-<span class="fc" id="L1336">		return new CompositePhoneNumberTranslator(new DefaultHandler());</span>
+<span class="fc" id="L1336">		return buildContext.register(new CompositePhoneNumberTranslator(buildContext.register(new DefaultHandler())));</span>
 	}
 
 	private SmppSessionConfiguration buildSession(CloudhopperSessionOptions sessionOpts) {
 <span class="fc bfc" id="L1340" title="All 2 branches covered.">		if (sessionConfiguration != null) {</span>
 <span class="fc" id="L1341">			return sessionConfiguration;</span>
 		}
-<span class="fc" id="L1343">		SmppSessionConfiguration session = new SmppSessionConfiguration(buildBindType(), systemIdValueBuilder.getValue(), passwordValueBuilder.getValue());</span>
+<span class="fc" id="L1343">		SmppSessionConfiguration session = buildContext.register(new SmppSessionConfiguration(buildBindType(), systemIdValueBuilder.getValue(), passwordValueBuilder.getValue()));</span>
 <span class="fc" id="L1344">		session.setHost(getHost());</span>
 <span class="fc" id="L1345">		session.setPort(getPort());</span>
 <span class="fc" id="L1346">		session.setSystemType(systemTypeValueBuilder.getValue());</span>
@@ -1404,11 +1404,11 @@ public class CloudhopperBuilder extends AbstractParent&lt;SmsBuilder&gt; impleme
 <span class="fc" id="L1404">		return hostValueBuilder.getValue();</span>
 	}
 
-	private static CloudhopperOptions buildOptions(CloudhopperSessionOptions sessionOpts) {
+	private CloudhopperOptions buildOptions(CloudhopperSessionOptions sessionOpts) {
 <span class="fc bfc" id="L1408" title="All 2 branches covered.">		Long responseTimeout = sessionOpts.getResponseTimeout() == null ? DEFAULT_RESPONSE_TIMEOUT : sessionOpts.getResponseTimeout();</span>
 <span class="fc bfc" id="L1409" title="All 2 branches covered.">		Long unbindTimeout = sessionOpts.getUnbindTimeout() == null ? DEFAULT_UNBIND_TIMEOUT : sessionOpts.getUnbindTimeout();</span>
 <span class="fc" id="L1410">		RetryExecutor connectRetry = sessionOpts.getConnectRetry();</span>
-<span class="fc" id="L1411">		return new CloudhopperOptions(responseTimeout, unbindTimeout, connectRetry, sessionOpts.isKeepSession());</span>
+<span class="fc" id="L1411">		return buildContext.register(new CloudhopperOptions(responseTimeout, unbindTimeout, connectRetry, sessionOpts.isKeepSession()));</span>
 	}
 
 }

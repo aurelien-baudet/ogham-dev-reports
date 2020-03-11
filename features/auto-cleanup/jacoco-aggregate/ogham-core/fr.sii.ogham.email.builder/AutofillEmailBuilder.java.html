@@ -3,9 +3,9 @@
 import java.util.HashMap;
 import java.util.Map;
 
-import fr.sii.ogham.core.builder.BuildContext;
 import fr.sii.ogham.core.builder.Builder;
 import fr.sii.ogham.core.builder.configuration.ConfigurationValueBuilderHelper;
+import fr.sii.ogham.core.builder.context.BuildContext;
 import fr.sii.ogham.core.builder.env.EnvironmentBuilder;
 import fr.sii.ogham.core.filler.EveryFillerDecorator;
 import fr.sii.ogham.core.filler.MessageFiller;
@@ -142,11 +142,11 @@ public class AutofillEmailBuilder extends AbstractParent&lt;EmailBuilder&gt; imp
 
 	@Override
 	public MessageFiller build() {
-<span class="fc" id="L145">		EveryFillerDecorator filler = new EveryFillerDecorator();</span>
+<span class="fc" id="L145">		EveryFillerDecorator filler = buildContext.register(new EveryFillerDecorator());</span>
 <span class="pc bpc" id="L146" title="1 of 2 branches missed.">		if (subjectBuilder != null) {</span>
 <span class="fc" id="L147">			filler.addFiller(subjectBuilder.build());</span>
 		}
-<span class="fc" id="L149">		filler.addFiller(new EmailFiller(buildDefaultValueProps()));</span>
+<span class="fc" id="L149">		filler.addFiller(buildContext.register(new EmailFiller(buildDefaultValueProps())));</span>
 <span class="fc" id="L150">		return filler;</span>
 	}
 

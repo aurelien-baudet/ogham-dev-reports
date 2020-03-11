@@ -7,11 +7,11 @@ import org.slf4j.LoggerFactory;
 
 import com.sendgrid.SendGrid;
 
-import fr.sii.ogham.core.builder.BuildContext;
-import fr.sii.ogham.core.builder.DefaultBuildContext;
 import fr.sii.ogham.core.builder.MessagingBuilder;
 import fr.sii.ogham.core.builder.configuration.ConfigurationValueBuilder;
 import fr.sii.ogham.core.builder.configuration.ConfigurationValueBuilderHelper;
+import fr.sii.ogham.core.builder.context.BuildContext;
+import fr.sii.ogham.core.builder.context.DefaultBuildContext;
 import fr.sii.ogham.core.message.content.MayHaveStringContent;
 import fr.sii.ogham.core.message.content.MultiContent;
 import fr.sii.ogham.core.mimetype.MimeTypeProvider;
@@ -121,7 +121,7 @@ public class SendGridV2Builder extends AbstractSendGridBuilder&lt;SendGridV2Buil
 	 * @param parent
 	 *            the parent builder instance for fluent chaining
 	 * @param buildContext
-	 *            for property resolution and evaluation
+	 *            for registering instances and property evaluation
 	 */
 	public SendGridV2Builder(EmailBuilder parent, BuildContext buildContext) {
 <span class="fc" id="L127">		super(SendGridV2Builder.class, parent, buildContext);</span>
@@ -210,7 +210,7 @@ public class SendGridV2Builder extends AbstractSendGridBuilder&lt;SendGridV2Buil
 		}
 <span class="fc" id="L211">		LOG.info(&quot;Sending email using SendGrid API is registered&quot;);</span>
 <span class="fc" id="L212">		LOG.debug(&quot;SendGrid account: apiKey={}, username={}&quot;, apiKey, username);</span>
-<span class="fc" id="L213">		return new SendGridV2Sender(builtClient, buildContentHandler(), interceptor);</span>
+<span class="fc" id="L213">		return buildContext.register(new SendGridV2Sender(builtClient, buildContentHandler(), interceptor));</span>
 	}
 
 	private SendGridClient buildClient(String apiKey, String username, String password, URL url) {
@@ -218,7 +218,7 @@ public class SendGridV2Builder extends AbstractSendGridBuilder&lt;SendGridV2Buil
 <span class="fc" id="L218">			return client;</span>
 		}
 <span class="pc bpc" id="L220" title="1 of 6 branches missed.">		if (apiKey != null || (username != null &amp;&amp; password != null)) {</span>
-<span class="fc" id="L221">			return new DelegateSendGridClient(buildSendGrid(apiKey, username, password, url));</span>
+<span class="fc" id="L221">			return buildContext.register(new DelegateSendGridClient(buildSendGrid(apiKey, username, password, url)));</span>
 		}
 <span class="fc" id="L223">		return null;</span>
 	}
@@ -234,19 +234,19 @@ public class SendGridV2Builder extends AbstractSendGridBuilder&lt;SendGridV2Buil
 <span class="fc" id="L234">		return sendGrid;</span>
 	}
 
-	private static SendGrid newSendGrid(String apiKey, String username, String password) {
+	private SendGrid newSendGrid(String apiKey, String username, String password) {
 <span class="fc bfc" id="L238" title="All 2 branches covered.">		if (apiKey != null) {</span>
-<span class="fc" id="L239">			return new SendGrid(apiKey);</span>
+<span class="fc" id="L239">			return buildContext.register(new SendGrid(apiKey));</span>
 		}
-<span class="fc" id="L241">		return new SendGrid(username, password);</span>
+<span class="fc" id="L241">		return buildContext.register(new SendGrid(username, password));</span>
 	}
 
 	private PriorizedContentHandler buildContentHandler() {
 <span class="fc" id="L245">		MimeTypeProvider mimetypeProvider = mimetypeBuilder.build();</span>
-<span class="fc" id="L246">		PriorizedContentHandler contentHandler = new PriorizedContentHandler();</span>
-<span class="fc" id="L247">		contentHandler.register(MultiContent.class, new MultiContentHandler(contentHandler));</span>
-<span class="fc" id="L248">		contentHandler.register(ContentWithAttachments.class, new ContentWithAttachmentsHandler(contentHandler));</span>
-<span class="fc" id="L249">		contentHandler.register(MayHaveStringContent.class, new StringContentHandler(mimetypeProvider));</span>
+<span class="fc" id="L246">		PriorizedContentHandler contentHandler = buildContext.register(new PriorizedContentHandler());</span>
+<span class="fc" id="L247">		contentHandler.register(MultiContent.class, buildContext.register(new MultiContentHandler(contentHandler)));</span>
+<span class="fc" id="L248">		contentHandler.register(ContentWithAttachments.class, buildContext.register(new ContentWithAttachmentsHandler(contentHandler)));</span>
+<span class="fc" id="L249">		contentHandler.register(MayHaveStringContent.class, buildContext.register(new StringContentHandler(mimetypeProvider)));</span>
 <span class="fc" id="L250">		return contentHandler;</span>
 	}
 }

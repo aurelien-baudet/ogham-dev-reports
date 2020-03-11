@@ -8,9 +8,9 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import fr.sii.ogham.core.builder.BuildContext;
 import fr.sii.ogham.core.builder.Builder;
-import fr.sii.ogham.core.builder.DefaultBuildContext;
+import fr.sii.ogham.core.builder.context.BuildContext;
+import fr.sii.ogham.core.builder.context.DefaultBuildContext;
 import fr.sii.ogham.core.builder.resolution.ClassPathResolutionBuilder;
 import fr.sii.ogham.core.builder.resolution.FileResolutionBuilder;
 import fr.sii.ogham.core.builder.resolution.ResourceResolutionBuilder;
@@ -192,7 +192,7 @@ public abstract class AbstractFreemarkerBuilder&lt;MYSELF extends AbstractFreema
 	@Override
 	public TemplateParser build() {
 <span class="fc" id="L194">		LOG.info(&quot;Freemarker parser is registered&quot;);</span>
-<span class="fc" id="L195">		return new FreeMarkerParser(buildConfiguration(), buildResolver());</span>
+<span class="fc" id="L195">		return buildContext.register(new FreeMarkerParser(buildConfiguration(), buildResolver()));</span>
 	}
 
 	@Override
@@ -202,9 +202,9 @@ public abstract class AbstractFreemarkerBuilder&lt;MYSELF extends AbstractFreema
 
 	private TemplateEngineDetector buildDefaultDetector() {
 <span class="fc" id="L204">		FirstSupportingResourceResolver resolver = buildResolver();</span>
-<span class="fc" id="L205">		OrTemplateDetector or = new OrTemplateDetector();</span>
-<span class="fc" id="L206">		or.addDetector(new FreeMarkerTemplateDetector(resolver, &quot;.ftl&quot;, &quot;.ftlh&quot;));</span>
-<span class="fc" id="L207">		or.addDetector(new SimpleResourceEngineDetector(resolver, new FixedEngineDetector(true)));</span>
+<span class="fc" id="L205">		OrTemplateDetector or = buildContext.register(new OrTemplateDetector());</span>
+<span class="fc" id="L206">		or.addDetector(buildContext.register(new FreeMarkerTemplateDetector(resolver, &quot;.ftl&quot;, &quot;.ftlh&quot;)));</span>
+<span class="fc" id="L207">		or.addDetector(buildContext.register(new SimpleResourceEngineDetector(resolver, buildContext.register(new FixedEngineDetector(true)))));</span>
 <span class="fc" id="L208">		return or;</span>
 	}
 
@@ -214,7 +214,7 @@ public abstract class AbstractFreemarkerBuilder&lt;MYSELF extends AbstractFreema
 	 * @return the resource resolver
 	 */
 	public FirstSupportingResourceResolver buildResolver() {
-<span class="fc" id="L217">		return new FirstSupportingResourceResolver(buildResolvers());</span>
+<span class="fc" id="L217">		return buildContext.register(new FirstSupportingResourceResolver(buildResolvers()));</span>
 	}
 
 	private Configuration buildConfiguration() {
@@ -230,8 +230,8 @@ public abstract class AbstractFreemarkerBuilder&lt;MYSELF extends AbstractFreema
 		}
 <span class="fc" id="L231">		FirstSupportingResourceResolver builtResolver = buildResolver();</span>
 <span class="fc" id="L232">		FirstSupportingResolverAdapter builtAdapter = buildAdapter();</span>
-<span class="fc" id="L233">		builtConfiguration.setTemplateLoader(new FreeMarkerFirstSupportingTemplateLoader(builtResolver, builtAdapter));</span>
-<span class="fc" id="L234">		builtConfiguration.setTemplateLookupStrategy(new SkipLocaleForStringContentTemplateLookupStrategy(builtConfiguration.getTemplateLookupStrategy(), builtResolver, builtAdapter));</span>
+<span class="fc" id="L233">		builtConfiguration.setTemplateLoader(buildContext.register(new FreeMarkerFirstSupportingTemplateLoader(builtResolver, builtAdapter)));</span>
+<span class="fc" id="L234">		builtConfiguration.setTemplateLookupStrategy(buildContext.register(new SkipLocaleForStringContentTemplateLookupStrategy(builtConfiguration.getTemplateLookupStrategy(), builtResolver, builtAdapter)));</span>
 <span class="fc" id="L235">		return builtConfiguration;</span>
 	}
 
@@ -245,10 +245,10 @@ public abstract class AbstractFreemarkerBuilder&lt;MYSELF extends AbstractFreema
 <span class="pc bpc" id="L245" title="1 of 2 branches missed.">		for (TemplateLoaderAdapter custom : customAdapters) {</span>
 <span class="nc" id="L246">			adapter.addAdapter(custom);</span>
 <span class="nc" id="L247">		}</span>
-<span class="fc" id="L248">		adapter.addAdapter(new ClassPathResolverAdapter(classLoader));</span>
-<span class="fc" id="L249">		adapter.addAdapter(new FileResolverAdapter());</span>
-<span class="fc" id="L250">		adapter.addAdapter(new StringResolverAdapter());</span>
-<span class="fc" id="L251">		adapter.setOptions(new TemplateLoaderOptions());</span>
+<span class="fc" id="L248">		adapter.addAdapter(buildContext.register(new ClassPathResolverAdapter(classLoader)));</span>
+<span class="fc" id="L249">		adapter.addAdapter(buildContext.register(new FileResolverAdapter()));</span>
+<span class="fc" id="L250">		adapter.addAdapter(buildContext.register(new StringResolverAdapter()));</span>
+<span class="fc" id="L251">		adapter.setOptions(buildContext.register(new TemplateLoaderOptions()));</span>
 <span class="fc" id="L252">		return adapter;</span>
 	}
 

@@ -8,11 +8,11 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import fr.sii.ogham.core.builder.BuildContext;
 import fr.sii.ogham.core.builder.Builder;
 import fr.sii.ogham.core.builder.configuration.ConfigurationValueBuilder;
 import fr.sii.ogham.core.builder.configuration.ConfigurationValueBuilderHelper;
 import fr.sii.ogham.core.builder.configurer.Configurer;
+import fr.sii.ogham.core.builder.context.BuildContext;
 import fr.sii.ogham.core.builder.env.EnvironmentBuilder;
 import fr.sii.ogham.core.builder.priority.ImplementationPriorityProvider;
 import fr.sii.ogham.core.builder.priority.PriorityProvider;
@@ -70,7 +70,7 @@ public class TemplateBuilderHelper&lt;P&gt; {
 	 * @param parent
 	 *            the parent builder
 	 * @param buildContext
-	 *            for property resolution and evaluation
+	 *            for registering instances and property evaluation
 	 */
 	public TemplateBuilderHelper(P parent, BuildContext buildContext) {
 <span class="fc" id="L76">		super();</span>
@@ -360,7 +360,7 @@ public class TemplateBuilderHelper&lt;P&gt; {
 		}
 <span class="fc" id="L361">		LOG.info(&quot;Using auto detection mechanism&quot;);</span>
 <span class="fc" id="L362">		LOG.debug(&quot;Auto detection mechanisms: {}&quot;, impls);</span>
-<span class="fc" id="L363">		return new AutoDetectTemplateParser(impls);</span>
+<span class="fc" id="L363">		return buildContext.register(new AutoDetectTemplateParser(impls));</span>
 	}
 
 	/**
@@ -373,7 +373,7 @@ public class TemplateBuilderHelper&lt;P&gt; {
 	 * @return the variant resolver
 	 */
 	public VariantResolver buildVariant() {
-<span class="fc" id="L376">		FirstExistingResourceVariantResolver variantResolver = new FirstExistingResourceVariantResolver(buildDefaultVariantResolver());</span>
+<span class="fc" id="L376">		FirstExistingResourceVariantResolver variantResolver = buildContext.register(new FirstExistingResourceVariantResolver(buildDefaultVariantResolver()));</span>
 <span class="fc bfc" id="L377" title="All 2 branches covered.">		for (Builder&lt;? extends TemplateParser&gt; builder : templateBuilders) {</span>
 <span class="pc bpc" id="L378" title="1 of 2 branches missed.">			if (builder instanceof VariantBuilder) {</span>
 <span class="fc" id="L379">				variantResolver.addVariantResolver(((VariantBuilder&lt;?&gt;) builder).buildVariant());</span>
@@ -390,13 +390,13 @@ public class TemplateBuilderHelper&lt;P&gt; {
 <span class="fc bfc" id="L390" title="All 2 branches covered.">		if (missingVariantFailValueBuilder.getValue(false)) {</span>
 <span class="fc" id="L391">			return buildFailingVariantResolver();</span>
 		}
-<span class="fc" id="L393">		return new NullVariantResolver();</span>
+<span class="fc" id="L393">		return buildContext.register(new NullVariantResolver());</span>
 	}
 
 	@SuppressWarnings(&quot;squid:S5411&quot;)
 	private VariantResolver buildFailingVariantResolver() {
 <span class="pc bpc" id="L398" title="1 of 2 branches missed.">		if (!listPossiblePathsValueBuilder.getValue(false)) {</span>
-<span class="nc" id="L399">			return new FailIfNotFoundVariantResolver();</span>
+<span class="nc" id="L399">			return buildContext.register(new FailIfNotFoundVariantResolver());</span>
 		}
 <span class="fc" id="L401">		FailIfNotFoundWithTestedPathsVariantResolver failResolver = new FailIfNotFoundWithTestedPathsVariantResolver();</span>
 <span class="fc bfc" id="L402" title="All 2 branches covered.">		for (Builder&lt;? extends TemplateParser&gt; builder : templateBuilders) {</span>
@@ -404,7 +404,7 @@ public class TemplateBuilderHelper&lt;P&gt; {
 <span class="fc" id="L404">				failResolver.addVariantResolver(((VariantBuilder&lt;?&gt;) builder).buildVariant());</span>
 			}
 <span class="fc" id="L406">		}</span>
-<span class="fc" id="L407">		return failResolver;</span>
+<span class="fc" id="L407">		return buildContext.register(failResolver);</span>
 	}
 
 	private List&lt;TemplateImplementation&gt; buildTemplateParserImpls() {
@@ -414,7 +414,7 @@ public class TemplateBuilderHelper&lt;P&gt; {
 <span class="fc bfc" id="L414" title="All 2 branches covered.">			if (builder instanceof DetectorBuilder) {</span>
 <span class="fc" id="L415">				detector = ((DetectorBuilder&lt;?&gt;) builder).buildDetector();</span>
 			} else {
-<span class="fc" id="L417">				detector = new FixedEngineDetector(true);</span>
+<span class="fc" id="L417">				detector = buildContext.register(new FixedEngineDetector(true));</span>
 			}
 <span class="fc" id="L419">			TemplateParser templateParser = builder.build();</span>
 <span class="fc" id="L420">			impls.register(new TemplateImplementation(detector, templateParser), priorityProvider.provide(templateParser));</span>

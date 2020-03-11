@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>OvhOptionsBuilder.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">reporting</a> &gt; <a href="../index.html" class="el_bundle">ogham-sms-ovh</a> &gt; <a href="index.source.html" class="el_package">fr.sii.ogham.sms.builder.ovh</a> &gt; <span class="el_source">OvhOptionsBuilder.java</span></div><h1>OvhOptionsBuilder.java</h1><pre class="source lang-java linenums">package fr.sii.ogham.sms.builder.ovh;
 
-import fr.sii.ogham.core.builder.BuildContext;
 import fr.sii.ogham.core.builder.Builder;
 import fr.sii.ogham.core.builder.configuration.ConfigurationValueBuilder;
 import fr.sii.ogham.core.builder.configuration.ConfigurationValueBuilderHelper;
 import fr.sii.ogham.core.builder.configurer.Configurer;
+import fr.sii.ogham.core.builder.context.BuildContext;
 import fr.sii.ogham.core.builder.env.EnvironmentBuilder;
 import fr.sii.ogham.core.fluent.AbstractParent;
 import fr.sii.ogham.sms.sender.impl.ovh.OvhOptions;
@@ -26,6 +26,7 @@ import fr.sii.ogham.sms.sender.impl.ovh.SmsCoding;
  *
  */
 public class OvhOptionsBuilder extends AbstractParent&lt;OvhSmsBuilder&gt; implements Builder&lt;OvhOptions&gt; {
+	private final BuildContext buildContext;
 	private final ConfigurationValueBuilderHelper&lt;OvhOptionsBuilder, Boolean&gt; noStopValueBuilder;
 	private final ConfigurationValueBuilderHelper&lt;OvhOptionsBuilder, String&gt; tagValueBuilder;
 	private final ConfigurationValueBuilderHelper&lt;OvhOptionsBuilder, SmsCoding&gt; smsCodingValueBuilder;
@@ -38,14 +39,15 @@ public class OvhOptionsBuilder extends AbstractParent&lt;OvhSmsBuilder&gt; imple
 	 * @param parent
 	 *            the parent builder
 	 * @param buildContext
-	 *            for property resolution and evaluation
+	 *            for registering instances and property evaluation
 	 */
 	public OvhOptionsBuilder(OvhSmsBuilder parent, BuildContext buildContext) {
-<span class="fc" id="L44">		super(parent);</span>
-<span class="fc" id="L45">		noStopValueBuilder = new ConfigurationValueBuilderHelper&lt;&gt;(this, Boolean.class, buildContext);</span>
-<span class="fc" id="L46">		tagValueBuilder = new ConfigurationValueBuilderHelper&lt;&gt;(this, String.class, buildContext);</span>
-<span class="fc" id="L47">		smsCodingValueBuilder = new ConfigurationValueBuilderHelper&lt;&gt;(this, SmsCoding.class, buildContext);</span>
-<span class="fc" id="L48">	}</span>
+<span class="fc" id="L45">		super(parent);</span>
+<span class="fc" id="L46">		this.buildContext = buildContext;</span>
+<span class="fc" id="L47">		noStopValueBuilder = new ConfigurationValueBuilderHelper&lt;&gt;(this, Boolean.class, buildContext);</span>
+<span class="fc" id="L48">		tagValueBuilder = new ConfigurationValueBuilderHelper&lt;&gt;(this, String.class, buildContext);</span>
+<span class="fc" id="L49">		smsCodingValueBuilder = new ConfigurationValueBuilderHelper&lt;&gt;(this, SmsCoding.class, buildContext);</span>
+<span class="fc" id="L50">	}</span>
 
 	/**
 	 * Enable/disable &quot;STOP&quot; indication at the end of the message (useful to
@@ -83,8 +85,8 @@ public class OvhOptionsBuilder extends AbstractParent&lt;OvhSmsBuilder&gt; imple
 	 * @return this instance for fluent chaining
 	 */
 	public OvhOptionsBuilder noStop(Boolean noStop) {
-<span class="fc" id="L86">		noStopValueBuilder.setValue(noStop);</span>
-<span class="fc" id="L87">		return this;</span>
+<span class="fc" id="L88">		noStopValueBuilder.setValue(noStop);</span>
+<span class="fc" id="L89">		return this;</span>
 	}
 
 	/**
@@ -125,7 +127,7 @@ public class OvhOptionsBuilder extends AbstractParent&lt;OvhSmsBuilder&gt; imple
 	 * @return the builder to configure property keys/default value
 	 */
 	public ConfigurationValueBuilder&lt;OvhOptionsBuilder, Boolean&gt; noStop() {
-<span class="fc" id="L128">		return noStopValueBuilder;</span>
+<span class="fc" id="L130">		return noStopValueBuilder;</span>
 	}
 
 	/**
@@ -163,8 +165,8 @@ public class OvhOptionsBuilder extends AbstractParent&lt;OvhSmsBuilder&gt; imple
 	 * @return this instance for fluent chaining
 	 */
 	public OvhOptionsBuilder tag(String tag) {
-<span class="fc" id="L166">		tagValueBuilder.setValue(tag);</span>
-<span class="fc" id="L167">		return this;</span>
+<span class="fc" id="L168">		tagValueBuilder.setValue(tag);</span>
+<span class="fc" id="L169">		return this;</span>
 	}
 
 	/**
@@ -204,7 +206,7 @@ public class OvhOptionsBuilder extends AbstractParent&lt;OvhSmsBuilder&gt; imple
 	 * @return the builder to configure property keys/default value
 	 */
 	public ConfigurationValueBuilder&lt;OvhOptionsBuilder, String&gt; tag() {
-<span class="fc" id="L207">		return tagValueBuilder;</span>
+<span class="fc" id="L209">		return tagValueBuilder;</span>
 	}
 
 	/**
@@ -249,8 +251,8 @@ public class OvhOptionsBuilder extends AbstractParent&lt;OvhSmsBuilder&gt; imple
 	 * @return this instance for fluent chaining
 	 */
 	public OvhOptionsBuilder smsCoding(SmsCoding smsCoding) {
-<span class="fc" id="L252">		smsCodingValueBuilder.setValue(smsCoding);</span>
-<span class="fc" id="L253">		return this;</span>
+<span class="fc" id="L254">		smsCodingValueBuilder.setValue(smsCoding);</span>
+<span class="fc" id="L255">		return this;</span>
 	}
 
 	/**
@@ -297,27 +299,27 @@ public class OvhOptionsBuilder extends AbstractParent&lt;OvhSmsBuilder&gt; imple
 	 * @return the builder to configure property keys/default value
 	 */
 	public ConfigurationValueBuilder&lt;OvhOptionsBuilder, SmsCoding&gt; smsCoding() {
-<span class="fc" id="L300">		return smsCodingValueBuilder;</span>
+<span class="fc" id="L302">		return smsCodingValueBuilder;</span>
 	}
 
 	@Override
 	public OvhOptions build() {
-<span class="fc" id="L305">		boolean builtNoStop = buildNoStop();</span>
-<span class="fc" id="L306">		String builtTag = buildTag();</span>
-<span class="fc" id="L307">		SmsCoding builtSmsCoding = buildSmsCoding();</span>
-<span class="fc" id="L308">		return new OvhOptions(builtNoStop, builtTag, builtSmsCoding);</span>
+<span class="fc" id="L307">		boolean builtNoStop = buildNoStop();</span>
+<span class="fc" id="L308">		String builtTag = buildTag();</span>
+<span class="fc" id="L309">		SmsCoding builtSmsCoding = buildSmsCoding();</span>
+<span class="fc" id="L310">		return buildContext.register(new OvhOptions(builtNoStop, builtTag, builtSmsCoding));</span>
 	}
 
 	private boolean buildNoStop() {
-<span class="fc" id="L312">		return noStopValueBuilder.getValue(false);</span>
+<span class="fc" id="L314">		return noStopValueBuilder.getValue(false);</span>
 	}
 
 	private String buildTag() {
-<span class="fc" id="L316">		return tagValueBuilder.getValue();</span>
+<span class="fc" id="L318">		return tagValueBuilder.getValue();</span>
 	}
 
 	private SmsCoding buildSmsCoding() {
-<span class="fc" id="L320">		return smsCodingValueBuilder.getValue();</span>
+<span class="fc" id="L322">		return smsCodingValueBuilder.getValue();</span>
 	}
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

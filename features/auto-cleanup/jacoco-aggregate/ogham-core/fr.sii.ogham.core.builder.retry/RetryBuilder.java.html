@@ -2,8 +2,8 @@
 
 import fr.sii.ogham.core.async.Awaiter;
 import fr.sii.ogham.core.async.ThreadSleepAwaiter;
-import fr.sii.ogham.core.builder.BuildContext;
 import fr.sii.ogham.core.builder.Builder;
+import fr.sii.ogham.core.builder.context.BuildContext;
 import fr.sii.ogham.core.builder.env.EnvironmentBuilder;
 import fr.sii.ogham.core.fluent.AbstractParent;
 import fr.sii.ogham.core.retry.FixedDelayRetry;
@@ -42,7 +42,7 @@ public class RetryBuilder&lt;P&gt; extends AbstractParent&lt;P&gt; implements Bu
 	 * @param parent
 	 *            the parent builder
 	 * @param buildContext
-	 *            for property resolution and evaluation
+	 *            for registering instances and property evaluation
 	 */
 	public RetryBuilder(P parent, BuildContext buildContext) {
 <span class="fc" id="L48">		super(parent);</span>
@@ -111,7 +111,7 @@ public class RetryBuilder&lt;P&gt; extends AbstractParent&lt;P&gt; implements Bu
 <span class="pc bpc" id="L111" title="1 of 2 branches missed.">		if (fixedDelay == null) {</span>
 <span class="nc" id="L112">			return null;</span>
 		}
-<span class="fc" id="L114">		return new SimpleRetryExecutor(new BuilderToRetryStrategyProviderBridge(fixedDelay), buildAwaiter());</span>
+<span class="fc" id="L114">		return buildContext.register(new SimpleRetryExecutor(new BuilderToRetryStrategyProviderBridge(fixedDelay), buildAwaiter()));</span>
 	}
 
 	private Awaiter buildAwaiter() {

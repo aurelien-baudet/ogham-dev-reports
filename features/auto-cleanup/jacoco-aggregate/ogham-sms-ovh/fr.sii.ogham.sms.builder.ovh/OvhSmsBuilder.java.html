@@ -6,13 +6,13 @@ import java.net.URL;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import fr.sii.ogham.core.builder.BuildContext;
 import fr.sii.ogham.core.builder.Builder;
-import fr.sii.ogham.core.builder.DefaultBuildContext;
 import fr.sii.ogham.core.builder.MessagingBuilder;
 import fr.sii.ogham.core.builder.configuration.ConfigurationValueBuilder;
 import fr.sii.ogham.core.builder.configuration.ConfigurationValueBuilderHelper;
 import fr.sii.ogham.core.builder.configurer.Configurer;
+import fr.sii.ogham.core.builder.context.BuildContext;
+import fr.sii.ogham.core.builder.context.DefaultBuildContext;
 import fr.sii.ogham.core.fluent.AbstractParent;
 import fr.sii.ogham.sms.builder.SmsBuilder;
 import fr.sii.ogham.sms.message.Sms;
@@ -101,7 +101,7 @@ public class OvhSmsBuilder extends AbstractParent&lt;SmsBuilder&gt; implements B
 	 * @param parent
 	 *            the parent builder instance for fluent chaining
 	 * @param buildContext
-	 *            for property resolution and evaluation
+	 *            for registering instances and property evaluation
 	 */
 	public OvhSmsBuilder(SmsBuilder parent, BuildContext buildContext) {
 <span class="fc" id="L107">		super(parent);</span>
@@ -502,7 +502,7 @@ public class OvhSmsBuilder extends AbstractParent&lt;SmsBuilder&gt; implements B
 		}
 <span class="fc" id="L503">		LOG.info(&quot;Sending SMS using OVH API is registered&quot;);</span>
 <span class="fc" id="L504">		LOG.debug(&quot;OVH account: account={}, login={}&quot;, authParams.getAccount(), authParams.getLogin());</span>
-<span class="fc" id="L505">		return new OvhSmsSender(url, authParams, buildOptions(), new DefaultSmsCodingDetector());</span>
+<span class="fc" id="L505">		return buildContext.register(new OvhSmsSender(url, authParams, buildOptions(), buildContext.register(new DefaultSmsCodingDetector())));</span>
 	}
 
 	private URL buildUrl() {
@@ -513,7 +513,7 @@ public class OvhSmsBuilder extends AbstractParent&lt;SmsBuilder&gt; implements B
 <span class="fc" id="L513">		String accountValue = accountValueBuilder.getValue();</span>
 <span class="fc" id="L514">		String loginValue = loginValueBuilder.getValue();</span>
 <span class="fc" id="L515">		String passwordValue = passwordValueBuilder.getValue();</span>
-<span class="fc" id="L516">		return new OvhAuthParams(accountValue, loginValue, passwordValue);</span>
+<span class="fc" id="L516">		return buildContext.register(new OvhAuthParams(accountValue, loginValue, passwordValue));</span>
 	}
 
 	private OvhOptions buildOptions() {

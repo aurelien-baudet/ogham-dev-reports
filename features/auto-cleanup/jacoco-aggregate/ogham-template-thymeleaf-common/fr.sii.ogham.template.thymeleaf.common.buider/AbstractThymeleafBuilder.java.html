@@ -8,12 +8,12 @@ import org.slf4j.LoggerFactory;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.templateresolver.ITemplateResolver;
 
-import fr.sii.ogham.core.builder.BuildContext;
 import fr.sii.ogham.core.builder.Builder;
-import fr.sii.ogham.core.builder.DefaultBuildContext;
 import fr.sii.ogham.core.builder.configuration.ConfigurationValueBuilder;
 import fr.sii.ogham.core.builder.configuration.ConfigurationValueBuilderHelper;
 import fr.sii.ogham.core.builder.configurer.Configurer;
+import fr.sii.ogham.core.builder.context.BuildContext;
+import fr.sii.ogham.core.builder.context.DefaultBuildContext;
 import fr.sii.ogham.core.builder.resolution.ClassPathResolutionBuilder;
 import fr.sii.ogham.core.builder.resolution.FileResolutionBuilder;
 import fr.sii.ogham.core.builder.resolution.ResourceResolutionBuilder;
@@ -247,7 +247,7 @@ public abstract class AbstractThymeleafBuilder&lt;MYSELF extends AbstractThymele
 	@Override
 	public TemplateParser build() {
 <span class="fc" id="L249">		LOG.info(&quot;Thymeleaf parser is registered&quot;);</span>
-<span class="fc" id="L250">		return new ThymeleafParser(buildEngine(), buildResolver(), buildContext());</span>
+<span class="fc" id="L250">		return buildContext.register(new ThymeleafParser(buildEngine(), buildResolver(), buildContext()));</span>
 	}
 
 	@Override
@@ -261,7 +261,7 @@ public abstract class AbstractThymeleafBuilder&lt;MYSELF extends AbstractThymele
 	 * @return the resource resolver
 	 */
 	public FirstSupportingResourceResolver buildResolver() {
-<span class="fc" id="L264">		return new FirstSupportingResourceResolver(buildResolvers());</span>
+<span class="fc" id="L264">		return buildContext.register(new FirstSupportingResourceResolver(buildResolvers()));</span>
 	}
 
 	protected TemplateEngine buildEngine() {
@@ -274,7 +274,7 @@ public abstract class AbstractThymeleafBuilder&lt;MYSELF extends AbstractThymele
 <span class="nc" id="L274">			builtEngine = engineBuilder.build();</span>
 		} else {
 <span class="fc" id="L276">			LOG.debug(&quot;Using default Thymeleaf engine&quot;);</span>
-<span class="fc" id="L277">			builtEngine = new TemplateEngine();</span>
+<span class="fc" id="L277">			builtEngine = buildContext.register(new TemplateEngine());</span>
 		}
 <span class="fc" id="L279">		builtEngine.addTemplateResolver(buildTemplateResolver(builtEngine));</span>
 <span class="fc" id="L280">		return builtEngine;</span>
@@ -287,7 +287,7 @@ public abstract class AbstractThymeleafBuilder&lt;MYSELF extends AbstractThymele
 	protected abstract E getThymeleafEngineConfigBuilder();
 
 	protected ThymeleafContextConverter buildContext() {
-<span class="fc bfc" id="L290" title="All 2 branches covered.">		return contextConverter == null ? new SimpleThymeleafContextConverter() : contextConverter;</span>
+<span class="fc bfc" id="L290" title="All 2 branches covered.">		return contextConverter == null ? buildContext.register(new SimpleThymeleafContextConverter()) : contextConverter;</span>
 	}
 
 	private List&lt;ResourceResolver&gt; buildResolvers() {
@@ -298,7 +298,7 @@ public abstract class AbstractThymeleafBuilder&lt;MYSELF extends AbstractThymele
 	protected abstract FirstSupportingResolverAdapter buildAdapters();
 
 	protected TemplateResolverOptions buildTemplateResolverOptions() {
-<span class="fc" id="L301">		TemplateResolverOptions options = new TemplateResolverOptions();</span>
+<span class="fc" id="L301">		TemplateResolverOptions options = buildContext.register(new TemplateResolverOptions());</span>
 <span class="fc" id="L302">		options.setCacheable(enableCacheValueBuilder.getValue());</span>
 		// TODO: handle other options
 <span class="fc" id="L304">		return options;</span>

@@ -10,11 +10,11 @@ import static fr.sii.ogham.sms.SmsConstants.SmppSplitConstants.SEGMENT_SIZE_UCS2
 
 import java.util.Random;
 
-import fr.sii.ogham.core.builder.BuildContext;
 import fr.sii.ogham.core.builder.Builder;
 import fr.sii.ogham.core.builder.configuration.ConfigurationValueBuilder;
 import fr.sii.ogham.core.builder.configuration.ConfigurationValueBuilderHelper;
 import fr.sii.ogham.core.builder.configurer.Configurer;
+import fr.sii.ogham.core.builder.context.BuildContext;
 import fr.sii.ogham.core.builder.env.EnvironmentBuilder;
 import fr.sii.ogham.core.exception.builder.BuildException;
 import fr.sii.ogham.core.fluent.AbstractParent;
@@ -101,6 +101,7 @@ import fr.sii.ogham.sms.splitter.SupportingSplitter;
  *
  */
 public class MessageSplitterBuilder extends AbstractParent&lt;CloudhopperBuilder&gt; implements Builder&lt;MessageSplitter&gt; {
+	private final BuildContext buildContext;
 	private final ReadableEncoderBuilder encoderBuilder;
 	private final ConfigurationValueBuilderHelper&lt;MessageSplitterBuilder, Boolean&gt; enableValueBuilder;
 	private final PriorizedList&lt;MessageSplitter&gt; customSplitters;
@@ -115,17 +116,18 @@ public class MessageSplitterBuilder extends AbstractParent&lt;CloudhopperBuilder
 	 * @param parent
 	 *            the parent builder
 	 * @param buildContext
-	 *            for property resolution and evaluation
+	 *            for registering instances and property evaluation
 	 * @param encoderBuilder
 	 *            the encoder builder that is used to configure standard message
 	 *            splitting based on encoding charset
 	 */
 	public MessageSplitterBuilder(CloudhopperBuilder parent, BuildContext buildContext, ReadableEncoderBuilder encoderBuilder) {
-<span class="fc" id="L124">		super(parent);</span>
-<span class="fc" id="L125">		this.encoderBuilder = encoderBuilder;</span>
-<span class="fc" id="L126">		enableValueBuilder = new ConfigurationValueBuilderHelper&lt;&gt;(this, Boolean.class, buildContext);</span>
-<span class="fc" id="L127">		customSplitters = new PriorizedList&lt;&gt;();</span>
-<span class="fc" id="L128">	}</span>
+<span class="fc" id="L125">		super(parent);</span>
+<span class="fc" id="L126">		this.buildContext = buildContext;</span>
+<span class="fc" id="L127">		this.encoderBuilder = encoderBuilder;</span>
+<span class="fc" id="L128">		enableValueBuilder = new ConfigurationValueBuilderHelper&lt;&gt;(this, Boolean.class, buildContext);</span>
+<span class="fc" id="L129">		customSplitters = new PriorizedList&lt;&gt;();</span>
+<span class="fc" id="L130">	}</span>
 
 	/**
 	 * Enable/disable message splitting.
@@ -162,8 +164,8 @@ public class MessageSplitterBuilder extends AbstractParent&lt;CloudhopperBuilder
 	 * @return this instance for fluent chaining
 	 */
 	public MessageSplitterBuilder enable(Boolean enable) {
-<span class="fc" id="L165">		enableValueBuilder.setValue(enable);</span>
-<span class="fc" id="L166">		return this;</span>
+<span class="fc" id="L167">		enableValueBuilder.setValue(enable);</span>
+<span class="fc" id="L168">		return this;</span>
 	}
 
 	/**
@@ -203,7 +205,7 @@ public class MessageSplitterBuilder extends AbstractParent&lt;CloudhopperBuilder
 	 * @return the builder to configure property keys/default value
 	 */
 	public ConfigurationValueBuilder&lt;MessageSplitterBuilder, Boolean&gt; enable() {
-<span class="fc" id="L206">		return enableValueBuilder;</span>
+<span class="fc" id="L208">		return enableValueBuilder;</span>
 	}
 
 	/**
@@ -236,10 +238,10 @@ public class MessageSplitterBuilder extends AbstractParent&lt;CloudhopperBuilder
 	 * @see ReferenceNumberGenerator
 	 */
 	public ReferenceNumberGeneratorBuilder referenceNumber() {
-<span class="pc bpc" id="L239" title="1 of 2 branches missed.">		if (referenceNumberBuilder == null) {</span>
-<span class="fc" id="L240">			referenceNumberBuilder = new ReferenceNumberGeneratorBuilder(this);</span>
+<span class="pc bpc" id="L241" title="1 of 2 branches missed.">		if (referenceNumberBuilder == null) {</span>
+<span class="fc" id="L242">			referenceNumberBuilder = new ReferenceNumberGeneratorBuilder(this, buildContext);</span>
 		}
-<span class="fc" id="L242">		return referenceNumberBuilder;</span>
+<span class="fc" id="L244">		return referenceNumberBuilder;</span>
 	}
 
 	/**
@@ -260,8 +262,8 @@ public class MessageSplitterBuilder extends AbstractParent&lt;CloudhopperBuilder
 	 * @return this instance for fluent chaining
 	 */
 	public MessageSplitterBuilder customSplitter(MessageSplitter splitter) {
-<span class="nc" id="L263">		this.customSplitter = splitter;</span>
-<span class="nc" id="L264">		return this;</span>
+<span class="nc" id="L265">		this.customSplitter = splitter;</span>
+<span class="nc" id="L266">		return this;</span>
 	}
 
 	/**
@@ -292,59 +294,59 @@ public class MessageSplitterBuilder extends AbstractParent&lt;CloudhopperBuilder
 	 * @return this instance for fluent chaining
 	 */
 	public MessageSplitterBuilder customSplitter(MessageSplitter splitter, int priority) {
-<span class="nc" id="L295">		customSplitters.register(splitter, priority);</span>
-<span class="nc" id="L296">		return this;</span>
+<span class="nc" id="L297">		customSplitters.register(splitter, priority);</span>
+<span class="nc" id="L298">		return this;</span>
 	}
 
 	@Override
 	public MessageSplitter build() {
-<span class="pc bpc" id="L301" title="1 of 2 branches missed.">		if (customSplitter != null) {</span>
-<span class="nc" id="L302">			return customSplitter;</span>
+<span class="pc bpc" id="L303" title="1 of 2 branches missed.">		if (customSplitter != null) {</span>
+<span class="nc" id="L304">			return customSplitter;</span>
 		}
-<span class="fc bfc" id="L304" title="All 2 branches covered.">		if (!splittingEnabled()) {</span>
-<span class="fc" id="L305">			return null;</span>
+<span class="fc bfc" id="L306" title="All 2 branches covered.">		if (!splittingEnabled()) {</span>
+<span class="fc" id="L307">			return null;</span>
 		}
-<span class="fc bfc" id="L307" title="All 2 branches covered.">		if (encoderBuilder.autoGuessEnabled()) {</span>
-<span class="fc" id="L308">			return buildAutoGuessSplitter();</span>
+<span class="fc bfc" id="L309" title="All 2 branches covered.">		if (encoderBuilder.autoGuessEnabled()) {</span>
+<span class="fc" id="L310">			return buildAutoGuessSplitter();</span>
 		}
-<span class="pc bpc" id="L310" title="1 of 2 branches missed.">		if (!customSplitters.isEmpty()) {</span>
-<span class="nc" id="L311">			return new FirstSupportingMessageSplitter(customSplitters.getOrdered());</span>
+<span class="pc bpc" id="L312" title="1 of 2 branches missed.">		if (!customSplitters.isEmpty()) {</span>
+<span class="nc" id="L313">			return buildContext.register(new FirstSupportingMessageSplitter(customSplitters.getOrdered()));</span>
 		}
-<span class="fc" id="L313">		throw new BuildException(&quot;Split of SMS is enabled but no splitter is configured&quot;);</span>
+<span class="fc" id="L315">		throw new BuildException(&quot;Split of SMS is enabled but no splitter is configured&quot;);</span>
 	}
 
 	private boolean splittingEnabled() {
-<span class="fc" id="L317">		return enableValueBuilder.getValue(false);</span>
+<span class="fc" id="L319">		return enableValueBuilder.getValue(false);</span>
 	}
 
 	private MessageSplitter buildAutoGuessSplitter() {
-<span class="fc" id="L321">		PriorizedList&lt;MessageSplitter&gt; registry = new PriorizedList&lt;&gt;();</span>
-<span class="fc" id="L322">		registerStandardSplitter(encoderBuilder.getGsm7Priorities(), NAME_GSM7, SEGMENT_SIZE_GSM_7BIT_SMS_PACKING_MODE, registry);</span>
-<span class="fc" id="L323">		registerStandardSplitter(encoderBuilder.getGsm8Priorities(), NAME_GSM8, SEGMENT_SIZE_GSM_8BIT, registry);</span>
-<span class="fc" id="L324">		registerStandardSplitter(encoderBuilder.getLatin1Priorities(), NAME_ISO_8859_1, SEGMENT_SIZE_GSM_8BIT, registry);</span>
-<span class="fc" id="L325">		registerStandardSplitter(encoderBuilder.getUcs2Priorities(), NAME_UCS_2, SEGMENT_SIZE_UCS2, registry);</span>
-<span class="fc" id="L326">		registry.register(customSplitters);</span>
-<span class="fc" id="L327">		return new FirstSupportingMessageSplitter(registry.getOrdered());</span>
+<span class="fc" id="L323">		PriorizedList&lt;MessageSplitter&gt; registry = new PriorizedList&lt;&gt;();</span>
+<span class="fc" id="L324">		registerStandardSplitter(encoderBuilder.getGsm7Priorities(), NAME_GSM7, SEGMENT_SIZE_GSM_7BIT_SMS_PACKING_MODE, registry);</span>
+<span class="fc" id="L325">		registerStandardSplitter(encoderBuilder.getGsm8Priorities(), NAME_GSM8, SEGMENT_SIZE_GSM_8BIT, registry);</span>
+<span class="fc" id="L326">		registerStandardSplitter(encoderBuilder.getLatin1Priorities(), NAME_ISO_8859_1, SEGMENT_SIZE_GSM_8BIT, registry);</span>
+<span class="fc" id="L327">		registerStandardSplitter(encoderBuilder.getUcs2Priorities(), NAME_UCS_2, SEGMENT_SIZE_UCS2, registry);</span>
+<span class="fc" id="L328">		registry.register(customSplitters);</span>
+<span class="fc" id="L329">		return buildContext.register(new FirstSupportingMessageSplitter(registry.getOrdered()));</span>
 	}
 
 	private void registerStandardSplitter(StandardEncodingHelper priorities, String supportedCharsetName, SegmentSizes maxSizes, PriorizedList&lt;MessageSplitter&gt; registry) {
-<span class="fc" id="L331">		Integer priority = priorities.getValue();</span>
-<span class="pc bpc" id="L332" title="1 of 4 branches missed.">		if (priority == null || priority &lt;= 0) {</span>
-<span class="fc" id="L333">			return;</span>
+<span class="fc" id="L333">		Integer priority = priorities.getValue();</span>
+<span class="pc bpc" id="L334" title="1 of 4 branches missed.">		if (priority == null || priority &lt;= 0) {</span>
+<span class="fc" id="L335">			return;</span>
 		}
-<span class="fc" id="L335">		registry.register(buildStandardSplitter(supportedCharsetName, maxSizes), priority);</span>
-<span class="fc" id="L336">	}</span>
+<span class="fc" id="L337">		registry.register(buildStandardSplitter(supportedCharsetName, maxSizes), priority);</span>
+<span class="fc" id="L338">	}</span>
 
 	private MessageSplitter buildStandardSplitter(String supportingCharset, SegmentSizes maxSizes) {
-<span class="fc" id="L339">		SupportingEncoder encoder = new CloudhopperCharsetSupportingEncoder(NamedCharset.from(supportingCharset));</span>
-<span class="fc" id="L340">		return new SupportedEncoderConditionalSplitter(encoder, new GsmMessageSplitter(encoder, maxSizes, buildReferenceNumberGenerator()));</span>
+<span class="fc" id="L341">		SupportingEncoder encoder = buildContext.register(new CloudhopperCharsetSupportingEncoder(NamedCharset.from(supportingCharset)));</span>
+<span class="fc" id="L342">		return buildContext.register(new SupportedEncoderConditionalSplitter(encoder, buildContext.register(new GsmMessageSplitter(encoder, maxSizes, buildReferenceNumberGenerator()))));</span>
 	}
 
 	private ReferenceNumberGenerator buildReferenceNumberGenerator() {
-<span class="fc bfc" id="L344" title="All 2 branches covered.">		if (referenceNumberBuilder != null) {</span>
-<span class="fc" id="L345">			return referenceNumberBuilder.build();</span>
+<span class="fc bfc" id="L346" title="All 2 branches covered.">		if (referenceNumberBuilder != null) {</span>
+<span class="fc" id="L347">			return referenceNumberBuilder.build();</span>
 		}
-<span class="fc" id="L347">		return new RandomReferenceNumberGenerator();</span>
+<span class="fc" id="L349">		return buildContext.register(new RandomReferenceNumberGenerator());</span>
 	}
 
 }

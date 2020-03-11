@@ -10,12 +10,12 @@ import org.slf4j.LoggerFactory;
 import com.sendgrid.Client;
 import com.sendgrid.SendGrid;
 
-import fr.sii.ogham.core.builder.BuildContext;
-import fr.sii.ogham.core.builder.DefaultBuildContext;
 import fr.sii.ogham.core.builder.MessagingBuilder;
 import fr.sii.ogham.core.builder.configuration.ConfigurationValueBuilder;
 import fr.sii.ogham.core.builder.configuration.ConfigurationValueBuilderHelper;
 import fr.sii.ogham.core.builder.configurer.Configurer;
+import fr.sii.ogham.core.builder.context.BuildContext;
+import fr.sii.ogham.core.builder.context.DefaultBuildContext;
 import fr.sii.ogham.core.message.content.MayHaveStringContent;
 import fr.sii.ogham.core.message.content.MultiContent;
 import fr.sii.ogham.core.mimetype.MimeTypeProvider;
@@ -126,7 +126,7 @@ public class SendGridV4Builder extends AbstractSendGridBuilder&lt;SendGridV4Buil
 	 * @param parent
 	 *            the parent builder instance for fluent chaining
 	 * @param buildContext
-	 *            for property resolution and evaluation
+	 *            for registering instances and property evaluation
 	 */
 	public SendGridV4Builder(EmailBuilder parent, BuildContext buildContext) {
 <span class="fc" id="L132">		super(SendGridV4Builder.class, parent, buildContext);</span>
@@ -370,10 +370,10 @@ public class SendGridV4Builder extends AbstractSendGridBuilder&lt;SendGridV4Buil
 		} else {
 <span class="fc" id="L371">			LOG.debug(&quot;SendGrid instance provided so apiKey and unitTesting properties are not used&quot;);</span>
 		}
-<span class="fc" id="L373">		return new SendGridV4Sender(builtClient, buildContentHandler(), buildMimetypeProvider(), interceptor);</span>
+<span class="fc" id="L373">		return buildContext.register(new SendGridV4Sender(builtClient, buildContentHandler(), buildMimetypeProvider(), interceptor));</span>
 	}
 
-	private static Client buildClientHelper(Client clientHelper, CloseableHttpClient httpClient, boolean test, URL url) {
+	private Client buildClientHelper(Client clientHelper, CloseableHttpClient httpClient, boolean test, URL url) {
 		// custom implementation
 <span class="pc bpc" id="L378" title="1 of 2 branches missed.">		if (clientHelper != null) {</span>
 <span class="nc" id="L379">			return clientHelper;</span>
@@ -382,18 +382,18 @@ public class SendGridV4Builder extends AbstractSendGridBuilder&lt;SendGridV4Buil
 		// SendGrid Client doesn't support neither custom port nor custom
 		// protocol
 <span class="pc bpc" id="L384" title="1 of 4 branches missed.">		if (url != null &amp;&amp; httpClient != null) {</span>
-<span class="nc" id="L385">			return new CustomizableUrlClient(httpClient, url.getProtocol(), url.getPort());</span>
+<span class="nc" id="L385">			return buildContext.register(new CustomizableUrlClient(httpClient, url.getProtocol(), url.getPort()));</span>
 		}
 <span class="fc bfc" id="L387" title="All 2 branches covered.">		if (url != null) {</span>
-<span class="fc" id="L388">			return new CustomizableUrlClient(test, url.getProtocol(), url.getPort());</span>
+<span class="fc" id="L388">			return buildContext.register(new CustomizableUrlClient(test, url.getProtocol(), url.getPort()));</span>
 		}
 		// custom http client
 <span class="pc bpc" id="L391" title="1 of 2 branches missed.">		if (httpClient != null) {</span>
-<span class="nc" id="L392">			return new Client(httpClient);</span>
+<span class="nc" id="L392">			return buildContext.register(new Client(httpClient));</span>
 		}
 		// test client (just to allow http instead of https)
 <span class="pc bpc" id="L395" title="1 of 2 branches missed.">		if (test) {</span>
-<span class="nc" id="L396">			return new Client(true);</span>
+<span class="nc" id="L396">			return buildContext.register(new Client(true));</span>
 		}
 		// use default Client implementation created directly by SendGrid
 <span class="fc" id="L399">		return null;</span>
@@ -404,7 +404,7 @@ public class SendGridV4Builder extends AbstractSendGridBuilder&lt;SendGridV4Buil
 <span class="fc" id="L404">			return this.client;</span>
 		}
 <span class="fc bfc" id="L406" title="All 2 branches covered.">		if (apiKey != null) {</span>
-<span class="fc" id="L407">			return new DelegateSendGridClient(buildSendGrid(apiKey, client, url));</span>
+<span class="fc" id="L407">			return buildContext.register(new DelegateSendGridClient(buildSendGrid(apiKey, client, url)));</span>
 		}
 <span class="fc" id="L409">		return null;</span>
 	}
@@ -426,10 +426,10 @@ public class SendGridV4Builder extends AbstractSendGridBuilder&lt;SendGridV4Buil
 
 	private PriorizedContentHandler buildContentHandler() {
 <span class="fc" id="L428">		MimeTypeProvider mimetypeProvider = buildMimetypeProvider();</span>
-<span class="fc" id="L429">		PriorizedContentHandler contentHandler = new PriorizedContentHandler();</span>
-<span class="fc" id="L430">		contentHandler.register(MultiContent.class, new MultiContentHandler(contentHandler));</span>
-<span class="fc" id="L431">		contentHandler.register(ContentWithAttachments.class, new ContentWithAttachmentsHandler(contentHandler));</span>
-<span class="fc" id="L432">		contentHandler.register(MayHaveStringContent.class, new StringContentHandler(mimetypeProvider));</span>
+<span class="fc" id="L429">		PriorizedContentHandler contentHandler = buildContext.register(new PriorizedContentHandler());</span>
+<span class="fc" id="L430">		contentHandler.register(MultiContent.class, buildContext.register(new MultiContentHandler(contentHandler)));</span>
+<span class="fc" id="L431">		contentHandler.register(ContentWithAttachments.class, buildContext.register(new ContentWithAttachmentsHandler(contentHandler)));</span>
+<span class="fc" id="L432">		contentHandler.register(MayHaveStringContent.class, buildContext.register(new StringContentHandler(mimetypeProvider)));</span>
 <span class="fc" id="L433">		return contentHandler;</span>
 	}
 
