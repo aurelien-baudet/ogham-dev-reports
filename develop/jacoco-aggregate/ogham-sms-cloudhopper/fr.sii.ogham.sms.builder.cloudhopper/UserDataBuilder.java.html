@@ -4,8 +4,8 @@ import fr.sii.ogham.core.builder.Builder;
 import fr.sii.ogham.core.builder.configuration.ConfigurationValueBuilder;
 import fr.sii.ogham.core.builder.configuration.ConfigurationValueBuilderHelper;
 import fr.sii.ogham.core.builder.configurer.Configurer;
+import fr.sii.ogham.core.builder.context.BuildContext;
 import fr.sii.ogham.core.builder.env.EnvironmentBuilder;
-import fr.sii.ogham.core.env.PropertyResolver;
 import fr.sii.ogham.core.fluent.AbstractParent;
 import fr.sii.ogham.sms.builder.cloudhopper.UserDataBuilder.UserDataPropValues;
 import fr.sii.ogham.sms.sender.impl.cloudhopper.preparator.MessagePreparator;
@@ -38,7 +38,6 @@ import fr.sii.ogham.sms.sender.impl.cloudhopper.preparator.MessagePreparator;
  *
  */
 public class UserDataBuilder extends AbstractParent&lt;CloudhopperBuilder&gt; implements Builder&lt;UserDataPropValues&gt; {
-	private final EnvironmentBuilder&lt;?&gt; environmentBuilder;
 	private final ConfigurationValueBuilderHelper&lt;UserDataBuilder, Boolean&gt; useShortMessageValueBuilder;
 	private final ConfigurationValueBuilderHelper&lt;UserDataBuilder, Boolean&gt; useTlvMessagePayloadValueBuilder;
 
@@ -49,15 +48,14 @@ public class UserDataBuilder extends AbstractParent&lt;CloudhopperBuilder&gt; im
 	 * 
 	 * @param parent
 	 *            the parent builder
-	 * @param environmentBuilder
-	 *            the configuration for property resolution and evaluation
+	 * @param buildContext
+	 *            for registering instances and property evaluation
 	 */
-	public UserDataBuilder(CloudhopperBuilder parent, EnvironmentBuilder&lt;?&gt; environmentBuilder) {
-<span class="fc" id="L56">		super(parent);</span>
-<span class="fc" id="L57">		this.environmentBuilder = environmentBuilder;</span>
-<span class="fc" id="L58">		useShortMessageValueBuilder = new ConfigurationValueBuilderHelper&lt;&gt;(this, Boolean.class);</span>
-<span class="fc" id="L59">		useTlvMessagePayloadValueBuilder = new ConfigurationValueBuilderHelper&lt;&gt;(this, Boolean.class);</span>
-<span class="fc" id="L60">	}</span>
+	public UserDataBuilder(CloudhopperBuilder parent, BuildContext buildContext) {
+<span class="fc" id="L55">		super(parent);</span>
+<span class="fc" id="L56">		useShortMessageValueBuilder = new ConfigurationValueBuilderHelper&lt;&gt;(this, Boolean.class, buildContext);</span>
+<span class="fc" id="L57">		useTlvMessagePayloadValueBuilder = new ConfigurationValueBuilderHelper&lt;&gt;(this, Boolean.class, buildContext);</span>
+<span class="fc" id="L58">	}</span>
 
 	/**
 	 * Enable/disable use of {@code short_message} field.
@@ -95,8 +93,8 @@ public class UserDataBuilder extends AbstractParent&lt;CloudhopperBuilder&gt; im
 	 * @return this instance for fluent chaining
 	 */
 	public UserDataBuilder useShortMessage(Boolean useShortMessage) {
-<span class="fc" id="L98">		useShortMessageValueBuilder.setValue(useShortMessage);</span>
-<span class="fc" id="L99">		return this;</span>
+<span class="fc" id="L96">		useShortMessageValueBuilder.setValue(useShortMessage);</span>
+<span class="fc" id="L97">		return this;</span>
 	}
 
 	/**
@@ -137,7 +135,7 @@ public class UserDataBuilder extends AbstractParent&lt;CloudhopperBuilder&gt; im
 	 * @return the builder to configure property keys/default value
 	 */
 	public ConfigurationValueBuilder&lt;UserDataBuilder, Boolean&gt; useShortMessage() {
-<span class="fc" id="L140">		return useShortMessageValueBuilder;</span>
+<span class="fc" id="L138">		return useShortMessageValueBuilder;</span>
 	}
 
 	/**
@@ -181,8 +179,8 @@ public class UserDataBuilder extends AbstractParent&lt;CloudhopperBuilder&gt; im
 	 * @return this instance for fluent chaining
 	 */
 	public UserDataBuilder useTlvMessagePayload(Boolean useTlvMessagePayload) {
-<span class="fc" id="L184">		useTlvMessagePayloadValueBuilder.setValue(useTlvMessagePayload);</span>
-<span class="fc" id="L185">		return this;</span>
+<span class="fc" id="L182">		useTlvMessagePayloadValueBuilder.setValue(useTlvMessagePayload);</span>
+<span class="fc" id="L183">		return this;</span>
 	}
 
 	/**
@@ -223,15 +221,14 @@ public class UserDataBuilder extends AbstractParent&lt;CloudhopperBuilder&gt; im
 	 * @return the builder to configure property keys/default value
 	 */
 	public ConfigurationValueBuilder&lt;UserDataBuilder, Boolean&gt; useTlvMessagePayload() {
-<span class="fc" id="L226">		return useTlvMessagePayloadValueBuilder;</span>
+<span class="fc" id="L224">		return useTlvMessagePayloadValueBuilder;</span>
 	}
 
 	@Override
 	public UserDataPropValues build() {
-<span class="fc" id="L231">		PropertyResolver propertyResolver = environmentBuilder.build();</span>
-<span class="fc" id="L232">		boolean useShort = useShortMessageValueBuilder.getValue(propertyResolver, false);</span>
-<span class="fc" id="L233">		boolean useTlv = useTlvMessagePayloadValueBuilder.getValue(propertyResolver, false);</span>
-<span class="fc" id="L234">		return new UserDataPropValues(useShort, useTlv);</span>
+<span class="fc" id="L229">		boolean useShort = useShortMessageValueBuilder.getValue(false);</span>
+<span class="fc" id="L230">		boolean useTlv = useTlvMessagePayloadValueBuilder.getValue(false);</span>
+<span class="fc" id="L231">		return new UserDataPropValues(useShort, useTlv);</span>
 	}
 
 	/**
@@ -254,16 +251,16 @@ public class UserDataBuilder extends AbstractParent&lt;CloudhopperBuilder&gt; im
 		 *            used
 		 */
 		public UserDataPropValues(boolean useShortMessage, boolean useTlvMessagePayload) {
-<span class="fc" id="L257">			super();</span>
-<span class="fc" id="L258">			this.useShortMessage = useShortMessage;</span>
-<span class="fc" id="L259">			this.useTlvMessagePayload = useTlvMessagePayload;</span>
-<span class="fc" id="L260">		}</span>
+<span class="fc" id="L254">			super();</span>
+<span class="fc" id="L255">			this.useShortMessage = useShortMessage;</span>
+<span class="fc" id="L256">			this.useTlvMessagePayload = useTlvMessagePayload;</span>
+<span class="fc" id="L257">		}</span>
 
 		/**
 		 * @return is the {@code short_message} field should be used
 		 */
 		public boolean isUseShortMessage() {
-<span class="fc" id="L266">			return useShortMessage;</span>
+<span class="fc" id="L263">			return useShortMessage;</span>
 		}
 
 		/**
@@ -271,7 +268,7 @@ public class UserDataBuilder extends AbstractParent&lt;CloudhopperBuilder&gt; im
 		 *         used
 		 */
 		public boolean isUseTlvMessagePayload() {
-<span class="fc" id="L274">			return useTlvMessagePayload;</span>
+<span class="fc" id="L271">			return useTlvMessagePayload;</span>
 		}
 
 	}

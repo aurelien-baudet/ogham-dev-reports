@@ -12,8 +12,8 @@ import fr.sii.ogham.core.builder.Builder;
 import fr.sii.ogham.core.builder.configuration.ConfigurationValueBuilder;
 import fr.sii.ogham.core.builder.configuration.ConfigurationValueBuilderHelper;
 import fr.sii.ogham.core.builder.configurer.Configurer;
+import fr.sii.ogham.core.builder.context.BuildContext;
 import fr.sii.ogham.core.builder.env.EnvironmentBuilder;
-import fr.sii.ogham.core.env.PropertyResolver;
 import fr.sii.ogham.core.exception.builder.BuildException;
 import fr.sii.ogham.core.fluent.AbstractParent;
 import freemarker.core.Configurable;
@@ -38,7 +38,6 @@ import freemarker.template.Version;
  *            method)
  */
 public class FreemarkerConfigurationBuilder&lt;P&gt; extends AbstractParent&lt;P&gt; implements Builder&lt;Configuration&gt; {
-	private final EnvironmentBuilder&lt;?&gt; environmentBuilder;
 	private final ConfigurationValueBuilderHelper&lt;FreemarkerConfigurationBuilder&lt;P&gt;, String&gt; defaultEncodingValueBuilder;
 	private final ConfigurationValueBuilderHelper&lt;FreemarkerConfigurationBuilder&lt;P&gt;, Boolean&gt; enableStaticMethodAccessValueBuilder;
 	private final ConfigurationValueBuilderHelper&lt;FreemarkerConfigurationBuilder&lt;P&gt;, String&gt; staticMethodAccessVariableNameValueBuilder;
@@ -56,17 +55,16 @@ public class FreemarkerConfigurationBuilder&lt;P&gt; extends AbstractParent&lt;P
 	 * 
 	 * @param parent
 	 *            the parent builder
-	 * @param environmentBuilder
-	 *            the configuration for property resolution and evaluation
+	 * @param buildContext
+	 *            for registering instances and property evaluation
 	 */
-	public FreemarkerConfigurationBuilder(P parent, EnvironmentBuilder&lt;?&gt; environmentBuilder) {
-<span class="fc" id="L63">		super(parent);</span>
-<span class="fc" id="L64">		this.environmentBuilder = environmentBuilder;</span>
-<span class="fc" id="L65">		defaultEncodingValueBuilder = new ConfigurationValueBuilderHelper&lt;&gt;(this, String.class);</span>
-<span class="fc" id="L66">		enableStaticMethodAccessValueBuilder = new ConfigurationValueBuilderHelper&lt;&gt;(this, Boolean.class);</span>
-<span class="fc" id="L67">		staticMethodAccessVariableNameValueBuilder = new ConfigurationValueBuilderHelper&lt;&gt;(this, String.class);</span>
-<span class="fc" id="L68">		sharedVariables = new HashMap&lt;&gt;();</span>
-<span class="fc" id="L69">	}</span>
+	public FreemarkerConfigurationBuilder(P parent, BuildContext buildContext) {
+<span class="fc" id="L62">		super(parent);</span>
+<span class="fc" id="L63">		defaultEncodingValueBuilder = new ConfigurationValueBuilderHelper&lt;&gt;(this, String.class, buildContext);</span>
+<span class="fc" id="L64">		enableStaticMethodAccessValueBuilder = new ConfigurationValueBuilderHelper&lt;&gt;(this, Boolean.class, buildContext);</span>
+<span class="fc" id="L65">		staticMethodAccessVariableNameValueBuilder = new ConfigurationValueBuilderHelper&lt;&gt;(this, String.class, buildContext);</span>
+<span class="fc" id="L66">		sharedVariables = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L67">	}</span>
 
 	/**
 	 * Sets the base configuration that will be configured.
@@ -78,8 +76,8 @@ public class FreemarkerConfigurationBuilder&lt;P&gt; extends AbstractParent&lt;P
 	 * @return this instance for fluent chaining
 	 */
 	public FreemarkerConfigurationBuilder&lt;P&gt; base(Configuration base) {
-<span class="fc" id="L81">		this.base = base;</span>
-<span class="fc" id="L82">		return this;</span>
+<span class="fc" id="L79">		this.base = base;</span>
+<span class="fc" id="L80">		return this;</span>
 	}
 
 	/**
@@ -96,8 +94,8 @@ public class FreemarkerConfigurationBuilder&lt;P&gt; extends AbstractParent&lt;P
 	 * @return this instance for fluent chaining
 	 */
 	public FreemarkerConfigurationBuilder&lt;P&gt; version(Version version) {
-<span class="nc" id="L99">		this.version = version;</span>
-<span class="nc" id="L100">		return this;</span>
+<span class="nc" id="L97">		this.version = version;</span>
+<span class="nc" id="L98">		return this;</span>
 	}
 
 	/**
@@ -151,8 +149,8 @@ public class FreemarkerConfigurationBuilder&lt;P&gt; extends AbstractParent&lt;P
 	 * @return this instance for fluent chaining
 	 */
 	public FreemarkerConfigurationBuilder&lt;P&gt; defaultEncoding(String charsetName) {
-<span class="nc" id="L154">		defaultEncodingValueBuilder.setValue(charsetName);</span>
-<span class="nc" id="L155">		return this;</span>
+<span class="nc" id="L152">		defaultEncodingValueBuilder.setValue(charsetName);</span>
+<span class="nc" id="L153">		return this;</span>
 	}
 
 	/**
@@ -208,7 +206,7 @@ public class FreemarkerConfigurationBuilder&lt;P&gt; extends AbstractParent&lt;P
 	 * @return the builder to configure property keys/default value
 	 */
 	public ConfigurationValueBuilder&lt;FreemarkerConfigurationBuilder&lt;P&gt;, String&gt; defaultEncoding() {
-<span class="fc" id="L211">		return defaultEncodingValueBuilder;</span>
+<span class="fc" id="L209">		return defaultEncodingValueBuilder;</span>
 	}
 
 	/**
@@ -245,8 +243,8 @@ public class FreemarkerConfigurationBuilder&lt;P&gt; extends AbstractParent&lt;P
 	 * @return this instance for fluent chaining
 	 */
 	public FreemarkerConfigurationBuilder&lt;P&gt; templateExceptionHandler(TemplateExceptionHandler exceptionHandler) {
-<span class="fc" id="L248">		this.templateExceptionHandler = exceptionHandler;</span>
-<span class="fc" id="L249">		return this;</span>
+<span class="fc" id="L246">		this.templateExceptionHandler = exceptionHandler;</span>
+<span class="fc" id="L247">		return this;</span>
 	}
 
 	/**
@@ -278,8 +276,8 @@ public class FreemarkerConfigurationBuilder&lt;P&gt; extends AbstractParent&lt;P
 	 * @return this instance for fluent chaining
 	 */
 	public FreemarkerConfigurationBuilder&lt;P&gt; addSharedVariable(String name, TemplateModel tm) {
-<span class="fc" id="L281">		this.sharedVariables.put(name, tm);</span>
-<span class="fc" id="L282">		return this;</span>
+<span class="fc" id="L279">		this.sharedVariables.put(name, tm);</span>
+<span class="fc" id="L280">		return this;</span>
 	}
 
 	/**
@@ -307,8 +305,8 @@ public class FreemarkerConfigurationBuilder&lt;P&gt; extends AbstractParent&lt;P
 	 * @return this instance for fluent chaining
 	 */
 	public FreemarkerConfigurationBuilder&lt;P&gt; addSharedVariable(String name, Object value) {
-<span class="nc" id="L310">		this.sharedVariables.put(name, value);</span>
-<span class="nc" id="L311">		return this;</span>
+<span class="nc" id="L308">		this.sharedVariables.put(name, value);</span>
+<span class="nc" id="L309">		return this;</span>
 	}
 
 	/**
@@ -351,8 +349,8 @@ public class FreemarkerConfigurationBuilder&lt;P&gt; extends AbstractParent&lt;P
 	 * @return this instance for fluent chaining
 	 */
 	public FreemarkerConfigurationBuilder&lt;P&gt; enableStaticMethodAccess(Boolean enable) {
-<span class="nc" id="L354">		enableStaticMethodAccessValueBuilder.setValue(enable);</span>
-<span class="nc" id="L355">		return this;</span>
+<span class="nc" id="L352">		enableStaticMethodAccessValueBuilder.setValue(enable);</span>
+<span class="nc" id="L353">		return this;</span>
 	}
 
 	/**
@@ -397,7 +395,7 @@ public class FreemarkerConfigurationBuilder&lt;P&gt; extends AbstractParent&lt;P
 	 * @return the builder to configure property keys/default value
 	 */
 	public ConfigurationValueBuilder&lt;FreemarkerConfigurationBuilder&lt;P&gt;, Boolean&gt; enableStaticMethodAccess() {
-<span class="fc" id="L400">		return enableStaticMethodAccessValueBuilder;</span>
+<span class="fc" id="L398">		return enableStaticMethodAccessValueBuilder;</span>
 	}
 
 	/**
@@ -421,7 +419,8 @@ public class FreemarkerConfigurationBuilder&lt;P&gt; extends AbstractParent&lt;P
 	 *   .defaultValue(&quot;statics&quot;)
 	 * &lt;/pre&gt;
 	 * 
-	 * In both cases, {@code staticMethodAccessVariableName(&quot;myStatics&quot;)} is used.
+	 * In both cases, {@code staticMethodAccessVariableName(&quot;myStatics&quot;)} is
+	 * used.
 	 * 
 	 * &lt;p&gt;
 	 * If this method is called several times, only the last value is used.
@@ -431,21 +430,24 @@ public class FreemarkerConfigurationBuilder&lt;P&gt; extends AbstractParent&lt;P
 	 * property/default value configuration is applied.
 	 * 
 	 * @param variableName
-	 *            the name of the variable used to access static methods from templates
+	 *            the name of the variable used to access static methods from
+	 *            templates
 	 * @return this instance for fluent chaining
 	 */
 	public FreemarkerConfigurationBuilder&lt;P&gt; staticMethodAccessVariableName(String variableName) {
 <span class="nc" id="L438">		staticMethodAccessVariableNameValueBuilder.setValue(variableName);</span>
 <span class="nc" id="L439">		return this;</span>
 	}
-	
+
 	/**
 	 * Change the name of the variable used to access static methods.
 	 * 
 	 * &lt;p&gt;
-	 * This method is mainly used by {@link Configurer}s to register some property keys and/or a default value.
-	 * The aim is to let developer be able to externalize its configuration (using system properties, configuration file or anything else).
-	 * If the developer doesn't configure any value for the registered properties, the default value is used (if set).
+	 * This method is mainly used by {@link Configurer}s to register some
+	 * property keys and/or a default value. The aim is to let developer be able
+	 * to externalize its configuration (using system properties, configuration
+	 * file or anything else). If the developer doesn't configure any value for
+	 * the registered properties, the default value is used (if set).
 	 * 
 	 * &lt;pre&gt;
 	 * .staticMethodAccessVariableName()
@@ -454,8 +456,8 @@ public class FreemarkerConfigurationBuilder&lt;P&gt; extends AbstractParent&lt;P
 	 * &lt;/pre&gt;
 	 * 
 	 * &lt;p&gt;
-	 * Non-null value set using {@link #staticMethodAccessVariableName(String)} takes
-	 * precedence over property values and default value.
+	 * Non-null value set using {@link #staticMethodAccessVariableName(String)}
+	 * takes precedence over property values and default value.
 	 * 
 	 * &lt;pre&gt;
 	 * .staticMethodAccessVariableName(&quot;myStatics&quot;)
@@ -464,8 +466,8 @@ public class FreemarkerConfigurationBuilder&lt;P&gt; extends AbstractParent&lt;P
 	 *   .defaultValue(&quot;statics&quot;)
 	 * &lt;/pre&gt;
 	 * 
-	 * The value {@code &quot;myStatics&quot;} is used regardless of the value of the properties
-	 * and default value.
+	 * The value {@code &quot;myStatics&quot;} is used regardless of the value of the
+	 * properties and default value.
 	 * 
 	 * &lt;p&gt;
 	 * See {@link ConfigurationValueBuilder} for more information.
@@ -474,7 +476,7 @@ public class FreemarkerConfigurationBuilder&lt;P&gt; extends AbstractParent&lt;P
 	 * @return the builder to configure property keys/default value
 	 */
 	public ConfigurationValueBuilder&lt;FreemarkerConfigurationBuilder&lt;P&gt;, String&gt; staticMethodAccessVariableName() {
-<span class="fc" id="L477">		return staticMethodAccessVariableNameValueBuilder;</span>
+<span class="fc" id="L479">		return staticMethodAccessVariableNameValueBuilder;</span>
 	}
 
 	/**
@@ -501,63 +503,62 @@ public class FreemarkerConfigurationBuilder&lt;P&gt; extends AbstractParent&lt;P
 	 * @return this instance for fluent chaining
 	 */
 	public FreemarkerConfigurationBuilder&lt;P&gt; addSharedVariables(TemplateHashModelEx variables) {
-<span class="fc" id="L504">		this.variablesHash = variables;</span>
-<span class="fc" id="L505">		return this;</span>
+<span class="fc" id="L506">		this.variablesHash = variables;</span>
+<span class="fc" id="L507">		return this;</span>
 	}
 
 	@Override
 	public Configuration build() {
-<span class="fc" id="L510">		Configuration configuration = getConfiguration();</span>
-<span class="fc" id="L511">		PropertyResolver propertyResolver = environmentBuilder.build();</span>
-<span class="fc" id="L512">		String defaultEncoding = defaultEncodingValueBuilder.getValue(propertyResolver);</span>
-<span class="pc bpc" id="L513" title="1 of 2 branches missed.">		if (defaultEncoding != null) {</span>
-<span class="fc" id="L514">			configuration.setDefaultEncoding(defaultEncoding);</span>
+<span class="fc" id="L512">		Configuration configuration = getConfiguration();</span>
+<span class="fc" id="L513">		String defaultEncoding = defaultEncodingValueBuilder.getValue();</span>
+<span class="pc bpc" id="L514" title="1 of 2 branches missed.">		if (defaultEncoding != null) {</span>
+<span class="fc" id="L515">			configuration.setDefaultEncoding(defaultEncoding);</span>
 		}
-<span class="pc bpc" id="L516" title="1 of 2 branches missed.">		if (templateExceptionHandler != null) {</span>
-<span class="fc" id="L517">			configuration.setTemplateExceptionHandler(templateExceptionHandler);</span>
+<span class="pc bpc" id="L517" title="1 of 2 branches missed.">		if (templateExceptionHandler != null) {</span>
+<span class="fc" id="L518">			configuration.setTemplateExceptionHandler(templateExceptionHandler);</span>
 		}
-<span class="fc" id="L519">		buildSharedVariables(configuration);</span>
-<span class="fc" id="L520">		buildStaticMethodAccess(configuration, propertyResolver);</span>
-<span class="fc" id="L521">		return configuration;</span>
+<span class="fc" id="L520">		buildSharedVariables(configuration);</span>
+<span class="fc" id="L521">		buildStaticMethodAccess(configuration);</span>
+<span class="fc" id="L522">		return configuration;</span>
 	}
 
 	private Configuration getConfiguration() {
-<span class="fc bfc" id="L525" title="All 2 branches covered.">		if (base != null) {</span>
-<span class="pc bpc" id="L526" title="1 of 2 branches missed.">			if (version != null) {</span>
-<span class="nc" id="L527">				base.setIncompatibleImprovements(version);</span>
+<span class="fc bfc" id="L526" title="All 2 branches covered.">		if (base != null) {</span>
+<span class="pc bpc" id="L527" title="1 of 2 branches missed.">			if (version != null) {</span>
+<span class="nc" id="L528">				base.setIncompatibleImprovements(version);</span>
 			}
-<span class="fc" id="L529">			return base;</span>
+<span class="fc" id="L530">			return base;</span>
 		}
-<span class="pc bpc" id="L531" title="1 of 2 branches missed.">		return version == null ? new Configuration(DEFAULT_INCOMPATIBLE_IMPROVEMENTS) : new Configuration(version);</span>
+<span class="pc bpc" id="L532" title="1 of 2 branches missed.">		return version == null ? new Configuration(DEFAULT_INCOMPATIBLE_IMPROVEMENTS) : new Configuration(version);</span>
 	}
 
 	private void buildSharedVariables(Configuration configuration) {
 		try {
-<span class="fc bfc" id="L536" title="All 2 branches covered.">			if (variablesHash != null) {</span>
-<span class="fc" id="L537">				configuration.setAllSharedVariables(variablesHash);</span>
+<span class="fc bfc" id="L537" title="All 2 branches covered.">			if (variablesHash != null) {</span>
+<span class="fc" id="L538">				configuration.setAllSharedVariables(variablesHash);</span>
 			}
-<span class="fc bfc" id="L539" title="All 2 branches covered.">			for (Entry&lt;String, Object&gt; entry : sharedVariables.entrySet()) {</span>
-<span class="fc" id="L540">				configuration.setSharedVariable(entry.getKey(), entry.getValue());</span>
-<span class="fc" id="L541">			}</span>
-<span class="nc" id="L542">		} catch (TemplateModelException e) {</span>
-<span class="nc" id="L543">			throw new BuildException(&quot;Failed to configure FreeMarker shared variables&quot;, e);</span>
-<span class="fc" id="L544">		}</span>
-<span class="fc" id="L545">	}</span>
+<span class="fc bfc" id="L540" title="All 2 branches covered.">			for (Entry&lt;String, Object&gt; entry : sharedVariables.entrySet()) {</span>
+<span class="fc" id="L541">				configuration.setSharedVariable(entry.getKey(), entry.getValue());</span>
+<span class="fc" id="L542">			}</span>
+<span class="nc" id="L543">		} catch (TemplateModelException e) {</span>
+<span class="nc" id="L544">			throw new BuildException(&quot;Failed to configure FreeMarker shared variables&quot;, e);</span>
+<span class="fc" id="L545">		}</span>
+<span class="fc" id="L546">	}</span>
 
-	private void buildStaticMethodAccess(Configuration configuration, PropertyResolver propertyResolver) {
-<span class="fc" id="L548">		boolean enableStaticMethods = enableStaticMethodAccessValueBuilder.getValue(propertyResolver, false);</span>
-<span class="fc bfc" id="L549" title="All 2 branches covered.">		if (enableStaticMethods) {</span>
-<span class="fc" id="L550">			String staticsVariableName = staticMethodAccessVariableNameValueBuilder.getValue(propertyResolver);</span>
-<span class="fc" id="L551">			configuration.setSharedVariable(staticsVariableName, getBeansWrapper(configuration).getStaticModels());</span>
+	private void buildStaticMethodAccess(Configuration configuration) {
+<span class="fc" id="L549">		boolean enableStaticMethods = enableStaticMethodAccessValueBuilder.getValue(false);</span>
+<span class="fc bfc" id="L550" title="All 2 branches covered.">		if (enableStaticMethods) {</span>
+<span class="fc" id="L551">			String staticsVariableName = staticMethodAccessVariableNameValueBuilder.getValue();</span>
+<span class="fc" id="L552">			configuration.setSharedVariable(staticsVariableName, getBeansWrapper(configuration).getStaticModels());</span>
 		}
-<span class="fc" id="L553">	}</span>
+<span class="fc" id="L554">	}</span>
 
 	private static BeansWrapper getBeansWrapper(Configuration configuration) {
-<span class="fc" id="L556">		ObjectWrapper objectWrapper = configuration.getObjectWrapper();</span>
-<span class="pc bpc" id="L557" title="1 of 2 branches missed.">		if (objectWrapper instanceof BeansWrapper) {</span>
-<span class="fc" id="L558">			return (BeansWrapper) objectWrapper;</span>
+<span class="fc" id="L557">		ObjectWrapper objectWrapper = configuration.getObjectWrapper();</span>
+<span class="pc bpc" id="L558" title="1 of 2 branches missed.">		if (objectWrapper instanceof BeansWrapper) {</span>
+<span class="fc" id="L559">			return (BeansWrapper) objectWrapper;</span>
 		}
-<span class="nc" id="L560">		return new BeansWrapperBuilder(configuration.getIncompatibleImprovements()).build();</span>
+<span class="nc" id="L561">		return new BeansWrapperBuilder(configuration.getIncompatibleImprovements()).build();</span>
 	}
 
 }

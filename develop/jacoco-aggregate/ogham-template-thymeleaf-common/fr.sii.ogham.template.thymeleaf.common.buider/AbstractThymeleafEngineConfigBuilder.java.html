@@ -12,10 +12,12 @@ import org.thymeleaf.messageresolver.IMessageResolver;
 import org.thymeleaf.templateresolver.ITemplateResolver;
 
 import fr.sii.ogham.core.builder.Builder;
+import fr.sii.ogham.core.builder.context.BuildContext;
 import fr.sii.ogham.core.fluent.AbstractParent;
 
 public abstract class AbstractThymeleafEngineConfigBuilder&lt;MYSELF extends AbstractThymeleafEngineConfigBuilder&lt;MYSELF, P&gt;, P&gt; extends AbstractParent&lt;P&gt; implements Builder&lt;TemplateEngine&gt; {
 	protected final MYSELF myself;
+	protected final BuildContext buildContext;
 	protected Set&lt;IDialect&gt; dialects;
 	protected Map&lt;String, IDialect&gt; dialectsByPrefix;
 	protected Set&lt;ITemplateResolver&gt; templateResolvers;
@@ -23,10 +25,11 @@ public abstract class AbstractThymeleafEngineConfigBuilder&lt;MYSELF extends Abs
 	protected Set&lt;IMessageResolver&gt; messageResolvers;
 
 	@SuppressWarnings(&quot;unchecked&quot;)
-	public AbstractThymeleafEngineConfigBuilder(Class&lt;?&gt; selfType, P parent) {
-<span class="nc" id="L27">		super(parent);</span>
-<span class="nc" id="L28">		myself = (MYSELF) selfType.cast(this);</span>
-<span class="nc" id="L29">	}</span>
+	public AbstractThymeleafEngineConfigBuilder(Class&lt;?&gt; selfType, P parent, BuildContext buildContext) {
+<span class="nc" id="L29">		super(parent);</span>
+<span class="nc" id="L30">		myself = (MYSELF) selfType.cast(this);</span>
+<span class="nc" id="L31">		this.buildContext = buildContext;</span>
+<span class="nc" id="L32">	}</span>
 	
 
 	/**
@@ -49,9 +52,9 @@ public abstract class AbstractThymeleafEngineConfigBuilder&lt;MYSELF extends Abs
 	 * @return this for fluent use
 	 */
 	public MYSELF setDialect(final IDialect dialect) {
-<span class="nc" id="L52">		dialects().clear();</span>
-<span class="nc" id="L53">		dialects().add(dialect);</span>
-<span class="nc" id="L54">		return myself;</span>
+<span class="nc" id="L55">		dialects().clear();</span>
+<span class="nc" id="L56">		dialects().add(dialect);</span>
+<span class="nc" id="L57">		return myself;</span>
 	}
 
 	/**
@@ -75,8 +78,8 @@ public abstract class AbstractThymeleafEngineConfigBuilder&lt;MYSELF extends Abs
 	 * @return this for fluent use
 	 */
 	public MYSELF addDialect(final String prefix, final IDialect dialect) {
-<span class="nc" id="L78">		this.dialectsByPrefix().put(prefix, dialect);</span>
-<span class="nc" id="L79">		return myself;</span>
+<span class="nc" id="L81">		this.dialectsByPrefix().put(prefix, dialect);</span>
+<span class="nc" id="L82">		return myself;</span>
 	}
 
 	/**
@@ -99,8 +102,8 @@ public abstract class AbstractThymeleafEngineConfigBuilder&lt;MYSELF extends Abs
 	 * @return this for fluent use
 	 */
 	public MYSELF addDialect(final IDialect dialect) {
-<span class="nc" id="L102">		dialects().add(dialect);</span>
-<span class="nc" id="L103">		return myself;</span>
+<span class="nc" id="L105">		dialects().add(dialect);</span>
+<span class="nc" id="L106">		return myself;</span>
 	}
 
 	/**
@@ -121,9 +124,9 @@ public abstract class AbstractThymeleafEngineConfigBuilder&lt;MYSELF extends Abs
 	 * @return this for fluent use
 	 */
 	public MYSELF setDialectsByPrefix(final Map&lt;String, IDialect&gt; dialects) {
-<span class="nc" id="L124">		dialectsByPrefix().clear();</span>
-<span class="nc" id="L125">		dialectsByPrefix().putAll(dialects);</span>
-<span class="nc" id="L126">		return myself;</span>
+<span class="nc" id="L127">		dialectsByPrefix().clear();</span>
+<span class="nc" id="L128">		dialectsByPrefix().putAll(dialects);</span>
+<span class="nc" id="L129">		return myself;</span>
 	}
 
 	/**
@@ -143,9 +146,9 @@ public abstract class AbstractThymeleafEngineConfigBuilder&lt;MYSELF extends Abs
 	 * @return this for fluent use
 	 */
 	public MYSELF setDialects(final Set&lt;IDialect&gt; dialects) {
-<span class="nc" id="L146">		this.dialects().clear();</span>
-<span class="nc" id="L147">		this.dialects().addAll(dialects);</span>
-<span class="nc" id="L148">		return myself;</span>
+<span class="nc" id="L149">		this.dialects().clear();</span>
+<span class="nc" id="L150">		this.dialects().addAll(dialects);</span>
+<span class="nc" id="L151">		return myself;</span>
 	}
 
 	/**
@@ -167,8 +170,8 @@ public abstract class AbstractThymeleafEngineConfigBuilder&lt;MYSELF extends Abs
 	 * @return this for fluent use
 	 */
 	public MYSELF setAdditionalDialects(final Set&lt;IDialect&gt; additionalDialects) {
-<span class="nc" id="L170">		dialects().addAll(additionalDialects);</span>
-<span class="nc" id="L171">		return myself;</span>
+<span class="nc" id="L173">		dialects().addAll(additionalDialects);</span>
+<span class="nc" id="L174">		return myself;</span>
 	}
 
 	/**
@@ -185,8 +188,8 @@ public abstract class AbstractThymeleafEngineConfigBuilder&lt;MYSELF extends Abs
 	 * @return this for fluent use
 	 */
 	public MYSELF clearDialects() {
-<span class="nc" id="L188">		dialects().clear();</span>
-<span class="nc" id="L189">		return myself;</span>
+<span class="nc" id="L191">		dialects().clear();</span>
+<span class="nc" id="L192">		return myself;</span>
 	}
 
 	/**
@@ -199,9 +202,9 @@ public abstract class AbstractThymeleafEngineConfigBuilder&lt;MYSELF extends Abs
 	 * @return this for fluent use
 	 */
 	public MYSELF setTemplateResolvers(final Set&lt;? extends ITemplateResolver&gt; templateResolvers) {
-<span class="nc" id="L202">		this.templateResolvers().clear();</span>
-<span class="nc" id="L203">		this.templateResolvers().addAll(templateResolvers);</span>
-<span class="nc" id="L204">		return myself;</span>
+<span class="nc" id="L205">		this.templateResolvers().clear();</span>
+<span class="nc" id="L206">		this.templateResolvers().addAll(templateResolvers);</span>
+<span class="nc" id="L207">		return myself;</span>
 	}
 
 	/**
@@ -214,8 +217,8 @@ public abstract class AbstractThymeleafEngineConfigBuilder&lt;MYSELF extends Abs
 	 * @return this for fluent use
 	 */
 	public MYSELF addTemplateResolver(final ITemplateResolver templateResolver) {
-<span class="nc" id="L217">		templateResolvers().add(templateResolver);</span>
-<span class="nc" id="L218">		return myself;</span>
+<span class="nc" id="L220">		templateResolvers().add(templateResolver);</span>
+<span class="nc" id="L221">		return myself;</span>
 	}
 
 	/**
@@ -233,9 +236,9 @@ public abstract class AbstractThymeleafEngineConfigBuilder&lt;MYSELF extends Abs
 	 * @return this for fluent use
 	 */
 	public MYSELF setTemplateResolver(final ITemplateResolver templateResolver) {
-<span class="nc" id="L236">		templateResolvers().clear();</span>
-<span class="nc" id="L237">		templateResolvers().add(templateResolver);</span>
-<span class="nc" id="L238">		return myself;</span>
+<span class="nc" id="L239">		templateResolvers().clear();</span>
+<span class="nc" id="L240">		templateResolvers().add(templateResolver);</span>
+<span class="nc" id="L241">		return myself;</span>
 	}
 
 	/**
@@ -260,8 +263,8 @@ public abstract class AbstractThymeleafEngineConfigBuilder&lt;MYSELF extends Abs
 	 * 
 	 */
 	public MYSELF setCacheManager(final ICacheManager cacheManager) {
-<span class="nc" id="L263">		this.cacheManager = cacheManager;</span>
-<span class="nc" id="L264">		return myself;</span>
+<span class="nc" id="L266">		this.cacheManager = cacheManager;</span>
+<span class="nc" id="L267">		return myself;</span>
 	}
 
 	/**
@@ -280,9 +283,9 @@ public abstract class AbstractThymeleafEngineConfigBuilder&lt;MYSELF extends Abs
 	 * @return this for fluent use
 	 */
 	public MYSELF setMessageResolvers(final Set&lt;? extends IMessageResolver&gt; messageResolvers) {
-<span class="nc" id="L283">		this.messageResolvers().clear();</span>
-<span class="nc" id="L284">		this.messageResolvers().addAll(messageResolvers);</span>
-<span class="nc" id="L285">		return myself;</span>
+<span class="nc" id="L286">		this.messageResolvers().clear();</span>
+<span class="nc" id="L287">		this.messageResolvers().addAll(messageResolvers);</span>
+<span class="nc" id="L288">		return myself;</span>
 	}
 
 	/**
@@ -302,8 +305,8 @@ public abstract class AbstractThymeleafEngineConfigBuilder&lt;MYSELF extends Abs
 	 * @return this for fluent use
 	 */
 	public MYSELF addMessageResolver(final IMessageResolver messageResolver) {
-<span class="nc" id="L305">		messageResolvers().add(messageResolver);</span>
-<span class="nc" id="L306">		return myself;</span>
+<span class="nc" id="L308">		messageResolvers().add(messageResolver);</span>
+<span class="nc" id="L309">		return myself;</span>
 	}
 
 	/**
@@ -327,75 +330,75 @@ public abstract class AbstractThymeleafEngineConfigBuilder&lt;MYSELF extends Abs
 	 * @return this for fluent use
 	 */
 	public MYSELF setMessageResolver(final IMessageResolver messageResolver) {
-<span class="nc" id="L330">		messageResolvers().clear();</span>
-<span class="nc" id="L331">		messageResolvers().add(messageResolver);</span>
-<span class="nc" id="L332">		return myself;</span>
+<span class="nc" id="L333">		messageResolvers().clear();</span>
+<span class="nc" id="L334">		messageResolvers().add(messageResolver);</span>
+<span class="nc" id="L335">		return myself;</span>
 	}
 
 	
 	@Override
 	public TemplateEngine build() {
-<span class="nc" id="L338">		TemplateEngine engine = new TemplateEngine();</span>
-<span class="nc" id="L339">		configureDialects(engine);</span>
-<span class="nc" id="L340">		configureMessageResolvers(engine);</span>
-<span class="nc" id="L341">		configureTemplateResolvers(engine);</span>
-<span class="nc" id="L342">		configureCacheManager(engine);</span>
-<span class="nc" id="L343">		return engine;</span>
+<span class="nc" id="L341">		TemplateEngine engine = buildContext.register(new TemplateEngine());</span>
+<span class="nc" id="L342">		configureDialects(engine);</span>
+<span class="nc" id="L343">		configureMessageResolvers(engine);</span>
+<span class="nc" id="L344">		configureTemplateResolvers(engine);</span>
+<span class="nc" id="L345">		configureCacheManager(engine);</span>
+<span class="nc" id="L346">		return engine;</span>
 	}
 
 	protected void configureTemplateResolvers(TemplateEngine engine) {
-<span class="nc bnc" id="L347" title="All 2 branches missed.">		if (templateResolvers != null) {</span>
-<span class="nc" id="L348">			engine.setTemplateResolvers(templateResolvers);</span>
+<span class="nc bnc" id="L350" title="All 2 branches missed.">		if (templateResolvers != null) {</span>
+<span class="nc" id="L351">			engine.setTemplateResolvers(templateResolvers);</span>
 		}
-<span class="nc" id="L350">	}</span>
+<span class="nc" id="L353">	}</span>
 
 	protected void configureMessageResolvers(TemplateEngine engine) {
-<span class="nc bnc" id="L353" title="All 2 branches missed.">		if (messageResolvers != null) {</span>
-<span class="nc" id="L354">			engine.setMessageResolvers(messageResolvers);</span>
+<span class="nc bnc" id="L356" title="All 2 branches missed.">		if (messageResolvers != null) {</span>
+<span class="nc" id="L357">			engine.setMessageResolvers(messageResolvers);</span>
 		}
-<span class="nc" id="L356">	}</span>
+<span class="nc" id="L359">	}</span>
 
 	protected void configureCacheManager(TemplateEngine engine) {
-<span class="nc bnc" id="L359" title="All 2 branches missed.">		if (cacheManager != null) {</span>
-<span class="nc" id="L360">			engine.setCacheManager(cacheManager);</span>
+<span class="nc bnc" id="L362" title="All 2 branches missed.">		if (cacheManager != null) {</span>
+<span class="nc" id="L363">			engine.setCacheManager(cacheManager);</span>
 		}
-<span class="nc" id="L362">	}</span>
+<span class="nc" id="L365">	}</span>
 
 	protected void configureDialects(TemplateEngine engine) {
-<span class="nc bnc" id="L365" title="All 2 branches missed.">		if (dialects != null) {</span>
-<span class="nc" id="L366">			engine.setDialects(dialects);</span>
+<span class="nc bnc" id="L368" title="All 2 branches missed.">		if (dialects != null) {</span>
+<span class="nc" id="L369">			engine.setDialects(dialects);</span>
 		}
-<span class="nc bnc" id="L368" title="All 2 branches missed.">		if (dialectsByPrefix != null) {</span>
-<span class="nc" id="L369">			engine.setDialectsByPrefix(dialectsByPrefix);</span>
+<span class="nc bnc" id="L371" title="All 2 branches missed.">		if (dialectsByPrefix != null) {</span>
+<span class="nc" id="L372">			engine.setDialectsByPrefix(dialectsByPrefix);</span>
 		}
-<span class="nc" id="L371">	}</span>
+<span class="nc" id="L374">	}</span>
 
 	protected Set&lt;IDialect&gt; dialects() {
-<span class="nc bnc" id="L374" title="All 2 branches missed.">		if (dialects == null) {</span>
-<span class="nc" id="L375">			dialects = new HashSet&lt;&gt;();</span>
+<span class="nc bnc" id="L377" title="All 2 branches missed.">		if (dialects == null) {</span>
+<span class="nc" id="L378">			dialects = new HashSet&lt;&gt;();</span>
 		}
-<span class="nc" id="L377">		return dialects;</span>
+<span class="nc" id="L380">		return dialects;</span>
 	}
 
 	protected Map&lt;String, IDialect&gt; dialectsByPrefix() {
-<span class="nc bnc" id="L381" title="All 2 branches missed.">		if (dialectsByPrefix == null) {</span>
-<span class="nc" id="L382">			dialectsByPrefix = new HashMap&lt;&gt;();</span>
+<span class="nc bnc" id="L384" title="All 2 branches missed.">		if (dialectsByPrefix == null) {</span>
+<span class="nc" id="L385">			dialectsByPrefix = new HashMap&lt;&gt;();</span>
 		}
-<span class="nc" id="L384">		return dialectsByPrefix;</span>
+<span class="nc" id="L387">		return dialectsByPrefix;</span>
 	}
 
 	protected Set&lt;IMessageResolver&gt; messageResolvers() {
-<span class="nc bnc" id="L388" title="All 2 branches missed.">		if (messageResolvers == null) {</span>
-<span class="nc" id="L389">			messageResolvers = new HashSet&lt;&gt;();</span>
+<span class="nc bnc" id="L391" title="All 2 branches missed.">		if (messageResolvers == null) {</span>
+<span class="nc" id="L392">			messageResolvers = new HashSet&lt;&gt;();</span>
 		}
-<span class="nc" id="L391">		return messageResolvers;</span>
+<span class="nc" id="L394">		return messageResolvers;</span>
 	}
 
 	protected Set&lt;ITemplateResolver&gt; templateResolvers() {
-<span class="nc bnc" id="L395" title="All 2 branches missed.">		if (templateResolvers == null) {</span>
-<span class="nc" id="L396">			templateResolvers = new HashSet&lt;&gt;();</span>
+<span class="nc bnc" id="L398" title="All 2 branches missed.">		if (templateResolvers == null) {</span>
+<span class="nc" id="L399">			templateResolvers = new HashSet&lt;&gt;();</span>
 		}
-<span class="nc" id="L398">		return templateResolvers;</span>
+<span class="nc" id="L401">		return templateResolvers;</span>
 	}
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

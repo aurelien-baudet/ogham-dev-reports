@@ -5,7 +5,7 @@ import static com.cloudhopper.commons.charset.CharsetUtil.NAME_GSM7;
 import static com.cloudhopper.commons.charset.CharsetUtil.NAME_ISO_8859_1;
 import static com.cloudhopper.commons.charset.CharsetUtil.NAME_UCS_2;
 
-import fr.sii.ogham.core.env.PropertyResolver;
+import fr.sii.ogham.core.builder.context.BuildContext;
 import fr.sii.ogham.sms.encoder.Encoder;
 import fr.sii.ogham.sms.splitter.MessageSplitter;
 
@@ -28,8 +28,20 @@ import fr.sii.ogham.sms.splitter.MessageSplitter;
  * @author Aurélien Baudet
  *
  */
-<span class="fc" id="L31">public class ReadableEncoderBuilder {</span>
+public class ReadableEncoderBuilder {
+	private final BuildContext buildContext;
 	private EncoderBuilder delegate;
+
+	/**
+	 * Initialize with the build context
+	 * 
+	 * @param buildContext
+	 *            for registering instances and property evaluation
+	 */
+	public ReadableEncoderBuilder(BuildContext buildContext) {
+<span class="fc" id="L42">		super();</span>
+<span class="fc" id="L43">		this.buildContext = buildContext;</span>
+<span class="fc" id="L44">	}</span>
 
 	/**
 	 * Set the encoder builder that is configured by the developer.
@@ -38,59 +50,57 @@ import fr.sii.ogham.sms.splitter.MessageSplitter;
 	 *            the encoder builder
 	 */
 	public void update(EncoderBuilder encoderBuilder) {
-<span class="fc" id="L41">		this.delegate = encoderBuilder;</span>
-<span class="fc" id="L42">	}</span>
+<span class="fc" id="L53">		this.delegate = encoderBuilder;</span>
+<span class="fc" id="L54">	}</span>
 
 	/**
 	 * @return the registered properties/values for GSM 7-bit encoding
 	 */
 	public StandardEncodingHelper getGsm7Priorities() {
-<span class="pc bpc" id="L48" title="1 of 2 branches missed.">		if (delegate == null) {</span>
-<span class="nc" id="L49">			return new StandardEncodingHelper(delegate, NAME_GSM7);</span>
+<span class="pc bpc" id="L60" title="1 of 2 branches missed.">		if (delegate == null) {</span>
+<span class="nc" id="L61">			return new StandardEncodingHelper(delegate, NAME_GSM7, buildContext);</span>
 		}
-<span class="fc" id="L51">		return delegate.gsm7PackedValueBuilder;</span>
+<span class="fc" id="L63">		return delegate.gsm7PackedValueBuilder;</span>
 	}
 
 	/**
 	 * @return the registered properties/values for GSM 8-bit encoding
 	 */
 	public StandardEncodingHelper getGsm8Priorities() {
-<span class="pc bpc" id="L58" title="1 of 2 branches missed.">		if (delegate == null) {</span>
-<span class="nc" id="L59">			return new StandardEncodingHelper(delegate, NAME_GSM);</span>
+<span class="pc bpc" id="L70" title="1 of 2 branches missed.">		if (delegate == null) {</span>
+<span class="nc" id="L71">			return new StandardEncodingHelper(delegate, NAME_GSM, buildContext);</span>
 		}
-<span class="fc" id="L61">		return delegate.gsm8ValueBuilder;</span>
+<span class="fc" id="L73">		return delegate.gsm8ValueBuilder;</span>
 	}
 
 	/**
 	 * @return the registered properties/values for UCS-2 encoding
 	 */
 	public StandardEncodingHelper getUcs2Priorities() {
-<span class="pc bpc" id="L68" title="1 of 2 branches missed.">		if (delegate == null) {</span>
-<span class="nc" id="L69">			return new StandardEncodingHelper(delegate, NAME_UCS_2);</span>
+<span class="pc bpc" id="L80" title="1 of 2 branches missed.">		if (delegate == null) {</span>
+<span class="nc" id="L81">			return new StandardEncodingHelper(delegate, NAME_UCS_2, buildContext);</span>
 		}
-<span class="fc" id="L71">		return delegate.ucs2ValueBuilder;</span>
+<span class="fc" id="L83">		return delegate.ucs2ValueBuilder;</span>
 	}
 
 	/**
 	 * @return the registered properties/values for Latin 1 encoding
 	 */
 	public StandardEncodingHelper getLatin1Priorities() {
-<span class="pc bpc" id="L78" title="1 of 2 branches missed.">		if (delegate == null) {</span>
-<span class="nc" id="L79">			return new StandardEncodingHelper(delegate, NAME_ISO_8859_1);</span>
+<span class="pc bpc" id="L90" title="1 of 2 branches missed.">		if (delegate == null) {</span>
+<span class="nc" id="L91">			return new StandardEncodingHelper(delegate, NAME_ISO_8859_1, buildContext);</span>
 		}
-<span class="fc" id="L81">		return delegate.latin1ValueBuilder;</span>
+<span class="fc" id="L93">		return delegate.latin1ValueBuilder;</span>
 	}
 
 	/**
-	 * @param propertyResolver
-	 *            property resolver used to evaluate property values
 	 * @return true if automatic guessing has been enabled
 	 */
-	public boolean autoGuessEnabled(PropertyResolver propertyResolver) {
-<span class="fc bfc" id="L90" title="All 2 branches covered.">		if (delegate == null) {</span>
-<span class="fc" id="L91">			return false;</span>
+	public boolean autoGuessEnabled() {
+<span class="fc bfc" id="L100" title="All 2 branches covered.">		if (delegate == null) {</span>
+<span class="fc" id="L101">			return false;</span>
 		}
-<span class="fc" id="L93">		return delegate.autoGuessEnabled(propertyResolver);</span>
+<span class="fc" id="L103">		return delegate.autoGuessEnabled();</span>
 	}
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

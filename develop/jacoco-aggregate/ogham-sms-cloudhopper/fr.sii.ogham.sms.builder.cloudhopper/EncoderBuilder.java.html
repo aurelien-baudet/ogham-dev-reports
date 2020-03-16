@@ -12,8 +12,8 @@ import fr.sii.ogham.core.builder.Builder;
 import fr.sii.ogham.core.builder.configuration.ConfigurationValueBuilder;
 import fr.sii.ogham.core.builder.configuration.ConfigurationValueBuilderHelper;
 import fr.sii.ogham.core.builder.configurer.Configurer;
+import fr.sii.ogham.core.builder.context.BuildContext;
 import fr.sii.ogham.core.builder.env.EnvironmentBuilder;
-import fr.sii.ogham.core.env.PropertyResolver;
 import fr.sii.ogham.core.fluent.AbstractParent;
 import fr.sii.ogham.core.util.PriorizedList;
 import fr.sii.ogham.sms.encoder.Encoder;
@@ -87,7 +87,7 @@ import fr.sii.ogham.sms.sender.impl.cloudhopper.encoder.NamedCharset;
  *
  */
 public class EncoderBuilder extends AbstractParent&lt;CloudhopperBuilder&gt; implements Builder&lt;Encoder&gt; {
-	private final EnvironmentBuilder&lt;?&gt; environmentBuilder;
+	protected final BuildContext buildContext;
 	protected final StandardEncodingHelper gsm7PackedValueBuilder;
 	protected final StandardEncodingHelper gsm8ValueBuilder;
 	protected final StandardEncodingHelper ucs2ValueBuilder;
@@ -103,19 +103,19 @@ public class EncoderBuilder extends AbstractParent&lt;CloudhopperBuilder&gt; imp
 	 * 
 	 * @param parent
 	 *            the parent builder
-	 * @param environmentBuilder
-	 *            the configuration for property resolution and evaluation
+	 * @param buildContext
+	 *            for registering instances and property evaluation
 	 */
-	public EncoderBuilder(CloudhopperBuilder parent, EnvironmentBuilder&lt;?&gt; environmentBuilder) {
+	public EncoderBuilder(CloudhopperBuilder parent, BuildContext buildContext) {
 <span class="fc" id="L110">		super(parent);</span>
-<span class="fc" id="L111">		this.environmentBuilder = environmentBuilder;</span>
-<span class="fc" id="L112">		gsm7PackedValueBuilder = new StandardEncodingHelper(this, NAME_GSM7);</span>
-<span class="fc" id="L113">		gsm8ValueBuilder = new StandardEncodingHelper(this, NAME_GSM);</span>
-<span class="fc" id="L114">		ucs2ValueBuilder = new StandardEncodingHelper(this, NAME_UCS_2);</span>
-<span class="fc" id="L115">		latin1ValueBuilder = new StandardEncodingHelper(this, NAME_ISO_8859_1);</span>
+<span class="fc" id="L111">		this.buildContext = buildContext;</span>
+<span class="fc" id="L112">		gsm7PackedValueBuilder = new StandardEncodingHelper(this, NAME_GSM7, buildContext);</span>
+<span class="fc" id="L113">		gsm8ValueBuilder = new StandardEncodingHelper(this, NAME_GSM, buildContext);</span>
+<span class="fc" id="L114">		ucs2ValueBuilder = new StandardEncodingHelper(this, NAME_UCS_2, buildContext);</span>
+<span class="fc" id="L115">		latin1ValueBuilder = new StandardEncodingHelper(this, NAME_ISO_8859_1, buildContext);</span>
 <span class="fc" id="L116">		customEncoders = new PriorizedList&lt;&gt;();</span>
-<span class="fc" id="L117">		autoGuessValueBuilder = new ConfigurationValueBuilderHelper&lt;&gt;(this, Boolean.class);</span>
-<span class="fc" id="L118">		fallbackCharsetNameValueBuilder = new ConfigurationValueBuilderHelper&lt;&gt;(this, String.class);</span>
+<span class="fc" id="L117">		autoGuessValueBuilder = new ConfigurationValueBuilderHelper&lt;&gt;(this, Boolean.class, buildContext);</span>
+<span class="fc" id="L118">		fallbackCharsetNameValueBuilder = new ConfigurationValueBuilderHelper&lt;&gt;(this, String.class, buildContext);</span>
 <span class="fc" id="L119">	}</span>
 
 	/**
@@ -728,45 +728,44 @@ public class EncoderBuilder extends AbstractParent&lt;CloudhopperBuilder&gt; imp
 
 	@Override
 	public Encoder build() {
-<span class="fc" id="L731">		PropertyResolver propertyResolver = environmentBuilder.build();</span>
-<span class="pc bpc" id="L732" title="1 of 2 branches missed.">		if (autoGuessEnabled(propertyResolver)) {</span>
-<span class="fc" id="L733">			return buildAutoGuessEncoder(propertyResolver);</span>
+<span class="pc bpc" id="L731" title="1 of 2 branches missed.">		if (autoGuessEnabled()) {</span>
+<span class="fc" id="L732">			return buildAutoGuessEncoder();</span>
 		}
-<span class="nc bnc" id="L735" title="All 2 branches missed.">		if (customEncodersRegistered()) {</span>
-<span class="nc" id="L736">			return new GuessEncodingEncoder(customEncoders.getOrdered());</span>
+<span class="nc bnc" id="L734" title="All 2 branches missed.">		if (customEncodersRegistered()) {</span>
+<span class="nc" id="L735">			return buildContext.register(new GuessEncodingEncoder(customEncoders.getOrdered()));</span>
 		}
-<span class="nc" id="L738">		String fallbackCharsetName = fallbackCharsetNameValueBuilder.getValue(propertyResolver);</span>
-<span class="nc bnc" id="L739" title="All 2 branches missed.">		return buildFixedEncoder(fallbackCharsetName == null ? NAME_GSM : fallbackCharsetName);</span>
+<span class="nc" id="L737">		String fallbackCharsetName = fallbackCharsetNameValueBuilder.getValue();</span>
+<span class="nc bnc" id="L738" title="All 2 branches missed.">		return buildFixedEncoder(fallbackCharsetName == null ? NAME_GSM : fallbackCharsetName);</span>
 	}
 
-	protected boolean autoGuessEnabled(PropertyResolver propertyResolver) {
-<span class="fc" id="L743">		return autoGuessValueBuilder.getValue(propertyResolver, false);</span>
+	protected boolean autoGuessEnabled() {
+<span class="fc" id="L742">		return autoGuessValueBuilder.getValue(false);</span>
 	}
 
 	private boolean customEncodersRegistered() {
-<span class="nc bnc" id="L747" title="All 2 branches missed.">		return !customEncoders.isEmpty();</span>
+<span class="nc bnc" id="L746" title="All 2 branches missed.">		return !customEncoders.isEmpty();</span>
 	}
 
-	private Encoder buildAutoGuessEncoder(PropertyResolver propertyResolver) {
-<span class="fc" id="L751">		PriorizedList&lt;Encoder&gt; registry = new PriorizedList&lt;&gt;();</span>
-<span class="fc" id="L752">		registerStandardEncoder(propertyResolver, gsm7PackedValueBuilder, registry);</span>
-<span class="fc" id="L753">		registerStandardEncoder(propertyResolver, gsm8ValueBuilder, registry);</span>
-<span class="fc" id="L754">		registerStandardEncoder(propertyResolver, latin1ValueBuilder, registry);</span>
-<span class="fc" id="L755">		registerStandardEncoder(propertyResolver, ucs2ValueBuilder, registry);</span>
-<span class="fc" id="L756">		registry.register(customEncoders);</span>
-<span class="fc" id="L757">		return new GuessEncodingEncoder(registry.getOrdered());</span>
+	private Encoder buildAutoGuessEncoder() {
+<span class="fc" id="L750">		PriorizedList&lt;Encoder&gt; registry = new PriorizedList&lt;&gt;();</span>
+<span class="fc" id="L751">		registerStandardEncoder(gsm7PackedValueBuilder, registry);</span>
+<span class="fc" id="L752">		registerStandardEncoder(gsm8ValueBuilder, registry);</span>
+<span class="fc" id="L753">		registerStandardEncoder(latin1ValueBuilder, registry);</span>
+<span class="fc" id="L754">		registerStandardEncoder(ucs2ValueBuilder, registry);</span>
+<span class="fc" id="L755">		registry.register(customEncoders);</span>
+<span class="fc" id="L756">		return buildContext.register(new GuessEncodingEncoder(registry.getOrdered()));</span>
 	}
 
-	private static Encoder buildFixedEncoder(String charsetName) {
-<span class="nc" id="L761">		return new CloudhopperCharsetSupportingEncoder(NamedCharset.from(charsetName));</span>
+	private Encoder buildFixedEncoder(String charsetName) {
+<span class="nc" id="L760">		return buildContext.register(new CloudhopperCharsetSupportingEncoder(NamedCharset.from(charsetName)));</span>
 	}
 
-	private static void registerStandardEncoder(PropertyResolver propertyResolver, StandardEncodingHelper helper, PriorizedList&lt;Encoder&gt; registry) {
-<span class="fc" id="L765">		Integer priority = helper.getValue(propertyResolver);</span>
-<span class="fc bfc" id="L766" title="All 4 branches covered.">		if (priority == null || priority &lt;= 0) {</span>
-<span class="fc" id="L767">			return;</span>
+	private void registerStandardEncoder(StandardEncodingHelper helper, PriorizedList&lt;Encoder&gt; registry) {
+<span class="fc" id="L764">		Integer priority = helper.getValue();</span>
+<span class="fc bfc" id="L765" title="All 4 branches covered.">		if (priority == null || priority &lt;= 0) {</span>
+<span class="fc" id="L766">			return;</span>
 		}
-<span class="fc" id="L769">		registry.register(new CloudhopperCharsetSupportingEncoder(helper.getCharset()), priority);</span>
-<span class="fc" id="L770">	}</span>
+<span class="fc" id="L768">		registry.register(buildContext.register(new CloudhopperCharsetSupportingEncoder(helper.getCharset())), priority);</span>
+<span class="fc" id="L769">	}</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

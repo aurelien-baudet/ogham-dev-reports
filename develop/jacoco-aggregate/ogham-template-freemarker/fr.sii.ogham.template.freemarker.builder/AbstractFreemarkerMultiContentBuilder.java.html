@@ -3,7 +3,7 @@
 import java.util.ArrayList;
 import java.util.List;
 
-import fr.sii.ogham.core.builder.env.EnvironmentBuilder;
+import fr.sii.ogham.core.builder.context.BuildContext;
 import fr.sii.ogham.core.builder.template.VariantBuilder;
 import fr.sii.ogham.core.builder.template.VariantWithExt;
 import fr.sii.ogham.core.message.content.Variant;
@@ -14,8 +14,8 @@ import fr.sii.ogham.template.common.adapter.VariantResolver;
 public abstract class AbstractFreemarkerMultiContentBuilder&lt;MYSELF extends AbstractFreemarkerMultiContentBuilder&lt;MYSELF, P&gt;, P&gt; extends AbstractFreemarkerBuilder&lt;MYSELF, P&gt; implements VariantBuilder&lt;MYSELF&gt; {
 	private List&lt;VariantWithExt&gt; variants;
 	
-	protected AbstractFreemarkerMultiContentBuilder(Class&lt;?&gt; selfType, P parent, EnvironmentBuilder&lt;?&gt; environmentBuilder) {
-<span class="fc" id="L18">		super(selfType, parent, environmentBuilder);</span>
+	protected AbstractFreemarkerMultiContentBuilder(Class&lt;?&gt; selfType, P parent, BuildContext buildContext) {
+<span class="fc" id="L18">		super(selfType, parent, buildContext);</span>
 <span class="fc" id="L19">		variants = new ArrayList&lt;&gt;();</span>
 <span class="fc" id="L20">	}</span>
 
@@ -31,7 +31,7 @@ public abstract class AbstractFreemarkerMultiContentBuilder&lt;MYSELF extends Ab
 	}
 
 	private ExtensionMappingVariantResolver buildExtMappingVariantResolver() {
-<span class="fc" id="L34">		ExtensionMappingVariantResolver resolver = new ExtensionMappingVariantResolver(buildResolver());</span>
+<span class="fc" id="L34">		ExtensionMappingVariantResolver resolver = buildContext.register(new ExtensionMappingVariantResolver(buildResolver()));</span>
 <span class="fc bfc" id="L35" title="All 2 branches covered.">		for(VariantWithExt v : variants) {</span>
 <span class="fc" id="L36">			resolver.register(v.getVariant(), v.getExtension());</span>
 <span class="fc" id="L37">		}</span>

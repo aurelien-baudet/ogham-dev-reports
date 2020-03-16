@@ -2,7 +2,6 @@
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Properties;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,10 +11,8 @@ import fr.sii.ogham.core.builder.MessagingBuilder;
 import fr.sii.ogham.core.builder.configuration.ConfigurationValueBuilder;
 import fr.sii.ogham.core.builder.configuration.ConfigurationValueBuilderHelper;
 import fr.sii.ogham.core.builder.configurer.Configurer;
-import fr.sii.ogham.core.builder.env.EnvironmentBuilder;
-import fr.sii.ogham.core.builder.env.EnvironmentBuilderDelegate;
-import fr.sii.ogham.core.builder.env.SimpleEnvironmentBuilder;
-import fr.sii.ogham.core.env.PropertyResolver;
+import fr.sii.ogham.core.builder.context.BuildContext;
+import fr.sii.ogham.core.builder.context.DefaultBuildContext;
 import fr.sii.ogham.core.fluent.AbstractParent;
 import fr.sii.ogham.sms.builder.SmsBuilder;
 import fr.sii.ogham.sms.message.Sms;
@@ -73,9 +70,9 @@ import fr.sii.ogham.sms.sender.impl.ovh.SmsCoding;
  *
  */
 public class OvhSmsBuilder extends AbstractParent&lt;SmsBuilder&gt; implements Builder&lt;OvhSmsSender&gt; {
-<span class="fc" id="L76">	private static final Logger LOG = LoggerFactory.getLogger(OvhSmsBuilder.class);</span>
+<span class="fc" id="L73">	private static final Logger LOG = LoggerFactory.getLogger(OvhSmsBuilder.class);</span>
 
-	private EnvironmentBuilder&lt;OvhSmsBuilder&gt; environmentBuilder;
+	private final BuildContext buildContext;
 	private final ConfigurationValueBuilderHelper&lt;OvhSmsBuilder, URL&gt; urlValueBuilder;
 	private final ConfigurationValueBuilderHelper&lt;OvhSmsBuilder, String&gt; accountValueBuilder;
 	private final ConfigurationValueBuilderHelper&lt;OvhSmsBuilder, String&gt; loginValueBuilder;
@@ -88,9 +85,8 @@ public class OvhSmsBuilder extends AbstractParent&lt;SmsBuilder&gt; implements B
 	 * &lt;strong&gt;WARNING: use is only if you know what you are doing !&lt;/strong&gt;
 	 */
 	public OvhSmsBuilder() {
-<span class="fc" id="L91">		this(null);</span>
-<span class="fc" id="L92">		environmentBuilder = new SimpleEnvironmentBuilder&lt;&gt;(this);</span>
-<span class="fc" id="L93">	}</span>
+<span class="fc" id="L88">		this(null, new DefaultBuildContext());</span>
+<span class="fc" id="L89">	}</span>
 
 	/**
 	 * Constructor that is called when using Ogham builder:
@@ -104,89 +100,17 @@ public class OvhSmsBuilder extends AbstractParent&lt;SmsBuilder&gt; implements B
 	 * 
 	 * @param parent
 	 *            the parent builder instance for fluent chaining
+	 * @param buildContext
+	 *            for registering instances and property evaluation
 	 */
-	public OvhSmsBuilder(SmsBuilder parent) {
-<span class="fc" id="L109">		super(parent);</span>
-<span class="fc" id="L110">		urlValueBuilder = new ConfigurationValueBuilderHelper&lt;&gt;(this, URL.class);</span>
-<span class="fc" id="L111">		accountValueBuilder = new ConfigurationValueBuilderHelper&lt;&gt;(this, String.class);</span>
-<span class="fc" id="L112">		loginValueBuilder = new ConfigurationValueBuilderHelper&lt;&gt;(this, String.class);</span>
-<span class="fc" id="L113">		passwordValueBuilder = new ConfigurationValueBuilderHelper&lt;&gt;(this, String.class);</span>
-<span class="fc" id="L114">	}</span>
-
-	/**
-	 * Configures environment for the builder (and sub-builders). Environment
-	 * consists of configuration properties/values that are used to configure
-	 * the system (see {@link EnvironmentBuilder} for more information).
-	 * 
-	 * You can use system properties:
-	 * 
-	 * &lt;pre&gt;
-	 * .environment()
-	 *    .systemProperties();
-	 * &lt;/pre&gt;
-	 * 
-	 * Or, you can load properties from a file:
-	 * 
-	 * &lt;pre&gt;
-	 * .environment()
-	 *    .properties(&quot;/path/to/file.properties&quot;)
-	 * &lt;/pre&gt;
-	 * 
-	 * Or using directly a {@link Properties} object:
-	 * 
-	 * &lt;pre&gt;
-	 * Properties myprops = new Properties();
-	 * myprops.setProperty(&quot;foo&quot;, &quot;bar&quot;);
-	 * .environment()
-	 *    .properties(myprops)
-	 * &lt;/pre&gt;
-	 * 
-	 * Or defining directly properties:
-	 * 
-	 * &lt;pre&gt;
-	 * .environment()
-	 *    .properties()
-	 *       .set(&quot;foo&quot;, &quot;bar&quot;)
-	 * &lt;/pre&gt;
-	 * 
-	 * 
-	 * &lt;p&gt;
-	 * If no environment was previously used, it creates a new one. Then each
-	 * time you call {@link #environment()}, the same instance is used.
-	 * &lt;/p&gt;
-	 * 
-	 * @return the builder to configure properties handling
-	 */
-	public EnvironmentBuilder&lt;OvhSmsBuilder&gt; environment() {
-<span class="nc bnc" id="L161" title="All 2 branches missed.">		if (environmentBuilder == null) {</span>
-<span class="nc" id="L162">			environmentBuilder = new SimpleEnvironmentBuilder&lt;&gt;(this);</span>
-		}
-<span class="nc" id="L164">		return environmentBuilder;</span>
-	}
-
-	/**
-	 * NOTE: this is mostly for advance usage (when creating a custom module).
-	 * 
-	 * Inherits environment configuration from another builder. This is useful
-	 * for configuring independently different parts of Ogham but keeping a
-	 * whole coherence (see {@link DefaultOvhSmsConfigurer} for an example of
-	 * use).
-	 * 
-	 * The same instance is shared meaning that all changes done here will also
-	 * impact the other builder.
-	 * 
-	 * &lt;p&gt;
-	 * If a previous builder was defined (by calling {@link #environment()} for
-	 * example), the new builder will override it.
-	 * 
-	 * @param builder
-	 *            the builder to inherit
-	 * @return this instance for fluent chaining
-	 */
-	public OvhSmsBuilder environment(EnvironmentBuilder&lt;?&gt; builder) {
-<span class="fc" id="L187">		environmentBuilder = new EnvironmentBuilderDelegate&lt;&gt;(this, builder);</span>
-<span class="fc" id="L188">		return this;</span>
-	}
+	public OvhSmsBuilder(SmsBuilder parent, BuildContext buildContext) {
+<span class="fc" id="L107">		super(parent);</span>
+<span class="fc" id="L108">		this.buildContext = buildContext;</span>
+<span class="fc" id="L109">		urlValueBuilder = new ConfigurationValueBuilderHelper&lt;&gt;(this, URL.class, buildContext);</span>
+<span class="fc" id="L110">		accountValueBuilder = new ConfigurationValueBuilderHelper&lt;&gt;(this, String.class, buildContext);</span>
+<span class="fc" id="L111">		loginValueBuilder = new ConfigurationValueBuilderHelper&lt;&gt;(this, String.class, buildContext);</span>
+<span class="fc" id="L112">		passwordValueBuilder = new ConfigurationValueBuilderHelper&lt;&gt;(this, String.class, buildContext);</span>
+<span class="fc" id="L113">	}</span>
 
 	/**
 	 * Set the URL of the OVH SMS HTTP API.
@@ -223,8 +147,8 @@ public class OvhSmsBuilder extends AbstractParent&lt;SmsBuilder&gt; implements B
 	 * @return this instance for fluent chaining
 	 */
 	public OvhSmsBuilder url(URL url) {
-<span class="fc" id="L226">		urlValueBuilder.setValue(url);</span>
-<span class="fc" id="L227">		return this;</span>
+<span class="fc" id="L150">		urlValueBuilder.setValue(url);</span>
+<span class="fc" id="L151">		return this;</span>
 	}
 
 	/**
@@ -265,9 +189,9 @@ public class OvhSmsBuilder extends AbstractParent&lt;SmsBuilder&gt; implements B
 	 */
 	public OvhSmsBuilder url(String url) {
 		try {
-<span class="fc" id="L268">			return url(new URL(url));</span>
-<span class="nc" id="L269">		} catch (MalformedURLException e) {</span>
-<span class="nc" id="L270">			throw new IllegalArgumentException(&quot;Invalid URL &quot; + url, e);</span>
+<span class="fc" id="L192">			return url(new URL(url));</span>
+<span class="nc" id="L193">		} catch (MalformedURLException e) {</span>
+<span class="nc" id="L194">			throw new IllegalArgumentException(&quot;Invalid URL &quot; + url, e);</span>
 		}
 	}
 
@@ -308,7 +232,7 @@ public class OvhSmsBuilder extends AbstractParent&lt;SmsBuilder&gt; implements B
 	 * @return the builder to configure property keys/default value
 	 */
 	public ConfigurationValueBuilder&lt;OvhSmsBuilder, URL&gt; url() {
-<span class="fc" id="L311">		return urlValueBuilder;</span>
+<span class="fc" id="L235">		return urlValueBuilder;</span>
 	}
 
 	/**
@@ -346,8 +270,8 @@ public class OvhSmsBuilder extends AbstractParent&lt;SmsBuilder&gt; implements B
 	 * @return this instance for fluent chaining
 	 */
 	public OvhSmsBuilder account(String account) {
-<span class="fc" id="L349">		accountValueBuilder.setValue(account);</span>
-<span class="fc" id="L350">		return this;</span>
+<span class="fc" id="L273">		accountValueBuilder.setValue(account);</span>
+<span class="fc" id="L274">		return this;</span>
 	}
 
 	/**
@@ -387,7 +311,7 @@ public class OvhSmsBuilder extends AbstractParent&lt;SmsBuilder&gt; implements B
 	 * @return the builder to configure property keys/default value
 	 */
 	public ConfigurationValueBuilder&lt;OvhSmsBuilder, String&gt; account() {
-<span class="fc" id="L390">		return accountValueBuilder;</span>
+<span class="fc" id="L314">		return accountValueBuilder;</span>
 	}
 
 	/**
@@ -425,8 +349,8 @@ public class OvhSmsBuilder extends AbstractParent&lt;SmsBuilder&gt; implements B
 	 * @return this instance for fluent chaining
 	 */
 	public OvhSmsBuilder login(String login) {
-<span class="fc" id="L428">		loginValueBuilder.setValue(login);</span>
-<span class="fc" id="L429">		return this;</span>
+<span class="fc" id="L352">		loginValueBuilder.setValue(login);</span>
+<span class="fc" id="L353">		return this;</span>
 	}
 
 	/**
@@ -466,7 +390,7 @@ public class OvhSmsBuilder extends AbstractParent&lt;SmsBuilder&gt; implements B
 	 * @return the builder to configure property keys/default value
 	 */
 	public ConfigurationValueBuilder&lt;OvhSmsBuilder, String&gt; login() {
-<span class="fc" id="L469">		return loginValueBuilder;</span>
+<span class="fc" id="L393">		return loginValueBuilder;</span>
 	}
 
 	/**
@@ -504,8 +428,8 @@ public class OvhSmsBuilder extends AbstractParent&lt;SmsBuilder&gt; implements B
 	 * @return this instance for fluent chaining
 	 */
 	public OvhSmsBuilder password(String password) {
-<span class="fc" id="L507">		passwordValueBuilder.setValue(password);</span>
-<span class="fc" id="L508">		return this;</span>
+<span class="fc" id="L431">		passwordValueBuilder.setValue(password);</span>
+<span class="fc" id="L432">		return this;</span>
 	}
 
 	/**
@@ -545,7 +469,7 @@ public class OvhSmsBuilder extends AbstractParent&lt;SmsBuilder&gt; implements B
 	 * @return the builder to configure property keys/default value
 	 */
 	public ConfigurationValueBuilder&lt;OvhSmsBuilder, String&gt; password() {
-<span class="fc" id="L548">		return passwordValueBuilder;</span>
+<span class="fc" id="L472">		return passwordValueBuilder;</span>
 	}
 
 	/**
@@ -563,38 +487,37 @@ public class OvhSmsBuilder extends AbstractParent&lt;SmsBuilder&gt; implements B
 	 * @return the builder to configure OVH SMS options
 	 */
 	public OvhOptionsBuilder options() {
-<span class="fc bfc" id="L566" title="All 2 branches covered.">		if (ovhOptionsBuilder == null) {</span>
-<span class="fc" id="L567">			ovhOptionsBuilder = new OvhOptionsBuilder(this, environmentBuilder);</span>
+<span class="fc bfc" id="L490" title="All 2 branches covered.">		if (ovhOptionsBuilder == null) {</span>
+<span class="fc" id="L491">			ovhOptionsBuilder = new OvhOptionsBuilder(this, buildContext);</span>
 		}
-<span class="fc" id="L569">		return ovhOptionsBuilder;</span>
+<span class="fc" id="L493">		return ovhOptionsBuilder;</span>
 	}
 
 	@Override
 	public OvhSmsSender build() {
-<span class="fc" id="L574">		PropertyResolver propertyResolver = environmentBuilder.build();</span>
-<span class="fc" id="L575">		URL url = buildUrl(propertyResolver);</span>
-<span class="fc" id="L576">		OvhAuthParams authParams = buildAuth(propertyResolver);</span>
-<span class="pc bpc" id="L577" title="2 of 8 branches missed.">		if (url == null || authParams.getAccount() == null || authParams.getLogin() == null || authParams.getPassword() == null) {</span>
-<span class="fc" id="L578">			return null;</span>
+<span class="fc" id="L498">		URL url = buildUrl();</span>
+<span class="fc" id="L499">		OvhAuthParams authParams = buildAuth();</span>
+<span class="pc bpc" id="L500" title="2 of 8 branches missed.">		if (url == null || authParams.getAccount() == null || authParams.getLogin() == null || authParams.getPassword() == null) {</span>
+<span class="fc" id="L501">			return null;</span>
 		}
-<span class="fc" id="L580">		LOG.info(&quot;Sending SMS using OVH API is registered&quot;);</span>
-<span class="fc" id="L581">		LOG.debug(&quot;OVH account: account={}, login={}&quot;, authParams.getAccount(), authParams.getLogin());</span>
-<span class="fc" id="L582">		return new OvhSmsSender(url, authParams, buildOptions(), new DefaultSmsCodingDetector());</span>
+<span class="fc" id="L503">		LOG.info(&quot;Sending SMS using OVH API is registered&quot;);</span>
+<span class="fc" id="L504">		LOG.debug(&quot;OVH account: account={}, login={}&quot;, authParams.getAccount(), authParams.getLogin());</span>
+<span class="fc" id="L505">		return buildContext.register(new OvhSmsSender(url, authParams, buildOptions(), buildContext.register(new DefaultSmsCodingDetector())));</span>
 	}
 
-	private URL buildUrl(PropertyResolver propertyResolver) {
-<span class="fc" id="L586">		return urlValueBuilder.getValue(propertyResolver);</span>
+	private URL buildUrl() {
+<span class="fc" id="L509">		return urlValueBuilder.getValue();</span>
 	}
 
-	private OvhAuthParams buildAuth(PropertyResolver propertyResolver) {
-<span class="fc" id="L590">		String accountValue = accountValueBuilder.getValue(propertyResolver);</span>
-<span class="fc" id="L591">		String loginValue = loginValueBuilder.getValue(propertyResolver);</span>
-<span class="fc" id="L592">		String passwordValue = passwordValueBuilder.getValue(propertyResolver);</span>
-<span class="fc" id="L593">		return new OvhAuthParams(accountValue, loginValue, passwordValue);</span>
+	private OvhAuthParams buildAuth() {
+<span class="fc" id="L513">		String accountValue = accountValueBuilder.getValue();</span>
+<span class="fc" id="L514">		String loginValue = loginValueBuilder.getValue();</span>
+<span class="fc" id="L515">		String passwordValue = passwordValueBuilder.getValue();</span>
+<span class="fc" id="L516">		return buildContext.register(new OvhAuthParams(accountValue, loginValue, passwordValue));</span>
 	}
 
 	private OvhOptions buildOptions() {
-<span class="fc" id="L597">		return ovhOptionsBuilder.build();</span>
+<span class="fc" id="L520">		return ovhOptionsBuilder.build();</span>
 	}
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

@@ -6,8 +6,8 @@ import fr.sii.ogham.core.builder.Builder;
 import fr.sii.ogham.core.builder.configuration.ConfigurationValueBuilder;
 import fr.sii.ogham.core.builder.configuration.ConfigurationValueBuilderHelper;
 import fr.sii.ogham.core.builder.configurer.Configurer;
+import fr.sii.ogham.core.builder.context.BuildContext;
 import fr.sii.ogham.core.builder.env.EnvironmentBuilder;
-import fr.sii.ogham.core.env.PropertyResolver;
 import fr.sii.ogham.core.fluent.AbstractParent;
 
 /**
@@ -21,7 +21,6 @@ import fr.sii.ogham.core.fluent.AbstractParent;
  *
  */
 public class SslBuilder extends AbstractParent&lt;CloudhopperBuilder&gt; implements Builder&lt;SslConfiguration&gt; {
-	private final EnvironmentBuilder&lt;?&gt; environmentBuilder;
 	private final ConfigurationValueBuilderHelper&lt;SslBuilder, Boolean&gt; enableSslValueBuilder;
 	private SslConfiguration sslConfiguration;
 
@@ -32,16 +31,14 @@ public class SslBuilder extends AbstractParent&lt;CloudhopperBuilder&gt; impleme
 	 * 
 	 * @param parent
 	 *            the parent builder
-	 * @param environmentBuilder
-	 *            the configuration for property resolution and evaluation
+	 * @param buildContext
+	 *            for registering instances and property evaluation
 	 */
-	public SslBuilder(CloudhopperBuilder parent, EnvironmentBuilder&lt;?&gt; environmentBuilder) {
-<span class="nc" id="L39">		super(parent);</span>
-<span class="nc" id="L40">		this.environmentBuilder = environmentBuilder;</span>
-<span class="nc" id="L41">		enableSslValueBuilder = new ConfigurationValueBuilderHelper&lt;&gt;(this, Boolean.class);</span>
-<span class="nc" id="L42">	}</span>
+	public SslBuilder(CloudhopperBuilder parent, BuildContext buildContext) {
+<span class="nc" id="L38">		super(parent);</span>
+<span class="nc" id="L39">		enableSslValueBuilder = new ConfigurationValueBuilderHelper&lt;&gt;(this, Boolean.class, buildContext);</span>
+<span class="nc" id="L40">	}</span>
 
-	
 	/**
 	 * Enable or disable SSL.
 	 * 
@@ -77,17 +74,19 @@ public class SslBuilder extends AbstractParent&lt;CloudhopperBuilder&gt; impleme
 	 * @return this instance for fluent chaining
 	 */
 	public SslBuilder enable(Boolean enale) {
-<span class="nc" id="L80">		enableSslValueBuilder.setValue(enale);</span>
-<span class="nc" id="L81">		return this;</span>
+<span class="nc" id="L77">		enableSslValueBuilder.setValue(enale);</span>
+<span class="nc" id="L78">		return this;</span>
 	}
 
 	/**
 	 * Enable or disable SSL.
 	 * 
 	 * &lt;p&gt;
-	 * This method is mainly used by {@link Configurer}s to register some property keys and/or a default value.
-	 * The aim is to let developer be able to externalize its configuration (using system properties, configuration file or anything else).
-	 * If the developer doesn't configure any value for the registered properties, the default value is used (if set).
+	 * This method is mainly used by {@link Configurer}s to register some
+	 * property keys and/or a default value. The aim is to let developer be able
+	 * to externalize its configuration (using system properties, configuration
+	 * file or anything else). If the developer doesn't configure any value for
+	 * the registered properties, the default value is used (if set).
 	 * 
 	 * &lt;pre&gt;
 	 * .enable()
@@ -96,8 +95,8 @@ public class SslBuilder extends AbstractParent&lt;CloudhopperBuilder&gt; impleme
 	 * &lt;/pre&gt;
 	 * 
 	 * &lt;p&gt;
-	 * Non-null value set using {@link #enable(Boolean)} takes
-	 * precedence over property values and default value.
+	 * Non-null value set using {@link #enable(Boolean)} takes precedence over
+	 * property values and default value.
 	 * 
 	 * &lt;pre&gt;
 	 * .enable(true)
@@ -116,9 +115,9 @@ public class SslBuilder extends AbstractParent&lt;CloudhopperBuilder&gt; impleme
 	 * @return the builder to configure property keys/default value
 	 */
 	public ConfigurationValueBuilder&lt;SslBuilder, Boolean&gt; enable() {
-<span class="nc" id="L119">		return enableSslValueBuilder;</span>
+<span class="nc" id="L118">		return enableSslValueBuilder;</span>
 	}
-	
+
 	/**
 	 * Configure SSL handling.
 	 * 
@@ -134,15 +133,14 @@ public class SslBuilder extends AbstractParent&lt;CloudhopperBuilder&gt; impleme
 	 * @return this instance for fluent chaining
 	 */
 	public SslBuilder sslConfiguration(SslConfiguration sslConfiguration) {
-<span class="nc" id="L137">		this.sslConfiguration = sslConfiguration;</span>
-<span class="nc" id="L138">		return this;</span>
+<span class="nc" id="L136">		this.sslConfiguration = sslConfiguration;</span>
+<span class="nc" id="L137">		return this;</span>
 	}
 
 	@Override
 	public SslConfiguration build() {
-<span class="nc" id="L143">		PropertyResolver propertyResolver = environmentBuilder.build();</span>
-<span class="nc" id="L144">		boolean enabled = enableSslValueBuilder.getValue(propertyResolver, false);</span>
-<span class="nc bnc" id="L145" title="All 2 branches missed.">		return enabled ? sslConfiguration : null;</span>
+<span class="nc" id="L142">		boolean enabled = enableSslValueBuilder.getValue(false);</span>
+<span class="nc bnc" id="L143" title="All 2 branches missed.">		return enabled ? sslConfiguration : null;</span>
 	}
 
 }

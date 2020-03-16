@@ -4,8 +4,8 @@ import fr.sii.ogham.core.builder.Builder;
 import fr.sii.ogham.core.builder.configuration.ConfigurationValueBuilder;
 import fr.sii.ogham.core.builder.configuration.ConfigurationValueBuilderHelper;
 import fr.sii.ogham.core.builder.configurer.Configurer;
+import fr.sii.ogham.core.builder.context.BuildContext;
 import fr.sii.ogham.core.builder.env.EnvironmentBuilder;
-import fr.sii.ogham.core.env.PropertyResolver;
 import fr.sii.ogham.core.fluent.AbstractParent;
 import fr.sii.ogham.core.retry.FixedDelayRetry;
 import fr.sii.ogham.core.retry.RetryStrategy;
@@ -51,7 +51,7 @@ import fr.sii.ogham.core.retry.RetryStrategy;
  *            method)
  */
 public class FixedDelayBuilder&lt;P&gt; extends AbstractParent&lt;P&gt; implements Builder&lt;RetryStrategy&gt; {
-	private final EnvironmentBuilder&lt;?&gt; environmentBuilder;
+	private final BuildContext buildContext;
 	private final ConfigurationValueBuilderHelper&lt;FixedDelayBuilder&lt;P&gt;, Integer&gt; maxRetriesValueBuilder;
 	private final ConfigurationValueBuilderHelper&lt;FixedDelayBuilder&lt;P&gt;, Long&gt; delayValueBuilder;
 
@@ -62,16 +62,16 @@ public class FixedDelayBuilder&lt;P&gt; extends AbstractParent&lt;P&gt; implemen
 	 * 
 	 * @param parent
 	 *            the parent builder
-	 * @param environmentBuilder
-	 *            the configuration for property resolution and evaluation
+	 * @param buildContext
+	 *            for registering instances and property evaluation
 	 */
-	public FixedDelayBuilder(P parent, EnvironmentBuilder&lt;?&gt; environmentBuilder) {
+	public FixedDelayBuilder(P parent, BuildContext buildContext) {
 <span class="fc" id="L69">		super(parent);</span>
-<span class="fc" id="L70">		this.environmentBuilder = environmentBuilder;</span>
-<span class="fc" id="L71">		maxRetriesValueBuilder = new ConfigurationValueBuilderHelper&lt;&gt;(this, Integer.class);</span>
-<span class="fc" id="L72">		delayValueBuilder = new ConfigurationValueBuilderHelper&lt;&gt;(this, Long.class);</span>
+<span class="fc" id="L70">		this.buildContext = buildContext;</span>
+<span class="fc" id="L71">		maxRetriesValueBuilder = new ConfigurationValueBuilderHelper&lt;&gt;(this, Integer.class, buildContext);</span>
+<span class="fc" id="L72">		delayValueBuilder = new ConfigurationValueBuilderHelper&lt;&gt;(this, Long.class, buildContext);</span>
 <span class="fc" id="L73">	}</span>
-	
+
 	/**
 	 * Set the maximum number of attempts.
 	 * 
@@ -111,14 +111,15 @@ public class FixedDelayBuilder&lt;P&gt; extends AbstractParent&lt;P&gt; implemen
 <span class="fc" id="L111">		return this;</span>
 	}
 
-	
 	/**
 	 * Set the maximum number of attempts.
 	 * 
 	 * &lt;p&gt;
-	 * This method is mainly used by {@link Configurer}s to register some property keys and/or a default value.
-	 * The aim is to let developer be able to externalize its configuration (using system properties, configuration file or anything else).
-	 * If the developer doesn't configure any value for the registered properties, the default value is used (if set).
+	 * This method is mainly used by {@link Configurer}s to register some
+	 * property keys and/or a default value. The aim is to let developer be able
+	 * to externalize its configuration (using system properties, configuration
+	 * file or anything else). If the developer doesn't configure any value for
+	 * the registered properties, the default value is used (if set).
 	 * 
 	 * &lt;pre&gt;
 	 * .maxRetries()
@@ -127,8 +128,8 @@ public class FixedDelayBuilder&lt;P&gt; extends AbstractParent&lt;P&gt; implemen
 	 * &lt;/pre&gt;
 	 * 
 	 * &lt;p&gt;
-	 * Non-null value set using {@link #maxRetries(Integer)} takes
-	 * precedence over property values and default value.
+	 * Non-null value set using {@link #maxRetries(Integer)} takes precedence
+	 * over property values and default value.
 	 * 
 	 * &lt;pre&gt;
 	 * .maxRetries(10)
@@ -147,9 +148,9 @@ public class FixedDelayBuilder&lt;P&gt; extends AbstractParent&lt;P&gt; implemen
 	 * @return the builder to configure property keys/default value
 	 */
 	public ConfigurationValueBuilder&lt;FixedDelayBuilder&lt;P&gt;, Integer&gt; maxRetries() {
-<span class="fc" id="L150">		return maxRetriesValueBuilder;</span>
+<span class="fc" id="L151">		return maxRetriesValueBuilder;</span>
 	}
-	
+
 	/**
 	 * Set the delay between two executions (in milliseconds).
 	 * 
@@ -185,18 +186,19 @@ public class FixedDelayBuilder&lt;P&gt; extends AbstractParent&lt;P&gt; implemen
 	 * @return this instance for fluent chaining
 	 */
 	public FixedDelayBuilder&lt;P&gt; delay(Long delay) {
-<span class="fc" id="L188">		delayValueBuilder.setValue(delay);</span>
-<span class="fc" id="L189">		return this;</span>
+<span class="fc" id="L189">		delayValueBuilder.setValue(delay);</span>
+<span class="fc" id="L190">		return this;</span>
 	}
 
-	
 	/**
 	 * Set the delay between two executions (in milliseconds).
 	 * 
 	 * &lt;p&gt;
-	 * This method is mainly used by {@link Configurer}s to register some property keys and/or a default value.
-	 * The aim is to let developer be able to externalize its configuration (using system properties, configuration file or anything else).
-	 * If the developer doesn't configure any value for the registered properties, the default value is used (if set).
+	 * This method is mainly used by {@link Configurer}s to register some
+	 * property keys and/or a default value. The aim is to let developer be able
+	 * to externalize its configuration (using system properties, configuration
+	 * file or anything else). If the developer doesn't configure any value for
+	 * the registered properties, the default value is used (if set).
 	 * 
 	 * &lt;pre&gt;
 	 * .delay()
@@ -205,8 +207,8 @@ public class FixedDelayBuilder&lt;P&gt; extends AbstractParent&lt;P&gt; implemen
 	 * &lt;/pre&gt;
 	 * 
 	 * &lt;p&gt;
-	 * Non-null value set using {@link #delay(Long)} takes
-	 * precedence over property values and default value.
+	 * Non-null value set using {@link #delay(Long)} takes precedence over
+	 * property values and default value.
 	 * 
 	 * &lt;pre&gt;
 	 * .delay(5000L)
@@ -225,23 +227,22 @@ public class FixedDelayBuilder&lt;P&gt; extends AbstractParent&lt;P&gt; implemen
 	 * @return the builder to configure property keys/default value
 	 */
 	public ConfigurationValueBuilder&lt;FixedDelayBuilder&lt;P&gt;, Long&gt; delay() {
-<span class="fc" id="L228">		return delayValueBuilder;</span>
+<span class="fc" id="L230">		return delayValueBuilder;</span>
 	}
 
 	@Override
 	public RetryStrategy build() {
-<span class="fc" id="L233">		PropertyResolver propertyResolver = environmentBuilder.build();</span>
-<span class="fc" id="L234">		int evaluatedMaxRetries = buildMaxRetries(propertyResolver);</span>
-<span class="fc" id="L235">		long evaluatedDelay = buildDelay(propertyResolver);</span>
-<span class="fc" id="L236">		return new FixedDelayRetry(evaluatedMaxRetries, evaluatedDelay);</span>
+<span class="fc" id="L235">		int evaluatedMaxRetries = buildMaxRetries();</span>
+<span class="fc" id="L236">		long evaluatedDelay = buildDelay();</span>
+<span class="fc" id="L237">		return buildContext.register(new FixedDelayRetry(evaluatedMaxRetries, evaluatedDelay));</span>
 	}
 
-	private int buildMaxRetries(PropertyResolver propertyResolver) {
-<span class="fc" id="L240">		return maxRetriesValueBuilder.getValue(propertyResolver, 0);</span>
+	private int buildMaxRetries() {
+<span class="fc" id="L241">		return maxRetriesValueBuilder.getValue(0);</span>
 	}
 
-	private long buildDelay(PropertyResolver propertyResolver) {
-<span class="fc" id="L244">		return delayValueBuilder.getValue(propertyResolver, 0L);</span>
+	private long buildDelay() {
+<span class="fc" id="L245">		return delayValueBuilder.getValue(0L);</span>
 	}
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

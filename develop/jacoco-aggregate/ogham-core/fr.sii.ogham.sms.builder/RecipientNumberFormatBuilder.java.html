@@ -4,8 +4,8 @@ import fr.sii.ogham.core.builder.Builder;
 import fr.sii.ogham.core.builder.configuration.ConfigurationValueBuilder;
 import fr.sii.ogham.core.builder.configuration.ConfigurationValueBuilderHelper;
 import fr.sii.ogham.core.builder.configurer.Configurer;
+import fr.sii.ogham.core.builder.context.BuildContext;
 import fr.sii.ogham.core.builder.env.EnvironmentBuilder;
-import fr.sii.ogham.core.env.PropertyResolver;
 import fr.sii.ogham.core.fluent.AbstractParent;
 import fr.sii.ogham.sms.message.PhoneNumber;
 import fr.sii.ogham.sms.message.addressing.AddressedPhoneNumber;
@@ -22,7 +22,7 @@ import fr.sii.ogham.sms.message.addressing.translator.PhoneNumberTranslator;
  *
  */
 public class RecipientNumberFormatBuilder extends AbstractParent&lt;RecipientNumberBuilder&gt; implements Builder&lt;PhoneNumberTranslator&gt; {
-	private final EnvironmentBuilder&lt;?&gt; environmentBuilder;
+	private final BuildContext buildContext;
 	private final ConfigurationValueBuilderHelper&lt;RecipientNumberFormatBuilder, Boolean&gt; enableInternationalValueBuilder;
 
 	/**
@@ -32,15 +32,15 @@ public class RecipientNumberFormatBuilder extends AbstractParent&lt;RecipientNum
 	 * 
 	 * @param parent
 	 *            the parent builder
-	 * @param environmentBuilder
-	 *            the configuration for property resolution and evaluation
+	 * @param buildContext
+	 *            for registering instances and property evaluation
 	 */
-	public RecipientNumberFormatBuilder(RecipientNumberBuilder parent, EnvironmentBuilder&lt;?&gt; environmentBuilder) {
+	public RecipientNumberFormatBuilder(RecipientNumberBuilder parent, BuildContext buildContext) {
 <span class="fc" id="L39">		super(parent);</span>
-<span class="fc" id="L40">		this.environmentBuilder = environmentBuilder;</span>
-<span class="fc" id="L41">		enableInternationalValueBuilder = new ConfigurationValueBuilderHelper&lt;&gt;(this, Boolean.class);</span>
+<span class="fc" id="L40">		this.buildContext = buildContext;</span>
+<span class="fc" id="L41">		enableInternationalValueBuilder = new ConfigurationValueBuilderHelper&lt;&gt;(this, Boolean.class, buildContext);</span>
 <span class="fc" id="L42">	}</span>
-	
+
 	/**
 	 * Enable/disable international number conversion: if the sender starts with
 	 * a &quot;+&quot;, TON is set to 1, and NPI is set to 1.
@@ -81,15 +81,16 @@ public class RecipientNumberFormatBuilder extends AbstractParent&lt;RecipientNum
 <span class="fc" id="L81">		return this;</span>
 	}
 
-	
 	/**
 	 * Enable/disable international number conversion: if the sender starts with
 	 * a &quot;+&quot;, TON is set to 1, and NPI is set to 1.
 	 * 
 	 * &lt;p&gt;
-	 * This method is mainly used by {@link Configurer}s to register some property keys and/or a default value.
-	 * The aim is to let developer be able to externalize its configuration (using system properties, configuration file or anything else).
-	 * If the developer doesn't configure any value for the registered properties, the default value is used (if set).
+	 * This method is mainly used by {@link Configurer}s to register some
+	 * property keys and/or a default value. The aim is to let developer be able
+	 * to externalize its configuration (using system properties, configuration
+	 * file or anything else). If the developer doesn't configure any value for
+	 * the registered properties, the default value is used (if set).
 	 * 
 	 * &lt;pre&gt;
 	 * .internationalNumber()
@@ -118,22 +119,21 @@ public class RecipientNumberFormatBuilder extends AbstractParent&lt;RecipientNum
 	 * @return the builder to configure property keys/default value
 	 */
 	public ConfigurationValueBuilder&lt;RecipientNumberFormatBuilder, Boolean&gt; internationalNumber() {
-<span class="fc" id="L121">		return enableInternationalValueBuilder;</span>
+<span class="fc" id="L122">		return enableInternationalValueBuilder;</span>
 	}
 
 	@Override
 	public PhoneNumberTranslator build() {
-<span class="fc" id="L126">		CompositePhoneNumberTranslator translator = new CompositePhoneNumberTranslator();</span>
-<span class="fc bfc" id="L127" title="All 2 branches covered.">		if (enabled(enableInternationalValueBuilder)) {</span>
-<span class="fc" id="L128">			translator.add(new InternationalNumberFormatHandler());</span>
+<span class="fc" id="L127">		CompositePhoneNumberTranslator translator = buildContext.register(new CompositePhoneNumberTranslator());</span>
+<span class="fc bfc" id="L128" title="All 2 branches covered.">		if (enabled(enableInternationalValueBuilder)) {</span>
+<span class="fc" id="L129">			translator.add(buildContext.register(new InternationalNumberFormatHandler()));</span>
 		}
-<span class="fc" id="L130">		translator.add(new DefaultHandler());</span>
-<span class="fc" id="L131">		return translator;</span>
+<span class="fc" id="L131">		translator.add(buildContext.register(new DefaultHandler()));</span>
+<span class="fc" id="L132">		return translator;</span>
 	}
 
-	private boolean enabled(ConfigurationValueBuilderHelper&lt;?, Boolean&gt; enableInternational) {
-<span class="fc" id="L135">		PropertyResolver propertyResolver = environmentBuilder.build();</span>
-<span class="fc" id="L136">		return enableInternational.getValue(propertyResolver, false);</span>
+	private static boolean enabled(ConfigurationValueBuilderHelper&lt;?, Boolean&gt; enableInternational) {
+<span class="fc" id="L136">		return enableInternational.getValue(false);</span>
 	}
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

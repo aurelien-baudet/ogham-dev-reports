@@ -3,7 +3,6 @@
 import java.util.Map;
 
 import fr.sii.ogham.core.builder.configuration.ConfigurationValueBuilderHelper;
-import fr.sii.ogham.core.env.PropertyResolver;
 import fr.sii.ogham.core.exception.filler.FillMessageException;
 import fr.sii.ogham.core.message.Message;
 
@@ -16,7 +15,6 @@ import fr.sii.ogham.core.message.Message;
  *            the type of the message that the filler is able to handle
  */
 public abstract class AbstractMessageAwareFiller&lt;M&gt; implements MessageFiller {
-	protected final PropertyResolver resolver;
 	protected final Map&lt;String, ConfigurationValueBuilderHelper&lt;?, ?&gt;&gt; defaultValues;
 	private final Class&lt;M&gt; messageType;
 
@@ -39,28 +37,24 @@ public abstract class AbstractMessageAwareFiller&lt;M&gt; implements MessageFill
 	 * // &quot;mail.smtp.from&quot;
 	 * &lt;/pre&gt;
 	 * 
-	 * @param resolver
-	 *            the property resolver used to check property existence and get
-	 *            property values
 	 * @param defaultValues
 	 *            a list of property keys indexed by an alias
 	 * @param messageType
 	 *            the class of the message that this implementation can handle
 	 */
-	protected AbstractMessageAwareFiller(PropertyResolver resolver, Map&lt;String, ConfigurationValueBuilderHelper&lt;?, ?&gt;&gt; defaultValues, Class&lt;M&gt; messageType) {
-<span class="fc" id="L51">		super();</span>
-<span class="fc" id="L52">		this.resolver = resolver;</span>
-<span class="fc" id="L53">		this.defaultValues = defaultValues;</span>
-<span class="fc" id="L54">		this.messageType = messageType;</span>
-<span class="fc" id="L55">	}</span>
+	protected AbstractMessageAwareFiller(Map&lt;String, ConfigurationValueBuilderHelper&lt;?, ?&gt;&gt; defaultValues, Class&lt;M&gt; messageType) {
+<span class="fc" id="L46">		super();</span>
+<span class="fc" id="L47">		this.defaultValues = defaultValues;</span>
+<span class="fc" id="L48">		this.messageType = messageType;</span>
+<span class="fc" id="L49">	}</span>
 
 	@SuppressWarnings(&quot;unchecked&quot;)
 	@Override
 	public void fill(Message message) throws FillMessageException {
-<span class="pc bpc" id="L60" title="1 of 2 branches missed.">		if (messageType.isAssignableFrom(message.getClass())) {</span>
-<span class="fc" id="L61">			fill((M) message);</span>
+<span class="pc bpc" id="L54" title="1 of 2 branches missed.">		if (messageType.isAssignableFrom(message.getClass())) {</span>
+<span class="fc" id="L55">			fill((M) message);</span>
 		}
-<span class="fc" id="L63">	}</span>
+<span class="fc" id="L57">	}</span>
 
 	protected abstract void fill(M message);
 
@@ -74,8 +68,8 @@ public abstract class AbstractMessageAwareFiller&lt;M&gt; implements MessageFill
 	 * @return true if property exists, false otherwise
 	 */
 	protected boolean containsProperty(String alias) {
-<span class="fc" id="L77">		ConfigurationValueBuilderHelper&lt;?, ?&gt; valueBuilder = defaultValues.get(alias);</span>
-<span class="fc bfc" id="L78" title="All 4 branches covered.">		return valueBuilder != null &amp;&amp; valueBuilder.getValue(resolver) != null;</span>
+<span class="fc" id="L71">		ConfigurationValueBuilderHelper&lt;?, ?&gt; valueBuilder = defaultValues.get(alias);</span>
+<span class="fc bfc" id="L72" title="All 4 branches covered.">		return valueBuilder != null &amp;&amp; valueBuilder.getValue() != null;</span>
 	}
 
 	/**
@@ -92,8 +86,8 @@ public abstract class AbstractMessageAwareFiller&lt;M&gt; implements MessageFill
 	 */
 	@SuppressWarnings(&quot;unchecked&quot;)
 	protected &lt;T&gt; T getProperty(String alias, Class&lt;T&gt; valueClass) {
-<span class="fc" id="L95">		ConfigurationValueBuilderHelper&lt;?, T&gt; valueBuilder = (ConfigurationValueBuilderHelper&lt;?, T&gt;) defaultValues.get(alias);</span>
-<span class="pc bpc" id="L96" title="1 of 2 branches missed.">		return valueBuilder == null ? null : valueBuilder.getValue(resolver);</span>
+<span class="fc" id="L89">		ConfigurationValueBuilderHelper&lt;?, T&gt; valueBuilder = (ConfigurationValueBuilderHelper&lt;?, T&gt;) defaultValues.get(alias);</span>
+<span class="pc bpc" id="L90" title="1 of 2 branches missed.">		return valueBuilder == null ? null : valueBuilder.getValue();</span>
 	}
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

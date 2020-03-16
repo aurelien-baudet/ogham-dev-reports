@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import fr.sii.ogham.core.builder.Builder;
+import fr.sii.ogham.core.builder.context.BuildContext;
 import fr.sii.ogham.core.builder.env.EnvironmentBuilder;
 import fr.sii.ogham.core.builder.resolution.ClassPathResolutionBuilder;
 import fr.sii.ogham.core.builder.resolution.FileResolutionBuilder;
@@ -36,8 +37,9 @@ import fr.sii.ogham.email.attachment.Attachment;
  *
  */
 public class AttachmentHandlingBuilder extends AbstractParent&lt;EmailBuilder&gt; implements ResourceResolutionBuilder&lt;AttachmentHandlingBuilder&gt;, Builder&lt;AttachmentResourceTranslator&gt; {
-<span class="fc" id="L39">	private static final Logger LOG = LoggerFactory.getLogger(AttachmentHandlingBuilder.class);</span>
+<span class="fc" id="L40">	private static final Logger LOG = LoggerFactory.getLogger(AttachmentHandlingBuilder.class);</span>
 
+	private final BuildContext buildContext;
 	private ResourceResolutionBuilderHelper&lt;AttachmentHandlingBuilder&gt; resourceResolutionBuilderHelper;
 
 	/**
@@ -47,47 +49,48 @@ public class AttachmentHandlingBuilder extends AbstractParent&lt;EmailBuilder&gt
 	 * 
 	 * @param parent
 	 *            the parent builder
-	 * @param environmentBuilder
-	 *            the configuration for property resolution and evaluation
+	 * @param buildContext
+	 *            for registering instances and property evaluation
 	 */
-	public AttachmentHandlingBuilder(EmailBuilder parent, EnvironmentBuilder&lt;?&gt; environmentBuilder) {
-<span class="fc" id="L54">		super(parent);</span>
-<span class="fc" id="L55">		resourceResolutionBuilderHelper = new ResourceResolutionBuilderHelper&lt;&gt;(this, environmentBuilder);</span>
-<span class="fc" id="L56">	}</span>
+	public AttachmentHandlingBuilder(EmailBuilder parent, BuildContext buildContext) {
+<span class="fc" id="L56">		super(parent);</span>
+<span class="fc" id="L57">		this.buildContext = buildContext;</span>
+<span class="fc" id="L58">		resourceResolutionBuilderHelper = new ResourceResolutionBuilderHelper&lt;&gt;(this, buildContext);</span>
+<span class="fc" id="L59">	}</span>
 
 	@Override
 	public ClassPathResolutionBuilder&lt;AttachmentHandlingBuilder&gt; classpath() {
-<span class="fc" id="L60">		return resourceResolutionBuilderHelper.classpath();</span>
+<span class="fc" id="L63">		return resourceResolutionBuilderHelper.classpath();</span>
 	}
 
 	@Override
 	public FileResolutionBuilder&lt;AttachmentHandlingBuilder&gt; file() {
-<span class="fc" id="L65">		return resourceResolutionBuilderHelper.file();</span>
+<span class="fc" id="L68">		return resourceResolutionBuilderHelper.file();</span>
 	}
 
 	@Override
 	public StringResolutionBuilder&lt;AttachmentHandlingBuilder&gt; string() {
-<span class="fc" id="L70">		return resourceResolutionBuilderHelper.string();</span>
+<span class="fc" id="L73">		return resourceResolutionBuilderHelper.string();</span>
 	}
 
 	@Override
 	public AttachmentHandlingBuilder resolver(ResourceResolver resolver) {
-<span class="nc" id="L75">		return resourceResolutionBuilderHelper.resolver(resolver);</span>
+<span class="nc" id="L78">		return resourceResolutionBuilderHelper.resolver(resolver);</span>
 	}
 
 	@Override
 	public AttachmentResourceTranslator build() {
-<span class="fc" id="L80">		EveryResourceTranslator translator = new EveryResourceTranslator();</span>
-<span class="fc" id="L81">		LOG.info(&quot;Using translator that calls all registered translators&quot;);</span>
-<span class="fc" id="L82">		translator.addTranslator(new OverrideNameWrapperResourceTranslator(translator));</span>
-<span class="fc" id="L83">		translator.addTranslator(new LookupResourceTranslator(buildResolver()));</span>
-<span class="fc" id="L84">		LOG.debug(&quot;Registered translators: {}&quot;, translator.getTranslators());</span>
-<span class="fc" id="L85">		return translator;</span>
+<span class="fc" id="L83">		EveryResourceTranslator translator = buildContext.register(new EveryResourceTranslator());</span>
+<span class="fc" id="L84">		LOG.info(&quot;Using translator that calls all registered translators&quot;);</span>
+<span class="fc" id="L85">		translator.addTranslator(buildContext.register(new OverrideNameWrapperResourceTranslator(translator)));</span>
+<span class="fc" id="L86">		translator.addTranslator(buildContext.register(new LookupResourceTranslator(buildResolver())));</span>
+<span class="fc" id="L87">		LOG.debug(&quot;Registered translators: {}&quot;, translator.getTranslators());</span>
+<span class="fc" id="L88">		return translator;</span>
 	}
 
 	private ResourceResolver buildResolver() {
-<span class="fc" id="L89">		List&lt;ResourceResolver&gt; resolvers = resourceResolutionBuilderHelper.buildResolvers();</span>
-<span class="fc" id="L90">		return new FirstSupportingResourceResolver(resolvers);</span>
+<span class="fc" id="L92">		List&lt;ResourceResolver&gt; resolvers = resourceResolutionBuilderHelper.buildResolvers();</span>
+<span class="fc" id="L93">		return buildContext.register(new FirstSupportingResourceResolver(resolvers));</span>
 	}
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

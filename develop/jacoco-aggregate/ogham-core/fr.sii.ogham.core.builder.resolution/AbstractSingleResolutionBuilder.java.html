@@ -10,8 +10,7 @@ import org.slf4j.LoggerFactory;
 
 import fr.sii.ogham.core.builder.Builder;
 import fr.sii.ogham.core.builder.configuration.ConfigurationValueBuilderHelper;
-import fr.sii.ogham.core.builder.env.EnvironmentBuilder;
-import fr.sii.ogham.core.env.PropertyResolver;
+import fr.sii.ogham.core.builder.context.BuildContext;
 import fr.sii.ogham.core.fluent.AbstractParent;
 import fr.sii.ogham.core.resource.resolver.RelativeResolver;
 import fr.sii.ogham.core.resource.resolver.RelativisableResourceResolver;
@@ -34,23 +33,23 @@ import fr.sii.ogham.core.resource.resolver.ResourceResolver;
  */
 @SuppressWarnings(&quot;squid:S00119&quot;)
 public abstract class AbstractSingleResolutionBuilder&lt;MYSELF extends AbstractSingleResolutionBuilder&lt;MYSELF, P&gt;, P&gt; extends AbstractParent&lt;P&gt; implements Builder&lt;ResourceResolver&gt; {
-<span class="fc" id="L37">	private static final Logger LOG = LoggerFactory.getLogger(AbstractSingleResolutionBuilder.class);</span>
+<span class="fc" id="L36">	private static final Logger LOG = LoggerFactory.getLogger(AbstractSingleResolutionBuilder.class);</span>
 
+	protected final BuildContext buildContext;
 	protected final List&lt;String&gt; lookups;
 	protected final ConfigurationValueBuilderHelper&lt;MYSELF, String&gt; pathPrefixValueBuilder;
 	protected final ConfigurationValueBuilderHelper&lt;MYSELF, String&gt; pathSuffixValueBuilder;
-	protected final EnvironmentBuilder&lt;?&gt; environmentBuilder;
 	protected final MYSELF myself;
 
 	@SuppressWarnings(&quot;unchecked&quot;)
-	protected AbstractSingleResolutionBuilder(Class&lt;?&gt; selfType, P parent, EnvironmentBuilder&lt;?&gt; environmentBuilder) {
-<span class="fc" id="L47">		super(parent);</span>
-<span class="fc" id="L48">		myself = (MYSELF) selfType.cast(this);</span>
-<span class="fc" id="L49">		this.environmentBuilder = environmentBuilder;</span>
-<span class="fc" id="L50">		lookups = new ArrayList&lt;&gt;();</span>
-<span class="fc" id="L51">		pathPrefixValueBuilder = new ConfigurationValueBuilderHelper&lt;&gt;(myself, String.class);</span>
-<span class="fc" id="L52">		pathSuffixValueBuilder = new ConfigurationValueBuilderHelper&lt;&gt;(myself, String.class);</span>
-<span class="fc" id="L53">	}</span>
+	protected AbstractSingleResolutionBuilder(Class&lt;?&gt; selfType, P parent, BuildContext buildContext) {
+<span class="fc" id="L46">		super(parent);</span>
+<span class="fc" id="L47">		myself = (MYSELF) selfType.cast(this);</span>
+<span class="fc" id="L48">		this.buildContext = buildContext;</span>
+<span class="fc" id="L49">		lookups = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L50">		pathPrefixValueBuilder = new ConfigurationValueBuilderHelper&lt;&gt;(myself, String.class, buildContext);</span>
+<span class="fc" id="L51">		pathSuffixValueBuilder = new ConfigurationValueBuilderHelper&lt;&gt;(myself, String.class, buildContext);</span>
+<span class="fc" id="L52">	}</span>
 
 	/**
 	 * Configure lookup prefix. For example:
@@ -94,8 +93,8 @@ public abstract class AbstractSingleResolutionBuilder&lt;MYSELF extends Abstract
 	 * @return this instance for fluent chaining
 	 */
 	public MYSELF lookup(String... prefix) {
-<span class="fc" id="L97">		this.lookups.addAll(asList(prefix));</span>
-<span class="fc" id="L98">		return myself;</span>
+<span class="fc" id="L96">		this.lookups.addAll(asList(prefix));</span>
+<span class="fc" id="L97">		return myself;</span>
 	}
 
 	/**
@@ -140,24 +139,23 @@ public abstract class AbstractSingleResolutionBuilder&lt;MYSELF extends Abstract
 	 * @return this instance for fluent chaining
 	 */
 	public MYSELF lookup(List&lt;String&gt; prefix) {
-<span class="fc" id="L143">		this.lookups.addAll(prefix);</span>
-<span class="fc" id="L144">		return myself;</span>
+<span class="fc" id="L142">		this.lookups.addAll(prefix);</span>
+<span class="fc" id="L143">		return myself;</span>
 	}
-	
+
 	@Override
 	public ResourceResolver build() {
-<span class="fc" id="L149">		ResourceResolver resolver = createResolver();</span>
-<span class="pc bpc" id="L150" title="1 of 4 branches missed.">		if (!(resolver instanceof RelativisableResourceResolver) || environmentBuilder == null) {</span>
-<span class="fc" id="L151">			return resolver;</span>
+<span class="fc" id="L148">		ResourceResolver resolver = buildContext.register(createResolver());</span>
+<span class="fc bfc" id="L149" title="All 2 branches covered.">		if (!(resolver instanceof RelativisableResourceResolver)) {</span>
+<span class="fc" id="L150">			return resolver;</span>
 		}
-<span class="fc" id="L153">		PropertyResolver propertyResolver = environmentBuilder.build();</span>
-<span class="fc" id="L154">		String resolvedPathPrefix = pathPrefixValueBuilder.getValue(propertyResolver, &quot;&quot;);</span>
-<span class="fc" id="L155">		String resolvedPathSuffix = pathSuffixValueBuilder.getValue(propertyResolver, &quot;&quot;);</span>
-<span class="fc bfc" id="L156" title="All 4 branches covered.">		if (!resolvedPathPrefix.isEmpty() || !resolvedPathSuffix.isEmpty()) {</span>
-<span class="fc" id="L157">			LOG.debug(&quot;Using parentPath {} and extension {} for resource resolution&quot;, resolvedPathPrefix, resolvedPathSuffix);</span>
-<span class="fc" id="L158">			resolver = new RelativeResolver((RelativisableResourceResolver) resolver, resolvedPathPrefix, resolvedPathSuffix);</span>
+<span class="fc" id="L152">		String resolvedPathPrefix = pathPrefixValueBuilder.getValue(&quot;&quot;);</span>
+<span class="fc" id="L153">		String resolvedPathSuffix = pathSuffixValueBuilder.getValue(&quot;&quot;);</span>
+<span class="fc bfc" id="L154" title="All 4 branches covered.">		if (!resolvedPathPrefix.isEmpty() || !resolvedPathSuffix.isEmpty()) {</span>
+<span class="fc" id="L155">			LOG.debug(&quot;Using parentPath {} and extension {} for resource resolution&quot;, resolvedPathPrefix, resolvedPathSuffix);</span>
+<span class="fc" id="L156">			resolver = buildContext.register(new RelativeResolver((RelativisableResourceResolver) resolver, resolvedPathPrefix, resolvedPathSuffix));</span>
 		}
-<span class="fc" id="L160">		return resolver;</span>
+<span class="fc" id="L158">		return resolver;</span>
 	}
 
 	protected abstract ResourceResolver createResolver();
@@ -168,7 +166,7 @@ public abstract class AbstractSingleResolutionBuilder&lt;MYSELF extends Abstract
 	 * @return the list of lookups
 	 */
 	public List&lt;String&gt; getLookups() {
-<span class="fc" id="L171">		return lookups;</span>
+<span class="fc" id="L169">		return lookups;</span>
 	}
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

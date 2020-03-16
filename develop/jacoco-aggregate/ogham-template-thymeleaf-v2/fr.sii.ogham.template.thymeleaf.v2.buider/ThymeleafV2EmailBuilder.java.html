@@ -3,6 +3,8 @@
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.templateresolver.ITemplateResolver;
 
+import fr.sii.ogham.core.builder.context.BuildContext;
+import fr.sii.ogham.core.builder.context.DefaultBuildContext;
 import fr.sii.ogham.core.builder.env.EnvironmentBuilder;
 import fr.sii.ogham.core.template.detector.TemplateEngineDetector;
 import fr.sii.ogham.email.builder.EmailBuilder;
@@ -100,9 +102,9 @@ public class ThymeleafV2EmailBuilder extends AbstractThymeleafMultiContentBuilde
 	 * &lt;strong&gt;WARNING: use is only if you know what you are doing !&lt;/strong&gt;
 	 */
 	public ThymeleafV2EmailBuilder() {
-<span class="fc" id="L103">		super(ThymeleafV2EmailBuilder.class, null, null);</span>
-<span class="fc" id="L104">	}</span>
-	
+<span class="fc" id="L105">		super(ThymeleafV2EmailBuilder.class, null, new DefaultBuildContext());</span>
+<span class="fc" id="L106">	}</span>
+
 	/**
 	 * Initializes the builder with a parent builder. The parent builder is used
 	 * when calling {@link #and()} method. The {@link EnvironmentBuilder} is
@@ -110,40 +112,38 @@ public class ThymeleafV2EmailBuilder extends AbstractThymeleafMultiContentBuilde
 	 * 
 	 * @param parent
 	 *            the parent builder
-	 * @param environmentBuilder
-	 *            the configuration for property resolution and evaluation
+	 * @param buildContext
+	 *            for registering instances and property evaluation
 	 */
-	public ThymeleafV2EmailBuilder(EmailBuilder parent, EnvironmentBuilder&lt;?&gt; environmentBuilder) {
-<span class="fc" id="L117">		super(ThymeleafV2EmailBuilder.class, parent, environmentBuilder);</span>
-<span class="fc" id="L118">	}</span>
-
+	public ThymeleafV2EmailBuilder(EmailBuilder parent, BuildContext buildContext) {
+<span class="fc" id="L119">		super(ThymeleafV2EmailBuilder.class, parent, buildContext);</span>
+<span class="fc" id="L120">	}</span>
 
 	@Override
 	protected ITemplateResolver buildTemplateResolver(TemplateEngine builtEngine) {
-<span class="fc" id="L123">		return new ThymeLeafV2FirstSupportingTemplateResolver(buildResolver(), buildAdapters());</span>
+<span class="fc" id="L124">		return buildContext.register(new ThymeLeafV2FirstSupportingTemplateResolver(buildResolver(), buildAdapters()));</span>
 	}
 
 	@Override
 	protected TemplateEngineDetector createTemplateDetector() {
-<span class="fc" id="L128">		return new ThymeleafV2TemplateDetector(buildResolver());</span>
+<span class="fc" id="L129">		return buildContext.register(new ThymeleafV2TemplateDetector(buildResolver()));</span>
 	}
-
 
 	@Override
 	protected ThymeleafV2EngineConfigBuilder&lt;ThymeleafV2EmailBuilder&gt; getThymeleafEngineConfigBuilder() {
-<span class="nc" id="L134">		return new ThymeleafV2EngineConfigBuilder&lt;&gt;(myself);</span>
+<span class="nc" id="L134">		return buildContext.register(new ThymeleafV2EngineConfigBuilder&lt;&gt;(myself, buildContext));</span>
 	}
 
 	@Override
 	protected FirstSupportingResolverAdapter buildAdapters() {
-<span class="fc" id="L139">		FirstSupportingResolverAdapter adapter = new FirstSupportingResolverAdapter();</span>
+<span class="fc" id="L139">		FirstSupportingResolverAdapter adapter = buildContext.register(new FirstSupportingResolverAdapter());</span>
 <span class="pc bpc" id="L140" title="1 of 2 branches missed.">		for (TemplateResolverAdapter custom : customAdapters) {</span>
 <span class="nc" id="L141">			adapter.addAdapter(custom);</span>
 <span class="nc" id="L142">		}</span>
-<span class="fc" id="L143">		ThymeleafV2TemplateOptionsApplier applier = new ThymeleafV2TemplateOptionsApplier();</span>
-<span class="fc" id="L144">		adapter.addAdapter(new FixClassPathResolverAdapter(applier));</span>
-<span class="fc" id="L145">		adapter.addAdapter(new FileResolverAdapter(applier));</span>
-<span class="fc" id="L146">		adapter.addAdapter(new StringResolverAdapter(applier));</span>
+<span class="fc" id="L143">		ThymeleafV2TemplateOptionsApplier applier = buildContext.register(new ThymeleafV2TemplateOptionsApplier());</span>
+<span class="fc" id="L144">		adapter.addAdapter(buildContext.register(new FixClassPathResolverAdapter(applier)));</span>
+<span class="fc" id="L145">		adapter.addAdapter(buildContext.register(new FileResolverAdapter(applier)));</span>
+<span class="fc" id="L146">		adapter.addAdapter(buildContext.register(new StringResolverAdapter(applier)));</span>
 <span class="fc" id="L147">		adapter.setOptions(buildTemplateResolverOptions());</span>
 <span class="fc" id="L148">		return adapter;</span>
 	}

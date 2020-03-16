@@ -10,8 +10,8 @@ import org.apache.tika.Tika;
 import fr.sii.ogham.core.builder.configuration.ConfigurationValueBuilder;
 import fr.sii.ogham.core.builder.configuration.ConfigurationValueBuilderDelegate;
 import fr.sii.ogham.core.builder.configuration.ConfigurationValueBuilderHelper;
+import fr.sii.ogham.core.builder.context.BuildContext;
 import fr.sii.ogham.core.builder.env.EnvironmentBuilder;
-import fr.sii.ogham.core.env.PropertyResolver;
 import fr.sii.ogham.core.exception.builder.BuildException;
 import fr.sii.ogham.core.fluent.AbstractParent;
 import fr.sii.ogham.core.mimetype.FallbackMimeTypeProvider;
@@ -41,9 +41,9 @@ import fr.sii.ogham.core.mimetype.replace.MimetypeReplacer;
  *            method)
  */
 public class SimpleMimetypeDetectionBuilder&lt;P&gt; extends AbstractParent&lt;P&gt; implements MimetypeDetectionBuilder&lt;P&gt; {
-	private TikaBuilder&lt;MimetypeDetectionBuilder&lt;P&gt;&gt; tikaBuilder;
+	private final BuildContext buildContext;
 	private final ConfigurationValueBuilderHelper&lt;SimpleMimetypeDetectionBuilder&lt;P&gt;, String&gt; defaultMimetypeValueBuilder;
-	private final EnvironmentBuilder&lt;?&gt; environmentBuilder;
+	private TikaBuilder&lt;MimetypeDetectionBuilder&lt;P&gt;&gt; tikaBuilder;
 	private SimpleReplaceMimetypeBuilder&lt;MimetypeDetectionBuilder&lt;P&gt;&gt; replaceMimetypeBuilder;
 
 	/**
@@ -54,19 +54,19 @@ public class SimpleMimetypeDetectionBuilder&lt;P&gt; extends AbstractParent&lt;P
 	 * 
 	 * @param parent
 	 *            the parent instance
-	 * @param environmentBuilder
+	 * @param buildContext
 	 *            used to evaluate property values
 	 */
-	public SimpleMimetypeDetectionBuilder(P parent, EnvironmentBuilder&lt;?&gt; environmentBuilder) {
+	public SimpleMimetypeDetectionBuilder(P parent, BuildContext buildContext) {
 <span class="fc" id="L61">		super(parent);</span>
-<span class="fc" id="L62">		this.environmentBuilder = environmentBuilder;</span>
-<span class="fc" id="L63">		defaultMimetypeValueBuilder = new ConfigurationValueBuilderHelper&lt;&gt;(this, String.class);</span>
+<span class="fc" id="L62">		this.buildContext = buildContext;</span>
+<span class="fc" id="L63">		defaultMimetypeValueBuilder = new ConfigurationValueBuilderHelper&lt;&gt;(this, String.class, buildContext);</span>
 <span class="fc" id="L64">	}</span>
 
 	@Override
 	public TikaBuilder&lt;MimetypeDetectionBuilder&lt;P&gt;&gt; tika() {
 <span class="pc bpc" id="L68" title="1 of 2 branches missed.">		if (tikaBuilder == null) {</span>
-<span class="fc" id="L69">			tikaBuilder = new SimpleTikaBuilder&lt;&gt;(this, environmentBuilder);</span>
+<span class="fc" id="L69">			tikaBuilder = new SimpleTikaBuilder&lt;&gt;(this, buildContext);</span>
 		}
 <span class="fc" id="L71">		return tikaBuilder;</span>
 	}
@@ -84,7 +84,7 @@ public class SimpleMimetypeDetectionBuilder&lt;P&gt; extends AbstractParent&lt;P
 
 	@Override
 	public ReplaceMimetypeBuilder&lt;MimetypeDetectionBuilder&lt;P&gt;&gt; replace() {
-<span class="pc bpc" id="L87" title="1 of 2 branches missed.">		if(replaceMimetypeBuilder == null) {</span>
+<span class="pc bpc" id="L87" title="1 of 2 branches missed.">		if (replaceMimetypeBuilder == null) {</span>
 <span class="fc" id="L88">			replaceMimetypeBuilder = new SimpleReplaceMimetypeBuilder&lt;&gt;(this);</span>
 		}
 <span class="fc" id="L90">		return replaceMimetypeBuilder;</span>
@@ -109,7 +109,7 @@ public class SimpleMimetypeDetectionBuilder&lt;P&gt; extends AbstractParent&lt;P
 <span class="fc" id="L109">			throw new BuildException(&quot;No mimetype detector configured&quot;);</span>
 		}
 <span class="fc" id="L111">	}</span>
-	
+
 	private static MimeTypeProvider buildProvider(List&lt;MimeTypeProvider&gt; providers) {
 <span class="fc bfc" id="L114" title="All 2 branches covered.">		if (providers.size() == 1) {</span>
 <span class="fc" id="L115">			return providers.get(0);</span>
@@ -118,7 +118,7 @@ public class SimpleMimetypeDetectionBuilder&lt;P&gt; extends AbstractParent&lt;P
 	}
 
 	private MimeTypeProvider overrideProvider(MimeTypeProvider provider) {
-<span class="fc bfc" id="L121" title="All 2 branches covered.">		if(replaceMimetypeBuilder==null) {</span>
+<span class="fc bfc" id="L121" title="All 2 branches covered.">		if (replaceMimetypeBuilder == null) {</span>
 <span class="fc" id="L122">			return provider;</span>
 		}
 <span class="fc" id="L124">		MimetypeReplacer replacer = replaceMimetypeBuilder.build();</span>
@@ -132,12 +132,11 @@ public class SimpleMimetypeDetectionBuilder&lt;P&gt; extends AbstractParent&lt;P
 <span class="fc" id="L132">	}</span>
 
 	private void buildDefault(List&lt;MimeTypeProvider&gt; providers) throws MimeTypeParseException {
-<span class="fc" id="L135">		PropertyResolver propertyResolver = environmentBuilder.build();</span>
-<span class="fc" id="L136">		String mimetype = defaultMimetypeValueBuilder.getValue(propertyResolver);</span>
-<span class="fc bfc" id="L137" title="All 2 branches covered.">		if (mimetype != null) {</span>
-<span class="fc" id="L138">			providers.add(new FixedMimeTypeProvider(mimetype));</span>
+<span class="fc" id="L135">		String mimetype = defaultMimetypeValueBuilder.getValue();</span>
+<span class="fc bfc" id="L136" title="All 2 branches covered.">		if (mimetype != null) {</span>
+<span class="fc" id="L137">			providers.add(buildContext.register(new FixedMimeTypeProvider(mimetype)));</span>
 		}
-<span class="fc" id="L140">	}</span>
+<span class="fc" id="L139">	}</span>
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

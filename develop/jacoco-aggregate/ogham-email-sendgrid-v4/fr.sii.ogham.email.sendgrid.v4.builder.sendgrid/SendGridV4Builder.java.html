@@ -14,7 +14,8 @@ import fr.sii.ogham.core.builder.MessagingBuilder;
 import fr.sii.ogham.core.builder.configuration.ConfigurationValueBuilder;
 import fr.sii.ogham.core.builder.configuration.ConfigurationValueBuilderHelper;
 import fr.sii.ogham.core.builder.configurer.Configurer;
-import fr.sii.ogham.core.env.PropertyResolver;
+import fr.sii.ogham.core.builder.context.BuildContext;
+import fr.sii.ogham.core.builder.context.DefaultBuildContext;
 import fr.sii.ogham.core.message.content.MayHaveStringContent;
 import fr.sii.ogham.core.message.content.MultiContent;
 import fr.sii.ogham.core.mimetype.MimeTypeProvider;
@@ -96,7 +97,7 @@ import fr.sii.ogham.email.sendgrid.v4.sender.impl.sendgrid.handler.StringContent
  *
  */
 public class SendGridV4Builder extends AbstractSendGridBuilder&lt;SendGridV4Builder, EmailBuilder&gt; {
-<span class="fc" id="L99">	private static final Logger LOG = LoggerFactory.getLogger(SendGridV4Builder.class);</span>
+<span class="fc" id="L100">	private static final Logger LOG = LoggerFactory.getLogger(SendGridV4Builder.class);</span>
 
 	private SendGridClient client;
 	private SendGridInterceptor interceptor;
@@ -109,8 +110,8 @@ public class SendGridV4Builder extends AbstractSendGridBuilder&lt;SendGridV4Buil
 	 * &lt;strong&gt;WARNING: use is only if you know what you are doing !&lt;/strong&gt;
 	 */
 	public SendGridV4Builder() {
-<span class="fc" id="L112">		this(null);</span>
-<span class="fc" id="L113">	}</span>
+<span class="fc" id="L113">		this(null, new DefaultBuildContext());</span>
+<span class="fc" id="L114">	}</span>
 
 	/**
 	 * Constructor that is called when using Ogham builder:
@@ -124,11 +125,13 @@ public class SendGridV4Builder extends AbstractSendGridBuilder&lt;SendGridV4Buil
 	 * 
 	 * @param parent
 	 *            the parent builder instance for fluent chaining
+	 * @param buildContext
+	 *            for registering instances and property evaluation
 	 */
-	public SendGridV4Builder(EmailBuilder parent) {
-<span class="fc" id="L129">		super(SendGridV4Builder.class, parent);</span>
-<span class="fc" id="L130">		unitTestingValueBuilder = new ConfigurationValueBuilderHelper&lt;&gt;(this, Boolean.class);</span>
-<span class="fc" id="L131">	}</span>
+	public SendGridV4Builder(EmailBuilder parent, BuildContext buildContext) {
+<span class="fc" id="L132">		super(SendGridV4Builder.class, parent, buildContext);</span>
+<span class="fc" id="L133">		unitTestingValueBuilder = new ConfigurationValueBuilderHelper&lt;&gt;(this, Boolean.class, buildContext);</span>
+<span class="fc" id="L134">	}</span>
 
 	/**
 	 * @deprecated SendGrid v4 doesn't use username/password anymore. You must
@@ -137,8 +140,8 @@ public class SendGridV4Builder extends AbstractSendGridBuilder&lt;SendGridV4Buil
 	@Deprecated
 	@Override
 	public SendGridV4Builder username(String username) {
-<span class="fc" id="L140">		LOG.warn(&quot;username and password are no more available with SendGrid v4&quot;);</span>
-<span class="fc" id="L141">		return this;</span>
+<span class="fc" id="L143">		LOG.warn(&quot;username and password are no more available with SendGrid v4&quot;);</span>
+<span class="fc" id="L144">		return this;</span>
 	}
 
 	/**
@@ -148,8 +151,8 @@ public class SendGridV4Builder extends AbstractSendGridBuilder&lt;SendGridV4Buil
 	@Deprecated
 	@Override
 	public ConfigurationValueBuilder&lt;SendGridV4Builder, String&gt; username() {
-<span class="fc" id="L151">		LOG.warn(&quot;username and password are no more available with SendGrid v4&quot;);</span>
-<span class="fc" id="L152">		return new ConfigurationValueBuilderHelper&lt;&gt;(this, String.class);</span>
+<span class="fc" id="L154">		LOG.warn(&quot;username and password are no more available with SendGrid v4&quot;);</span>
+<span class="fc" id="L155">		return new ConfigurationValueBuilderHelper&lt;&gt;(this, String.class, buildContext);</span>
 	}
 
 	/**
@@ -159,8 +162,8 @@ public class SendGridV4Builder extends AbstractSendGridBuilder&lt;SendGridV4Buil
 	@Deprecated
 	@Override
 	public SendGridV4Builder password(String password) {
-<span class="fc" id="L162">		LOG.warn(&quot;username and password are no more available with SendGrid v4&quot;);</span>
-<span class="fc" id="L163">		return this;</span>
+<span class="fc" id="L165">		LOG.warn(&quot;username and password are no more available with SendGrid v4&quot;);</span>
+<span class="fc" id="L166">		return this;</span>
 	}
 
 	/**
@@ -170,8 +173,8 @@ public class SendGridV4Builder extends AbstractSendGridBuilder&lt;SendGridV4Buil
 	@Deprecated
 	@Override
 	public ConfigurationValueBuilder&lt;SendGridV4Builder, String&gt; password() {
-<span class="fc" id="L173">		LOG.warn(&quot;username and password are no more available with SendGrid v4&quot;);</span>
-<span class="fc" id="L174">		return new ConfigurationValueBuilderHelper&lt;&gt;(this, String.class);</span>
+<span class="fc" id="L176">		LOG.warn(&quot;username and password are no more available with SendGrid v4&quot;);</span>
+<span class="fc" id="L177">		return new ConfigurationValueBuilderHelper&lt;&gt;(this, String.class, buildContext);</span>
 	}
 
 	/**
@@ -210,8 +213,8 @@ public class SendGridV4Builder extends AbstractSendGridBuilder&lt;SendGridV4Buil
 	 * @return this instance for fluent chaining
 	 */
 	public SendGridV4Builder unitTesting(Boolean unitTesting) {
-<span class="fc" id="L213">		unitTestingValueBuilder.setValue(unitTesting);</span>
-<span class="fc" id="L214">		return this;</span>
+<span class="fc" id="L216">		unitTestingValueBuilder.setValue(unitTesting);</span>
+<span class="fc" id="L217">		return this;</span>
 	}
 
 	/**
@@ -252,7 +255,7 @@ public class SendGridV4Builder extends AbstractSendGridBuilder&lt;SendGridV4Buil
 	 * @return the builder to configure property keys/default value
 	 */
 	public ConfigurationValueBuilder&lt;SendGridV4Builder, Boolean&gt; unitTesting() {
-<span class="fc" id="L255">		return unitTestingValueBuilder;</span>
+<span class="fc" id="L258">		return unitTestingValueBuilder;</span>
 	}
 
 	/**
@@ -274,8 +277,8 @@ public class SendGridV4Builder extends AbstractSendGridBuilder&lt;SendGridV4Buil
 	 * @return this instance for fluent chaining
 	 */
 	public SendGridV4Builder clientHelper(Client clientHelper) {
-<span class="nc" id="L277">		this.clientHelper = clientHelper;</span>
-<span class="nc" id="L278">		return this;</span>
+<span class="nc" id="L280">		this.clientHelper = clientHelper;</span>
+<span class="nc" id="L281">		return this;</span>
 	}
 
 	/**
@@ -289,17 +292,17 @@ public class SendGridV4Builder extends AbstractSendGridBuilder&lt;SendGridV4Buil
 	 * &lt;/pre&gt;
 	 * 
 	 * NOTE: if you provide your custom implementation, any defined properties
-	 * and values using {@link #apiKey(String)}, {@link #username(String)}
-	 * or {@link #password(String)} won't be used at all. You then have to
-	 * handle it by yourself.
+	 * and values using {@link #apiKey(String)}, {@link #username(String)} or
+	 * {@link #password(String)} won't be used at all. You then have to handle
+	 * it by yourself.
 	 * 
 	 * @param client
 	 *            the custom client used to call SendGrid HTTP API
 	 * @return this instance for fluent chaining
 	 */
 	public SendGridV4Builder client(SendGridClient client) {
-<span class="fc" id="L301">		this.client = client;</span>
-<span class="fc" id="L302">		return this;</span>
+<span class="fc" id="L304">		this.client = client;</span>
+<span class="fc" id="L305">		return this;</span>
 	}
 
 	/**
@@ -314,8 +317,8 @@ public class SendGridV4Builder extends AbstractSendGridBuilder&lt;SendGridV4Buil
 	 * &lt;/pre&gt;
 	 * 
 	 * NOTE: if you provide your custom implementation, any defined properties
-	 * and values using {@link #unitTesting(Boolean)} won't be used at all. You then have to
-	 * handle it by yourself.
+	 * and values using {@link #unitTesting(Boolean)} won't be used at all. You
+	 * then have to handle it by yourself.
 	 * 
 	 * @param httpClient
 	 *            the custom implementation of {@link HttpClient} used to call
@@ -326,7 +329,7 @@ public class SendGridV4Builder extends AbstractSendGridBuilder&lt;SendGridV4Buil
 	@SuppressWarnings(&quot;squid:S1185&quot;)
 	@Override
 	public SendGridV4Builder httpClient(CloseableHttpClient httpClient) {
-<span class="nc" id="L329">		return super.httpClient(httpClient);</span>
+<span class="nc" id="L332">		return super.httpClient(httpClient);</span>
 	}
 
 	/**
@@ -348,94 +351,93 @@ public class SendGridV4Builder extends AbstractSendGridBuilder&lt;SendGridV4Buil
 	 * @return this instance for fluent chaining
 	 */
 	public SendGridV4Builder intercept(SendGridInterceptor interceptor) {
-<span class="nc" id="L351">		this.interceptor = interceptor;</span>
-<span class="nc" id="L352">		return this;</span>
+<span class="nc" id="L354">		this.interceptor = interceptor;</span>
+<span class="nc" id="L355">		return this;</span>
 	}
 
 	@Override
 	public SendGridV4Sender build() {
-<span class="fc" id="L357">		PropertyResolver propertyResolver = environmentBuilder.build();</span>
-<span class="fc" id="L358">		String apiKey = apiKeyValueBuilder.getValue(propertyResolver);</span>
-<span class="fc" id="L359">		boolean test = unitTestingValueBuilder.getValue(propertyResolver, false);</span>
-<span class="fc" id="L360">		URL url = urlValueBuilder.getValue(propertyResolver);</span>
-<span class="fc" id="L361">		SendGridClient builtClient = buildClient(apiKey, buildClientHelper(clientHelper, httpClient, test, url), url);</span>
-<span class="fc bfc" id="L362" title="All 2 branches covered.">		if (builtClient == null) {</span>
-<span class="fc" id="L363">			return null;</span>
+<span class="fc" id="L360">		String apiKey = apiKeyValueBuilder.getValue();</span>
+<span class="fc" id="L361">		boolean test = unitTestingValueBuilder.getValue(false);</span>
+<span class="fc" id="L362">		URL url = urlValueBuilder.getValue();</span>
+<span class="fc" id="L363">		SendGridClient builtClient = buildClient(apiKey, buildClientHelper(clientHelper, httpClient, test, url), url);</span>
+<span class="fc bfc" id="L364" title="All 2 branches covered.">		if (builtClient == null) {</span>
+<span class="fc" id="L365">			return null;</span>
 		}
-<span class="fc" id="L365">		LOG.info(&quot;Sending email using SendGrid API is registered&quot;);</span>
-<span class="fc bfc" id="L366" title="All 2 branches covered.">		if (client == null) {</span>
-<span class="fc" id="L367">			LOG.debug(&quot;SendGrid account: apiKey={}, test={}&quot;, apiKey, test);</span>
+<span class="fc" id="L367">		LOG.info(&quot;Sending email using SendGrid API is registered&quot;);</span>
+<span class="fc bfc" id="L368" title="All 2 branches covered.">		if (client == null) {</span>
+<span class="fc" id="L369">			LOG.debug(&quot;SendGrid account: apiKey={}, test={}&quot;, apiKey, test);</span>
 		} else {
-<span class="fc" id="L369">			LOG.debug(&quot;SendGrid instance provided so apiKey and unitTesting properties are not used&quot;);</span>
+<span class="fc" id="L371">			LOG.debug(&quot;SendGrid instance provided so apiKey and unitTesting properties are not used&quot;);</span>
 		}
-<span class="fc" id="L371">		return new SendGridV4Sender(builtClient, buildContentHandler(), buildMimetypeProvider(), interceptor);</span>
+<span class="fc" id="L373">		return buildContext.register(new SendGridV4Sender(builtClient, buildContentHandler(), buildMimetypeProvider(), interceptor));</span>
 	}
 
-	private static Client buildClientHelper(Client clientHelper, CloseableHttpClient httpClient, boolean test, URL url) {
+	private Client buildClientHelper(Client clientHelper, CloseableHttpClient httpClient, boolean test, URL url) {
 		// custom implementation
-<span class="pc bpc" id="L376" title="1 of 2 branches missed.">		if (clientHelper != null) {</span>
-<span class="nc" id="L377">			return clientHelper;</span>
+<span class="pc bpc" id="L378" title="1 of 2 branches missed.">		if (clientHelper != null) {</span>
+<span class="nc" id="L379">			return clientHelper;</span>
 		}
 		// case where custom URL is set.
 		// SendGrid Client doesn't support neither custom port nor custom
 		// protocol
-<span class="pc bpc" id="L382" title="1 of 4 branches missed.">		if (url != null &amp;&amp; httpClient != null) {</span>
-<span class="nc" id="L383">			return new CustomizableUrlClient(httpClient, url.getProtocol(), url.getPort());</span>
+<span class="pc bpc" id="L384" title="1 of 4 branches missed.">		if (url != null &amp;&amp; httpClient != null) {</span>
+<span class="nc" id="L385">			return buildContext.register(new CustomizableUrlClient(httpClient, url.getProtocol(), url.getPort()));</span>
 		}
-<span class="fc bfc" id="L385" title="All 2 branches covered.">		if (url != null) {</span>
-<span class="fc" id="L386">			return new CustomizableUrlClient(test, url.getProtocol(), url.getPort());</span>
+<span class="fc bfc" id="L387" title="All 2 branches covered.">		if (url != null) {</span>
+<span class="fc" id="L388">			return buildContext.register(new CustomizableUrlClient(test, url.getProtocol(), url.getPort()));</span>
 		}
 		// custom http client
-<span class="pc bpc" id="L389" title="1 of 2 branches missed.">		if (httpClient != null) {</span>
-<span class="nc" id="L390">			return new Client(httpClient);</span>
+<span class="pc bpc" id="L391" title="1 of 2 branches missed.">		if (httpClient != null) {</span>
+<span class="nc" id="L392">			return buildContext.register(new Client(httpClient));</span>
 		}
 		// test client (just to allow http instead of https)
-<span class="pc bpc" id="L393" title="1 of 2 branches missed.">		if (test) {</span>
-<span class="nc" id="L394">			return new Client(true);</span>
+<span class="pc bpc" id="L395" title="1 of 2 branches missed.">		if (test) {</span>
+<span class="nc" id="L396">			return buildContext.register(new Client(true));</span>
 		}
 		// use default Client implementation created directly by SendGrid
-<span class="fc" id="L397">		return null;</span>
+<span class="fc" id="L399">		return null;</span>
 	}
 
 	private SendGridClient buildClient(String apiKey, Client client, URL url) {
-<span class="fc bfc" id="L401" title="All 2 branches covered.">		if (this.client != null) {</span>
-<span class="fc" id="L402">			return this.client;</span>
+<span class="fc bfc" id="L403" title="All 2 branches covered.">		if (this.client != null) {</span>
+<span class="fc" id="L404">			return this.client;</span>
 		}
-<span class="fc bfc" id="L404" title="All 2 branches covered.">		if (apiKey != null) {</span>
-<span class="fc" id="L405">			return new DelegateSendGridClient(buildSendGrid(apiKey, client, url));</span>
+<span class="fc bfc" id="L406" title="All 2 branches covered.">		if (apiKey != null) {</span>
+<span class="fc" id="L407">			return buildContext.register(new DelegateSendGridClient(buildSendGrid(apiKey, client, url)));</span>
 		}
-<span class="fc" id="L407">		return null;</span>
+<span class="fc" id="L409">		return null;</span>
 	}
 
 	private SendGrid buildSendGrid(String apiKey, Client client, URL url) {
-<span class="fc" id="L411">		SendGrid sendGrid = newSendGrid(apiKey, client);</span>
-<span class="fc bfc" id="L412" title="All 2 branches covered.">		if (url != null) {</span>
-<span class="fc" id="L413">			sendGrid.setHost(url.getHost());</span>
+<span class="fc" id="L413">		SendGrid sendGrid = newSendGrid(apiKey, client);</span>
+<span class="fc bfc" id="L414" title="All 2 branches covered.">		if (url != null) {</span>
+<span class="fc" id="L415">			sendGrid.setHost(url.getHost());</span>
 		}
-<span class="fc" id="L415">		return sendGrid;</span>
+<span class="fc" id="L417">		return sendGrid;</span>
 	}
 
 	private static SendGrid newSendGrid(String apiKey, Client client) {
-<span class="fc bfc" id="L419" title="All 2 branches covered.">		if (client != null) {</span>
-<span class="fc" id="L420">			return new SendGrid(apiKey, client);</span>
+<span class="fc bfc" id="L421" title="All 2 branches covered.">		if (client != null) {</span>
+<span class="fc" id="L422">			return new SendGrid(apiKey, client);</span>
 		}
-<span class="fc" id="L422">		return new SendGrid(apiKey);</span>
+<span class="fc" id="L424">		return new SendGrid(apiKey);</span>
 	}
 
 	private PriorizedContentHandler buildContentHandler() {
-<span class="fc" id="L426">		MimeTypeProvider mimetypeProvider = buildMimetypeProvider();</span>
-<span class="fc" id="L427">		PriorizedContentHandler contentHandler = new PriorizedContentHandler();</span>
-<span class="fc" id="L428">		contentHandler.register(MultiContent.class, new MultiContentHandler(contentHandler));</span>
-<span class="fc" id="L429">		contentHandler.register(ContentWithAttachments.class, new ContentWithAttachmentsHandler(contentHandler));</span>
-<span class="fc" id="L430">		contentHandler.register(MayHaveStringContent.class, new StringContentHandler(mimetypeProvider));</span>
-<span class="fc" id="L431">		return contentHandler;</span>
+<span class="fc" id="L428">		MimeTypeProvider mimetypeProvider = buildMimetypeProvider();</span>
+<span class="fc" id="L429">		PriorizedContentHandler contentHandler = buildContext.register(new PriorizedContentHandler());</span>
+<span class="fc" id="L430">		contentHandler.register(MultiContent.class, buildContext.register(new MultiContentHandler(contentHandler)));</span>
+<span class="fc" id="L431">		contentHandler.register(ContentWithAttachments.class, buildContext.register(new ContentWithAttachmentsHandler(contentHandler)));</span>
+<span class="fc" id="L432">		contentHandler.register(MayHaveStringContent.class, buildContext.register(new StringContentHandler(mimetypeProvider)));</span>
+<span class="fc" id="L433">		return contentHandler;</span>
 	}
 
 	private MimeTypeProvider buildMimetypeProvider() {
-<span class="pc bpc" id="L435" title="1 of 2 branches missed.">		if (mimetypeBuilder == null) {</span>
-<span class="nc" id="L436">			return null;</span>
+<span class="pc bpc" id="L437" title="1 of 2 branches missed.">		if (mimetypeBuilder == null) {</span>
+<span class="nc" id="L438">			return null;</span>
 		}
-<span class="fc" id="L438">		return mimetypeBuilder.build();</span>
+<span class="fc" id="L440">		return mimetypeBuilder.build();</span>
 	}
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

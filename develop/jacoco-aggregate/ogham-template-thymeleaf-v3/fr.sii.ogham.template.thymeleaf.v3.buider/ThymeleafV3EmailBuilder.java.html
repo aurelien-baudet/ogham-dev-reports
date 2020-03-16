@@ -3,6 +3,8 @@
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.templateresolver.ITemplateResolver;
 
+import fr.sii.ogham.core.builder.context.BuildContext;
+import fr.sii.ogham.core.builder.context.DefaultBuildContext;
 import fr.sii.ogham.core.builder.env.EnvironmentBuilder;
 import fr.sii.ogham.core.template.detector.TemplateEngineDetector;
 import fr.sii.ogham.email.builder.EmailBuilder;
@@ -100,8 +102,8 @@ public class ThymeleafV3EmailBuilder extends AbstractThymeleafMultiContentBuilde
 	 * &lt;strong&gt;WARNING: use is only if you know what you are doing !&lt;/strong&gt;
 	 */
 	public ThymeleafV3EmailBuilder() {
-<span class="fc" id="L103">		super(ThymeleafV3EmailBuilder.class, null, null);</span>
-<span class="fc" id="L104">	}</span>
+<span class="fc" id="L105">		super(ThymeleafV3EmailBuilder.class, null, new DefaultBuildContext());</span>
+<span class="fc" id="L106">	}</span>
 
 	/**
 	 * Initializes the builder with a parent builder. The parent builder is used
@@ -110,40 +112,40 @@ public class ThymeleafV3EmailBuilder extends AbstractThymeleafMultiContentBuilde
 	 * 
 	 * @param parent
 	 *            the parent builder
-	 * @param environmentBuilder
-	 *            the configuration for property resolution and evaluation
+	 * @param buildContext
+	 *            for registering instances and property evaluation
 	 */
-	public ThymeleafV3EmailBuilder(EmailBuilder parent, EnvironmentBuilder&lt;?&gt; environmentBuilder) {
-<span class="fc" id="L117">		super(ThymeleafV3EmailBuilder.class, parent, environmentBuilder);</span>
-<span class="fc" id="L118">	}</span>
+	public ThymeleafV3EmailBuilder(EmailBuilder parent, BuildContext buildContext) {
+<span class="fc" id="L119">		super(ThymeleafV3EmailBuilder.class, parent, buildContext);</span>
+<span class="fc" id="L120">	}</span>
 
 	@Override
 	protected TemplateEngineDetector createTemplateDetector() {
-<span class="fc" id="L122">		return new ThymeleafV3TemplateDetector(buildResolver());</span>
+<span class="fc" id="L124">		return buildContext.register(new ThymeleafV3TemplateDetector(buildResolver()));</span>
 	}
 
 	@Override
 	protected ITemplateResolver buildTemplateResolver(TemplateEngine builtEngine) {
-<span class="fc" id="L127">		return new ThymeLeafV3FirstSupportingTemplateResolver(buildResolver(), buildAdapters());</span>
+<span class="fc" id="L129">		return buildContext.register(new ThymeLeafV3FirstSupportingTemplateResolver(buildResolver(), buildAdapters()));</span>
 	}
 
 	@Override
 	protected ThymeleafV3EngineConfigBuilder&lt;ThymeleafV3EmailBuilder&gt; getThymeleafEngineConfigBuilder() {
-<span class="nc" id="L132">		return new ThymeleafV3EngineConfigBuilder&lt;&gt;(myself);</span>
+<span class="nc" id="L134">		return buildContext.register(new ThymeleafV3EngineConfigBuilder&lt;&gt;(myself, buildContext));</span>
 	}
-	
+
 	@Override
 	protected FirstSupportingResolverAdapter buildAdapters() {
-<span class="fc" id="L137">		FirstSupportingResolverAdapter adapter = new FirstSupportingResolverAdapter();</span>
-<span class="pc bpc" id="L138" title="1 of 2 branches missed.">		for (TemplateResolverAdapter custom : customAdapters) {</span>
-<span class="nc" id="L139">			adapter.addAdapter(custom);</span>
-<span class="nc" id="L140">		}</span>
-<span class="fc" id="L141">		ThymeleafV3TemplateOptionsApplier applier = new ThymeleafV3TemplateOptionsApplier();</span>
-<span class="fc" id="L142">		adapter.addAdapter(new ClassPathResolverAdapter(applier));</span>
-<span class="fc" id="L143">		adapter.addAdapter(new FileResolverAdapter(applier));</span>
-<span class="fc" id="L144">		adapter.addAdapter(new StringResolverAdapter(applier));</span>
-<span class="fc" id="L145">		adapter.setOptions(buildTemplateResolverOptions());</span>
-<span class="fc" id="L146">		return adapter;</span>
+<span class="fc" id="L139">		FirstSupportingResolverAdapter adapter = buildContext.register(new FirstSupportingResolverAdapter());</span>
+<span class="pc bpc" id="L140" title="1 of 2 branches missed.">		for (TemplateResolverAdapter custom : customAdapters) {</span>
+<span class="nc" id="L141">			adapter.addAdapter(custom);</span>
+<span class="nc" id="L142">		}</span>
+<span class="fc" id="L143">		ThymeleafV3TemplateOptionsApplier applier = buildContext.register(new ThymeleafV3TemplateOptionsApplier());</span>
+<span class="fc" id="L144">		adapter.addAdapter(buildContext.register(new ClassPathResolverAdapter(applier)));</span>
+<span class="fc" id="L145">		adapter.addAdapter(buildContext.register(new FileResolverAdapter(applier)));</span>
+<span class="fc" id="L146">		adapter.addAdapter(buildContext.register(new StringResolverAdapter(applier)));</span>
+<span class="fc" id="L147">		adapter.setOptions(buildTemplateResolverOptions());</span>
+<span class="fc" id="L148">		return adapter;</span>
 	}
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

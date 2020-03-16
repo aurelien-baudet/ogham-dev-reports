@@ -3,6 +3,7 @@
 import java.util.Random;
 
 import fr.sii.ogham.core.builder.Builder;
+import fr.sii.ogham.core.builder.context.BuildContext;
 import fr.sii.ogham.core.fluent.AbstractParent;
 import fr.sii.ogham.sms.splitter.RandomReferenceNumberGenerator;
 import fr.sii.ogham.sms.splitter.ReferenceNumberGenerator;
@@ -76,6 +77,7 @@ import fr.sii.ogham.sms.splitter.ReferenceNumberGenerator;
  *
  */
 public class ReferenceNumberGeneratorBuilder extends AbstractParent&lt;MessageSplitterBuilder&gt; implements Builder&lt;ReferenceNumberGenerator&gt; {
+	private final BuildContext buildContext;
 	private Random random;
 	private ReferenceNumberGenerator custom;
 
@@ -85,10 +87,13 @@ public class ReferenceNumberGeneratorBuilder extends AbstractParent&lt;MessageSp
 	 * 
 	 * @param parent
 	 *            the parent builder
+	 * @param buildContext
+	 *            for registering instances and property evaluation
 	 */
-	public ReferenceNumberGeneratorBuilder(MessageSplitterBuilder parent) {
-<span class="fc" id="L90">		super(parent);</span>
-<span class="fc" id="L91">	}</span>
+	public ReferenceNumberGeneratorBuilder(MessageSplitterBuilder parent, BuildContext buildContext) {
+<span class="fc" id="L94">		super(parent);</span>
+<span class="fc" id="L95">		this.buildContext = buildContext;</span>
+<span class="fc" id="L96">	}</span>
 
 	/**
 	 * Uses a random number for reference number.
@@ -99,7 +104,7 @@ public class ReferenceNumberGeneratorBuilder extends AbstractParent&lt;MessageSp
 	 */
 	@SuppressWarnings(&quot;squid:S2245&quot;)
 	public ReferenceNumberGeneratorBuilder random() {
-<span class="fc" id="L102">		return random(new Random());</span>
+<span class="fc" id="L107">		return random(new Random());</span>
 	}
 
 	/**
@@ -119,8 +124,8 @@ public class ReferenceNumberGeneratorBuilder extends AbstractParent&lt;MessageSp
 	 * @return this instance for fluent chaining
 	 */
 	public ReferenceNumberGeneratorBuilder random(Random random) {
-<span class="fc" id="L122">		this.random = random;</span>
-<span class="fc" id="L123">		return this;</span>
+<span class="fc" id="L127">		this.random = random;</span>
+<span class="fc" id="L128">		return this;</span>
 	}
 
 	/**
@@ -141,19 +146,19 @@ public class ReferenceNumberGeneratorBuilder extends AbstractParent&lt;MessageSp
 	 * @return this instance for fluent chaining
 	 */
 	public ReferenceNumberGeneratorBuilder generator(ReferenceNumberGenerator custom) {
-<span class="nc" id="L144">		this.custom = custom;</span>
-<span class="nc" id="L145">		return this;</span>
+<span class="nc" id="L149">		this.custom = custom;</span>
+<span class="nc" id="L150">		return this;</span>
 	}
 
 	@Override
 	public ReferenceNumberGenerator build() {
-<span class="pc bpc" id="L150" title="1 of 2 branches missed.">		if (custom != null) {</span>
-<span class="nc" id="L151">			return custom;</span>
+<span class="pc bpc" id="L155" title="1 of 2 branches missed.">		if (custom != null) {</span>
+<span class="nc" id="L156">			return custom;</span>
 		}
-<span class="pc bpc" id="L153" title="1 of 2 branches missed.">		if (random != null) {</span>
-<span class="fc" id="L154">			return new RandomReferenceNumberGenerator(random);</span>
+<span class="pc bpc" id="L158" title="1 of 2 branches missed.">		if (random != null) {</span>
+<span class="fc" id="L159">			return buildContext.register(new RandomReferenceNumberGenerator(random));</span>
 		}
-<span class="nc" id="L156">		return new RandomReferenceNumberGenerator();</span>
+<span class="nc" id="L161">		return buildContext.register(new RandomReferenceNumberGenerator());</span>
 	}
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

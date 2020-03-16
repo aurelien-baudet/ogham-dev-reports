@@ -10,7 +10,8 @@ import com.sendgrid.SendGrid;
 import fr.sii.ogham.core.builder.MessagingBuilder;
 import fr.sii.ogham.core.builder.configuration.ConfigurationValueBuilder;
 import fr.sii.ogham.core.builder.configuration.ConfigurationValueBuilderHelper;
-import fr.sii.ogham.core.env.PropertyResolver;
+import fr.sii.ogham.core.builder.context.BuildContext;
+import fr.sii.ogham.core.builder.context.DefaultBuildContext;
 import fr.sii.ogham.core.message.content.MayHaveStringContent;
 import fr.sii.ogham.core.message.content.MultiContent;
 import fr.sii.ogham.core.mimetype.MimeTypeProvider;
@@ -91,7 +92,7 @@ import fr.sii.ogham.email.sendgrid.v2.sender.impl.sendgrid.handler.StringContent
  *
  */
 public class SendGridV2Builder extends AbstractSendGridBuilder&lt;SendGridV2Builder, EmailBuilder&gt; {
-<span class="fc" id="L94">	private static final Logger LOG = LoggerFactory.getLogger(SendGridV2Builder.class);</span>
+<span class="fc" id="L95">	private static final Logger LOG = LoggerFactory.getLogger(SendGridV2Builder.class);</span>
 
 	private final ConfigurationValueBuilderHelper&lt;SendGridV2Builder, String&gt; usernameValueBuilder;
 	private final ConfigurationValueBuilderHelper&lt;SendGridV2Builder, String&gt; passwordValueBuilder;
@@ -104,8 +105,8 @@ public class SendGridV2Builder extends AbstractSendGridBuilder&lt;SendGridV2Buil
 	 * &lt;strong&gt;WARNING: use is only if you know what you are doing !&lt;/strong&gt;
 	 */
 	public SendGridV2Builder() {
-<span class="fc" id="L107">		this(null);</span>
-<span class="fc" id="L108">	}</span>
+<span class="fc" id="L108">		this(null, new DefaultBuildContext());</span>
+<span class="fc" id="L109">	}</span>
 
 	/**
 	 * Constructor that is called when using Ogham builder:
@@ -115,40 +116,41 @@ public class SendGridV2Builder extends AbstractSendGridBuilder&lt;SendGridV2Buil
 	 * msgBuilder
 	 * .email()
 	 *    .sender(SendGridV2Builder.class)
-	 *ConfigurationValueRegistry&lt;/pre&gt;
+	 * &lt;/pre&gt;
 	 * 
 	 * @param parent
 	 *            the parent builder instance for fluent chaining
+	 * @param buildContext
+	 *            for registering instances and property evaluation
 	 */
-	public SendGridV2Builder(EmailBuilder parent) {
-<span class="fc" id="L124">		super(SendGridV2Builder.class, parent);</span>
-<span class="fc" id="L125">		usernameValueBuilder = new ConfigurationValueBuilderHelper&lt;&gt;(this, String.class);</span>
-<span class="fc" id="L126">		passwordValueBuilder = new ConfigurationValueBuilderHelper&lt;&gt;(this, String.class);</span>
-<span class="fc" id="L127">	}</span>
-
+	public SendGridV2Builder(EmailBuilder parent, BuildContext buildContext) {
+<span class="fc" id="L127">		super(SendGridV2Builder.class, parent, buildContext);</span>
+<span class="fc" id="L128">		usernameValueBuilder = new ConfigurationValueBuilderHelper&lt;&gt;(this, String.class, buildContext);</span>
+<span class="fc" id="L129">		passwordValueBuilder = new ConfigurationValueBuilderHelper&lt;&gt;(this, String.class, buildContext);</span>
+<span class="fc" id="L130">	}</span>
 
 	@Override
 	public SendGridV2Builder username(String username) {
-<span class="fc" id="L132">		usernameValueBuilder.setValue(username);</span>
-<span class="fc" id="L133">		return this;</span>
+<span class="fc" id="L134">		usernameValueBuilder.setValue(username);</span>
+<span class="fc" id="L135">		return this;</span>
 	}
 
 	@Override
 	public ConfigurationValueBuilder&lt;SendGridV2Builder, String&gt; username() {
-<span class="fc" id="L138">		return usernameValueBuilder;</span>
+<span class="fc" id="L140">		return usernameValueBuilder;</span>
 	}
 
 	@Override
 	public SendGridV2Builder password(String password) {
-<span class="fc" id="L143">		passwordValueBuilder.setValue(password);</span>
-<span class="fc" id="L144">		return this;</span>
+<span class="fc" id="L145">		passwordValueBuilder.setValue(password);</span>
+<span class="fc" id="L146">		return this;</span>
 	}
 
 	@Override
 	public ConfigurationValueBuilder&lt;SendGridV2Builder, String&gt; password() {
-<span class="fc" id="L149">		return passwordValueBuilder;</span>
+<span class="fc" id="L151">		return passwordValueBuilder;</span>
 	}
-	
+
 	/**
 	 * By default, calling SendGrid HTTP API is done through the default
 	 * {@link SendGrid} implementation. If you want to use another client
@@ -160,19 +162,18 @@ public class SendGridV2Builder extends AbstractSendGridBuilder&lt;SendGridV2Buil
 	 * &lt;/pre&gt;
 	 * 
 	 * NOTE: if you provide your custom implementation, any defined properties
-	 * and values using {@link #apiKey(String)}, {@link #username(String)}
-	 * or {@link #password(String)} won't be used at all. You then have to
-	 * handle it by yourself.
+	 * and values using {@link #apiKey(String)}, {@link #username(String)} or
+	 * {@link #password(String)} won't be used at all. You then have to handle
+	 * it by yourself.
 	 * 
 	 * @param client
 	 *            the custom client used to call SendGrid HTTP API
 	 * @return this instance for fluent chaining
 	 */
 	public SendGridV2Builder client(SendGridClient client) {
-<span class="fc" id="L172">		this.client = client;</span>
-<span class="fc" id="L173">		return this;</span>
+<span class="fc" id="L174">		this.client = client;</span>
+<span class="fc" id="L175">		return this;</span>
 	}
-
 
 	/**
 	 * Ogham will transform general {@link Email} object into
@@ -193,24 +194,23 @@ public class SendGridV2Builder extends AbstractSendGridBuilder&lt;SendGridV2Buil
 	 * @return this instance for fluent chaining
 	 */
 	public SendGridV2Builder intercept(SendGridInterceptor interceptor) {
-<span class="nc" id="L196">		this.interceptor = interceptor;</span>
-<span class="nc" id="L197">		return this;</span>
+<span class="nc" id="L197">		this.interceptor = interceptor;</span>
+<span class="nc" id="L198">		return this;</span>
 	}
 
 	@Override
 	public SendGridV2Sender build() {
-<span class="fc" id="L202">		PropertyResolver propertyResolver = environmentBuilder.build();</span>
-<span class="fc" id="L203">		String apiKey = apiKeyValueBuilder.getValue(propertyResolver);</span>
-<span class="fc" id="L204">		String username = usernameValueBuilder.getValue(propertyResolver);</span>
-<span class="fc" id="L205">		String password = passwordValueBuilder.getValue(propertyResolver);</span>
-<span class="fc" id="L206">		URL url = urlValueBuilder.getValue(propertyResolver);</span>
+<span class="fc" id="L203">		String apiKey = apiKeyValueBuilder.getValue();</span>
+<span class="fc" id="L204">		String username = usernameValueBuilder.getValue();</span>
+<span class="fc" id="L205">		String password = passwordValueBuilder.getValue();</span>
+<span class="fc" id="L206">		URL url = urlValueBuilder.getValue();</span>
 <span class="fc" id="L207">		SendGridClient builtClient = buildClient(apiKey, username, password, url);</span>
 <span class="fc bfc" id="L208" title="All 2 branches covered.">		if (builtClient == null) {</span>
 <span class="fc" id="L209">			return null;</span>
 		}
 <span class="fc" id="L211">		LOG.info(&quot;Sending email using SendGrid API is registered&quot;);</span>
 <span class="fc" id="L212">		LOG.debug(&quot;SendGrid account: apiKey={}, username={}&quot;, apiKey, username);</span>
-<span class="fc" id="L213">		return new SendGridV2Sender(builtClient, buildContentHandler(), interceptor);</span>
+<span class="fc" id="L213">		return buildContext.register(new SendGridV2Sender(builtClient, buildContentHandler(), interceptor));</span>
 	}
 
 	private SendGridClient buildClient(String apiKey, String username, String password, URL url) {
@@ -218,7 +218,7 @@ public class SendGridV2Builder extends AbstractSendGridBuilder&lt;SendGridV2Buil
 <span class="fc" id="L218">			return client;</span>
 		}
 <span class="pc bpc" id="L220" title="1 of 6 branches missed.">		if (apiKey != null || (username != null &amp;&amp; password != null)) {</span>
-<span class="fc" id="L221">			return new DelegateSendGridClient(buildSendGrid(apiKey, username, password, url));</span>
+<span class="fc" id="L221">			return buildContext.register(new DelegateSendGridClient(buildSendGrid(apiKey, username, password, url)));</span>
 		}
 <span class="fc" id="L223">		return null;</span>
 	}
@@ -228,25 +228,25 @@ public class SendGridV2Builder extends AbstractSendGridBuilder&lt;SendGridV2Buil
 <span class="fc bfc" id="L228" title="All 2 branches covered.">		if (url != null) {</span>
 <span class="fc" id="L229">			sendGrid.setUrl(url.toString());</span>
 		}
-<span class="pc bpc" id="L231" title="1 of 2 branches missed.">		if(httpClient != null) {</span>
+<span class="pc bpc" id="L231" title="1 of 2 branches missed.">		if (httpClient != null) {</span>
 <span class="nc" id="L232">			sendGrid.setClient(httpClient);</span>
 		}
 <span class="fc" id="L234">		return sendGrid;</span>
 	}
 
-	private static SendGrid newSendGrid(String apiKey, String username, String password) {
+	private SendGrid newSendGrid(String apiKey, String username, String password) {
 <span class="fc bfc" id="L238" title="All 2 branches covered.">		if (apiKey != null) {</span>
-<span class="fc" id="L239">			return new SendGrid(apiKey);</span>
+<span class="fc" id="L239">			return buildContext.register(new SendGrid(apiKey));</span>
 		}
-<span class="fc" id="L241">		return new SendGrid(username, password);</span>
+<span class="fc" id="L241">		return buildContext.register(new SendGrid(username, password));</span>
 	}
 
 	private PriorizedContentHandler buildContentHandler() {
 <span class="fc" id="L245">		MimeTypeProvider mimetypeProvider = mimetypeBuilder.build();</span>
-<span class="fc" id="L246">		PriorizedContentHandler contentHandler = new PriorizedContentHandler();</span>
-<span class="fc" id="L247">		contentHandler.register(MultiContent.class, new MultiContentHandler(contentHandler));</span>
-<span class="fc" id="L248">		contentHandler.register(ContentWithAttachments.class, new ContentWithAttachmentsHandler(contentHandler));</span>
-<span class="fc" id="L249">		contentHandler.register(MayHaveStringContent.class, new StringContentHandler(mimetypeProvider));</span>
+<span class="fc" id="L246">		PriorizedContentHandler contentHandler = buildContext.register(new PriorizedContentHandler());</span>
+<span class="fc" id="L247">		contentHandler.register(MultiContent.class, buildContext.register(new MultiContentHandler(contentHandler)));</span>
+<span class="fc" id="L248">		contentHandler.register(ContentWithAttachments.class, buildContext.register(new ContentWithAttachmentsHandler(contentHandler)));</span>
+<span class="fc" id="L249">		contentHandler.register(MayHaveStringContent.class, buildContext.register(new StringContentHandler(mimetypeProvider)));</span>
 <span class="fc" id="L250">		return contentHandler;</span>
 	}
 }

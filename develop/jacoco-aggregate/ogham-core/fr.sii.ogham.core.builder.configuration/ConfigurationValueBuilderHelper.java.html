@@ -8,9 +8,8 @@ import java.util.List;
 import java.util.Optional;
 
 import fr.sii.ogham.core.builder.configurer.Configurer;
-import fr.sii.ogham.core.env.PropertyResolver;
+import fr.sii.ogham.core.builder.context.BuildContext;
 import fr.sii.ogham.core.fluent.AbstractParent;
-import fr.sii.ogham.core.util.BuilderUtils;
 
 /**
  * Helper that allow registration of properties and default value but also
@@ -56,7 +55,7 @@ import fr.sii.ogham.core.util.BuilderUtils;
  * &lt;p&gt;
  * &lt;strong&gt;NOTE:&lt;/strong&gt; This class is for internal use (or extensions for
  * Ogham). The developer that uses Ogham should not see
- * {@link #setValue(Object)} and {@link #getValue(PropertyResolver)} methods.
+ * {@link #setValue(Object)} and {@link #getValue()} methods.
  * 
  * 
  * @author Aurélien Baudet
@@ -68,6 +67,7 @@ import fr.sii.ogham.core.util.BuilderUtils;
  */
 public class ConfigurationValueBuilderHelper&lt;P, V&gt; extends AbstractParent&lt;P&gt; implements ConfigurationValueBuilder&lt;P, V&gt; {
 	private final Class&lt;V&gt; valueClass;
+	private final BuildContext buildContext;
 	private final List&lt;String&gt; properties;
 	private V defaultValue;
 	private V value;
@@ -81,44 +81,47 @@ public class ConfigurationValueBuilderHelper&lt;P, V&gt; extends AbstractParent&
 	 *            the parent builder
 	 * @param valueClass
 	 *            the type of the value
+	 * @param buildContext
+	 *            for registering instances and property evaluation
 	 */
-	public ConfigurationValueBuilderHelper(P parent, Class&lt;V&gt; valueClass) {
-<span class="fc" id="L86">		super(parent);</span>
-<span class="fc" id="L87">		this.valueClass = valueClass;</span>
-<span class="fc" id="L88">		properties = new ArrayList&lt;&gt;();</span>
-<span class="fc" id="L89">		optionalValue = empty();</span>
-<span class="fc" id="L90">	}</span>
+	public ConfigurationValueBuilderHelper(P parent, Class&lt;V&gt; valueClass, BuildContext buildContext) {
+<span class="fc" id="L88">		super(parent);</span>
+<span class="fc" id="L89">		this.valueClass = valueClass;</span>
+<span class="fc" id="L90">		this.buildContext = buildContext;</span>
+<span class="fc" id="L91">		properties = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L92">		optionalValue = empty();</span>
+<span class="fc" id="L93">	}</span>
 
 	@Override
 	public ConfigurationValueBuilderHelper&lt;P, V&gt; properties(String... properties) {
-<span class="fc bfc" id="L94" title="All 2 branches covered.">		for (String property : properties) {</span>
-<span class="pc bpc" id="L95" title="1 of 2 branches missed.">			if (!isExpression(property)) {</span>
-<span class="nc" id="L96">				property = &quot;${&quot; + property + &quot;}&quot;;</span>
+<span class="fc bfc" id="L97" title="All 2 branches covered.">		for (String property : properties) {</span>
+<span class="pc bpc" id="L98" title="1 of 2 branches missed.">			if (!isExpression(property)) {</span>
+<span class="nc" id="L99">				property = &quot;${&quot; + property + &quot;}&quot;;</span>
 			}
-<span class="fc" id="L98">			this.properties.add(property);</span>
+<span class="fc" id="L101">			this.properties.add(property);</span>
 		}
-<span class="fc" id="L100">		return this;</span>
+<span class="fc" id="L103">		return this;</span>
 	}
 
 	@Override
 	public ConfigurationValueBuilderHelper&lt;P, V&gt; defaultValue(V value) {
-<span class="fc" id="L105">		defaultValue = value;</span>
-<span class="fc" id="L106">		return this;</span>
+<span class="fc" id="L108">		defaultValue = value;</span>
+<span class="fc" id="L109">		return this;</span>
 	}
-	
+
 	@Override
 	public ConfigurationValueBuilderHelper&lt;P, V&gt; defaultValue(MayOverride&lt;V&gt; possibleNewValue) {
-<span class="fc" id="L111">		defaultValue = possibleNewValue.override(defaultValue);</span>
-<span class="fc" id="L112">		return this;</span>
+<span class="fc" id="L114">		defaultValue = possibleNewValue.override(defaultValue);</span>
+<span class="fc" id="L115">		return this;</span>
 	}
 
 	@Override
 	@SuppressWarnings(&quot;squid:S3553&quot;)
 	public ConfigurationValueBuilderHelper&lt;P, V&gt; value(Optional&lt;V&gt; optionalValue) {
-<span class="fc bfc" id="L118" title="All 2 branches covered.">		if (optionalValue.isPresent()) {</span>
-<span class="fc" id="L119">			this.optionalValue = optionalValue;</span>
+<span class="fc bfc" id="L121" title="All 2 branches covered.">		if (optionalValue.isPresent()) {</span>
+<span class="fc" id="L122">			this.optionalValue = optionalValue;</span>
 		}
-<span class="fc" id="L121">		return this;</span>
+<span class="fc" id="L124">		return this;</span>
 	}
 
 	/**
@@ -167,8 +170,8 @@ public class ConfigurationValueBuilderHelper&lt;P, V&gt; extends AbstractParent&
 	 *            the value set by the developer in its own code
 	 */
 	public void setValue(V value) {
-<span class="fc" id="L170">		this.value = value;</span>
-<span class="fc" id="L171">	}</span>
+<span class="fc" id="L173">		this.value = value;</span>
+<span class="fc" id="L174">	}</span>
 
 	/**
 	 * Get the final value. The first non-null value is returned:
@@ -185,22 +188,20 @@ public class ConfigurationValueBuilderHelper&lt;P, V&gt; extends AbstractParent&
 	 * &lt;li&gt;null is returned&lt;/li&gt;
 	 * &lt;/ol&gt;
 	 * 
-	 * @param propertyResolver
-	 *            the property resolver used to evaluate properties
 	 * @return the value
 	 */
-	public V getValue(PropertyResolver propertyResolver) {
-<span class="fc bfc" id="L193" title="All 2 branches covered.">		if (value != null) {</span>
-<span class="fc" id="L194">			return value;</span>
+	public V getValue() {
+<span class="fc bfc" id="L194" title="All 2 branches covered.">		if (value != null) {</span>
+<span class="fc" id="L195">			return value;</span>
 		}
-<span class="fc bfc" id="L196" title="All 2 branches covered.">		if (optionalValue.isPresent()) {</span>
-<span class="fc" id="L197">			return optionalValue.get();</span>
+<span class="fc bfc" id="L197" title="All 2 branches covered.">		if (optionalValue.isPresent()) {</span>
+<span class="fc" id="L198">			return optionalValue.get();</span>
 		}
-<span class="fc" id="L199">		V prop = BuilderUtils.evaluate(properties, propertyResolver, valueClass);</span>
-<span class="fc bfc" id="L200" title="All 2 branches covered.">		if (prop != null) {</span>
-<span class="fc" id="L201">			return prop;</span>
+<span class="fc" id="L200">		V prop = buildContext.evaluate(properties, valueClass);</span>
+<span class="fc bfc" id="L201" title="All 2 branches covered.">		if (prop != null) {</span>
+<span class="fc" id="L202">			return prop;</span>
 		}
-<span class="fc" id="L203">		return defaultValue;</span>
+<span class="fc" id="L204">		return defaultValue;</span>
 	}
 
 	/**
@@ -218,18 +219,16 @@ public class ConfigurationValueBuilderHelper&lt;P, V&gt; extends AbstractParent&
 	 * &lt;li&gt;The default value provided as parameter is used&lt;/li&gt;
 	 * &lt;/ol&gt;
 	 * 
-	 * @param propertyResolver
-	 *            the property resolver used to evaluate properties
 	 * @param defaultValue
 	 *            the default value to use if there isn't a non-null value
 	 * @return the value
 	 */
-	public V getValue(PropertyResolver propertyResolver, V defaultValue) {
-<span class="fc" id="L228">		V configuredValue = getValue(propertyResolver);</span>
-<span class="fc bfc" id="L229" title="All 2 branches covered.">		if (configuredValue != null) {</span>
-<span class="fc" id="L230">			return configuredValue;</span>
+	public V getValue(V defaultValue) {
+<span class="fc" id="L227">		V configuredValue = getValue();</span>
+<span class="fc bfc" id="L228" title="All 2 branches covered.">		if (configuredValue != null) {</span>
+<span class="fc" id="L229">			return configuredValue;</span>
 		}
-<span class="fc" id="L232">		return defaultValue;</span>
+<span class="fc" id="L231">		return defaultValue;</span>
 	}
 
 	/**
@@ -238,7 +237,8 @@ public class ConfigurationValueBuilderHelper&lt;P, V&gt; extends AbstractParent&
 	 * @return true if there is a value, default value or at least one property
 	 */
 	public boolean hasValueOrProperties() {
-<span class="nc bnc" id="L241" title="All 6 branches missed.">		return value != null || !properties.isEmpty() || defaultValue != null;</span>
+<span class="nc bnc" id="L240" title="All 6 branches missed.">		return value != null || !properties.isEmpty() || defaultValue != null;</span>
 	}
+
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

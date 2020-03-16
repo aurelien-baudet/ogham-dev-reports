@@ -3,6 +3,7 @@
 import fr.sii.ogham.core.async.Awaiter;
 import fr.sii.ogham.core.async.ThreadSleepAwaiter;
 import fr.sii.ogham.core.builder.Builder;
+import fr.sii.ogham.core.builder.context.BuildContext;
 import fr.sii.ogham.core.builder.env.EnvironmentBuilder;
 import fr.sii.ogham.core.fluent.AbstractParent;
 import fr.sii.ogham.core.retry.FixedDelayRetry;
@@ -29,7 +30,7 @@ import fr.sii.ogham.core.retry.SimpleRetryExecutor;
  *            method)
  */
 public class RetryBuilder&lt;P&gt; extends AbstractParent&lt;P&gt; implements Builder&lt;RetryExecutor&gt; {
-	private EnvironmentBuilder&lt;?&gt; environmentBuilder;
+	private final BuildContext buildContext;
 	private FixedDelayBuilder&lt;RetryBuilder&lt;P&gt;&gt; fixedDelay;
 	private Awaiter awaiter;
 
@@ -40,13 +41,13 @@ public class RetryBuilder&lt;P&gt; extends AbstractParent&lt;P&gt; implements Bu
 	 * 
 	 * @param parent
 	 *            the parent builder
-	 * @param environmentBuilder
-	 *            the configuration for property resolution and evaluation
+	 * @param buildContext
+	 *            for registering instances and property evaluation
 	 */
-	public RetryBuilder(P parent, EnvironmentBuilder&lt;?&gt; environmentBuilder) {
-<span class="fc" id="L47">		super(parent);</span>
-<span class="fc" id="L48">		this.environmentBuilder = environmentBuilder;</span>
-<span class="fc" id="L49">	}</span>
+	public RetryBuilder(P parent, BuildContext buildContext) {
+<span class="fc" id="L48">		super(parent);</span>
+<span class="fc" id="L49">		this.buildContext = buildContext;</span>
+<span class="fc" id="L50">	}</span>
 
 	/**
 	 * Retry several times with a fixed delay between each try until the maximum
@@ -84,10 +85,10 @@ public class RetryBuilder&lt;P&gt; extends AbstractParent&lt;P&gt; implements Bu
 	 * @return the builder to configure retry delay and maximum attempts
 	 */
 	public FixedDelayBuilder&lt;RetryBuilder&lt;P&gt;&gt; fixedDelay() {
-<span class="fc bfc" id="L87" title="All 2 branches covered.">		if (fixedDelay == null) {</span>
-<span class="fc" id="L88">			fixedDelay = new FixedDelayBuilder&lt;&gt;(this, environmentBuilder);</span>
+<span class="fc bfc" id="L88" title="All 2 branches covered.">		if (fixedDelay == null) {</span>
+<span class="fc" id="L89">			fixedDelay = new FixedDelayBuilder&lt;&gt;(this, buildContext);</span>
 		}
-<span class="fc" id="L90">		return fixedDelay;</span>
+<span class="fc" id="L91">		return fixedDelay;</span>
 	}
 
 	/**
@@ -101,23 +102,23 @@ public class RetryBuilder&lt;P&gt; extends AbstractParent&lt;P&gt; implements Bu
 	 * @return this instance for fluent chaining
 	 */
 	public RetryBuilder&lt;P&gt; awaiter(Awaiter impl) {
-<span class="nc" id="L104">		this.awaiter = impl;</span>
-<span class="nc" id="L105">		return this;</span>
+<span class="nc" id="L105">		this.awaiter = impl;</span>
+<span class="nc" id="L106">		return this;</span>
 	}
 
 	@Override
 	public RetryExecutor build() {
-<span class="pc bpc" id="L110" title="1 of 2 branches missed.">		if (fixedDelay == null) {</span>
-<span class="nc" id="L111">			return null;</span>
+<span class="pc bpc" id="L111" title="1 of 2 branches missed.">		if (fixedDelay == null) {</span>
+<span class="nc" id="L112">			return null;</span>
 		}
-<span class="fc" id="L113">		return new SimpleRetryExecutor(new BuilderToRetryStrategyProviderBridge(fixedDelay), buildAwaiter());</span>
+<span class="fc" id="L114">		return buildContext.register(new SimpleRetryExecutor(new BuilderToRetryStrategyProviderBridge(fixedDelay), buildAwaiter()));</span>
 	}
 
 	private Awaiter buildAwaiter() {
-<span class="pc bpc" id="L117" title="1 of 2 branches missed.">		if (awaiter == null) {</span>
-<span class="fc" id="L118">			return new ThreadSleepAwaiter();</span>
+<span class="pc bpc" id="L118" title="1 of 2 branches missed.">		if (awaiter == null) {</span>
+<span class="fc" id="L119">			return new ThreadSleepAwaiter();</span>
 		}
-<span class="nc" id="L120">		return awaiter;</span>
+<span class="nc" id="L121">		return awaiter;</span>
 	}
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

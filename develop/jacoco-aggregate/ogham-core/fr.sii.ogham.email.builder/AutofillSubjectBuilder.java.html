@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>AutofillSubjectBuilder.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">reporting</a> &gt; <a href="../index.html" class="el_bundle">ogham-core</a> &gt; <a href="index.source.html" class="el_package">fr.sii.ogham.email.builder</a> &gt; <span class="el_source">AutofillSubjectBuilder.java</span></div><h1>AutofillSubjectBuilder.java</h1><pre class="source lang-java linenums">package fr.sii.ogham.email.builder;
 
-import fr.sii.ogham.core.builder.AbstractAutofillDefaultValueBuilder;
 import fr.sii.ogham.core.builder.Builder;
 import fr.sii.ogham.core.builder.configuration.ConfigurationValueBuilder;
 import fr.sii.ogham.core.builder.configuration.ConfigurationValueBuilderHelper;
 import fr.sii.ogham.core.builder.configurer.Configurer;
+import fr.sii.ogham.core.builder.context.BuildContext;
 import fr.sii.ogham.core.builder.env.EnvironmentBuilder;
-import fr.sii.ogham.core.env.PropertyResolver;
+import fr.sii.ogham.core.builder.filler.AbstractAutofillDefaultValueBuilder;
 import fr.sii.ogham.core.filler.MessageFiller;
 import fr.sii.ogham.core.filler.SubjectFiller;
 import fr.sii.ogham.core.subject.provider.FirstSupportingSubjectProvider;
@@ -35,7 +35,6 @@ public class AutofillSubjectBuilder extends AbstractAutofillDefaultValueBuilder&
 	private final ConfigurationValueBuilderHelper&lt;AutofillSubjectBuilder, Boolean&gt; enableHtmlTitleValueBuilder;
 	private final ConfigurationValueBuilderHelper&lt;AutofillSubjectBuilder, String&gt; firstLinePrefixValueBuilder;
 	private SubjectProvider customProvider;
-	private EnvironmentBuilder&lt;?&gt; environmentBuilder;
 
 	/**
 	 * Initializes with the parent builder and the {@link EnvironmentBuilder}.
@@ -45,15 +44,14 @@ public class AutofillSubjectBuilder extends AbstractAutofillDefaultValueBuilder&
 	 * 
 	 * @param parent
 	 *            the parent builder
-	 * @param environmentBuilder
-	 *            configuration about property resolution
+	 * @param buildContext
+	 *            for property resolution
 	 */
-	public AutofillSubjectBuilder(AutofillEmailBuilder parent, EnvironmentBuilder&lt;?&gt; environmentBuilder) {
-<span class="fc" id="L52">		super(AutofillSubjectBuilder.class, parent, String.class);</span>
-<span class="fc" id="L53">		this.environmentBuilder = environmentBuilder;</span>
-<span class="fc" id="L54">		enableHtmlTitleValueBuilder = new ConfigurationValueBuilderHelper&lt;&gt;(myself, Boolean.class);</span>
-<span class="fc" id="L55">		firstLinePrefixValueBuilder = new ConfigurationValueBuilderHelper&lt;&gt;(myself, String.class);</span>
-<span class="fc" id="L56">	}</span>
+	public AutofillSubjectBuilder(AutofillEmailBuilder parent, BuildContext buildContext) {
+<span class="fc" id="L51">		super(AutofillSubjectBuilder.class, parent, String.class, buildContext);</span>
+<span class="fc" id="L52">		enableHtmlTitleValueBuilder = new ConfigurationValueBuilderHelper&lt;&gt;(myself, Boolean.class, buildContext);</span>
+<span class="fc" id="L53">		firstLinePrefixValueBuilder = new ConfigurationValueBuilderHelper&lt;&gt;(myself, String.class, buildContext);</span>
+<span class="fc" id="L54">	}</span>
 	
 	/**
 	 * Enable/disable using HTML {@code &lt;title&gt;} tag to provide a subject on the
@@ -91,8 +89,8 @@ public class AutofillSubjectBuilder extends AbstractAutofillDefaultValueBuilder&
 	 * @return this instance for fluent chaining
 	 */
 	public AutofillSubjectBuilder htmlTitle(Boolean enable) {
-<span class="nc" id="L94">		enableHtmlTitleValueBuilder.setValue(enable);</span>
-<span class="nc" id="L95">		return this;</span>
+<span class="nc" id="L92">		enableHtmlTitleValueBuilder.setValue(enable);</span>
+<span class="nc" id="L93">		return this;</span>
 	}
 
 	
@@ -132,7 +130,7 @@ public class AutofillSubjectBuilder extends AbstractAutofillDefaultValueBuilder&
 	 * @return the builder to configure property keys/default value
 	 */
 	public ConfigurationValueBuilder&lt;AutofillSubjectBuilder, Boolean&gt; htmlTitle() {
-<span class="fc" id="L135">		return enableHtmlTitleValueBuilder;</span>
+<span class="fc" id="L133">		return enableHtmlTitleValueBuilder;</span>
 	}
 	
 	/**
@@ -171,8 +169,8 @@ public class AutofillSubjectBuilder extends AbstractAutofillDefaultValueBuilder&
 	 * @return this instance for fluent chaining
 	 */
 	public AutofillSubjectBuilder text(String firstLinePrefix) {
-<span class="nc" id="L174">		firstLinePrefixValueBuilder.setValue(firstLinePrefix);</span>
-<span class="nc" id="L175">		return this;</span>
+<span class="nc" id="L172">		firstLinePrefixValueBuilder.setValue(firstLinePrefix);</span>
+<span class="nc" id="L173">		return this;</span>
 	}
 
 	
@@ -212,7 +210,7 @@ public class AutofillSubjectBuilder extends AbstractAutofillDefaultValueBuilder&
 	 * @return the builder to configure property keys/default value
 	 */
 	public ConfigurationValueBuilder&lt;AutofillSubjectBuilder, String&gt; text() {
-<span class="fc" id="L215">		return firstLinePrefixValueBuilder;</span>
+<span class="fc" id="L213">		return firstLinePrefixValueBuilder;</span>
 	}
 
 	/**
@@ -230,32 +228,31 @@ public class AutofillSubjectBuilder extends AbstractAutofillDefaultValueBuilder&
 	 * @return this instance for fluent chaining
 	 */
 	public AutofillSubjectBuilder provider(SubjectProvider provider) {
-<span class="nc" id="L233">		customProvider = provider;</span>
-<span class="nc" id="L234">		return myself;</span>
+<span class="nc" id="L231">		customProvider = provider;</span>
+<span class="nc" id="L232">		return myself;</span>
 	}
 
 	@Override
 	public MessageFiller build() {
-<span class="fc" id="L239">		return new SubjectFiller(buildProvider());</span>
+<span class="fc" id="L237">		return buildContext.register(new SubjectFiller(buildProvider()));</span>
 	}
 
 	private SubjectProvider buildProvider() {
-<span class="pc bpc" id="L243" title="1 of 2 branches missed.">		if (customProvider != null) {</span>
-<span class="nc" id="L244">			return customProvider;</span>
+<span class="pc bpc" id="L241" title="1 of 2 branches missed.">		if (customProvider != null) {</span>
+<span class="nc" id="L242">			return customProvider;</span>
 		}
-<span class="fc" id="L246">		FirstSupportingSubjectProvider provider = new FirstSupportingSubjectProvider();</span>
-<span class="fc" id="L247">		PropertyResolver propertyResolver = environmentBuilder.build();</span>
-<span class="fc" id="L248">		String prefix = firstLinePrefixValueBuilder.getValue(propertyResolver);</span>
-<span class="pc bpc" id="L249" title="1 of 2 branches missed.">		if (prefix != null) {</span>
-<span class="fc" id="L250">			provider.addProvider(new TextPrefixSubjectProvider(prefix));</span>
+<span class="fc" id="L244">		FirstSupportingSubjectProvider provider = buildContext.register(new FirstSupportingSubjectProvider());</span>
+<span class="fc" id="L245">		String prefix = firstLinePrefixValueBuilder.getValue();</span>
+<span class="pc bpc" id="L246" title="1 of 2 branches missed.">		if (prefix != null) {</span>
+<span class="fc" id="L247">			provider.addProvider(buildContext.register(new TextPrefixSubjectProvider(prefix)));</span>
 		}
-<span class="fc" id="L252">		boolean htmlTitle = enableHtmlTitleValueBuilder.getValue(propertyResolver, false);</span>
-<span class="fc bfc" id="L253" title="All 2 branches covered.">		if (htmlTitle) {</span>
-<span class="fc" id="L254">			provider.addProvider(new HtmlTitleSubjectProvider());</span>
+<span class="fc" id="L249">		boolean htmlTitle = enableHtmlTitleValueBuilder.getValue(false);</span>
+<span class="fc bfc" id="L250" title="All 2 branches covered.">		if (htmlTitle) {</span>
+<span class="fc" id="L251">			provider.addProvider(buildContext.register(new HtmlTitleSubjectProvider()));</span>
 		}
-<span class="fc" id="L256">		SubjectProvider multiContentProvider = new MultiContentSubjectProvider(provider);</span>
-<span class="fc" id="L257">		provider.addProvider(multiContentProvider);</span>
-<span class="fc" id="L258">		return provider;</span>
+<span class="fc" id="L253">		SubjectProvider multiContentProvider = buildContext.register(new MultiContentSubjectProvider(provider));</span>
+<span class="fc" id="L254">		provider.addProvider(multiContentProvider);</span>
+<span class="fc" id="L255">		return provider;</span>
 	}
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

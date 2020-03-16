@@ -4,7 +4,6 @@ import static com.cloudhopper.commons.charset.CharsetUtil.NAME_GSM;
 import static com.cloudhopper.smpp.SmppBindType.TRANSMITTER;
 import static fr.sii.ogham.sms.builder.cloudhopper.InterfaceVersion.VERSION_3_4;
 
-import java.util.Properties;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -31,10 +30,8 @@ import fr.sii.ogham.core.builder.MessagingBuilder;
 import fr.sii.ogham.core.builder.configuration.ConfigurationValueBuilder;
 import fr.sii.ogham.core.builder.configuration.ConfigurationValueBuilderHelper;
 import fr.sii.ogham.core.builder.configurer.Configurer;
-import fr.sii.ogham.core.builder.env.EnvironmentBuilder;
-import fr.sii.ogham.core.builder.env.EnvironmentBuilderDelegate;
-import fr.sii.ogham.core.builder.env.SimpleEnvironmentBuilder;
-import fr.sii.ogham.core.env.PropertyResolver;
+import fr.sii.ogham.core.builder.context.BuildContext;
+import fr.sii.ogham.core.builder.context.DefaultBuildContext;
 import fr.sii.ogham.core.fluent.AbstractParent;
 import fr.sii.ogham.core.retry.RetryExecutor;
 import fr.sii.ogham.core.retry.SimpleRetryExecutor;
@@ -134,10 +131,10 @@ public class CloudhopperBuilder extends AbstractParent&lt;SmsBuilder&gt; impleme
 
 	private static final long DEFAULT_RESPONSE_TIMEOUT = 5000L;
 
-<span class="fc" id="L137">	private static final Logger LOG = LoggerFactory.getLogger(CloudhopperBuilder.class);</span>
+<span class="fc" id="L134">	private static final Logger LOG = LoggerFactory.getLogger(CloudhopperBuilder.class);</span>
 
 	private final ReadableEncoderBuilder sharedEncoderBuilder;
-	private EnvironmentBuilder&lt;CloudhopperBuilder&gt; environmentBuilder;
+	private BuildContext buildContext;
 	private final ConfigurationValueBuilderHelper&lt;CloudhopperBuilder, String&gt; systemIdValueBuilder;
 	private final ConfigurationValueBuilderHelper&lt;CloudhopperBuilder, String&gt; passwordValueBuilder;
 	private final ConfigurationValueBuilderHelper&lt;CloudhopperBuilder, String&gt; hostValueBuilder;
@@ -164,9 +161,8 @@ public class CloudhopperBuilder extends AbstractParent&lt;SmsBuilder&gt; impleme
 	 * &lt;strong&gt;WARNING: use is only if you know what you are doing !&lt;/strong&gt;
 	 */
 	public CloudhopperBuilder() {
-<span class="fc" id="L167">		this(null);</span>
-<span class="fc" id="L168">		environmentBuilder = new SimpleEnvironmentBuilder&lt;&gt;(this);</span>
-<span class="fc" id="L169">	}</span>
+<span class="fc" id="L164">		this(null, new DefaultBuildContext());</span>
+<span class="fc" id="L165">	}</span>
 
 	/**
 	 * Constructor that is called when using Ogham builder:
@@ -180,93 +176,21 @@ public class CloudhopperBuilder extends AbstractParent&lt;SmsBuilder&gt; impleme
 	 * 
 	 * @param parent
 	 *            the parent builder instance for fluent chaining
+	 * @param buildContext
+	 *            for registering instances and property evaluation
 	 */
-	public CloudhopperBuilder(SmsBuilder parent) {
-<span class="fc" id="L185">		super(parent);</span>
-<span class="fc" id="L186">		sharedEncoderBuilder = new ReadableEncoderBuilder();</span>
-<span class="fc" id="L187">		systemIdValueBuilder = new ConfigurationValueBuilderHelper&lt;&gt;(this, String.class);</span>
-<span class="fc" id="L188">		passwordValueBuilder = new ConfigurationValueBuilderHelper&lt;&gt;(this, String.class);</span>
-<span class="fc" id="L189">		hostValueBuilder = new ConfigurationValueBuilderHelper&lt;&gt;(this, String.class);</span>
-<span class="fc" id="L190">		portValueBuilder = new ConfigurationValueBuilderHelper&lt;&gt;(this, Integer.class);</span>
-<span class="fc" id="L191">		interfaceVersionValueBuilder = new ConfigurationValueBuilderHelper&lt;&gt;(this, InterfaceVersion.class);</span>
-<span class="fc" id="L192">		systemTypeValueBuilder = new ConfigurationValueBuilderHelper&lt;&gt;(this, String.class);</span>
-<span class="fc" id="L193">		bindTypeValueBuilder = new ConfigurationValueBuilderHelper&lt;&gt;(this, SmppBindType.class);</span>
-<span class="fc" id="L194">	}</span>
-
-	/**
-	 * Configures environment for the builder (and sub-builders). Environment
-	 * consists of configuration properties/values that are used to configure
-	 * the system (see {@link EnvironmentBuilder} for more information).
-	 * 
-	 * You can use system properties:
-	 * 
-	 * &lt;pre&gt;
-	 * .environment()
-	 *    .systemProperties();
-	 * &lt;/pre&gt;
-	 * 
-	 * Or, you can load properties from a file:
-	 * 
-	 * &lt;pre&gt;
-	 * .environment()
-	 *    .properties(&quot;/path/to/file.properties&quot;)
-	 * &lt;/pre&gt;
-	 * 
-	 * Or using directly a {@link Properties} object:
-	 * 
-	 * &lt;pre&gt;
-	 * Properties myprops = new Properties();
-	 * myprops.setProperty(&quot;foo&quot;, &quot;bar&quot;);
-	 * .environment()
-	 *    .properties(myprops)
-	 * &lt;/pre&gt;
-	 * 
-	 * Or defining directly properties:
-	 * 
-	 * &lt;pre&gt;
-	 * .environment()
-	 *    .properties()
-	 *       .set(&quot;foo&quot;, &quot;bar&quot;)
-	 * &lt;/pre&gt;
-	 * 
-	 * 
-	 * &lt;p&gt;
-	 * If no environment was previously used, it creates a new one. Then each
-	 * time you call {@link #environment()}, the same instance is used.
-	 * &lt;/p&gt;
-	 * 
-	 * @return the builder to configure properties handling
-	 */
-	public EnvironmentBuilder&lt;CloudhopperBuilder&gt; environment() {
-<span class="nc bnc" id="L241" title="All 2 branches missed.">		if (environmentBuilder == null) {</span>
-<span class="nc" id="L242">			environmentBuilder = new SimpleEnvironmentBuilder&lt;&gt;(this);</span>
-		}
-<span class="nc" id="L244">		return environmentBuilder;</span>
-	}
-
-	/**
-	 * NOTE: this is mostly for advance usage (when creating a custom module).
-	 * 
-	 * Inherits environment configuration from another builder. This is useful
-	 * for configuring independently different parts of Ogham but keeping a
-	 * whole coherence (see {@link DefaultCloudhopperConfigurer} for an example
-	 * of use).
-	 * 
-	 * The same instance is shared meaning that all changes done here will also
-	 * impact the other builder.
-	 * 
-	 * &lt;p&gt;
-	 * If a previous builder was defined (by calling {@link #environment()} for
-	 * example), the new builder will override it.
-	 * 
-	 * @param builder
-	 *            the builder to inherit
-	 * @return this instance for fluent chaining
-	 */
-	public CloudhopperBuilder environment(EnvironmentBuilder&lt;?&gt; builder) {
-<span class="fc" id="L267">		environmentBuilder = new EnvironmentBuilderDelegate&lt;&gt;(this, builder);</span>
-<span class="fc" id="L268">		return this;</span>
-	}
+	public CloudhopperBuilder(SmsBuilder parent, BuildContext buildContext) {
+<span class="fc" id="L183">		super(parent);</span>
+<span class="fc" id="L184">		this.buildContext = buildContext;</span>
+<span class="fc" id="L185">		sharedEncoderBuilder = new ReadableEncoderBuilder(buildContext);</span>
+<span class="fc" id="L186">		systemIdValueBuilder = new ConfigurationValueBuilderHelper&lt;&gt;(this, String.class, buildContext);</span>
+<span class="fc" id="L187">		passwordValueBuilder = new ConfigurationValueBuilderHelper&lt;&gt;(this, String.class, buildContext);</span>
+<span class="fc" id="L188">		hostValueBuilder = new ConfigurationValueBuilderHelper&lt;&gt;(this, String.class, buildContext);</span>
+<span class="fc" id="L189">		portValueBuilder = new ConfigurationValueBuilderHelper&lt;&gt;(this, Integer.class, buildContext);</span>
+<span class="fc" id="L190">		interfaceVersionValueBuilder = new ConfigurationValueBuilderHelper&lt;&gt;(this, InterfaceVersion.class, buildContext);</span>
+<span class="fc" id="L191">		systemTypeValueBuilder = new ConfigurationValueBuilderHelper&lt;&gt;(this, String.class, buildContext);</span>
+<span class="fc" id="L192">		bindTypeValueBuilder = new ConfigurationValueBuilderHelper&lt;&gt;(this, SmppBindType.class, buildContext);</span>
+<span class="fc" id="L193">	}</span>
 
 	/**
 	 * The system_id parameter is used to identify an ESME ( External Short
@@ -306,8 +230,8 @@ public class CloudhopperBuilder extends AbstractParent&lt;SmsBuilder&gt; impleme
 	 * @return this instance for fluent chaining
 	 */
 	public CloudhopperBuilder systemId(String systemId) {
-<span class="nc" id="L309">		systemIdValueBuilder.setValue(systemId);</span>
-<span class="nc" id="L310">		return this;</span>
+<span class="nc" id="L233">		systemIdValueBuilder.setValue(systemId);</span>
+<span class="nc" id="L234">		return this;</span>
 	}
 
 	/**
@@ -350,7 +274,7 @@ public class CloudhopperBuilder extends AbstractParent&lt;SmsBuilder&gt; impleme
 	 * @return the builder to configure property keys/default value
 	 */
 	public ConfigurationValueBuilder&lt;CloudhopperBuilder, String&gt; systemId() {
-<span class="fc" id="L353">		return systemIdValueBuilder;</span>
+<span class="fc" id="L277">		return systemIdValueBuilder;</span>
 	}
 
 	/**
@@ -394,8 +318,8 @@ public class CloudhopperBuilder extends AbstractParent&lt;SmsBuilder&gt; impleme
 	 * @return this instance for fluent chaining
 	 */
 	public CloudhopperBuilder systemType(String systemType) {
-<span class="nc" id="L397">		systemTypeValueBuilder.setValue(systemType);</span>
-<span class="nc" id="L398">		return this;</span>
+<span class="nc" id="L321">		systemTypeValueBuilder.setValue(systemType);</span>
+<span class="nc" id="L322">		return this;</span>
 	}
 
 	/**
@@ -441,7 +365,7 @@ public class CloudhopperBuilder extends AbstractParent&lt;SmsBuilder&gt; impleme
 	 * @return the builder to configure property keys/default value
 	 */
 	public ConfigurationValueBuilder&lt;CloudhopperBuilder, String&gt; systemType() {
-<span class="fc" id="L444">		return systemTypeValueBuilder;</span>
+<span class="fc" id="L368">		return systemTypeValueBuilder;</span>
 	}
 
 	/**
@@ -484,8 +408,8 @@ public class CloudhopperBuilder extends AbstractParent&lt;SmsBuilder&gt; impleme
 	 * @return this instance for fluent chaining
 	 */
 	public CloudhopperBuilder password(String password) {
-<span class="nc" id="L487">		passwordValueBuilder.setValue(password);</span>
-<span class="nc" id="L488">		return this;</span>
+<span class="nc" id="L411">		passwordValueBuilder.setValue(password);</span>
+<span class="nc" id="L412">		return this;</span>
 	}
 
 	/**
@@ -530,7 +454,7 @@ public class CloudhopperBuilder extends AbstractParent&lt;SmsBuilder&gt; impleme
 	 * @return the builder to configure property keys/default value
 	 */
 	public ConfigurationValueBuilder&lt;CloudhopperBuilder, String&gt; password() {
-<span class="fc" id="L533">		return passwordValueBuilder;</span>
+<span class="fc" id="L457">		return passwordValueBuilder;</span>
 	}
 
 	/**
@@ -568,8 +492,8 @@ public class CloudhopperBuilder extends AbstractParent&lt;SmsBuilder&gt; impleme
 	 * @return this instance for fluent chaining
 	 */
 	public CloudhopperBuilder host(String host) {
-<span class="fc" id="L571">		hostValueBuilder.setValue(host);</span>
-<span class="fc" id="L572">		return this;</span>
+<span class="fc" id="L495">		hostValueBuilder.setValue(host);</span>
+<span class="fc" id="L496">		return this;</span>
 	}
 
 	/**
@@ -609,7 +533,7 @@ public class CloudhopperBuilder extends AbstractParent&lt;SmsBuilder&gt; impleme
 	 * @return the builder to configure property keys/default value
 	 */
 	public ConfigurationValueBuilder&lt;CloudhopperBuilder, String&gt; host() {
-<span class="fc" id="L612">		return hostValueBuilder;</span>
+<span class="fc" id="L536">		return hostValueBuilder;</span>
 	}
 
 	/**
@@ -647,8 +571,8 @@ public class CloudhopperBuilder extends AbstractParent&lt;SmsBuilder&gt; impleme
 	 * @return this instance for fluent chaining
 	 */
 	public CloudhopperBuilder port(Integer port) {
-<span class="fc" id="L650">		portValueBuilder.setValue(port);</span>
-<span class="fc" id="L651">		return this;</span>
+<span class="fc" id="L574">		portValueBuilder.setValue(port);</span>
+<span class="fc" id="L575">		return this;</span>
 	}
 
 	/**
@@ -688,7 +612,7 @@ public class CloudhopperBuilder extends AbstractParent&lt;SmsBuilder&gt; impleme
 	 * @return the builder to configure property keys/default value
 	 */
 	public ConfigurationValueBuilder&lt;CloudhopperBuilder, Integer&gt; port() {
-<span class="fc" id="L691">		return portValueBuilder;</span>
+<span class="fc" id="L615">		return portValueBuilder;</span>
 	}
 
 	/**
@@ -729,8 +653,8 @@ public class CloudhopperBuilder extends AbstractParent&lt;SmsBuilder&gt; impleme
 	 * @return this instance for fluent chaining
 	 */
 	public CloudhopperBuilder interfaceVersion(InterfaceVersion version) {
-<span class="nc" id="L732">		interfaceVersionValueBuilder.setValue(version);</span>
-<span class="nc" id="L733">		return this;</span>
+<span class="nc" id="L656">		interfaceVersionValueBuilder.setValue(version);</span>
+<span class="nc" id="L657">		return this;</span>
 	}
 
 	/**
@@ -770,8 +694,8 @@ public class CloudhopperBuilder extends AbstractParent&lt;SmsBuilder&gt; impleme
 	 * @return this instance for fluent chaining
 	 */
 	public CloudhopperBuilder interfaceVersion(Byte version) {
-<span class="nc" id="L773">		interfaceVersionValueBuilder.setValue(InterfaceVersion.fromValue(version));</span>
-<span class="nc" id="L774">		return this;</span>
+<span class="nc" id="L697">		interfaceVersionValueBuilder.setValue(InterfaceVersion.fromValue(version));</span>
+<span class="nc" id="L698">		return this;</span>
 	}
 
 	/**
@@ -814,7 +738,7 @@ public class CloudhopperBuilder extends AbstractParent&lt;SmsBuilder&gt; impleme
 	 * @return the builder to configure property keys/default value
 	 */
 	public ConfigurationValueBuilder&lt;CloudhopperBuilder, InterfaceVersion&gt; interfaceVersion() {
-<span class="fc" id="L817">		return interfaceVersionValueBuilder;</span>
+<span class="fc" id="L741">		return interfaceVersionValueBuilder;</span>
 	}
 
 	/**
@@ -852,8 +776,8 @@ public class CloudhopperBuilder extends AbstractParent&lt;SmsBuilder&gt; impleme
 	 * @return this instance for fluent chaining
 	 */
 	public CloudhopperBuilder bindType(SmppBindType bindType) {
-<span class="nc" id="L855">		bindTypeValueBuilder.setValue(bindType);</span>
-<span class="nc" id="L856">		return this;</span>
+<span class="nc" id="L779">		bindTypeValueBuilder.setValue(bindType);</span>
+<span class="nc" id="L780">		return this;</span>
 	}
 
 	/**
@@ -893,7 +817,7 @@ public class CloudhopperBuilder extends AbstractParent&lt;SmsBuilder&gt; impleme
 	 * @return the builder to configure property keys/default value
 	 */
 	public ConfigurationValueBuilder&lt;CloudhopperBuilder, SmppBindType&gt; bindType() {
-<span class="fc" id="L896">		return bindTypeValueBuilder;</span>
+<span class="fc" id="L820">		return bindTypeValueBuilder;</span>
 	}
 
 	/**
@@ -951,11 +875,11 @@ public class CloudhopperBuilder extends AbstractParent&lt;SmsBuilder&gt; impleme
 	 * @return the builder to configure the encoder
 	 */
 	public EncoderBuilder encoder() {
-<span class="fc bfc" id="L954" title="All 2 branches covered.">		if (encoderBuilder == null) {</span>
-<span class="fc" id="L955">			encoderBuilder = new EncoderBuilder(this, environmentBuilder);</span>
-<span class="fc" id="L956">			sharedEncoderBuilder.update(encoderBuilder);</span>
+<span class="fc bfc" id="L878" title="All 2 branches covered.">		if (encoderBuilder == null) {</span>
+<span class="fc" id="L879">			encoderBuilder = new EncoderBuilder(this, buildContext);</span>
+<span class="fc" id="L880">			sharedEncoderBuilder.update(encoderBuilder);</span>
 		}
-<span class="fc" id="L958">		return encoderBuilder;</span>
+<span class="fc" id="L882">		return encoderBuilder;</span>
 	}
 
 	/**
@@ -1030,10 +954,10 @@ public class CloudhopperBuilder extends AbstractParent&lt;SmsBuilder&gt; impleme
 	 * @return the builder to configure message splitting
 	 */
 	public MessageSplitterBuilder splitter() {
-<span class="fc bfc" id="L1033" title="All 2 branches covered.">		if (messageSplitterBuilder == null) {</span>
-<span class="fc" id="L1034">			messageSplitterBuilder = new MessageSplitterBuilder(this, environmentBuilder, sharedEncoderBuilder);</span>
+<span class="fc bfc" id="L957" title="All 2 branches covered.">		if (messageSplitterBuilder == null) {</span>
+<span class="fc" id="L958">			messageSplitterBuilder = new MessageSplitterBuilder(this, buildContext, sharedEncoderBuilder);</span>
 		}
-<span class="fc" id="L1036">		return messageSplitterBuilder;</span>
+<span class="fc" id="L960">		return messageSplitterBuilder;</span>
 	}
 
 	/**
@@ -1043,10 +967,10 @@ public class CloudhopperBuilder extends AbstractParent&lt;SmsBuilder&gt; impleme
 	 * @return the builder to configure the session management
 	 */
 	public SessionBuilder session() {
-<span class="fc bfc" id="L1046" title="All 2 branches covered.">		if (sessionBuilder == null) {</span>
-<span class="fc" id="L1047">			sessionBuilder = new SessionBuilder(this, environmentBuilder);</span>
+<span class="fc bfc" id="L970" title="All 2 branches covered.">		if (sessionBuilder == null) {</span>
+<span class="fc" id="L971">			sessionBuilder = new SessionBuilder(this, buildContext);</span>
 		}
-<span class="fc" id="L1049">		return sessionBuilder;</span>
+<span class="fc" id="L973">		return sessionBuilder;</span>
 	}
 
 	/**
@@ -1061,8 +985,8 @@ public class CloudhopperBuilder extends AbstractParent&lt;SmsBuilder&gt; impleme
 	 * @return this instance for fluent chaining
 	 */
 	public CloudhopperBuilder session(SmppSessionConfiguration session) {
-<span class="fc" id="L1064">		this.sessionConfiguration = session;</span>
-<span class="fc" id="L1065">		return this;</span>
+<span class="fc" id="L988">		this.sessionConfiguration = session;</span>
+<span class="fc" id="L989">		return this;</span>
 	}
 
 	/**
@@ -1090,8 +1014,8 @@ public class CloudhopperBuilder extends AbstractParent&lt;SmsBuilder&gt; impleme
 	 * @return this instance for fluent chaining
 	 */
 	public CloudhopperBuilder addressRange(Address range) {
-<span class="nc" id="L1093">		this.addressRange = range;</span>
-<span class="nc" id="L1094">		return this;</span>
+<span class="nc" id="L1017">		this.addressRange = range;</span>
+<span class="nc" id="L1018">		return this;</span>
 	}
 
 	/**
@@ -1104,10 +1028,10 @@ public class CloudhopperBuilder extends AbstractParent&lt;SmsBuilder&gt; impleme
 	 * @return the builder to configure SSL
 	 */
 	public SslBuilder ssl() {
-<span class="nc bnc" id="L1107" title="All 2 branches missed.">		if (sslBuilder == null) {</span>
-<span class="nc" id="L1108">			sslBuilder = new SslBuilder(this, environmentBuilder);</span>
+<span class="nc bnc" id="L1031" title="All 2 branches missed.">		if (sslBuilder == null) {</span>
+<span class="nc" id="L1032">			sslBuilder = new SslBuilder(this, buildContext);</span>
 		}
-<span class="nc" id="L1110">		return sslBuilder;</span>
+<span class="nc" id="L1034">		return sslBuilder;</span>
 	}
 
 	/**
@@ -1120,10 +1044,10 @@ public class CloudhopperBuilder extends AbstractParent&lt;SmsBuilder&gt; impleme
 	 * @return the builder to enable/disable some logs
 	 */
 	public LoggingBuilder logging() {
-<span class="nc bnc" id="L1123" title="All 2 branches missed.">		if (loggingBuilder == null) {</span>
-<span class="nc" id="L1124">			loggingBuilder = new LoggingBuilder(this);</span>
+<span class="nc bnc" id="L1047" title="All 2 branches missed.">		if (loggingBuilder == null) {</span>
+<span class="nc" id="L1048">			loggingBuilder = new LoggingBuilder(this);</span>
 		}
-<span class="nc" id="L1126">		return loggingBuilder;</span>
+<span class="nc" id="L1050">		return loggingBuilder;</span>
 	}
 
 	/**
@@ -1136,8 +1060,8 @@ public class CloudhopperBuilder extends AbstractParent&lt;SmsBuilder&gt; impleme
 	 * @return this instance for fluent chaining
 	 */
 	public CloudhopperBuilder clientSupplier(SmppClientSupplier supplier) {
-<span class="fc" id="L1139">		this.clientSupplier = supplier;</span>
-<span class="fc" id="L1140">		return this;</span>
+<span class="fc" id="L1063">		this.clientSupplier = supplier;</span>
+<span class="fc" id="L1064">		return this;</span>
 	}
 
 	/**
@@ -1151,8 +1075,8 @@ public class CloudhopperBuilder extends AbstractParent&lt;SmsBuilder&gt; impleme
 	 * @return this instance for fluent chaining
 	 */
 	public CloudhopperBuilder smppSessionHandlerSupplier(SmppSessionHandlerSupplier supplier) {
-<span class="fc" id="L1154">		this.smppSessionHandler = supplier;</span>
-<span class="fc" id="L1155">		return this;</span>
+<span class="fc" id="L1078">		this.smppSessionHandler = supplier;</span>
+<span class="fc" id="L1079">		return this;</span>
 	}
 
 	/**
@@ -1185,8 +1109,8 @@ public class CloudhopperBuilder extends AbstractParent&lt;SmsBuilder&gt; impleme
 	 * @see #userData()
 	 */
 	public CloudhopperBuilder messagePreparator(MessagePreparator preparator) {
-<span class="nc" id="L1188">		this.preparator = preparator;</span>
-<span class="nc" id="L1189">		return this;</span>
+<span class="nc" id="L1112">		this.preparator = preparator;</span>
+<span class="nc" id="L1113">		return this;</span>
 	}
 
 	/**
@@ -1247,10 +1171,10 @@ public class CloudhopperBuilder extends AbstractParent&lt;SmsBuilder&gt; impleme
 	 * @return the builder to configure how the &quot;User Data&quot; is sent
 	 */
 	public UserDataBuilder userData() {
-<span class="fc bfc" id="L1250" title="All 2 branches covered.">		if (userDataBuilder == null) {</span>
-<span class="fc" id="L1251">			userDataBuilder = new UserDataBuilder(this, environmentBuilder);</span>
+<span class="fc bfc" id="L1174" title="All 2 branches covered.">		if (userDataBuilder == null) {</span>
+<span class="fc" id="L1175">			userDataBuilder = new UserDataBuilder(this, buildContext);</span>
 		}
-<span class="fc" id="L1253">		return userDataBuilder;</span>
+<span class="fc" id="L1177">		return userDataBuilder;</span>
 	}
 
 	/**
@@ -1312,185 +1236,179 @@ public class CloudhopperBuilder extends AbstractParent&lt;SmsBuilder&gt; impleme
 	 *         value
 	 */
 	public DataCodingSchemeBuilder dataCodingScheme() {
-<span class="fc bfc" id="L1315" title="All 2 branches covered.">		if (dataCodingBuilder == null) {</span>
-<span class="fc" id="L1316">			dataCodingBuilder = new DataCodingSchemeBuilder(this, environmentBuilder, this::getInterfaceVersion);</span>
+<span class="fc bfc" id="L1239" title="All 2 branches covered.">		if (dataCodingBuilder == null) {</span>
+<span class="fc" id="L1240">			dataCodingBuilder = new DataCodingSchemeBuilder(this, buildContext, this::getInterfaceVersion);</span>
 		}
-<span class="fc" id="L1318">		return dataCodingBuilder;</span>
+<span class="fc" id="L1242">		return dataCodingBuilder;</span>
 	}
 
 	@Override
 	public CloudhopperSMPPSender build() {
-<span class="fc" id="L1323">		PropertyResolver propertyResolver = buildPropertyResolver();</span>
-<span class="fc" id="L1324">		CloudhopperSessionOptions sessionOpts = buildSessionOpts();</span>
-<span class="fc" id="L1325">		SmppSessionConfiguration session = buildSession(sessionOpts, propertyResolver);</span>
-<span class="fc bfc" id="L1326" title="All 4 branches covered.">		if (session.getHost() == null || session.getPort() == 0) {</span>
-<span class="fc" id="L1327">			return null;</span>
+<span class="fc" id="L1247">		CloudhopperSessionOptions sessionOpts = buildSessionOpts();</span>
+<span class="fc" id="L1248">		SmppSessionConfiguration session = buildSession(sessionOpts);</span>
+<span class="fc bfc" id="L1249" title="All 4 branches covered.">		if (session.getHost() == null || session.getPort() == 0) {</span>
+<span class="fc" id="L1250">			return null;</span>
 		}
-<span class="fc" id="L1329">		CloudhopperOptions options = buildOptions(sessionOpts);</span>
-<span class="fc" id="L1330">		LOG.info(&quot;Sending SMS using Cloudhopper is registered&quot;);</span>
-<span class="fc" id="L1331">		LOG.debug(&quot;SMPP server address: {}:{}&quot;, session.getHost(), session.getPort());</span>
-<span class="fc" id="L1332">		return new CloudhopperSMPPSender(session, options, buildPreparator(), buildClientSupplier(), buildSmppSessionHandler());</span>
+<span class="fc" id="L1252">		CloudhopperOptions options = buildOptions(sessionOpts);</span>
+<span class="fc" id="L1253">		LOG.info(&quot;Sending SMS using Cloudhopper is registered&quot;);</span>
+<span class="fc" id="L1254">		LOG.debug(&quot;SMPP server address: {}:{}&quot;, session.getHost(), session.getPort());</span>
+<span class="fc" id="L1255">		return buildContext.register(new CloudhopperSMPPSender(session, options, buildPreparator(), buildClientSupplier(), buildSmppSessionHandler()));</span>
 	}
 
 	private CloudhopperSessionOptions buildSessionOpts() {
-<span class="fc bfc" id="L1336" title="All 2 branches covered.">		if (sessionBuilder != null) {</span>
-<span class="fc" id="L1337">			return sessionBuilder.build();</span>
+<span class="fc bfc" id="L1259" title="All 2 branches covered.">		if (sessionBuilder != null) {</span>
+<span class="fc" id="L1260">			return sessionBuilder.build();</span>
 		}
-<span class="fc" id="L1339">		CloudhopperSessionOptions cloudhopperSessionOptions = new CloudhopperSessionOptions();</span>
-<span class="fc" id="L1340">		cloudhopperSessionOptions.setConnectRetry(noRetry());</span>
-<span class="fc" id="L1341">		return cloudhopperSessionOptions;</span>
+<span class="fc" id="L1262">		CloudhopperSessionOptions cloudhopperSessionOptions = buildContext.register(new CloudhopperSessionOptions());</span>
+<span class="fc" id="L1263">		cloudhopperSessionOptions.setConnectRetry(noRetry());</span>
+<span class="fc" id="L1264">		return cloudhopperSessionOptions;</span>
 	}
 
 	private SimpleRetryExecutor noRetry() {
-<span class="fc" id="L1345">		return new SimpleRetryExecutor(() -&gt; null, new ThreadSleepAwaiter());</span>
+<span class="fc" id="L1268">		return buildContext.register(new SimpleRetryExecutor(() -&gt; null, buildContext.register(new ThreadSleepAwaiter())));</span>
 	}
 
 	private MessagePreparator buildPreparator() {
-<span class="pc bpc" id="L1349" title="1 of 2 branches missed.">		if (preparator != null) {</span>
-<span class="nc" id="L1350">			return preparator;</span>
+<span class="pc bpc" id="L1272" title="1 of 2 branches missed.">		if (preparator != null) {</span>
+<span class="nc" id="L1273">			return preparator;</span>
 		}
-<span class="fc bfc" id="L1352" title="All 2 branches covered.">		if (userDataBuilder != null) {</span>
-<span class="fc" id="L1353">			UserDataPropValues values = userDataBuilder.build();</span>
-<span class="fc bfc" id="L1354" title="All 2 branches covered.">			if (values.isUseShortMessage()) {</span>
-<span class="fc" id="L1355">				return buildShortMessagePreparator();</span>
+<span class="fc bfc" id="L1275" title="All 2 branches covered.">		if (userDataBuilder != null) {</span>
+<span class="fc" id="L1276">			UserDataPropValues values = userDataBuilder.build();</span>
+<span class="fc bfc" id="L1277" title="All 2 branches covered.">			if (values.isUseShortMessage()) {</span>
+<span class="fc" id="L1278">				return buildShortMessagePreparator();</span>
 			}
-<span class="pc bpc" id="L1357" title="1 of 2 branches missed.">			if (values.isUseTlvMessagePayload()) {</span>
-<span class="fc" id="L1358">				return buildTlvMessagePayloadMessagePreparator();</span>
+<span class="pc bpc" id="L1280" title="1 of 2 branches missed.">			if (values.isUseTlvMessagePayload()) {</span>
+<span class="fc" id="L1281">				return buildTlvMessagePayloadMessagePreparator();</span>
 			}
 		}
-<span class="fc" id="L1361">		return buildShortMessagePreparator();</span>
+<span class="fc" id="L1284">		return buildShortMessagePreparator();</span>
 	}
 
 	private MessagePreparator buildShortMessagePreparator() {
-<span class="fc" id="L1365">		return new ShortMessagePreparator(buildSplitter(buildEncoder()), buildDataCodingProvider(), buildPhoneNumberTranslator());</span>
+<span class="fc" id="L1288">		return buildContext.register(new ShortMessagePreparator(buildSplitter(buildEncoder()), buildDataCodingProvider(), buildPhoneNumberTranslator()));</span>
 	}
 
 	private MessagePreparator buildTlvMessagePayloadMessagePreparator() {
-<span class="fc" id="L1369">		return new TlvMessagePayloadMessagePreparator(buildSplitter(buildEncoder()), buildDataCodingProvider(), buildPhoneNumberTranslator());</span>
+<span class="fc" id="L1292">		return buildContext.register(new TlvMessagePayloadMessagePreparator(buildSplitter(buildEncoder()), buildDataCodingProvider(), buildPhoneNumberTranslator()));</span>
 	}
 
 	private Encoder buildEncoder() {
-<span class="fc bfc" id="L1373" title="All 2 branches covered.">		if (encoderBuilder == null) {</span>
-<span class="fc" id="L1374">			return new CloudhopperCharsetSupportingEncoder(NamedCharset.from(NAME_GSM));</span>
+<span class="fc bfc" id="L1296" title="All 2 branches covered.">		if (encoderBuilder == null) {</span>
+<span class="fc" id="L1297">			return buildContext.register(new CloudhopperCharsetSupportingEncoder(NamedCharset.from(NAME_GSM)));</span>
 		}
-<span class="fc" id="L1376">		return encoderBuilder.build();</span>
+<span class="fc" id="L1299">		return encoderBuilder.build();</span>
 	}
 
 	private DataCodingProvider buildDataCodingProvider() {
-<span class="fc bfc" id="L1380" title="All 2 branches covered.">		if (dataCodingBuilder == null) {</span>
-<span class="fc" id="L1381">			return new CharsetMapToCharacterEncodingGroupDataCodingProvider(true);</span>
+<span class="fc bfc" id="L1303" title="All 2 branches covered.">		if (dataCodingBuilder == null) {</span>
+<span class="fc" id="L1304">			return buildContext.register(new CharsetMapToCharacterEncodingGroupDataCodingProvider(true));</span>
 		}
-<span class="fc" id="L1383">		return dataCodingBuilder.build();</span>
+<span class="fc" id="L1306">		return dataCodingBuilder.build();</span>
 	}
 
 	private MessageSplitter buildSplitter(Encoder encoder) {
-<span class="fc bfc" id="L1387" title="All 2 branches covered.">		if (messageSplitterBuilder == null) {</span>
-<span class="fc" id="L1388">			return new NoSplitMessageSplitter(encoder);</span>
+<span class="fc bfc" id="L1310" title="All 2 branches covered.">		if (messageSplitterBuilder == null) {</span>
+<span class="fc" id="L1311">			return buildContext.register(new NoSplitMessageSplitter(encoder));</span>
 		}
-<span class="fc" id="L1390">		MessageSplitter splitter = messageSplitterBuilder.build();</span>
-<span class="fc bfc" id="L1391" title="All 2 branches covered.">		if (splitter != null) {</span>
-<span class="fc" id="L1392">			return splitter;</span>
+<span class="fc" id="L1313">		MessageSplitter splitter = messageSplitterBuilder.build();</span>
+<span class="fc bfc" id="L1314" title="All 2 branches covered.">		if (splitter != null) {</span>
+<span class="fc" id="L1315">			return splitter;</span>
 		}
-<span class="fc" id="L1394">		return new NoSplitMessageSplitter(encoder);</span>
+<span class="fc" id="L1317">		return buildContext.register(new NoSplitMessageSplitter(encoder));</span>
 	}
 
 	private SmppClientSupplier buildClientSupplier() {
-<span class="fc bfc" id="L1398" title="All 2 branches covered.">		if (clientSupplier == null) {</span>
-<span class="fc" id="L1399">			return DefaultSmppClient::new;</span>
+<span class="fc bfc" id="L1321" title="All 2 branches covered.">		if (clientSupplier == null) {</span>
+<span class="fc" id="L1322">			return buildContext.register(DefaultSmppClient::new);</span>
 		}
-<span class="fc" id="L1401">		return clientSupplier;</span>
+<span class="fc" id="L1324">		return clientSupplier;</span>
 	}
 
 	private SmppSessionHandlerSupplier buildSmppSessionHandler() {
-<span class="fc bfc" id="L1405" title="All 2 branches covered.">		if (smppSessionHandler == null) {</span>
-<span class="fc" id="L1406">			return () -&gt; null;</span>
+<span class="fc bfc" id="L1328" title="All 2 branches covered.">		if (smppSessionHandler == null) {</span>
+<span class="fc" id="L1329">			return () -&gt; null;</span>
 		}
-<span class="fc" id="L1408">		return smppSessionHandler;</span>
+<span class="fc" id="L1331">		return smppSessionHandler;</span>
 	}
 
-	private PropertyResolver buildPropertyResolver() {
-<span class="fc" id="L1412">		return environmentBuilder.build();</span>
-	}
-
-	private static PhoneNumberTranslator buildPhoneNumberTranslator() {
+	private PhoneNumberTranslator buildPhoneNumberTranslator() {
 		// TODO: allow configuration of fallback phone number translator
-<span class="fc" id="L1417">		return new CompositePhoneNumberTranslator(new DefaultHandler());</span>
+<span class="fc" id="L1336">		return buildContext.register(new CompositePhoneNumberTranslator(buildContext.register(new DefaultHandler())));</span>
 	}
 
-	private SmppSessionConfiguration buildSession(CloudhopperSessionOptions sessionOpts, PropertyResolver propertyResolver) {
-<span class="fc bfc" id="L1421" title="All 2 branches covered.">		if (sessionConfiguration != null) {</span>
-<span class="fc" id="L1422">			return sessionConfiguration;</span>
+	private SmppSessionConfiguration buildSession(CloudhopperSessionOptions sessionOpts) {
+<span class="fc bfc" id="L1340" title="All 2 branches covered.">		if (sessionConfiguration != null) {</span>
+<span class="fc" id="L1341">			return sessionConfiguration;</span>
 		}
-<span class="fc" id="L1424">		SmppSessionConfiguration session = new SmppSessionConfiguration(buildBindType(propertyResolver), systemIdValueBuilder.getValue(propertyResolver),</span>
-<span class="fc" id="L1425">				passwordValueBuilder.getValue(propertyResolver));</span>
-<span class="fc" id="L1426">		session.setHost(getHost(propertyResolver));</span>
-<span class="fc" id="L1427">		session.setPort(getPort(propertyResolver));</span>
-<span class="fc" id="L1428">		session.setSystemType(systemTypeValueBuilder.getValue(propertyResolver));</span>
-<span class="fc" id="L1429">		set(session::setBindTimeout, sessionOpts::getBindTimeout);</span>
-<span class="fc" id="L1430">		set(session::setConnectTimeout, sessionOpts::getConnectTimeout);</span>
-<span class="fc" id="L1431">		session.setInterfaceVersion(getInterfaceVersion(propertyResolver));</span>
-<span class="fc" id="L1432">		set(session::setName, sessionOpts::getSessionName);</span>
-<span class="fc" id="L1433">		set(session::setRequestExpiryTimeout, sessionOpts::getRequestExpiryTimeout);</span>
-<span class="fc" id="L1434">		set(session::setWindowMonitorInterval, sessionOpts::getWindowMonitorInterval);</span>
-<span class="fc" id="L1435">		set(session::setWindowSize, sessionOpts::getWindowSize);</span>
-<span class="fc" id="L1436">		set(session::setWindowWaitTimeout, sessionOpts::getWindowWaitTimeout);</span>
-<span class="fc" id="L1437">		set(session::setWriteTimeout, sessionOpts::getWriteTimeout);</span>
-<span class="fc" id="L1438">		session.setAddressRange(addressRange);</span>
-<span class="fc" id="L1439">		configureSsl(session);</span>
-<span class="fc" id="L1440">		configureLogs(session);</span>
-<span class="fc" id="L1441">		return session;</span>
+<span class="fc" id="L1343">		SmppSessionConfiguration session = buildContext.register(new SmppSessionConfiguration(buildBindType(), systemIdValueBuilder.getValue(), passwordValueBuilder.getValue()));</span>
+<span class="fc" id="L1344">		session.setHost(getHost());</span>
+<span class="fc" id="L1345">		session.setPort(getPort());</span>
+<span class="fc" id="L1346">		session.setSystemType(systemTypeValueBuilder.getValue());</span>
+<span class="fc" id="L1347">		set(session::setBindTimeout, sessionOpts::getBindTimeout);</span>
+<span class="fc" id="L1348">		set(session::setConnectTimeout, sessionOpts::getConnectTimeout);</span>
+<span class="fc" id="L1349">		session.setInterfaceVersion(getInterfaceVersion());</span>
+<span class="fc" id="L1350">		set(session::setName, sessionOpts::getSessionName);</span>
+<span class="fc" id="L1351">		set(session::setRequestExpiryTimeout, sessionOpts::getRequestExpiryTimeout);</span>
+<span class="fc" id="L1352">		set(session::setWindowMonitorInterval, sessionOpts::getWindowMonitorInterval);</span>
+<span class="fc" id="L1353">		set(session::setWindowSize, sessionOpts::getWindowSize);</span>
+<span class="fc" id="L1354">		set(session::setWindowWaitTimeout, sessionOpts::getWindowWaitTimeout);</span>
+<span class="fc" id="L1355">		set(session::setWriteTimeout, sessionOpts::getWriteTimeout);</span>
+<span class="fc" id="L1356">		session.setAddressRange(addressRange);</span>
+<span class="fc" id="L1357">		configureSsl(session);</span>
+<span class="fc" id="L1358">		configureLogs(session);</span>
+<span class="fc" id="L1359">		return session;</span>
 	}
 
 	private static &lt;T&gt; void set(Consumer&lt;T&gt; setter, Supplier&lt;T&gt; getter) {
-<span class="fc" id="L1445">		T value = getter.get();</span>
-<span class="fc bfc" id="L1446" title="All 2 branches covered.">		if (value != null) {</span>
-<span class="fc" id="L1447">			setter.accept(value);</span>
+<span class="fc" id="L1363">		T value = getter.get();</span>
+<span class="fc bfc" id="L1364" title="All 2 branches covered.">		if (value != null) {</span>
+<span class="fc" id="L1365">			setter.accept(value);</span>
 		}
-<span class="fc" id="L1449">	}</span>
+<span class="fc" id="L1367">	}</span>
 
 	private void configureLogs(SmppSessionConfiguration session) {
-<span class="pc bpc" id="L1452" title="1 of 2 branches missed.">		if (loggingBuilder == null) {</span>
-<span class="fc" id="L1453">			return;</span>
+<span class="pc bpc" id="L1370" title="1 of 2 branches missed.">		if (loggingBuilder == null) {</span>
+<span class="fc" id="L1371">			return;</span>
 		}
-<span class="nc" id="L1455">		LoggingOptions options = loggingBuilder.build();</span>
-<span class="nc bnc" id="L1456" title="All 2 branches missed.">		if (options != null) {</span>
-<span class="nc" id="L1457">			session.setLoggingOptions(options);</span>
+<span class="nc" id="L1373">		LoggingOptions options = loggingBuilder.build();</span>
+<span class="nc bnc" id="L1374" title="All 2 branches missed.">		if (options != null) {</span>
+<span class="nc" id="L1375">			session.setLoggingOptions(options);</span>
 		}
-<span class="nc" id="L1459">	}</span>
+<span class="nc" id="L1377">	}</span>
 
 	private void configureSsl(SmppSessionConfiguration session) {
-<span class="pc bpc" id="L1462" title="1 of 2 branches missed.">		if (sslBuilder == null) {</span>
-<span class="fc" id="L1463">			return;</span>
+<span class="pc bpc" id="L1380" title="1 of 2 branches missed.">		if (sslBuilder == null) {</span>
+<span class="fc" id="L1381">			return;</span>
 		}
-<span class="nc" id="L1465">		SslConfiguration sslConfiguration = sslBuilder.build();</span>
-<span class="nc bnc" id="L1466" title="All 2 branches missed.">		session.setUseSsl(sslConfiguration != null);</span>
-<span class="nc bnc" id="L1467" title="All 2 branches missed.">		if (sslConfiguration != null) {</span>
-<span class="nc" id="L1468">			session.setSslConfiguration(sslConfiguration);</span>
+<span class="nc" id="L1383">		SslConfiguration sslConfiguration = sslBuilder.build();</span>
+<span class="nc bnc" id="L1384" title="All 2 branches missed.">		session.setUseSsl(sslConfiguration != null);</span>
+<span class="nc bnc" id="L1385" title="All 2 branches missed.">		if (sslConfiguration != null) {</span>
+<span class="nc" id="L1386">			session.setSslConfiguration(sslConfiguration);</span>
 		}
-<span class="nc" id="L1470">	}</span>
+<span class="nc" id="L1388">	}</span>
 
-	private SmppBindType buildBindType(PropertyResolver propertyResolver) {
-<span class="fc" id="L1473">		return bindTypeValueBuilder.getValue(propertyResolver, TRANSMITTER);</span>
+	private SmppBindType buildBindType() {
+<span class="fc" id="L1391">		return bindTypeValueBuilder.getValue(TRANSMITTER);</span>
 	}
 
-	private Byte getInterfaceVersion(PropertyResolver propertyResolver) {
-<span class="fc" id="L1477">		InterfaceVersion version = interfaceVersionValueBuilder.getValue(propertyResolver, VERSION_3_4);</span>
-<span class="fc" id="L1478">		return version.value();</span>
+	private Byte getInterfaceVersion() {
+<span class="fc" id="L1395">		InterfaceVersion version = interfaceVersionValueBuilder.getValue(VERSION_3_4);</span>
+<span class="fc" id="L1396">		return version.value();</span>
 	}
 
-	private int getPort(PropertyResolver propertyResolver) {
-<span class="fc" id="L1482">		return portValueBuilder.getValue(propertyResolver, 0);</span>
+	private int getPort() {
+<span class="fc" id="L1400">		return portValueBuilder.getValue(0);</span>
 	}
 
-	private String getHost(PropertyResolver propertyResolver) {
-<span class="fc" id="L1486">		return hostValueBuilder.getValue(propertyResolver);</span>
+	private String getHost() {
+<span class="fc" id="L1404">		return hostValueBuilder.getValue();</span>
 	}
 
-	private static CloudhopperOptions buildOptions(CloudhopperSessionOptions sessionOpts) {
-<span class="fc bfc" id="L1490" title="All 2 branches covered.">		Long responseTimeout = sessionOpts.getResponseTimeout() == null ? DEFAULT_RESPONSE_TIMEOUT : sessionOpts.getResponseTimeout();</span>
-<span class="fc bfc" id="L1491" title="All 2 branches covered.">		Long unbindTimeout = sessionOpts.getUnbindTimeout() == null ? DEFAULT_UNBIND_TIMEOUT : sessionOpts.getUnbindTimeout();</span>
-<span class="fc" id="L1492">		RetryExecutor connectRetry = sessionOpts.getConnectRetry();</span>
-<span class="fc" id="L1493">		return new CloudhopperOptions(responseTimeout, unbindTimeout, connectRetry, sessionOpts.isKeepSession());</span>
+	private CloudhopperOptions buildOptions(CloudhopperSessionOptions sessionOpts) {
+<span class="fc bfc" id="L1408" title="All 2 branches covered.">		Long responseTimeout = sessionOpts.getResponseTimeout() == null ? DEFAULT_RESPONSE_TIMEOUT : sessionOpts.getResponseTimeout();</span>
+<span class="fc bfc" id="L1409" title="All 2 branches covered.">		Long unbindTimeout = sessionOpts.getUnbindTimeout() == null ? DEFAULT_UNBIND_TIMEOUT : sessionOpts.getUnbindTimeout();</span>
+<span class="fc" id="L1410">		RetryExecutor connectRetry = sessionOpts.getConnectRetry();</span>
+<span class="fc" id="L1411">		return buildContext.register(new CloudhopperOptions(responseTimeout, unbindTimeout, connectRetry, sessionOpts.isKeepSession()));</span>
 	}
 
 }
