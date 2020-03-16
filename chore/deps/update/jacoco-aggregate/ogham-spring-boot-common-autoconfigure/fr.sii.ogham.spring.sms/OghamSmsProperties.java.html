@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>OghamSmsProperties.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">reporting</a> &gt; <a href="../index.html" class="el_bundle">ogham-spring-boot-common-autoconfigure</a> &gt; <a href="index.source.html" class="el_package">fr.sii.ogham.spring.sms</a> &gt; <span class="el_source">OghamSmsProperties.java</span></div><h1>OghamSmsProperties.java</h1><pre class="source lang-java linenums">package fr.sii.ogham.spring.sms;
+
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.NestedConfigurationProperty;
+
+import fr.sii.ogham.spring.common.MessageSpecificFreemarkerProperties;
+import fr.sii.ogham.spring.common.MessageSpecificTemplateProperties;
+import fr.sii.ogham.spring.common.MessageSpecificThymeleafProperties;
+import fr.sii.ogham.spring.common.OghamTemplateProperties;
+
+@ConfigurationProperties(&quot;ogham.sms&quot;)
+<span class="fc" id="L12">public class OghamSmsProperties implements OghamTemplateProperties {</span>
+<span class="fc" id="L13">	@NestedConfigurationProperty</span>
+	private FromProperties from = new FromProperties();
+<span class="fc" id="L15">	@NestedConfigurationProperty</span>
+	private ToProperties to = new ToProperties();
+<span class="fc" id="L17">	@NestedConfigurationProperty</span>
+	private MessageSpecificFreemarkerProperties freemarker = new MessageSpecificFreemarkerProperties();
+<span class="fc" id="L19">	@NestedConfigurationProperty</span>
+	private MessageSpecificThymeleafProperties thymeleaf = new MessageSpecificThymeleafProperties();
+<span class="fc" id="L21">	@NestedConfigurationProperty</span>
+	private MessageSpecificTemplateProperties template = new MessageSpecificTemplateProperties();
+<span class="fc" id="L23">	@NestedConfigurationProperty</span>
+	private SplitProperties split = new SplitProperties();
+
+	public FromProperties getFrom() {
+<span class="fc" id="L27">		return from;</span>
+	}
+
+	public void setFrom(FromProperties from) {
+<span class="fc" id="L31">		this.from = from;</span>
+<span class="fc" id="L32">	}</span>
+
+	public ToProperties getTo() {
+<span class="fc" id="L35">		return to;</span>
+	}
+
+	public void setTo(ToProperties to) {
+<span class="fc" id="L39">		this.to = to;</span>
+<span class="fc" id="L40">	}</span>
+
+	public MessageSpecificFreemarkerProperties getFreemarker() {
+<span class="fc" id="L43">		return freemarker;</span>
+	}
+
+	public void setFreemarker(MessageSpecificFreemarkerProperties freemarker) {
+<span class="fc" id="L47">		this.freemarker = freemarker;</span>
+<span class="fc" id="L48">	}</span>
+
+	public MessageSpecificThymeleafProperties getThymeleaf() {
+<span class="fc" id="L51">		return thymeleaf;</span>
+	}
+
+	public void setThymeleaf(MessageSpecificThymeleafProperties thymeleaf) {
+<span class="fc" id="L55">		this.thymeleaf = thymeleaf;</span>
+<span class="fc" id="L56">	}</span>
+
+	public MessageSpecificTemplateProperties getTemplate() {
+<span class="fc" id="L59">		return template;</span>
+	}
+
+	public void setTemplate(MessageSpecificTemplateProperties template) {
+<span class="fc" id="L63">		this.template = template;</span>
+<span class="fc" id="L64">	}</span>
+
+	public SplitProperties getSplit() {
+<span class="fc" id="L67">		return split;</span>
+	}
+
+	public void setSplit(SplitProperties split) {
+<span class="fc" id="L71">		this.split = split;</span>
+<span class="fc" id="L72">	}</span>
+
+<span class="fc" id="L74">	public static class FromProperties {</span>
+		/**
+		 * If no sender phone number is explicitly defined on the message, Ogham
+		 * will use this phone number as default sender number.
+		 */
+		private String defaultValue;
+<span class="fc" id="L80">		@NestedConfigurationProperty</span>
+		private FromAlphanumericCodeProperties alphanumericCodeFormat = new FromAlphanumericCodeProperties();
+<span class="fc" id="L82">		@NestedConfigurationProperty</span>
+		private FromShortCodeProperties shortCodeFormat = new FromShortCodeProperties();
+<span class="fc" id="L84">		@NestedConfigurationProperty</span>
+		private FromInternationalFormatProperties internationalFormat = new FromInternationalFormatProperties();
+
+		public String getDefaultValue() {
+<span class="nc" id="L88">			return defaultValue;</span>
+		}
+
+		public void setDefaultValue(String defaultValue) {
+<span class="fc" id="L92">			this.defaultValue = defaultValue;</span>
+<span class="fc" id="L93">		}</span>
+
+		public FromAlphanumericCodeProperties getAlphanumericCodeFormat() {
+<span class="fc" id="L96">			return alphanumericCodeFormat;</span>
+		}
+
+		public void setAlphanumericCode(FromAlphanumericCodeProperties alphanumericCode) {
+<span class="nc" id="L100">			this.alphanumericCodeFormat = alphanumericCode;</span>
+<span class="nc" id="L101">		}</span>
+
+		public FromShortCodeProperties getShortCodeFormat() {
+<span class="fc" id="L104">			return shortCodeFormat;</span>
+		}
+
+		public void setShortcode(FromShortCodeProperties shortcode) {
+<span class="nc" id="L108">			this.shortCodeFormat = shortcode;</span>
+<span class="nc" id="L109">		}</span>
+
+		public FromInternationalFormatProperties getInternationalFormat() {
+<span class="fc" id="L112">			return internationalFormat;</span>
+		}
+
+		public void setInternationalFormat(FromInternationalFormatProperties internationalFormat) {
+<span class="fc" id="L116">			this.internationalFormat = internationalFormat;</span>
+<span class="fc" id="L117">		}</span>
+	}
+
+<span class="fc" id="L120">	public static class FromAlphanumericCodeProperties {</span>
+		/**
+		 * Enable/disable alphanumeric code format conversion for sender phone
+		 * number: if the sender address is alphanumeric (contains both letters
+		 * and numbers) or non-numeric, TON is set to 5 and NPI to 0.
+		 */
+		private boolean enable;
+
+		public boolean isEnable() {
+<span class="nc" id="L129">			return enable;</span>
+		}
+
+		public void setEnable(boolean enable) {
+<span class="fc" id="L133">			this.enable = enable;</span>
+<span class="fc" id="L134">		}</span>
+	}
+
+<span class="fc" id="L137">	public static class FromShortCodeProperties {</span>
+		/**
+		 * Enable/disable short code format conversion for sender phone number:
+		 * if the sender address is a short code, TON is set to 3, and NPI is
+		 * set to 0. A number is considered to be a short code if the length of
+		 * the number is 5 digits or less.
+		 */
+		private boolean enable;
+
+		public boolean isEnable() {
+<span class="nc" id="L147">			return enable;</span>
+		}
+
+		public void setEnable(boolean enable) {
+<span class="fc" id="L151">			this.enable = enable;</span>
+<span class="fc" id="L152">		}</span>
+	}
+
+<span class="fc" id="L155">	public static class FromInternationalFormatProperties {</span>
+		/**
+		 * Enable/disable international number format conversion for sender
+		 * phone number: if the sender starts with a &quot;+&quot;, TON is set to 1, and
+		 * NPI is set to 1.
+		 * 
+		 */
+		private boolean enable;
+
+		public boolean isEnable() {
+<span class="nc" id="L165">			return enable;</span>
+		}
+
+		public void setEnable(boolean enable) {
+<span class="fc" id="L169">			this.enable = enable;</span>
+<span class="fc" id="L170">		}</span>
+	}
+
+<span class="fc" id="L173">	public static class ToProperties {</span>
+		/**
+		 * If no recipient phone number is explicitly defined on the message,
+		 * Ogham will use this phone number as default recipient number.
+		 */
+		private String defaultValue;
+<span class="fc" id="L179">		@NestedConfigurationProperty</span>
+		private ToInternationalFormatProperties internationalFormat = new ToInternationalFormatProperties();
+
+		public String getDefaultValue() {
+<span class="nc" id="L183">			return defaultValue;</span>
+		}
+
+		public void setDefaultValue(String defaultValue) {
+<span class="fc" id="L187">			this.defaultValue = defaultValue;</span>
+<span class="fc" id="L188">		}</span>
+
+		public ToInternationalFormatProperties getInternationalFormat() {
+<span class="fc" id="L191">			return internationalFormat;</span>
+		}
+
+		public void setInternationalFormat(ToInternationalFormatProperties internationalFormat) {
+<span class="fc" id="L195">			this.internationalFormat = internationalFormat;</span>
+<span class="fc" id="L196">		}</span>
+	}
+
+<span class="fc" id="L199">	public static class ToInternationalFormatProperties {</span>
+		/**
+		 * Enable/disable international number format conversion for recipient
+		 * phone number: if the recipient starts with a &quot;+&quot;, TON is set to 1,
+		 * and NPI is set to 1.
+		 * 
+		 */
+		private boolean enable;
+
+		public boolean isEnable() {
+<span class="nc" id="L209">			return enable;</span>
+		}
+
+		public void setEnable(boolean enable) {
+<span class="fc" id="L213">			this.enable = enable;</span>
+<span class="fc" id="L214">		}</span>
+
+	}
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>
