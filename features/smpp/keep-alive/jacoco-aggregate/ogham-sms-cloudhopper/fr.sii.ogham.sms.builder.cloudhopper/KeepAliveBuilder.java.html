@@ -41,15 +41,17 @@ public class KeepAliveBuilder extends AbstractParent&lt;SessionBuilder&gt; imple
 	private final ConfigurationValueBuilderHelper&lt;KeepAliveBuilder, Long&gt; enquireLinkIntervalValueBuilder;
 	private final ConfigurationValueBuilderHelper&lt;KeepAliveBuilder, Long&gt; enquireLinkTimeoutValueBuilder;
 	private final ConfigurationValueBuilderHelper&lt;KeepAliveBuilder, Boolean&gt; connectAtStartupValueBuilder;
+	private final ConfigurationValueBuilderHelper&lt;KeepAliveBuilder, Integer&gt; maxConsecutiveTimeoutsValueBuilder;
 	private Supplier&lt;ScheduledExecutorService&gt; executorFactory;
 
 	public KeepAliveBuilder(SessionBuilder parent, BuildContext buildContext) {
-<span class="fc" id="L47">		super(parent);</span>
-<span class="fc" id="L48">		this.enableValueBuilder = new ConfigurationValueBuilderHelper&lt;&gt;(this, Boolean.class, buildContext);</span>
-<span class="fc" id="L49">		this.enquireLinkIntervalValueBuilder = new ConfigurationValueBuilderHelper&lt;&gt;(this, Long.class, buildContext);</span>
-<span class="fc" id="L50">		this.enquireLinkTimeoutValueBuilder = new ConfigurationValueBuilderHelper&lt;&gt;(this, Long.class, buildContext);</span>
-<span class="fc" id="L51">		this.connectAtStartupValueBuilder = new ConfigurationValueBuilderHelper&lt;&gt;(this, Boolean.class, buildContext);</span>
-<span class="fc" id="L52">	}</span>
+<span class="fc" id="L48">		super(parent);</span>
+<span class="fc" id="L49">		this.enableValueBuilder = new ConfigurationValueBuilderHelper&lt;&gt;(this, Boolean.class, buildContext);</span>
+<span class="fc" id="L50">		this.enquireLinkIntervalValueBuilder = new ConfigurationValueBuilderHelper&lt;&gt;(this, Long.class, buildContext);</span>
+<span class="fc" id="L51">		this.enquireLinkTimeoutValueBuilder = new ConfigurationValueBuilderHelper&lt;&gt;(this, Long.class, buildContext);</span>
+<span class="fc" id="L52">		this.connectAtStartupValueBuilder = new ConfigurationValueBuilderHelper&lt;&gt;(this, Boolean.class, buildContext);</span>
+<span class="fc" id="L53">		this.maxConsecutiveTimeoutsValueBuilder = new ConfigurationValueBuilderHelper&lt;&gt;(this, Integer.class, buildContext);</span>
+<span class="fc" id="L54">	}</span>
 
 	/**
 	 * Enable or disable sending of {@link EnquireLink} messages to keep the
@@ -87,8 +89,8 @@ public class KeepAliveBuilder extends AbstractParent&lt;SessionBuilder&gt; imple
 	 * @return this instance for fluent chaining
 	 */
 	public KeepAliveBuilder enable(Boolean enable) {
-<span class="fc" id="L90">		enableValueBuilder.setValue(enable);</span>
-<span class="fc" id="L91">		return this;</span>
+<span class="fc" id="L92">		enableValueBuilder.setValue(enable);</span>
+<span class="fc" id="L93">		return this;</span>
 	}
 
 	/**
@@ -129,7 +131,7 @@ public class KeepAliveBuilder extends AbstractParent&lt;SessionBuilder&gt; imple
 	 * @return the builder to configure property keys/default value
 	 */
 	public ConfigurationValueBuilder&lt;KeepAliveBuilder, Boolean&gt; enable() {
-<span class="fc" id="L132">		return enableValueBuilder;</span>
+<span class="fc" id="L134">		return enableValueBuilder;</span>
 	}
 
 	/**
@@ -169,8 +171,8 @@ public class KeepAliveBuilder extends AbstractParent&lt;SessionBuilder&gt; imple
 	 * @return this instance for fluent chaining
 	 */
 	public KeepAliveBuilder interval(Long delay) {
-<span class="fc" id="L172">		enquireLinkIntervalValueBuilder.setValue(delay);</span>
-<span class="fc" id="L173">		return this;</span>
+<span class="fc" id="L174">		enquireLinkIntervalValueBuilder.setValue(delay);</span>
+<span class="fc" id="L175">		return this;</span>
 	}
 
 	/**
@@ -211,7 +213,7 @@ public class KeepAliveBuilder extends AbstractParent&lt;SessionBuilder&gt; imple
 	 * @return the builder to configure property keys/default value
 	 */
 	public ConfigurationValueBuilder&lt;KeepAliveBuilder, Long&gt; interval() {
-<span class="fc" id="L214">		return enquireLinkIntervalValueBuilder;</span>
+<span class="fc" id="L216">		return enquireLinkIntervalValueBuilder;</span>
 	}
 
 	/**
@@ -250,8 +252,8 @@ public class KeepAliveBuilder extends AbstractParent&lt;SessionBuilder&gt; imple
 	 * @return this instance for fluent chaining
 	 */
 	public KeepAliveBuilder responseTimeout(Long timeout) {
-<span class="fc" id="L253">		enquireLinkTimeoutValueBuilder.setValue(timeout);</span>
-<span class="fc" id="L254">		return this;</span>
+<span class="fc" id="L255">		enquireLinkTimeoutValueBuilder.setValue(timeout);</span>
+<span class="fc" id="L256">		return this;</span>
 	}
 
 	/**
@@ -292,7 +294,7 @@ public class KeepAliveBuilder extends AbstractParent&lt;SessionBuilder&gt; imple
 	 * @return the builder to configure property keys/default value
 	 */
 	public ConfigurationValueBuilder&lt;KeepAliveBuilder, Long&gt; responseTimeout() {
-<span class="fc" id="L295">		return enquireLinkTimeoutValueBuilder;</span>
+<span class="fc" id="L297">		return enquireLinkTimeoutValueBuilder;</span>
 	}
 
 	/**
@@ -336,8 +338,8 @@ public class KeepAliveBuilder extends AbstractParent&lt;SessionBuilder&gt; imple
 	 * @return this instance for fluent chaining
 	 */
 	public KeepAliveBuilder connectAtStartup(Boolean connectAtStartup) {
-<span class="fc" id="L339">		connectAtStartupValueBuilder.setValue(connectAtStartup);</span>
-<span class="fc" id="L340">		return this;</span>
+<span class="fc" id="L341">		connectAtStartupValueBuilder.setValue(connectAtStartup);</span>
+<span class="fc" id="L342">		return this;</span>
 	}
 
 	/**
@@ -383,7 +385,7 @@ public class KeepAliveBuilder extends AbstractParent&lt;SessionBuilder&gt; imple
 	 * @return the builder to configure property keys/default value
 	 */
 	public ConfigurationValueBuilder&lt;KeepAliveBuilder, Boolean&gt; connectAtStartup() {
-<span class="fc" id="L386">		return connectAtStartupValueBuilder;</span>
+<span class="fc" id="L388">		return connectAtStartupValueBuilder;</span>
 	}
 
 	/**
@@ -407,8 +409,8 @@ public class KeepAliveBuilder extends AbstractParent&lt;SessionBuilder&gt; imple
 	 * @return this instance for fluent chaining
 	 */
 	public KeepAliveBuilder executor(Supplier&lt;ScheduledExecutorService&gt; executorFactory) {
-<span class="fc" id="L410">		this.executorFactory = executorFactory;</span>
-<span class="fc" id="L411">		return this;</span>
+<span class="fc" id="L412">		this.executorFactory = executorFactory;</span>
+<span class="fc" id="L413">		return this;</span>
 	}
 
 	/**
@@ -426,18 +428,98 @@ public class KeepAliveBuilder extends AbstractParent&lt;SessionBuilder&gt; imple
 	 * @return this instance for fluent chaining
 	 */
 	public KeepAliveBuilder executor(ScheduledExecutorService executor) {
-<span class="nc" id="L429">		return executor(() -&gt; executor);</span>
+<span class="nc" id="L431">		return executor(() -&gt; executor);</span>
 	}
 
+	
+	
+	/**
+	 * The maximum number of consecutive timeouts to {@link EnquireLink} requests to consider that a new session is required.
+	 * 
+	 * &lt;p&gt;
+	 * The value set using this method takes precedence over any property and
+	 * default value configured using {@link #maxConsecutiveTimeouts()}.
+	 * 
+	 * &lt;pre&gt;
+	 * .maxConsecutiveTimeouts(5)
+	 * .maxConsecutiveTimeouts()
+	 *   .properties(&quot;${custom.property.high-priority}&quot;, &quot;${custom.property.low-priority}&quot;)
+	 *   .defaultValue(3)
+	 * &lt;/pre&gt;
+	 * 
+	 * &lt;pre&gt;
+	 * .maxConsecutiveTimeouts(5)
+	 * .maxConsecutiveTimeouts()
+	 *   .properties(&quot;${custom.property.high-priority}&quot;, &quot;${custom.property.low-priority}&quot;)
+	 *   .defaultValue(3)
+	 * &lt;/pre&gt;
+	 * 
+	 * In both cases, {@code maxConsecutiveTimeouts(5)} is used.
+	 * 
+	 * &lt;p&gt;
+	 * If this method is called several times, only the last value is used.
+	 * 
+	 * &lt;p&gt;
+	 * If {@code null} value is set, it is like not setting a value at all. The
+	 * property/default value configuration is applied.
+	 * 
+	 * @param max
+	 *            the maximum consecutive timeouts
+	 * @return this instance for fluent chaining
+	 */
+	public KeepAliveBuilder maxConsecutiveTimeouts(Integer max) {
+<span class="fc" id="L471">		maxConsecutiveTimeoutsValueBuilder.setValue(max);</span>
+<span class="fc" id="L472">		return this;</span>
+	}
+
+	/**
+	 * The maximum number of consecutive timeouts to {@link EnquireLink} requests to consider that a new session is required.
+	 * 
+	 * &lt;p&gt;
+	 * This method is mainly used by {@link Configurer}s to register some property keys and/or a default value.
+	 * The aim is to let developer be able to externalize its configuration (using system properties, configuration file or anything else).
+	 * If the developer doesn't configure any value for the registered properties, the default value is used (if set).
+	 * 
+	 * &lt;pre&gt;
+	 * .maxConsecutiveTimeouts()
+	 *   .properties(&quot;${custom.property.high-priority}&quot;, &quot;${custom.property.low-priority}&quot;)
+	 *   .defaultValue(3)
+	 * &lt;/pre&gt;
+	 * 
+	 * &lt;p&gt;
+	 * Non-null value set using {@link #maxConsecutiveTimeouts(Integer)} takes
+	 * precedence over property values and default value.
+	 * 
+	 * &lt;pre&gt;
+	 * .maxConsecutiveTimeouts(5)
+	 * .maxConsecutiveTimeouts()
+	 *   .properties(&quot;${custom.property.high-priority}&quot;, &quot;${custom.property.low-priority}&quot;)
+	 *   .defaultValue(3)
+	 * &lt;/pre&gt;
+	 * 
+	 * The value {@code 5} is used regardless of the value of the properties
+	 * and default value.
+	 * 
+	 * &lt;p&gt;
+	 * See {@link ConfigurationValueBuilder} for more information.
+	 * 
+	 * 
+	 * @return the builder to configure property keys/default value
+	 */
+	public ConfigurationValueBuilder&lt;KeepAliveBuilder, Integer&gt; maxConsecutiveTimeouts() {
+<span class="fc" id="L510">		return maxConsecutiveTimeoutsValueBuilder;</span>
+	}
+	
 	@Override
 	public KeepAliveOptions build() {
-<span class="fc" id="L434">		KeepAliveOptions keepAliveOptions = new KeepAliveOptions();</span>
-<span class="fc" id="L435">		keepAliveOptions.setEnable(enableValueBuilder.getValue(false));</span>
-<span class="fc" id="L436">		keepAliveOptions.setEnquireLinkInterval(enquireLinkIntervalValueBuilder.getValue(0L));</span>
-<span class="fc" id="L437">		keepAliveOptions.setEnquireLinkTimeout(enquireLinkTimeoutValueBuilder.getValue(0L));</span>
-<span class="fc" id="L438">		keepAliveOptions.setConnectAtStartup(connectAtStartupValueBuilder.getValue(false));</span>
-<span class="fc bfc" id="L439" title="All 2 branches covered.">		keepAliveOptions.setExecutor(executorFactory != null ? executorFactory : defaultEnquireLinkTimerFactory());</span>
-<span class="fc" id="L440">		return keepAliveOptions;</span>
+<span class="fc" id="L515">		KeepAliveOptions keepAliveOptions = new KeepAliveOptions();</span>
+<span class="fc" id="L516">		keepAliveOptions.setEnable(enableValueBuilder.getValue());</span>
+<span class="fc" id="L517">		keepAliveOptions.setEnquireLinkInterval(enquireLinkIntervalValueBuilder.getValue());</span>
+<span class="fc" id="L518">		keepAliveOptions.setEnquireLinkTimeout(enquireLinkTimeoutValueBuilder.getValue());</span>
+<span class="fc" id="L519">		keepAliveOptions.setConnectAtStartup(connectAtStartupValueBuilder.getValue());</span>
+<span class="fc bfc" id="L520" title="All 2 branches covered.">		keepAliveOptions.setExecutor(executorFactory != null ? executorFactory : defaultEnquireLinkTimerFactory());</span>
+<span class="fc" id="L521">		keepAliveOptions.setMaxConsecutiveTimeouts(maxConsecutiveTimeoutsValueBuilder.getValue());</span>
+<span class="fc" id="L522">		return keepAliveOptions;</span>
 	}
 
 	/**
@@ -452,12 +534,12 @@ public class KeepAliveBuilder extends AbstractParent&lt;SessionBuilder&gt; imple
 	 * @return the factory
 	 */
 	public static Supplier&lt;ScheduledExecutorService&gt; defaultEnquireLinkTimerFactory() {
-<span class="pc" id="L455">		return () -&gt; Executors.newSingleThreadScheduledExecutor(new ThreadFactory() {</span>
+<span class="pc" id="L537">		return () -&gt; Executors.newSingleThreadScheduledExecutor(new ThreadFactory() {</span>
 			@Override
 			public Thread newThread(Runnable runnable) {
-<span class="nc" id="L458">				Thread thread = new Thread(runnable);</span>
-<span class="nc" id="L459">				thread.setName(&quot;EnquireLink-&quot; + enquireLinkThreadCounter.incrementAndGet());</span>
-<span class="nc" id="L460">				return thread;</span>
+<span class="nc" id="L540">				Thread thread = new Thread(runnable);</span>
+<span class="nc" id="L541">				thread.setName(&quot;EnquireLink-&quot; + enquireLinkThreadCounter.incrementAndGet());</span>
+<span class="nc" id="L542">				return thread;</span>
 			}
 		});
 	}

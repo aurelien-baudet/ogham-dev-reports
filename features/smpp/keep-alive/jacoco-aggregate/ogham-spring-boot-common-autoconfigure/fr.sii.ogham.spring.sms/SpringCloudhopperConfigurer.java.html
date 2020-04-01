@@ -12,12 +12,13 @@ import static fr.sii.ogham.sms.CloudhopperConstants.DEFAULT_CONNECT_RETRY_DELAY;
 import static fr.sii.ogham.sms.CloudhopperConstants.DEFAULT_CONNECT_TIMEOUT;
 import static fr.sii.ogham.sms.CloudhopperConstants.DEFAULT_ENQUIRE_LINK_INTERVAL;
 import static fr.sii.ogham.sms.CloudhopperConstants.DEFAULT_ENQUIRE_LINK_RESPONSE_TIMEOUT;
-import static fr.sii.ogham.sms.CloudhopperConstants.DEFAULT_ENQUIRE_LINK_REUSE_DELAY;
+import static fr.sii.ogham.sms.CloudhopperConstants.DEFAULT_LAST_INTERACTION_EXPIRATION_DELAY;
 import static fr.sii.ogham.sms.CloudhopperConstants.DEFAULT_ENQUIRE_LINK_REUSE_RESPONSE_TIMEOUT;
 import static fr.sii.ogham.sms.CloudhopperConstants.DEFAULT_GSM7BIT_PACKED_ENCODING_PRIORITY;
 import static fr.sii.ogham.sms.CloudhopperConstants.DEFAULT_GSM8_ENCODING_PRIORITY;
 import static fr.sii.ogham.sms.CloudhopperConstants.DEFAULT_KEEP_ALIVE_CONNECT_AT_STARTUP;
 import static fr.sii.ogham.sms.CloudhopperConstants.DEFAULT_KEEP_ALIVE_ENABLED;
+import static fr.sii.ogham.sms.CloudhopperConstants.DEFAULT_KEEP_ALIVE_MAX_CONSECUTIVE_TIMEOUTS;
 import static fr.sii.ogham.sms.CloudhopperConstants.DEFAULT_LATIN1_ENCODING_PRIORITY;
 import static fr.sii.ogham.sms.CloudhopperConstants.DEFAULT_REQUEST_EXPIRY_TIMEOUT;
 import static fr.sii.ogham.sms.CloudhopperConstants.DEFAULT_RESPONSE_TIMEOUT;
@@ -53,7 +54,7 @@ import fr.sii.ogham.spring.common.SpringMessagingConfigurer;
  *
  */
 public class SpringCloudhopperConfigurer implements SpringMessagingConfigurer {
-<span class="fc" id="L56">	private static final Logger LOG = LoggerFactory.getLogger(SpringCloudhopperConfigurer.class);</span>
+<span class="fc" id="L57">	private static final Logger LOG = LoggerFactory.getLogger(SpringCloudhopperConfigurer.class);</span>
 
 	private final OghamSmsProperties smsProperties;
 	private final OghamSmppProperties smppProperties;
@@ -61,75 +62,76 @@ public class SpringCloudhopperConfigurer implements SpringMessagingConfigurer {
 
 
 	public SpringCloudhopperConfigurer(OghamSmsProperties smsProperties, OghamSmppProperties smppProperties, OghamCloudhopperProperties cloudhopperProperties) {
-<span class="fc" id="L64">		super();</span>
-<span class="pc bpc" id="L65" title="1 of 2 branches missed.">		this.smsProperties = smsProperties != null ? smsProperties : new OghamSmsProperties();</span>
-<span class="pc bpc" id="L66" title="1 of 2 branches missed.">		this.smppProperties = smppProperties != null ? smppProperties : new OghamSmppProperties();</span>
-<span class="pc bpc" id="L67" title="1 of 2 branches missed.">		this.cloudhopperProperties = cloudhopperProperties != null ? cloudhopperProperties : new OghamCloudhopperProperties();</span>
-<span class="fc" id="L68">	}</span>
+<span class="fc" id="L65">		super();</span>
+<span class="pc bpc" id="L66" title="1 of 2 branches missed.">		this.smsProperties = smsProperties != null ? smsProperties : new OghamSmsProperties();</span>
+<span class="pc bpc" id="L67" title="1 of 2 branches missed.">		this.smppProperties = smppProperties != null ? smppProperties : new OghamSmppProperties();</span>
+<span class="pc bpc" id="L68" title="1 of 2 branches missed.">		this.cloudhopperProperties = cloudhopperProperties != null ? cloudhopperProperties : new OghamCloudhopperProperties();</span>
+<span class="fc" id="L69">	}</span>
 
 	@Override
 	public void configure(MessagingBuilder builder) {
-<span class="fc" id="L72">		LOG.debug(&quot;[{}] apply Cloudhopper configuration properties to {}&quot;, this, builder);</span>
+<span class="fc" id="L73">		LOG.debug(&quot;[{}] apply Cloudhopper configuration properties to {}&quot;, this, builder);</span>
 		// @formatter:off
-<span class="fc" id="L74">		builder.sms()</span>
-<span class="fc" id="L75">			.sender(CloudhopperBuilder.class)</span>
-<span class="fc" id="L76">				.systemId().value(ofNullable(firstValue(cloudhopperProperties.getSystemId(), smppProperties.getSystemId()))).and()</span>
-<span class="fc" id="L77">				.password().value(ofNullable(firstValue(cloudhopperProperties.getPassword(), smppProperties.getPassword()))).and()</span>
-<span class="fc" id="L78">				.host().value(ofNullable(firstValue(cloudhopperProperties.getHost(), smppProperties.getHost()))).and()</span>
-<span class="fc" id="L79">				.port().value(ofNullable(firstValue(cloudhopperProperties.getPort(), smppProperties.getPort()))).defaultValue(overrideIfNotSet(DEFAULT_SMPP_PORT)).and()</span>
-<span class="fc" id="L80">				.bindType().value(ofNullable(firstValue(cloudhopperProperties.getBindType(), smppProperties.getBindType()))).defaultValue(overrideIfNotSet(DEFAULT_BIND_TYPE)).and()</span>
-<span class="fc" id="L81">				.systemType().value(ofNullable(firstValue(cloudhopperProperties.getSystemType(), smppProperties.getSystemType()))).and()</span>
-<span class="fc" id="L82">				.interfaceVersion().value(ofNullable(InterfaceVersion.of(cloudhopperProperties.getInterfaceVersion()))).and()</span>
-<span class="fc" id="L83">				.userData()</span>
-<span class="fc" id="L84">					.useShortMessage().value(ofNullable(firstValue(cloudhopperProperties.getUserData().getUseShortMessage(), smppProperties.getUserData().getUseShortMessage()))).defaultValue(overrideIfNotSet(DEFAULT_USE_SHORT_MESSAGE)).and()</span>
-<span class="fc" id="L85">					.useTlvMessagePayload().value(ofNullable(firstValue(cloudhopperProperties.getUserData().getUseTlvMessagePayload(), smppProperties.getUserData().getUseTlvMessagePayload()))).defaultValue(overrideIfNotSet(DEFAULT_USE_TLV_MESSAGE_PAYLOAD)).and()</span>
-<span class="fc" id="L86">					.and()</span>
-<span class="fc" id="L87">				.encoder()</span>
-<span class="fc" id="L88">					.gsm7bitPacked().value(ofNullable(firstValue(cloudhopperProperties.getEncoder().getGsm7bitPacked().getPriority(), smppProperties.getEncoder().getGsm7bitPacked().getPriority()))).defaultValue(overrideIfNotSet(DEFAULT_GSM7BIT_PACKED_ENCODING_PRIORITY)).and()</span>
-<span class="fc" id="L89">					.gsm8bit().value(ofNullable(firstValue(cloudhopperProperties.getEncoder().getGsm8bit().getPriority(), smppProperties.getEncoder().getGsm8bit().getPriority()))).defaultValue(overrideIfNotSet(DEFAULT_GSM8_ENCODING_PRIORITY)).and()</span>
-<span class="fc" id="L90">					.latin1().value(ofNullable(firstValue(cloudhopperProperties.getEncoder().getLatin1().getPriority(), smppProperties.getEncoder().getLatin1().getPriority()))).defaultValue(overrideIfNotSet(DEFAULT_LATIN1_ENCODING_PRIORITY)).and()</span>
-<span class="fc" id="L91">					.ucs2().value(ofNullable(firstValue(cloudhopperProperties.getEncoder().getUcs2().getPriority(), smppProperties.getEncoder().getUcs2().getPriority()))).defaultValue(overrideIfNotSet(DEFAULT_UCS2_ENCODING_PRIORITY)).and()</span>
-<span class="fc" id="L92">					.autoGuess().value(ofNullable(firstValue(cloudhopperProperties.getEncoder().getAutoGuess().getEnable(), smppProperties.getEncoder().getAutoGuess().getEnable()))).defaultValue(overrideIfNotSet(DEFAULT_AUTO_GUESS_ENABLED)).and()</span>
-<span class="fc" id="L93">					.fallback().value(ofNullable(firstValue(cloudhopperProperties.getEncoder().getDefaultCharset(), smppProperties.getEncoder().getDefaultCharset()))).defaultValue(overrideIfNotSet(DEFAULT_CHARSET)).and()</span>
-<span class="fc" id="L94">					.and()</span>
-<span class="fc" id="L95">				.splitter()</span>
-<span class="fc" id="L96">					.enable().value(ofNullable(firstValue(cloudhopperProperties.getSplit().getEnable(), smppProperties.getSplit().getEnable(), smsProperties.getSplit().getEnable()))).defaultValue(overrideIfNotSet(DEFAULT_SPLIT_ENABLED)).and()</span>
-<span class="fc" id="L97">					.and()</span>
-<span class="fc" id="L98">				.dataCodingScheme()</span>
-<span class="fc" id="L99">					.auto().value(ofNullable(firstValue(cloudhopperProperties.getDataCodingScheme().getAuto().getEnable(), smppProperties.getDataCodingScheme().getAuto().getEnable()))).defaultValue(overrideIfNotSet(DEFAULT_AUTO_DATA_CODING_SCHEME_ENABLED)).and()</span>
-<span class="fc" id="L100">					.and()</span>
-<span class="fc" id="L101">				.session()</span>
-<span class="fc" id="L102">					.sessionName().value(ofNullable(cloudhopperProperties.getSession().getName())).and()</span>
-<span class="fc" id="L103">					.bindTimeout().value(ofNullable(cloudhopperProperties.getSession().getBindTimeout())).defaultValue(overrideIfNotSet(DEFAULT_BIND_TIMEOUT)).and()</span>
-<span class="fc" id="L104">					.connectTimeout().value(ofNullable(cloudhopperProperties.getSession().getConnectTimeout())).defaultValue(overrideIfNotSet(DEFAULT_CONNECT_TIMEOUT)).and()</span>
-<span class="fc" id="L105">					.requestExpiryTimeout().value(ofNullable(cloudhopperProperties.getSession().getRequestExpiryTimeout())).defaultValue(overrideIfNotSet(DEFAULT_REQUEST_EXPIRY_TIMEOUT)).and()</span>
-<span class="fc" id="L106">					.windowMonitorInterval().value(ofNullable(cloudhopperProperties.getSession().getWindowMonitorInterval())).defaultValue(overrideIfNotSet(DEFAULT_WINDOW_MONITOR_INTERVAL)).and()</span>
-<span class="fc" id="L107">					.windowSize().value(ofNullable(cloudhopperProperties.getSession().getWindowSize())).defaultValue(overrideIfNotSet(DEFAULT_WINDOW_SIZE)).and()</span>
-<span class="fc" id="L108">					.windowWait().value(ofNullable(cloudhopperProperties.getSession().getWindowWaitTimeout())).defaultValue(overrideIfNotSet(DEFAULT_WINDOW_WAIT_TIMEOUT)).and()</span>
-<span class="fc" id="L109">					.writeTimeout().value(ofNullable(cloudhopperProperties.getSession().getWriteTimeout())).defaultValue(overrideIfNotSet(DEFAULT_WRITE_TIMEOUT)).and()</span>
-<span class="fc" id="L110">					.responseTimeout().value(ofNullable(cloudhopperProperties.getSession().getResponseTimeout())).defaultValue(overrideIfNotSet(DEFAULT_RESPONSE_TIMEOUT)).and()</span>
-<span class="fc" id="L111">					.unbindTimeout().value(ofNullable(cloudhopperProperties.getSession().getUnbindTimeout())).defaultValue(overrideIfNotSet(DEFAULT_UNBIND_TIMEOUT)).and()</span>
-<span class="fc" id="L112">					.reuseSession()</span>
-<span class="fc" id="L113">						.enable().value(ofNullable(cloudhopperProperties.getSession().getReuseSession().getEnable())).defaultValue(overrideIfNotSet(DEFAULT_REUSE_SESSION_ENABLED)).and()</span>
-<span class="fc" id="L114">						.delay().value(ofNullable(cloudhopperProperties.getSession().getReuseSession().getEnquireLinkDelay())).defaultValue(overrideIfNotSet(DEFAULT_ENQUIRE_LINK_REUSE_DELAY)).and()</span>
-<span class="fc" id="L115">						.responseTimeout().value(ofNullable(cloudhopperProperties.getSession().getReuseSession().getEnquireLinkTimeout())).defaultValue(overrideIfNotSet(DEFAULT_ENQUIRE_LINK_REUSE_RESPONSE_TIMEOUT)).and()</span>
-<span class="fc" id="L116">						.and()</span>
-<span class="fc" id="L117">					.keepAlive()</span>
-<span class="fc" id="L118">						.enable().value(ofNullable(cloudhopperProperties.getSession().getKeepAlive().getEnable())).defaultValue(overrideIfNotSet(DEFAULT_KEEP_ALIVE_ENABLED)).and()</span>
-<span class="fc" id="L119">						.interval().value(ofNullable(cloudhopperProperties.getSession().getKeepAlive().getEnquireLinkInterval())).defaultValue(overrideIfNotSet(DEFAULT_ENQUIRE_LINK_INTERVAL)).and()</span>
-<span class="fc" id="L120">						.responseTimeout().value(ofNullable(cloudhopperProperties.getSession().getKeepAlive().getEnquireLinkTimeout())).defaultValue(overrideIfNotSet(DEFAULT_ENQUIRE_LINK_RESPONSE_TIMEOUT)).and()</span>
-<span class="fc" id="L121">						.connectAtStartup().value(ofNullable(cloudhopperProperties.getSession().getKeepAlive().getConnectAtStartup())).defaultValue(overrideIfNotSet(DEFAULT_KEEP_ALIVE_CONNECT_AT_STARTUP)).and()</span>
-<span class="fc" id="L122">						.and()</span>
-<span class="fc" id="L123">					.connectRetry()</span>
-<span class="fc" id="L124">						.fixedDelay()</span>
-<span class="fc" id="L125">							.maxRetries().value(ofNullable(cloudhopperProperties.getSession().getConnectRetry().getMaxAttempts())).defaultValue(overrideIfNotSet(DEFAULT_CONNECT_MAX_RETRIES)).and()</span>
-<span class="fc" id="L126">							.delay().value(ofNullable(cloudhopperProperties.getSession().getConnectRetry().getDelayBetweenAttempts())).defaultValue(overrideIfNotSet(DEFAULT_CONNECT_RETRY_DELAY));</span>
+<span class="fc" id="L75">		builder.sms()</span>
+<span class="fc" id="L76">			.sender(CloudhopperBuilder.class)</span>
+<span class="fc" id="L77">				.systemId().value(ofNullable(firstValue(cloudhopperProperties.getSystemId(), smppProperties.getSystemId()))).and()</span>
+<span class="fc" id="L78">				.password().value(ofNullable(firstValue(cloudhopperProperties.getPassword(), smppProperties.getPassword()))).and()</span>
+<span class="fc" id="L79">				.host().value(ofNullable(firstValue(cloudhopperProperties.getHost(), smppProperties.getHost()))).and()</span>
+<span class="fc" id="L80">				.port().value(ofNullable(firstValue(cloudhopperProperties.getPort(), smppProperties.getPort()))).defaultValue(overrideIfNotSet(DEFAULT_SMPP_PORT)).and()</span>
+<span class="fc" id="L81">				.bindType().value(ofNullable(firstValue(cloudhopperProperties.getBindType(), smppProperties.getBindType()))).defaultValue(overrideIfNotSet(DEFAULT_BIND_TYPE)).and()</span>
+<span class="fc" id="L82">				.systemType().value(ofNullable(firstValue(cloudhopperProperties.getSystemType(), smppProperties.getSystemType()))).and()</span>
+<span class="fc" id="L83">				.interfaceVersion().value(ofNullable(InterfaceVersion.of(cloudhopperProperties.getInterfaceVersion()))).and()</span>
+<span class="fc" id="L84">				.userData()</span>
+<span class="fc" id="L85">					.useShortMessage().value(ofNullable(firstValue(cloudhopperProperties.getUserData().getUseShortMessage(), smppProperties.getUserData().getUseShortMessage()))).defaultValue(overrideIfNotSet(DEFAULT_USE_SHORT_MESSAGE)).and()</span>
+<span class="fc" id="L86">					.useTlvMessagePayload().value(ofNullable(firstValue(cloudhopperProperties.getUserData().getUseTlvMessagePayload(), smppProperties.getUserData().getUseTlvMessagePayload()))).defaultValue(overrideIfNotSet(DEFAULT_USE_TLV_MESSAGE_PAYLOAD)).and()</span>
+<span class="fc" id="L87">					.and()</span>
+<span class="fc" id="L88">				.encoder()</span>
+<span class="fc" id="L89">					.gsm7bitPacked().value(ofNullable(firstValue(cloudhopperProperties.getEncoder().getGsm7bitPacked().getPriority(), smppProperties.getEncoder().getGsm7bitPacked().getPriority()))).defaultValue(overrideIfNotSet(DEFAULT_GSM7BIT_PACKED_ENCODING_PRIORITY)).and()</span>
+<span class="fc" id="L90">					.gsm8bit().value(ofNullable(firstValue(cloudhopperProperties.getEncoder().getGsm8bit().getPriority(), smppProperties.getEncoder().getGsm8bit().getPriority()))).defaultValue(overrideIfNotSet(DEFAULT_GSM8_ENCODING_PRIORITY)).and()</span>
+<span class="fc" id="L91">					.latin1().value(ofNullable(firstValue(cloudhopperProperties.getEncoder().getLatin1().getPriority(), smppProperties.getEncoder().getLatin1().getPriority()))).defaultValue(overrideIfNotSet(DEFAULT_LATIN1_ENCODING_PRIORITY)).and()</span>
+<span class="fc" id="L92">					.ucs2().value(ofNullable(firstValue(cloudhopperProperties.getEncoder().getUcs2().getPriority(), smppProperties.getEncoder().getUcs2().getPriority()))).defaultValue(overrideIfNotSet(DEFAULT_UCS2_ENCODING_PRIORITY)).and()</span>
+<span class="fc" id="L93">					.autoGuess().value(ofNullable(firstValue(cloudhopperProperties.getEncoder().getAutoGuess().getEnable(), smppProperties.getEncoder().getAutoGuess().getEnable()))).defaultValue(overrideIfNotSet(DEFAULT_AUTO_GUESS_ENABLED)).and()</span>
+<span class="fc" id="L94">					.fallback().value(ofNullable(firstValue(cloudhopperProperties.getEncoder().getDefaultCharset(), smppProperties.getEncoder().getDefaultCharset()))).defaultValue(overrideIfNotSet(DEFAULT_CHARSET)).and()</span>
+<span class="fc" id="L95">					.and()</span>
+<span class="fc" id="L96">				.splitter()</span>
+<span class="fc" id="L97">					.enable().value(ofNullable(firstValue(cloudhopperProperties.getSplit().getEnable(), smppProperties.getSplit().getEnable(), smsProperties.getSplit().getEnable()))).defaultValue(overrideIfNotSet(DEFAULT_SPLIT_ENABLED)).and()</span>
+<span class="fc" id="L98">					.and()</span>
+<span class="fc" id="L99">				.dataCodingScheme()</span>
+<span class="fc" id="L100">					.auto().value(ofNullable(firstValue(cloudhopperProperties.getDataCodingScheme().getAuto().getEnable(), smppProperties.getDataCodingScheme().getAuto().getEnable()))).defaultValue(overrideIfNotSet(DEFAULT_AUTO_DATA_CODING_SCHEME_ENABLED)).and()</span>
+<span class="fc" id="L101">					.and()</span>
+<span class="fc" id="L102">				.session()</span>
+<span class="fc" id="L103">					.sessionName().value(ofNullable(cloudhopperProperties.getSession().getName())).and()</span>
+<span class="fc" id="L104">					.bindTimeout().value(ofNullable(cloudhopperProperties.getSession().getBindTimeout())).defaultValue(overrideIfNotSet(DEFAULT_BIND_TIMEOUT)).and()</span>
+<span class="fc" id="L105">					.connectTimeout().value(ofNullable(cloudhopperProperties.getSession().getConnectTimeout())).defaultValue(overrideIfNotSet(DEFAULT_CONNECT_TIMEOUT)).and()</span>
+<span class="fc" id="L106">					.requestExpiryTimeout().value(ofNullable(cloudhopperProperties.getSession().getRequestExpiryTimeout())).defaultValue(overrideIfNotSet(DEFAULT_REQUEST_EXPIRY_TIMEOUT)).and()</span>
+<span class="fc" id="L107">					.windowMonitorInterval().value(ofNullable(cloudhopperProperties.getSession().getWindowMonitorInterval())).defaultValue(overrideIfNotSet(DEFAULT_WINDOW_MONITOR_INTERVAL)).and()</span>
+<span class="fc" id="L108">					.windowSize().value(ofNullable(cloudhopperProperties.getSession().getWindowSize())).defaultValue(overrideIfNotSet(DEFAULT_WINDOW_SIZE)).and()</span>
+<span class="fc" id="L109">					.windowWait().value(ofNullable(cloudhopperProperties.getSession().getWindowWaitTimeout())).defaultValue(overrideIfNotSet(DEFAULT_WINDOW_WAIT_TIMEOUT)).and()</span>
+<span class="fc" id="L110">					.writeTimeout().value(ofNullable(cloudhopperProperties.getSession().getWriteTimeout())).defaultValue(overrideIfNotSet(DEFAULT_WRITE_TIMEOUT)).and()</span>
+<span class="fc" id="L111">					.responseTimeout().value(ofNullable(cloudhopperProperties.getSession().getResponseTimeout())).defaultValue(overrideIfNotSet(DEFAULT_RESPONSE_TIMEOUT)).and()</span>
+<span class="fc" id="L112">					.unbindTimeout().value(ofNullable(cloudhopperProperties.getSession().getUnbindTimeout())).defaultValue(overrideIfNotSet(DEFAULT_UNBIND_TIMEOUT)).and()</span>
+<span class="fc" id="L113">					.reuseSession()</span>
+<span class="fc" id="L114">						.enable().value(ofNullable(cloudhopperProperties.getSession().getReuseSession().getEnable())).defaultValue(overrideIfNotSet(DEFAULT_REUSE_SESSION_ENABLED)).and()</span>
+<span class="fc" id="L115">						.lastInteractionExpiration().value(ofNullable(cloudhopperProperties.getSession().getReuseSession().getLastInteractionExpirationDelay())).defaultValue(overrideIfNotSet(DEFAULT_LAST_INTERACTION_EXPIRATION_DELAY)).and()</span>
+<span class="fc" id="L116">						.responseTimeout().value(ofNullable(cloudhopperProperties.getSession().getReuseSession().getEnquireLinkTimeout())).defaultValue(overrideIfNotSet(DEFAULT_ENQUIRE_LINK_REUSE_RESPONSE_TIMEOUT)).and()</span>
+<span class="fc" id="L117">						.and()</span>
+<span class="fc" id="L118">					.keepAlive()</span>
+<span class="fc" id="L119">						.enable().value(ofNullable(cloudhopperProperties.getSession().getKeepAlive().getEnable())).defaultValue(overrideIfNotSet(DEFAULT_KEEP_ALIVE_ENABLED)).and()</span>
+<span class="fc" id="L120">						.interval().value(ofNullable(cloudhopperProperties.getSession().getKeepAlive().getEnquireLinkInterval())).defaultValue(overrideIfNotSet(DEFAULT_ENQUIRE_LINK_INTERVAL)).and()</span>
+<span class="fc" id="L121">						.responseTimeout().value(ofNullable(cloudhopperProperties.getSession().getKeepAlive().getEnquireLinkTimeout())).defaultValue(overrideIfNotSet(DEFAULT_ENQUIRE_LINK_RESPONSE_TIMEOUT)).and()</span>
+<span class="fc" id="L122">						.connectAtStartup().value(ofNullable(cloudhopperProperties.getSession().getKeepAlive().getConnectAtStartup())).defaultValue(overrideIfNotSet(DEFAULT_KEEP_ALIVE_CONNECT_AT_STARTUP)).and()</span>
+<span class="fc" id="L123">						.maxConsecutiveTimeouts().value(ofNullable(cloudhopperProperties.getSession().getKeepAlive().getMaxConsecutiveTimeouts())).defaultValue(overrideIfNotSet(DEFAULT_KEEP_ALIVE_MAX_CONSECUTIVE_TIMEOUTS)).and()</span>
+<span class="fc" id="L124">						.and()</span>
+<span class="fc" id="L125">					.connectRetry()</span>
+<span class="fc" id="L126">						.fixedDelay()</span>
+<span class="fc" id="L127">							.maxRetries().value(ofNullable(cloudhopperProperties.getSession().getConnectRetry().getMaxAttempts())).defaultValue(overrideIfNotSet(DEFAULT_CONNECT_MAX_RETRIES)).and()</span>
+<span class="fc" id="L128">							.delay().value(ofNullable(cloudhopperProperties.getSession().getConnectRetry().getDelayBetweenAttempts())).defaultValue(overrideIfNotSet(DEFAULT_CONNECT_RETRY_DELAY));</span>
 		// @formatter:on
-<span class="fc" id="L128">	}</span>
+<span class="fc" id="L130">	}</span>
 
 	@Override
 	public int getOrder() {
-<span class="fc" id="L132">		return CloudhopperConstants.DEFAULT_CLOUDHOPPER_CONFIGURER_PRIORITY + 1000;</span>
+<span class="fc" id="L134">		return CloudhopperConstants.DEFAULT_CLOUDHOPPER_CONFIGURER_PRIORITY + 1000;</span>
 	}
 
 }

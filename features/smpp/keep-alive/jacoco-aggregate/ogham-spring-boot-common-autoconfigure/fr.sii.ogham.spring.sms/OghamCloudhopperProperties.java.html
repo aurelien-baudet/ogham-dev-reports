@@ -438,7 +438,7 @@ import com.cloudhopper.smpp.pdu.EnquireLink;
 		 * messages.&lt;br /&gt;
 		 * &lt;br /&gt;
 		 * 
-		 * Default: &lt;i&gt;1 minute&lt;/i&gt;
+		 * Default: &lt;i&gt;30 seconds&lt;/i&gt;
 		 */
 		private Long enquireLinkInterval;
 		/**
@@ -465,41 +465,57 @@ import com.cloudhopper.smpp.pdu.EnquireLink;
 		 * Default: &lt;i&gt;false&lt;/i&gt;
 		 */
 		private Boolean connectAtStartup;
+		/**
+		 * The maximum number of consecutive EnquireLink requests that end in
+		 * timeout to consider that a new session is required.&lt;br /&gt;
+		 * &lt;br /&gt;
+		 * 
+		 * Default: &lt;i&gt;3&lt;/i&gt;
+		 */
+		private Integer maxConsecutiveTimeouts;
 
 		public Boolean getEnable() {
-<span class="fc" id="L470">			return enable;</span>
+<span class="fc" id="L478">			return enable;</span>
 		}
 
 		public void setEnable(Boolean enable) {
-<span class="fc" id="L474">			this.enable = enable;</span>
-<span class="fc" id="L475">		}</span>
+<span class="fc" id="L482">			this.enable = enable;</span>
+<span class="fc" id="L483">		}</span>
 
 		public Long getEnquireLinkInterval() {
-<span class="fc" id="L478">			return enquireLinkInterval;</span>
+<span class="fc" id="L486">			return enquireLinkInterval;</span>
 		}
 
 		public void setEnquireLinkInterval(Long enquireLinkInterval) {
-<span class="nc" id="L482">			this.enquireLinkInterval = enquireLinkInterval;</span>
-<span class="nc" id="L483">		}</span>
+<span class="nc" id="L490">			this.enquireLinkInterval = enquireLinkInterval;</span>
+<span class="nc" id="L491">		}</span>
 
 		public Long getEnquireLinkTimeout() {
-<span class="fc" id="L486">			return enquireLinkTimeout;</span>
+<span class="fc" id="L494">			return enquireLinkTimeout;</span>
 		}
 
 		public void setEnquireLinkTimeout(Long enquireLinkTimeout) {
-<span class="nc" id="L490">			this.enquireLinkTimeout = enquireLinkTimeout;</span>
-<span class="nc" id="L491">		}</span>
+<span class="nc" id="L498">			this.enquireLinkTimeout = enquireLinkTimeout;</span>
+<span class="nc" id="L499">		}</span>
 
 		public Boolean getConnectAtStartup() {
-<span class="fc" id="L494">			return connectAtStartup;</span>
+<span class="fc" id="L502">			return connectAtStartup;</span>
 		}
 
 		public void setConnectAtStartup(Boolean connectAtStartup) {
-<span class="fc" id="L498">			this.connectAtStartup = connectAtStartup;</span>
-<span class="fc" id="L499">		}</span>
+<span class="fc" id="L506">			this.connectAtStartup = connectAtStartup;</span>
+<span class="fc" id="L507">		}</span>
+
+		public Integer getMaxConsecutiveTimeouts() {
+<span class="fc" id="L510">			return maxConsecutiveTimeouts;</span>
+		}
+
+		public void setMaxConsecutiveTimeouts(Integer maximumConsecutiveTimeouts) {
+<span class="nc" id="L514">			this.maxConsecutiveTimeouts = maximumConsecutiveTimeouts;</span>
+<span class="nc" id="L515">		}</span>
 	}
 
-<span class="fc" id="L502">	public static class ReuseSessionOptions {</span>
+<span class="fc" id="L518">	public static class ReuseSessionOptions {</span>
 		/**
 		 * Enable or disable the reuse the same session (if possible) for
 		 * sending messages.&lt;br /&gt;
@@ -531,9 +547,9 @@ import com.cloudhopper.smpp.pdu.EnquireLink;
 		 * message.&lt;br /&gt;
 		 * &lt;br /&gt;
 		 * 
-		 * Default: &lt;i&gt;1 minute&lt;/i&gt;
+		 * Default: &lt;i&gt;30 seconds&lt;/i&gt;
 		 */
-		private Long enquireLinkDelay;
+		private Long lastInteractionExpirationDelay;
 		/**
 		 * To check if the session is still alive, an {@link EnquireLink}
 		 * request is sent. This request may fail since the session may be
@@ -550,28 +566,28 @@ import com.cloudhopper.smpp.pdu.EnquireLink;
 		private Long enquireLinkTimeout;
 
 		public Boolean getEnable() {
-<span class="fc" id="L553">			return enable;</span>
+<span class="fc" id="L569">			return enable;</span>
 		}
 
 		public void setEnable(Boolean enable) {
-<span class="fc" id="L557">			this.enable = enable;</span>
-<span class="fc" id="L558">		}</span>
+<span class="fc" id="L573">			this.enable = enable;</span>
+<span class="fc" id="L574">		}</span>
 
-		public Long getEnquireLinkDelay() {
-<span class="fc" id="L561">			return enquireLinkDelay;</span>
+		public Long getLastInteractionExpirationDelay() {
+<span class="fc" id="L577">			return lastInteractionExpirationDelay;</span>
 		}
 
-		public void setEnquireLinkDelay(Long enquireLinkDelay) {
-<span class="nc" id="L565">			this.enquireLinkDelay = enquireLinkDelay;</span>
-<span class="nc" id="L566">		}</span>
+		public void setLastInteractionExpirationDelay(Long delay) {
+<span class="nc" id="L581">			this.lastInteractionExpirationDelay = delay;</span>
+<span class="nc" id="L582">		}</span>
 
 		public Long getEnquireLinkTimeout() {
-<span class="fc" id="L569">			return enquireLinkTimeout;</span>
+<span class="fc" id="L585">			return enquireLinkTimeout;</span>
 		}
 
 		public void setEnquireLinkTimeout(Long enquireLinkTimeout) {
-<span class="nc" id="L573">			this.enquireLinkTimeout = enquireLinkTimeout;</span>
-<span class="nc" id="L574">		}</span>
+<span class="nc" id="L589">			this.enquireLinkTimeout = enquireLinkTimeout;</span>
+<span class="nc" id="L590">		}</span>
 	}
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

@@ -46,13 +46,13 @@ import fr.sii.ogham.sms.sender.impl.cloudhopper.ReuseSessionOptions;
  */
 public class ReuseSessionBuilder extends AbstractParent&lt;SessionBuilder&gt; implements Builder&lt;ReuseSessionOptions&gt; {
 	private final ConfigurationValueBuilderHelper&lt;ReuseSessionBuilder, Boolean&gt; enableValueBuilder;
-	private final ConfigurationValueBuilderHelper&lt;ReuseSessionBuilder, Long&gt; enquireLinkDelayValueBuilder;
+	private final ConfigurationValueBuilderHelper&lt;ReuseSessionBuilder, Long&gt; lastInteractionExpirationDelayValueBuilder;
 	private final ConfigurationValueBuilderHelper&lt;ReuseSessionBuilder, Long&gt; enquireLinkTimeoutValueBuilder;
 
 	public ReuseSessionBuilder(SessionBuilder parent, BuildContext buildContext) {
 <span class="fc" id="L53">		super(parent);</span>
 <span class="fc" id="L54">		this.enableValueBuilder = new ConfigurationValueBuilderHelper&lt;&gt;(this, Boolean.class, buildContext);</span>
-<span class="fc" id="L55">		this.enquireLinkDelayValueBuilder = new ConfigurationValueBuilderHelper&lt;&gt;(this, Long.class, buildContext);</span>
+<span class="fc" id="L55">		this.lastInteractionExpirationDelayValueBuilder = new ConfigurationValueBuilderHelper&lt;&gt;(this, Long.class, buildContext);</span>
 <span class="fc" id="L56">		this.enquireLinkTimeoutValueBuilder = new ConfigurationValueBuilderHelper&lt;&gt;(this, Long.class, buildContext);</span>
 <span class="fc" id="L57">	}</span>
 
@@ -249,7 +249,7 @@ public class ReuseSessionBuilder extends AbstractParent&lt;SessionBuilder&gt; im
 	 * 
 	 * &lt;p&gt;
 	 * The value set using this method takes precedence over any property and
-	 * default value configured using {@link #delay()}.
+	 * default value configured using {@link #lastInteractionExpiration()}.
 	 * 
 	 * &lt;pre&gt;
 	 * .delay(60000L)
@@ -280,8 +280,8 @@ public class ReuseSessionBuilder extends AbstractParent&lt;SessionBuilder&gt; im
 	 *            alive.
 	 * @return this instance for fluent chaining
 	 */
-	public ReuseSessionBuilder delay(Long delay) {
-<span class="fc" id="L284">		enquireLinkDelayValueBuilder.setValue(delay);</span>
+	public ReuseSessionBuilder lastInteractionExpiration(Long delay) {
+<span class="fc" id="L284">		lastInteractionExpirationDelayValueBuilder.setValue(delay);</span>
 <span class="fc" id="L285">		return this;</span>
 	}
 
@@ -317,7 +317,7 @@ public class ReuseSessionBuilder extends AbstractParent&lt;SessionBuilder&gt; im
 	 * &lt;/pre&gt;
 	 * 
 	 * &lt;p&gt;
-	 * Non-null value set using {@link #delay(Long)} takes precedence over
+	 * Non-null value set using {@link #lastInteractionExpiration(Long)} takes precedence over
 	 * property values and default value.
 	 * 
 	 * &lt;pre&gt;
@@ -336,15 +336,15 @@ public class ReuseSessionBuilder extends AbstractParent&lt;SessionBuilder&gt; im
 	 * 
 	 * @return the builder to configure property keys/default value
 	 */
-	public ConfigurationValueBuilder&lt;ReuseSessionBuilder, Long&gt; delay() {
-<span class="fc" id="L340">		return enquireLinkDelayValueBuilder;</span>
+	public ConfigurationValueBuilder&lt;ReuseSessionBuilder, Long&gt; lastInteractionExpiration() {
+<span class="fc" id="L340">		return lastInteractionExpirationDelayValueBuilder;</span>
 	}
 
 	@Override
 	public ReuseSessionOptions build() {
 <span class="fc" id="L345">		ReuseSessionOptions reuseSessionOptions = new ReuseSessionOptions();</span>
 <span class="fc" id="L346">		reuseSessionOptions.setEnable(enableValueBuilder.getValue(false));</span>
-<span class="fc" id="L347">		reuseSessionOptions.setEnquireLinkDelay(enquireLinkDelayValueBuilder.getValue(0L));</span>
+<span class="fc" id="L347">		reuseSessionOptions.setLastInteractionExpirationDelay(lastInteractionExpirationDelayValueBuilder.getValue(0L));</span>
 <span class="fc" id="L348">		reuseSessionOptions.setEnquireLinkTimeout(enquireLinkTimeoutValueBuilder.getValue(0L));</span>
 <span class="fc" id="L349">		return reuseSessionOptions;</span>
 	}
