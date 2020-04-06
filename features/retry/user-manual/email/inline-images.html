@@ -1,0 +1,1168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 1.5.6.1">
+<title>Attach and reference images</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
+<link rel="stylesheet" href="./asciidoctor.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css">
+<link rel="stylesheet" href="./coderay-asciidoctor.css">
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script type="text/javascript" src="../..//javascripts/steps.js"></script>
+<script type="text/javascript" src="../..//javascripts/sourcecode/source-utils.js"></script>
+<script type="text/javascript" src="../..//javascripts/sourcecode/highlight-lines.js"></script>
+<script type="text/javascript" src="../..//javascripts/sourcecode/collapse-lines.js"></script>
+<script type="text/javascript" src="../..//javascripts/tabcontainer.js"></script>
+<link rel="stylesheet" type="text/css" href="../..//styles/custom-styles.css" />
+<link rel="stylesheet" type="text/css" href="../..//styles/tabcontainer.css" />
+<link rel="stylesheet" type="text/css" href="../..//styles/steps.css" />
+<link rel="stylesheet" type="text/css" href="../..//styles/sourcecode/collapse-lines.css" />
+<link rel="stylesheet" type="text/css" href="../..//styles/sourcecode/highlight-lines.css" />
+</head>
+<body class="book toc2 toc-left">
+<div id="header">
+<div id="toc" class="toc2">
+<div id="toctitle">Table of Contents</div>
+<ul class="sectlevel1">
+<li><a href="#_attach_and_reference_images">Attach and reference images</a></li>
+<li><a href="#_embed_using_data_url_scheme">Embed using data URL scheme</a></li>
+<li><a href="#_skip_some_images">Skip some images</a></li>
+</ul>
+</div>
+</div>
+<div id="content">
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>Images can be referenced externally but there are many constraints to do so.
+You have to provide the URL of the image. However, while you are coding or testing
+the feature that sends an email with images (for example testing account creation
+with confirmation email), the URL must point to an existing and accessible image.
+And even then, the email client might block those images for safety purpose (prevent
+tracking). Not mentioning offline issues.</p>
+</div>
+<div class="paragraph">
+<p>That&#8217;s why Ogham provides automatic inlining on local images. Therefore, no
+need to use a server to serve the images and no need to configure the URLs
+to point to those images. The images are:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Either attached with the email and referenced in the HTML using a
+<a href="https://tools.ietf.org/html/rfc2392">Content-ID</a>.</p>
+</li>
+<li>
+<p>Or images are converted to a base64 string and embedded in the HTML using the
+<a href="https://tools.ietf.org/html/rfc2397">data URL scheme</a></p>
+</li>
+<li>
+<p>Or not inlined at all (if the image points to an external URL or it is explicitly
+skipped)</p>
+</li>
+</ul>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="title">More explanation</div>
+<div class="paragraph">
+<p><a href="https://blog.mailtrap.io/embedding-images-in-html-email-have-the-rules-changed/">Additional information about image inlining</a>.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="title">Sender implementation independent</div>
+<div class="paragraph">
+<p>Inlining of images not only work when sending an email using Java Mail but also
+works for any other email sender (like SendGrid).</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_attach_and_reference_images"><a class="anchor" href="#_attach_and_reference_images"></a>Attach and reference images</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>By default, if the HTML contains <code>&lt;img&gt;</code> tag with <code>src</code> attribute that points
+to a local image, the image is automatically attached and referenced using a
+<a href="https://tools.ietf.org/html/rfc2392">Content-ID</a> that is automatically generated.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="title">Default choice explanation</div>
+<div class="paragraph">
+<p>The attach strategy has been chosen by default as it is handled by more email
+clients than base64 strategy.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="title">Customize CID generation</div>
+<div class="paragraph">
+<p>Default Content-ID generation simply uses a incremental number. It is possible to
+use <a href="#custom-cid-generation">custom Content-ID generation</a>.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>As Ogham is fully configurable, the default strategy can be changed. Therefore
+if you want to use this strategy for a particular image, you need to explicitly
+indicate it. You can do so by setting the <code>data-inline-image</code> attribute with
+the <code>"attach"</code> value directly on the <code>&lt;img&gt;</code> tag.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="title">Change default strategy</div>
+<div class="paragraph">
+<p>It is possible to configure Ogham to use a
+<a href="#custom-image-inlining-strategy">different inlining strategy by default</a>.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph tab-container  no-max-height">
+<p>Attach images</p>
+</div>
+<div class="paragraph tab">
+<p><span class="image"><img src="../../images//icons/java-logo.png" alt="java logo" width="16" height="30"></span> Java</p>
+</div>
+<div class="listingblock collapse-lines:1-10,12-28,36-48 irrelevant-lines:1-10,12-19 highlight-lines:30-31">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">fr.sii.ogham.sample.standard.email</span>;
+
+<span class="keyword">import</span> <span class="include">java.util.Properties</span>;
+
+<span class="keyword">import</span> <span class="include">fr.sii.ogham.core.builder.MessagingBuilder</span>;
+<span class="keyword">import</span> <span class="include">fr.sii.ogham.core.exception.MessagingException</span>;
+<span class="keyword">import</span> <span class="include">fr.sii.ogham.core.service.MessagingService</span>;
+<span class="keyword">import</span> <span class="include">fr.sii.ogham.email.message.Email</span>;
+
+<span class="directive">public</span> <span class="type">class</span> <span class="class">HtmlWithImagesAndCssTemplateSample</span> {
+  <span class="directive">public</span> <span class="directive">static</span> <span class="type">void</span> main(<span class="predefined-type">String</span><span class="type">[]</span> args) <span class="directive">throws</span> MessagingException {
+    <span class="comment">// configure properties (could be stored in a properties file or defined</span>
+    <span class="comment">// in System properties)</span>
+    <span class="predefined-type">Properties</span> properties = <span class="keyword">new</span> <span class="predefined-type">Properties</span>();
+    properties.setProperty(<span class="string"><span class="delimiter">&quot;</span><span class="content">mail.smtp.host</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;your server host&gt;</span><span class="delimiter">&quot;</span></span>);
+    properties.setProperty(<span class="string"><span class="delimiter">&quot;</span><span class="content">mail.smtp.port</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;your server port&gt;</span><span class="delimiter">&quot;</span></span>);
+    properties.setProperty(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.email.from.default-value</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;email address to display for the sender user&gt;</span><span class="delimiter">&quot;</span></span>);
+    <span class="comment">// Instantiate the messaging service using default behavior and</span>
+    <span class="comment">// provided properties</span>
+    MessagingService service = MessagingBuilder.standard()
+        .environment()
+          .properties(properties)
+          .and()
+        .build();
+    <span class="comment">// send the email using fluent API</span>
+    <span class="comment">// Note that the extension of the template is not given. This version</span>
+    <span class="comment">// automatically takes the provided path and adds the '.html' extension</span>
+    <span class="comment">// for the HTML template and '.txt.ftl' for text template</span>
+    service.send(<span class="keyword">new</span> Email()
+            .body().template(<span class="string"><span class="delimiter">&quot;</span><span class="content">classpath:/template/withImagesAndCss/resources</span><span class="delimiter">&quot;</span></span>,    <i class="conum" data-value="1"></i><b>(1)</b>
+                              <span class="keyword">new</span> SimpleBean(<span class="string"><span class="delimiter">&quot;</span><span class="content">foo</span><span class="delimiter">&quot;</span></span>, <span class="integer">42</span>))        <i class="conum" data-value="2"></i><b>(2)</b>
+            .to(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham-test@yopmail.com</span><span class="delimiter">&quot;</span></span>));
+  }
+
+  <span class="directive">public</span> <span class="directive">static</span> <span class="type">class</span> <span class="class">SimpleBean</span> {
+    <span class="directive">private</span> <span class="predefined-type">String</span> name;
+    <span class="directive">private</span> <span class="type">int</span> value;
+    <span class="directive">public</span> SimpleBean(<span class="predefined-type">String</span> name, <span class="type">int</span> value) {
+      <span class="local-variable">super</span>();
+      <span class="local-variable">this</span>.name = name;
+      <span class="local-variable">this</span>.value = value;
+    }
+    <span class="directive">public</span> <span class="predefined-type">String</span> getName() {
+      <span class="keyword">return</span> name;
+    }
+    <span class="directive">public</span> <span class="type">int</span> getValue() {
+      <span class="keyword">return</span> value;
+    }
+  }
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The path to the templates (<code>/template/withImagesAndCss/resources.html</code> for the main body,
+<code>/template/withImagesAndCss/resources.txt.ftl</code> for the text alternative)</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>The template context</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p><a href="https://github.com/groupe-sii/ogham/blob/master/sample-standard-usage/src/main/java/fr/sii/ogham/sample/standard/email/HtmlWithImagesAndCssTemplateSample.java?ts=2">Source code of the sample</a></p>
+</div>
+<div class="paragraph tab">
+<p><span class="image"><img src="../../images//icons/thymeleaf-html.jpg" alt="thymeleaf html" width="30" height="30"></span> ThymeLeaf template</p>
+</div>
+<div class="listingblock collapse-lines:1-10,14-16,19-24,28-36,41-49 highlight-lines:12,27,39">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="html"><span class="doctype">&lt;!DOCTYPE html&gt;</span>
+<span class="tag">&lt;html</span> <span class="attribute-name">xmlns:th</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">http://www.thymeleaf.org</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+<span class="tag">&lt;head&gt;</span>
+<span class="tag">&lt;meta</span> <span class="attribute-name">http-equiv</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">Content-Type</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">content</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">text/html; charset=UTF-8</span><span class="delimiter">&quot;</span></span> <span class="tag">/&gt;</span>
+<span class="tag">&lt;title&gt;</span>HtmlWithImagesAndCssTemplateSample<span class="tag">&lt;/title&gt;</span>
+<span class="tag">&lt;meta</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">viewport</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">content</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">width=device-width, initial-scale=1.0</span><span class="delimiter">&quot;</span></span> <span class="tag">/&gt;</span>
+<span class="tag">&lt;link</span> <span class="attribute-name">href</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">css/layout.css</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">rel</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">stylesheet</span><span class="delimiter">&quot;</span></span> <span class="tag">/&gt;</span>                             <i class="conum" data-value="1"></i><b>(1)</b>
+<span class="tag">&lt;link</span> <span class="attribute-name">href</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">css/theme.css</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">rel</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">stylesheet</span><span class="delimiter">&quot;</span></span> <span class="tag">/&gt;</span>                              <i class="conum" data-value="2"></i><b>(2)</b>
+<span class="tag">&lt;/head&gt;</span>
+<span class="tag">&lt;body&gt;</span>
+  <span class="tag">&lt;header&gt;</span>
+    <span class="tag">&lt;img</span> <span class="attribute-name">src</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">images/h1.gif</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">alt</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">Creating Email Magic</span><span class="delimiter">&quot;</span></span> <span class="tag">/&gt;</span>                      <i class="conum" data-value="3"></i><b>(3)</b>
+  <span class="tag">&lt;/header&gt;</span>
+  <span class="tag">&lt;div</span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">content</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+    <span class="tag">&lt;span</span> <span class="attribute-name">th:text</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">${name}</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>name<span class="tag">&lt;/span&gt;</span>
+    <span class="tag">&lt;p</span> <span class="attribute-name">th:text</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">${value}</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>value<span class="tag">&lt;/p&gt;</span>
+    <span class="tag">&lt;div</span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">left</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+      <span class="tag">&lt;img</span> <span class="attribute-name">src</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">images/left.gif</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">data-inline-image</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">base64</span><span class="delimiter">&quot;</span></span> <span class="tag">/&gt;</span>                  <i class="conum" data-value="4"></i><b>(4)</b>
+      <span class="tag">&lt;p</span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">text</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. In
+        tempus adipiscing felis, sit amet blandit ipsum volutpat sed. Morbi
+        porttitor, eget accumsan dictum, nisi libero ultricies ipsum, in
+        posuere mauris neque at erat.
+      <span class="tag">&lt;/p&gt;</span>
+    <span class="tag">&lt;/div&gt;</span>
+    <span class="tag">&lt;div</span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">right</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+      <span class="tag">&lt;img</span> <span class="attribute-name">src</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">images/right.gif</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">data-inline-image</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">attach</span><span class="delimiter">&quot;</span></span> <span class="tag">/&gt;</span>                 <i class="conum" data-value="5"></i><b>(5)</b>
+      <span class="tag">&lt;p</span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">text</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. In
+        tempus adipiscing felis, sit amet blandit ipsum volutpat sed. Morbi
+        porttitor, eget accumsan dictum, nisi libero ultricies ipsum, in
+        posuere mauris neque at erat.
+      <span class="tag">&lt;/p&gt;</span>
+    <span class="tag">&lt;/div&gt;</span>
+  <span class="tag">&lt;/div&gt;</span>
+  <span class="tag">&lt;footer&gt;</span>
+    <span class="tag">&lt;div</span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">social</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+      <span class="tag">&lt;a</span> <span class="attribute-name">href</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">http://www.twitter.com/</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+        <span class="tag">&lt;img</span> <span class="attribute-name">src</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">images/tw.gif</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">alt</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">Twitter</span><span class="delimiter">&quot;</span></span> <span class="tag">/&gt;</span>                       <i class="conum" data-value="6"></i><b>(6)</b>
+      <span class="tag">&lt;/a&gt;</span>
+      <span class="tag">&lt;a</span> <span class="attribute-name">href</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">http://www.facebook.com/</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+        <span class="tag">&lt;img</span> <span class="attribute-name">src</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">images/fb.gif</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">alt</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">Facebook</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">data-inline-image</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">skip</span><span class="delimiter">&quot;</span></span> <span class="tag">/&gt;</span>           <i class="conum" data-value="7"></i><b>(7)</b>
+      <span class="tag">&lt;/a&gt;</span>
+    <span class="tag">&lt;/div&gt;</span>
+    <span class="tag">&lt;div</span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">sender-info</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+      <span class="entity">&amp;reg;</span> Someone, somewhere 2013<span class="tag">&lt;br</span> <span class="tag">/&gt;</span>
+      <span class="tag">&lt;a</span> <span class="attribute-name">href</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">#</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">white</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">data-inline-styles</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">skip</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>Unsubscribe<span class="tag">&lt;/a&gt;</span> to this newsletter instantly  <i class="conum" data-value="8"></i><b>(8)</b>
+    <span class="tag">&lt;/div&gt;</span>
+  <span class="tag">&lt;/footer&gt;</span>
+<span class="tag">&lt;/body&gt;</span>
+<span class="tag">&lt;/html&gt;</span></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>_</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>_</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>As nothing is specified and <code>src</code> points to a local image, the image will
+be inlined (using <code>attach</code> strategy)</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>_</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
+<td>Same as &lt;3&gt; but strategy is explicitly indicated</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="6"></i><b>6</b></td>
+<td>Same as &lt;3&gt;</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p><a href="https://github.com/groupe-sii/ogham/blob/master/sample-standard-usage/src/main/resources/template/withImagesAndCss/resources.html?ts=2">Source code of the HTML template</a></p>
+</div>
+<div class="paragraph tab">
+<p><span class="image"><img src="../../images//icons/html.png" alt="html" width="37" height="30"></span> Generated HTML</p>
+</div>
+<div class="listingblock collapse-lines:1-8,12-73,76-83,88-96 highlight-lines:10,75,86">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="html"><span class="doctype">&lt;!doctype html&gt;</span>
+<span class="tag">&lt;html&gt;</span>
+<span class="tag">&lt;head&gt;</span>                                                <i class="conum" data-value="1"></i><b>(1)</b>
+<span class="tag">&lt;meta</span> <span class="attribute-name">http-equiv</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">Content-Type</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">content</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">text/html; charset=UTF-8</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+<span class="tag">&lt;title&gt;</span>Demystifying Email Design<span class="tag">&lt;/title&gt;</span>
+<span class="tag">&lt;meta</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">viewport</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">content</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">width=device-width, initial-scale=1.0</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+<span class="tag">&lt;/head&gt;</span>
+<span class="tag">&lt;body</span> <span class="attribute-name">style</span>=<span class="string"><span class="delimiter">&quot;</span><span class="key">margin</span>: <span class="float">10px</span> <span class="value">auto</span> <span class="float">30px</span> <span class="value">auto</span>; <span class="key">width</span>: <span class="float">600px</span>; <span class="key">border</span>: <span class="float">1px</span> <span class="value">solid</span> <span class="color">#ccc</span>;<span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>         <i class="conum" data-value="2"></i><b>(2)</b>
+  <span class="tag">&lt;header</span> <span class="attribute-name">style</span>=<span class="string"><span class="delimiter">&quot;</span><span class="key">padding</span>: <span class="float">40px</span> <span class="float">30px</span>; <span class="key">background</span>: <span class="color">#70bbd9</span>;<span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+    <span class="tag">&lt;img</span> <span class="attribute-name">src</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">cid:0</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">alt</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">Creating Email Magic</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">style</span>=<span class="string"><span class="delimiter">&quot;</span><span class="key">display</span>: <span class="value">block</span>; <span class="key">margin</span>: <span class="value">auto</span>;<span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>      <i class="conum" data-value="3"></i><b>(3)</b>
+  <span class="tag">&lt;/header&gt;</span>
+  <span class="tag">&lt;div</span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">content</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">style</span>=<span class="string"><span class="delimiter">&quot;</span><span class="key">padding</span>: <span class="float">40px</span> <span class="float">30px</span>; <span class="key">text-align</span>: <span class="value">justify</span>;<span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>              <i class="conum" data-value="4"></i><b>(4)</b>
+    <span class="tag">&lt;span&gt;</span>foo<span class="tag">&lt;/span&gt;</span>
+    <span class="tag">&lt;p&gt;</span>42<span class="tag">&lt;/p&gt;</span>
+    <span class="tag">&lt;div</span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">left</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">style</span>=<span class="string"><span class="delimiter">&quot;</span><span class="key">width</span>: <span class="float">250px</span>; <span class="key">display</span>: <span class="value">inline-block</span>; <span class="key">margin-right</span>: <span class="float">36px</span>;<span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+      <span class="tag">&lt;img</span> <span class="attribute-name">src</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">data:image/gif;base64,R0lGODlh+gCMANUAAOxRVfySUllNTaNvTPS1j</span>
+<span class="content">vlpbfRUWPuKjdJ+Tvn8/v2qrNJQVv7d3vh2e+n0/fH4/fd8VOPx/Oft8/3q7PT5/sxQVct8TueC</span>
+<span class="content">RsRNU/7Rt/3IyiowPPaNTpZIUHpeSpNnTf3U1CM6RO72/fLl6vyeZP2uguWIUDg7R15PTfmQUFJ</span>
+<span class="content">ERDk/TS41QzA3Rdx6P//59vpeYsBOVO/3/f7n6P24j/7g4T88R//38zNCRTM6Rv2/wf7P0NSATv</span>
+<span class="content">pWWv///xU2QyH/C1hNUCBEYXRhWE1QPD94cGFja2V0IGJlZ2luPSLvu78iIGlkPSJXNU0wTXBDZ</span>
+<span class="content">WhpSHpyZVN6TlRjemtjOWQiPz4gPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIg</span>
+<span class="content">eDp4bXB0az0iQWRvYmUgWE1QIENvcmUgNS4wLWMwNjAgNjEuMTM0Nzc3LCAyMDEwLzAyLzEyLTE</span>
+<span class="content">3OjMyOjAwICAgICAgICAiPiA8cmRmOlJERiB4bWxuczpyZGY9Imh0dHA6Ly93d3cudzMub3JnLz</span>
+<span class="content">E5OTkvMDIvMjItcmRmLXN5bnRheC1ucyMiPiA8cmRmOkRlc2NyaXB0aW9uIHJkZjphYm91dD0iI</span>
+<span class="content">iB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtbG5zOnhtcE1NPSJo</span>
+<span class="content">dHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvbW0vIiB4bWxuczpzdFJlZj0iaHR0cDovL25zLmF</span>
+<span class="content">kb2JlLmNvbS94YXAvMS4wL3NUeXBlL1Jlc291cmNlUmVmIyIgeG1wOkNyZWF0b3JUb29sPSJBZG</span>
+<span class="content">9iZSBQaG90b3Nob3AgQ1M1IE1hY2ludG9zaCIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDoxM</span>
+<span class="content">Tc1MTc0QUJFMTUxMUUyQjUwQ0YzRjY0Nzg2NURGMCIgeG1wTU06RG9jdW1lbnRJRD0ieG1wLmRp</span>
+<span class="content">ZDoxMTc1MTc0QkJFMTUxMUUyQjUwQ0YzRjY0Nzg2NURGMCI+IDx4bXBNTTpEZXJpdmVkRnJvbSB</span>
+<span class="content">zdFJlZjppbnN0YW5jZUlEPSJ4bXAuaWlkOjExNzUxNzQ4QkUxNTExRTJCNTBDRjNGNjQ3ODY1RE</span>
+<span class="content">YwIiBzdFJlZjpkb2N1bWVudElEPSJ4bXAuZGlkOjExNzUxNzQ5QkUxNTExRTJCNTBDRjNGNjQ3O</span>
+<span class="content">DY1REYwIi8+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hw</span>
+<span class="content">YWNrZXQgZW5kPSJyIj8+Af/+/fz7+vn49/b19PPy8fDv7u3s6+rp6Ofm5eTj4uHg397d3Nva2dj</span>
+<span class="content">X1tXU09LR0M/OzczLysnIx8bFxMPCwcC/vr28u7q5uLe2tbSzsrGwr66trKuqqainpqWko6KhoJ</span>
+<span class="content">+enZybmpmYl5aVlJOSkZCPjo2Mi4qJiIeGhYSDgoGAf359fHt6eXh3dnV0c3JxcG9ubWxramloZ</span>
+<span class="content">2ZlZGNiYWBfXl1cW1pZWFdWVVRTUlFQT05NTEtKSUhHRkVEQ0JBQD8+PTw7Ojk4NzY1NDMyMTAv</span>
+<span class="content">Li0sKyopKCcmJSQjIiEgHx4dHBsaGRgXFhUUExIREA8ODQwLCgkIBwYFBAMCAQAAIfkEAAAAAAA</span>
+<span class="content">sAAAAAPoAjAAABv/An3BILBqPyKRyyWw6n9CodEqtWq/YrHbL7Xq/4LB4TC6bz+i0es1uu9/wuH</span>
+<span class="content">xOr9vv+Lx+z+/7/4CBgoOEhYaHiImKi4yNjo+QkZKTlJWWl5iZmpucnZ6foKGio6Slpo45HRgVr</span>
+<span class="content">K2ur7CxsrO0tbauMR0hp3o2Bj3AwcLDxMXGx8jJysYLu7x3McvS09TVyx3Pd7/W3N3exxXZdt/k</span>
+<span class="content">5d0L4nXm6+zJ6Olz7fLzwO/wcccwChoHwfr8whpo0FEAmQEACBMqXMiwocOF24jZu/fmmA4fPl4</span>
+<span class="content">U7HEx48YeEzAyOHbwocmTKCMKm0ixzbEaGH306wET48wCMX0cQ8mzJ8T/YixbrjmmAOMMGMCK+j</span>
+<span class="content">gabAdGHSR9SkXJTGjFYwcOIA2WdSswGFmTGRhLtqzZs2jTnj0W1CoaenDXtXVrJq7db3PpkrnL1</span>
+<span class="content">1pevWL6Cpb2FzCYwYiRFTbsRRiMBpAjS55MubLly5gza4a8kvHbYAUeiB5NurTp06hTq17N+sGI</span>
+<span class="content">zp7rgm5Nu7bt26RfB1scW4uw0LiDCx+uu17vMr+HK1/eungP3sev/KZAvbr169iza9/Ovbt3Cs6</span>
+<span class="content">hR6/yO6f58+jTq1/Pvj36CbDHHwbtvr79+/hzwt8tP0z5/AAGKOB+xvX3xX8CJqggewQ+Z+CB9L</span>
+<span class="content">H33YQJLGhfg+I9+ASC6ckQ/8GHIIYo4ogkUmChexhq2AWH6DlA4oswhijDie2lqOIWLJ5HQYw8k</span>
+<span class="content">lghjevZeGMWOQJp5H1CDildhEc2iWR8SlpRpJNUvgdllFRMeWEJAXTp5ZdghikmCRksmCSWU2jp</span>
+<span class="content">3g0kiOnmm2KWmeCZaEahZnsZwKmnniQoSGedGzIJIA17FurmC3NeCWigwOAkIKFuXnBBCilc4MK</span>
+<span class="content">lmLpwgZ6IDqjook3cyR6kYlrKAQeZZropnJ0G+CeoS9yZgAgO1GqrrQTAmUKXKZzq66l7SnDrsL</span>
+<span class="content">WaqN6rsCZxp4sw5mros15K0OOPVvKXLKM9OKoesy86C+2z0vJI7XnIXmuEqDIQi/9rlyYg4O678</span>
+<span class="content">MYrb7w8RKvurcamV665RIi6HqQqbCDwwAQXbLDBCHTZKoD78iuEv+oBfPDEFA9sgcKJWuuwEhCn</span>
+<span class="content">J3HFIBd8cQAL59eww7LSeq+zAYfs8gYjC3tvsUF+unG/grYYI8svuxzztMfafPPDOZ/HLYkss6D</span>
+<span class="content">00kw37bTTP4sbtMZDn1v0eemu3KUKT3ft9dIxz0zz1AVWbXWjCQL89dpQY+wp1WYP0TF6arNtNw</span>
+<span class="content">sjl4zfyfzOfV7dd6+dd8Zlxy331TklkLW6SQcueJcyz5xvtYUb/sOyO2/t+OMBhBvjuObxbS7mz</span>
+<span class="content">Wq+uddRf062g5YfjvZ6is/c+OlPhy3/9uTkCj203+YBTnvTg79dueG85+T772C77aruNxcf0/HI</span>
+<span class="content">4608w8xvLOvixM4evdK2S14z3MQjHtPRI2q/feowgq5f9SiLjxH5IpofPfovqh+T6NdeL/vWLfT</span>
+<span class="content">v//8ADGAAu3cv3IWOfX1zX3sgJYAVOPCBEIygBCUYvOWBL27OwwgDJ8jBDj6wgtS7oNky6IMNev</span>
+<span class="content">CEEQShyRA4OgWOqksNRKEMV6DCvbEwfy78FwxnKMMaPkmEVSOhCXnoQR9e6IbJEuIOiVjE6a0Qi</span>
+<span class="content">LsTRkgCNEQmTtCI9dkBEmE1jAaAgAFgDKMYxzhGLgUghla8Ype+SMY2tnEHH2Fd6y73jZIA/wAC</span>
+<span class="content">S0wjBbuUEJWcY45C8GM17IjHM+pRjQHoYznCAchoeIOQeTzkB/mIEEFaAxuA9MUjE1JINErSgSN</span>
+<span class="content">T5DcA4AxAnqADt5AFBlbZyU9CcGSrXGUqY4EBXQCyCwOI5CdHVspb0iGXhnQlKLvUS1/KAZie3C</span>
+<span class="content">UxjVkHZApzmAEoJjPf4Mxn8nKac6imMK+JzTgA8wMoCKc4x0nOcpbTBMvsJhyA+S1DSVOdamBnO</span>
+<span class="content">/f0TniiQZ566hW06mlPM+DzTajS1LP42U8y/DNSmNpVoQhaUDEctFSYGmhD1/DQMFXqAhwwVAom</span>
+<span class="content">ugYUzHNPKbAARyn6UTiZAAcjXYMAPjCAlrr0pTMwjWlMPcDQlNr0pjjNqU53ytOe+vSnQA2qUId</span>
+<span class="content">K1KIa9ahITapSl8rUpjr1qVCNqlSHFAQAOw==</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>                               <i class="conum" data-value="5"></i><b>(5)</b>
+      <span class="tag">&lt;p</span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">text</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>Lorem ipsum dolor sit amet, consectetur
+        adipiscing elit. In tempus adipiscing felis, sit amet blandit ipsum
+        volutpat sed. Morbi porttitor, eget accumsan dictum, nisi libero
+        ultricies ipsum, in posuere mauris neque at erat.
+      <span class="tag">&lt;/p&gt;</span>
+    <span class="tag">&lt;/div&gt;</span>
+    <span class="tag">&lt;div</span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">right</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">style</span>=<span class="string"><span class="delimiter">&quot;</span><span class="key">width</span>: <span class="float">250px</span>; <span class="key">display</span>: <span class="value">inline-block</span>;<span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+      <span class="tag">&lt;img</span> <span class="attribute-name">src</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">cid:1</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>                                   <i class="conum" data-value="6"></i><b>(6)</b>
+      <span class="tag">&lt;p</span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">text</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>Lorem ipsum dolor sit amet, consectetur
+        adipiscing elit. In tempus adipiscing felis, sit amet blandit ipsum
+        volutpat sed. Morbi porttitor, eget accumsan dictum, nisi libero
+        ultricies ipsum, in posuere mauris neque at erat.
+      <span class="tag">&lt;/p&gt;</span>
+    <span class="tag">&lt;/div&gt;</span>
+  <span class="tag">&lt;/div&gt;</span>
+  <span class="tag">&lt;footer</span> <span class="attribute-name">style</span>=<span class="string"><span class="delimiter">&quot;</span><span class="key">padding</span>: <span class="float">30px</span>; <span class="key">color</span>: <span class="color">#ffffff</span>; <span class="key">font-family</span>: <span class="value">Arial</span>, <span class="value">sans-serif</span>; <span class="key">font-size</span>: <span class="float">14px</span>; <span class="key">background</span>: <span class="color">#ee4c50</span>;<span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+    <span class="tag">&lt;div</span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">social</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">style</span>=<span class="string"><span class="delimiter">&quot;</span><span class="key">text-align</span>: <span class="value">center</span>;<span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+      <span class="tag">&lt;a</span> <span class="attribute-name">href</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">http://www.twitter.com/</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">style</span>=<span class="string"><span class="delimiter">&quot;</span><span class="key">display</span>: <span class="value">inline-block</span>; <span class="key">color</span>: <span class="color">#ffffff</span>;<span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>   <i class="conum" data-value="7"></i><b>(7)</b>
+        <span class="tag">&lt;img</span> <span class="attribute-name">src</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">cid:2</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">alt</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">Twitter</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>                           <i class="conum" data-value="8"></i><b>(8)</b>
+      <span class="tag">&lt;/a&gt;</span>
+      <span class="tag">&lt;a</span> <span class="attribute-name">href</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">http://www.facebook.com/</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">style</span>=<span class="string"><span class="delimiter">&quot;</span><span class="key">display</span>: <span class="value">inline-block</span>; <span class="key">color</span>: <span class="color">#ffffff</span>;<span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>    <i class="conum" data-value="9"></i><b>(9)</b>
+        <span class="tag">&lt;img</span> <span class="attribute-name">src</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">images/fb.gif</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">alt</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">Facebook</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>                      <i class="conum" data-value="10"></i><b>(10)</b>
+      <span class="tag">&lt;/a&gt;</span>
+    <span class="tag">&lt;/div&gt;</span>
+    <span class="tag">&lt;div</span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">sender-info</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">style</span>=<span class="string"><span class="delimiter">&quot;</span><span class="key">text-align</span>: <span class="value">center</span>; <span class="key">margin-top</span>: <span class="float">20px</span>;<span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+      <span class="entity">&amp;reg;</span> Someone, somewhere 2013 <span class="tag">&lt;br&gt;</span>
+      <span class="tag">&lt;a</span> <span class="attribute-name">href</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">#</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">white</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>Unsubscribe<span class="tag">&lt;/a&gt;</span>to this newsletter instantly         <i class="conum" data-value="11"></i><b>(11)</b>
+    <span class="tag">&lt;/div&gt;</span>
+  <span class="tag">&lt;/footer&gt;</span>
+<span class="tag">&lt;/body&gt;</span>
+<span class="tag">&lt;/html&gt;</span></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>_</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>_</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>The image is attached and the generated Content-ID is <code>0</code>.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>_</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
+<td>_</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="6"></i><b>6</b></td>
+<td>The image is attached and the generated Content-ID is <code>1</code>.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="7"></i><b>7</b></td>
+<td>_</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="8"></i><b>8</b></td>
+<td>The image is attached and the generated Content-ID is <code>2</code>.</td>
+</tr>
+</table>
+</div>
+<div class="paragraph tab-container-end">
+<p>-</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_embed_using_data_url_scheme"><a class="anchor" href="#_embed_using_data_url_scheme"></a>Embed using data URL scheme</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>As stated before, by default images are attached. So if you want to embed
+an image directly as a base64 string, you need to set the <code>data-inline-image</code>
+attribute with the <code>"base64"</code> value directly on the <code>&lt;img&gt;</code> tag.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="title">Mimetype detection</div>
+<div class="paragraph">
+<p>The data URL scheme needs the mediatype information. Ogham automatically provides
+this information for you thanks to <a href="#mimetype-detection">automatic mimetype detection</a>.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph tab-container  no-max-height">
+<p>Embed images as base64</p>
+</div>
+<div class="paragraph tab">
+<p><span class="image"><img src="../../images//icons/java-logo.png" alt="java logo" width="16" height="30"></span> Java</p>
+</div>
+<div class="listingblock collapse-lines:1-10,12-28,36-48 irrelevant-lines:1-10,12-19 highlight-lines:30-31">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">fr.sii.ogham.sample.standard.email</span>;
+
+<span class="keyword">import</span> <span class="include">java.util.Properties</span>;
+
+<span class="keyword">import</span> <span class="include">fr.sii.ogham.core.builder.MessagingBuilder</span>;
+<span class="keyword">import</span> <span class="include">fr.sii.ogham.core.exception.MessagingException</span>;
+<span class="keyword">import</span> <span class="include">fr.sii.ogham.core.service.MessagingService</span>;
+<span class="keyword">import</span> <span class="include">fr.sii.ogham.email.message.Email</span>;
+
+<span class="directive">public</span> <span class="type">class</span> <span class="class">HtmlWithImagesAndCssTemplateSample</span> {
+  <span class="directive">public</span> <span class="directive">static</span> <span class="type">void</span> main(<span class="predefined-type">String</span><span class="type">[]</span> args) <span class="directive">throws</span> MessagingException {
+    <span class="comment">// configure properties (could be stored in a properties file or defined</span>
+    <span class="comment">// in System properties)</span>
+    <span class="predefined-type">Properties</span> properties = <span class="keyword">new</span> <span class="predefined-type">Properties</span>();
+    properties.setProperty(<span class="string"><span class="delimiter">&quot;</span><span class="content">mail.smtp.host</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;your server host&gt;</span><span class="delimiter">&quot;</span></span>);
+    properties.setProperty(<span class="string"><span class="delimiter">&quot;</span><span class="content">mail.smtp.port</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;your server port&gt;</span><span class="delimiter">&quot;</span></span>);
+    properties.setProperty(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.email.from.default-value</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;email address to display for the sender user&gt;</span><span class="delimiter">&quot;</span></span>);
+    <span class="comment">// Instantiate the messaging service using default behavior and</span>
+    <span class="comment">// provided properties</span>
+    MessagingService service = MessagingBuilder.standard()
+        .environment()
+          .properties(properties)
+          .and()
+        .build();
+    <span class="comment">// send the email using fluent API</span>
+    <span class="comment">// Note that the extension of the template is not given. This version</span>
+    <span class="comment">// automatically takes the provided path and adds the '.html' extension</span>
+    <span class="comment">// for the HTML template and '.txt.ftl' for text template</span>
+    service.send(<span class="keyword">new</span> Email()
+            .body().template(<span class="string"><span class="delimiter">&quot;</span><span class="content">classpath:/template/withImagesAndCss/resources</span><span class="delimiter">&quot;</span></span>,    <i class="conum" data-value="1"></i><b>(1)</b>
+                              <span class="keyword">new</span> SimpleBean(<span class="string"><span class="delimiter">&quot;</span><span class="content">foo</span><span class="delimiter">&quot;</span></span>, <span class="integer">42</span>))        <i class="conum" data-value="2"></i><b>(2)</b>
+            .to(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham-test@yopmail.com</span><span class="delimiter">&quot;</span></span>));
+  }
+
+  <span class="directive">public</span> <span class="directive">static</span> <span class="type">class</span> <span class="class">SimpleBean</span> {
+    <span class="directive">private</span> <span class="predefined-type">String</span> name;
+    <span class="directive">private</span> <span class="type">int</span> value;
+    <span class="directive">public</span> SimpleBean(<span class="predefined-type">String</span> name, <span class="type">int</span> value) {
+      <span class="local-variable">super</span>();
+      <span class="local-variable">this</span>.name = name;
+      <span class="local-variable">this</span>.value = value;
+    }
+    <span class="directive">public</span> <span class="predefined-type">String</span> getName() {
+      <span class="keyword">return</span> name;
+    }
+    <span class="directive">public</span> <span class="type">int</span> getValue() {
+      <span class="keyword">return</span> value;
+    }
+  }
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The path to the templates (<code>/template/withImagesAndCss/resources.html</code> for the main body,
+<code>/template/withImagesAndCss/resources.txt.ftl</code> for the text alternative)</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>The template context</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p><a href="https://github.com/groupe-sii/ogham/blob/master/sample-standard-usage/src/main/java/fr/sii/ogham/sample/standard/email/HtmlWithImagesAndCssTemplateSample.java?ts=2">Source code of the sample</a></p>
+</div>
+<div class="paragraph tab">
+<p><span class="image"><img src="../../images//icons/thymeleaf-html.jpg" alt="thymeleaf html" width="30" height="30"></span> ThymeLeaf template</p>
+</div>
+<div class="listingblock collapse-lines:1-16,19-24,26-49 highlight-lines:18">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="html"><span class="doctype">&lt;!DOCTYPE html&gt;</span>
+<span class="tag">&lt;html</span> <span class="attribute-name">xmlns:th</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">http://www.thymeleaf.org</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+<span class="tag">&lt;head&gt;</span>
+<span class="tag">&lt;meta</span> <span class="attribute-name">http-equiv</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">Content-Type</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">content</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">text/html; charset=UTF-8</span><span class="delimiter">&quot;</span></span> <span class="tag">/&gt;</span>
+<span class="tag">&lt;title&gt;</span>HtmlWithImagesAndCssTemplateSample<span class="tag">&lt;/title&gt;</span>
+<span class="tag">&lt;meta</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">viewport</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">content</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">width=device-width, initial-scale=1.0</span><span class="delimiter">&quot;</span></span> <span class="tag">/&gt;</span>
+<span class="tag">&lt;link</span> <span class="attribute-name">href</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">css/layout.css</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">rel</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">stylesheet</span><span class="delimiter">&quot;</span></span> <span class="tag">/&gt;</span>                             <i class="conum" data-value="1"></i><b>(1)</b>
+<span class="tag">&lt;link</span> <span class="attribute-name">href</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">css/theme.css</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">rel</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">stylesheet</span><span class="delimiter">&quot;</span></span> <span class="tag">/&gt;</span>                              <i class="conum" data-value="2"></i><b>(2)</b>
+<span class="tag">&lt;/head&gt;</span>
+<span class="tag">&lt;body&gt;</span>
+  <span class="tag">&lt;header&gt;</span>
+    <span class="tag">&lt;img</span> <span class="attribute-name">src</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">images/h1.gif</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">alt</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">Creating Email Magic</span><span class="delimiter">&quot;</span></span> <span class="tag">/&gt;</span>                      <i class="conum" data-value="3"></i><b>(3)</b>
+  <span class="tag">&lt;/header&gt;</span>
+  <span class="tag">&lt;div</span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">content</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+    <span class="tag">&lt;span</span> <span class="attribute-name">th:text</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">${name}</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>name<span class="tag">&lt;/span&gt;</span>
+    <span class="tag">&lt;p</span> <span class="attribute-name">th:text</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">${value}</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>value<span class="tag">&lt;/p&gt;</span>
+    <span class="tag">&lt;div</span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">left</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+      <span class="tag">&lt;img</span> <span class="attribute-name">src</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">images/left.gif</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">data-inline-image</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">base64</span><span class="delimiter">&quot;</span></span> <span class="tag">/&gt;</span>                  <i class="conum" data-value="4"></i><b>(4)</b>
+      <span class="tag">&lt;p</span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">text</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. In
+        tempus adipiscing felis, sit amet blandit ipsum volutpat sed. Morbi
+        porttitor, eget accumsan dictum, nisi libero ultricies ipsum, in
+        posuere mauris neque at erat.
+      <span class="tag">&lt;/p&gt;</span>
+    <span class="tag">&lt;/div&gt;</span>
+    <span class="tag">&lt;div</span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">right</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+      <span class="tag">&lt;img</span> <span class="attribute-name">src</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">images/right.gif</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">data-inline-image</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">attach</span><span class="delimiter">&quot;</span></span> <span class="tag">/&gt;</span>                 <i class="conum" data-value="5"></i><b>(5)</b>
+      <span class="tag">&lt;p</span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">text</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. In
+        tempus adipiscing felis, sit amet blandit ipsum volutpat sed. Morbi
+        porttitor, eget accumsan dictum, nisi libero ultricies ipsum, in
+        posuere mauris neque at erat.
+      <span class="tag">&lt;/p&gt;</span>
+    <span class="tag">&lt;/div&gt;</span>
+  <span class="tag">&lt;/div&gt;</span>
+  <span class="tag">&lt;footer&gt;</span>
+    <span class="tag">&lt;div</span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">social</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+      <span class="tag">&lt;a</span> <span class="attribute-name">href</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">http://www.twitter.com/</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+        <span class="tag">&lt;img</span> <span class="attribute-name">src</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">images/tw.gif</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">alt</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">Twitter</span><span class="delimiter">&quot;</span></span> <span class="tag">/&gt;</span>                       <i class="conum" data-value="6"></i><b>(6)</b>
+      <span class="tag">&lt;/a&gt;</span>
+      <span class="tag">&lt;a</span> <span class="attribute-name">href</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">http://www.facebook.com/</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+        <span class="tag">&lt;img</span> <span class="attribute-name">src</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">images/fb.gif</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">alt</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">Facebook</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">data-inline-image</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">skip</span><span class="delimiter">&quot;</span></span> <span class="tag">/&gt;</span>           <i class="conum" data-value="7"></i><b>(7)</b>
+      <span class="tag">&lt;/a&gt;</span>
+    <span class="tag">&lt;/div&gt;</span>
+    <span class="tag">&lt;div</span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">sender-info</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+      <span class="entity">&amp;reg;</span> Someone, somewhere 2013<span class="tag">&lt;br</span> <span class="tag">/&gt;</span>
+      <span class="tag">&lt;a</span> <span class="attribute-name">href</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">#</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">white</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">data-inline-styles</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">skip</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>Unsubscribe<span class="tag">&lt;/a&gt;</span> to this newsletter instantly  <i class="conum" data-value="8"></i><b>(8)</b>
+    <span class="tag">&lt;/div&gt;</span>
+  <span class="tag">&lt;/footer&gt;</span>
+<span class="tag">&lt;/body&gt;</span>
+<span class="tag">&lt;/html&gt;</span></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>_</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>_</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>_</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>Indicate to Ogham to inline using <code>base64</code> strategy</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p><a href="https://github.com/groupe-sii/ogham/blob/master/sample-standard-usage/src/main/resources/template/withImagesAndCss/resources.html?ts=2">Source code of the HTML template</a></p>
+</div>
+<div class="paragraph tab">
+<p><span class="image"><img src="../../images//icons/html.png" alt="html" width="37" height="30"></span> Generated HTML</p>
+</div>
+<div class="listingblock collapse-lines:1-14,68-72,74-96 highlight-lines:16-67">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="html"><span class="doctype">&lt;!doctype html&gt;</span>
+<span class="tag">&lt;html&gt;</span>
+<span class="tag">&lt;head&gt;</span>                                                <i class="conum" data-value="1"></i><b>(1)</b>
+<span class="tag">&lt;meta</span> <span class="attribute-name">http-equiv</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">Content-Type</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">content</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">text/html; charset=UTF-8</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+<span class="tag">&lt;title&gt;</span>Demystifying Email Design<span class="tag">&lt;/title&gt;</span>
+<span class="tag">&lt;meta</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">viewport</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">content</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">width=device-width, initial-scale=1.0</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+<span class="tag">&lt;/head&gt;</span>
+<span class="tag">&lt;body</span> <span class="attribute-name">style</span>=<span class="string"><span class="delimiter">&quot;</span><span class="key">margin</span>: <span class="float">10px</span> <span class="value">auto</span> <span class="float">30px</span> <span class="value">auto</span>; <span class="key">width</span>: <span class="float">600px</span>; <span class="key">border</span>: <span class="float">1px</span> <span class="value">solid</span> <span class="color">#ccc</span>;<span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>         <i class="conum" data-value="2"></i><b>(2)</b>
+  <span class="tag">&lt;header</span> <span class="attribute-name">style</span>=<span class="string"><span class="delimiter">&quot;</span><span class="key">padding</span>: <span class="float">40px</span> <span class="float">30px</span>; <span class="key">background</span>: <span class="color">#70bbd9</span>;<span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+    <span class="tag">&lt;img</span> <span class="attribute-name">src</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">cid:0</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">alt</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">Creating Email Magic</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">style</span>=<span class="string"><span class="delimiter">&quot;</span><span class="key">display</span>: <span class="value">block</span>; <span class="key">margin</span>: <span class="value">auto</span>;<span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>      <i class="conum" data-value="3"></i><b>(3)</b>
+  <span class="tag">&lt;/header&gt;</span>
+  <span class="tag">&lt;div</span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">content</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">style</span>=<span class="string"><span class="delimiter">&quot;</span><span class="key">padding</span>: <span class="float">40px</span> <span class="float">30px</span>; <span class="key">text-align</span>: <span class="value">justify</span>;<span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>              <i class="conum" data-value="4"></i><b>(4)</b>
+    <span class="tag">&lt;span&gt;</span>foo<span class="tag">&lt;/span&gt;</span>
+    <span class="tag">&lt;p&gt;</span>42<span class="tag">&lt;/p&gt;</span>
+    <span class="tag">&lt;div</span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">left</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">style</span>=<span class="string"><span class="delimiter">&quot;</span><span class="key">width</span>: <span class="float">250px</span>; <span class="key">display</span>: <span class="value">inline-block</span>; <span class="key">margin-right</span>: <span class="float">36px</span>;<span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+      <span class="tag">&lt;img</span> <span class="attribute-name">src</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">data:image/gif;base64,R0lGODlh+gCMANUAAOxRVfySUllNTaNvTPS1j</span>
+<span class="content">vlpbfRUWPuKjdJ+Tvn8/v2qrNJQVv7d3vh2e+n0/fH4/fd8VOPx/Oft8/3q7PT5/sxQVct8TueC</span>
+<span class="content">RsRNU/7Rt/3IyiowPPaNTpZIUHpeSpNnTf3U1CM6RO72/fLl6vyeZP2uguWIUDg7R15PTfmQUFJ</span>
+<span class="content">ERDk/TS41QzA3Rdx6P//59vpeYsBOVO/3/f7n6P24j/7g4T88R//38zNCRTM6Rv2/wf7P0NSATv</span>
+<span class="content">pWWv///xU2QyH/C1hNUCBEYXRhWE1QPD94cGFja2V0IGJlZ2luPSLvu78iIGlkPSJXNU0wTXBDZ</span>
+<span class="content">WhpSHpyZVN6TlRjemtjOWQiPz4gPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIg</span>
+<span class="content">eDp4bXB0az0iQWRvYmUgWE1QIENvcmUgNS4wLWMwNjAgNjEuMTM0Nzc3LCAyMDEwLzAyLzEyLTE</span>
+<span class="content">3OjMyOjAwICAgICAgICAiPiA8cmRmOlJERiB4bWxuczpyZGY9Imh0dHA6Ly93d3cudzMub3JnLz</span>
+<span class="content">E5OTkvMDIvMjItcmRmLXN5bnRheC1ucyMiPiA8cmRmOkRlc2NyaXB0aW9uIHJkZjphYm91dD0iI</span>
+<span class="content">iB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtbG5zOnhtcE1NPSJo</span>
+<span class="content">dHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvbW0vIiB4bWxuczpzdFJlZj0iaHR0cDovL25zLmF</span>
+<span class="content">kb2JlLmNvbS94YXAvMS4wL3NUeXBlL1Jlc291cmNlUmVmIyIgeG1wOkNyZWF0b3JUb29sPSJBZG</span>
+<span class="content">9iZSBQaG90b3Nob3AgQ1M1IE1hY2ludG9zaCIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDoxM</span>
+<span class="content">Tc1MTc0QUJFMTUxMUUyQjUwQ0YzRjY0Nzg2NURGMCIgeG1wTU06RG9jdW1lbnRJRD0ieG1wLmRp</span>
+<span class="content">ZDoxMTc1MTc0QkJFMTUxMUUyQjUwQ0YzRjY0Nzg2NURGMCI+IDx4bXBNTTpEZXJpdmVkRnJvbSB</span>
+<span class="content">zdFJlZjppbnN0YW5jZUlEPSJ4bXAuaWlkOjExNzUxNzQ4QkUxNTExRTJCNTBDRjNGNjQ3ODY1RE</span>
+<span class="content">YwIiBzdFJlZjpkb2N1bWVudElEPSJ4bXAuZGlkOjExNzUxNzQ5QkUxNTExRTJCNTBDRjNGNjQ3O</span>
+<span class="content">DY1REYwIi8+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hw</span>
+<span class="content">YWNrZXQgZW5kPSJyIj8+Af/+/fz7+vn49/b19PPy8fDv7u3s6+rp6Ofm5eTj4uHg397d3Nva2dj</span>
+<span class="content">X1tXU09LR0M/OzczLysnIx8bFxMPCwcC/vr28u7q5uLe2tbSzsrGwr66trKuqqainpqWko6KhoJ</span>
+<span class="content">+enZybmpmYl5aVlJOSkZCPjo2Mi4qJiIeGhYSDgoGAf359fHt6eXh3dnV0c3JxcG9ubWxramloZ</span>
+<span class="content">2ZlZGNiYWBfXl1cW1pZWFdWVVRTUlFQT05NTEtKSUhHRkVEQ0JBQD8+PTw7Ojk4NzY1NDMyMTAv</span>
+<span class="content">Li0sKyopKCcmJSQjIiEgHx4dHBsaGRgXFhUUExIREA8ODQwLCgkIBwYFBAMCAQAAIfkEAAAAAAA</span>
+<span class="content">sAAAAAPoAjAAABv/An3BILBqPyKRyyWw6n9CodEqtWq/YrHbL7Xq/4LB4TC6bz+i0es1uu9/wuH</span>
+<span class="content">xOr9vv+Lx+z+/7/4CBgoOEhYaHiImKi4yNjo+QkZKTlJWWl5iZmpucnZ6foKGio6Slpo45HRgVr</span>
+<span class="content">K2ur7CxsrO0tbauMR0hp3o2Bj3AwcLDxMXGx8jJysYLu7x3McvS09TVyx3Pd7/W3N3exxXZdt/k</span>
+<span class="content">5d0L4nXm6+zJ6Olz7fLzwO/wcccwChoHwfr8whpo0FEAmQEACBMqXMiwocOF24jZu/fmmA4fPl4</span>
+<span class="content">U7HEx48YeEzAyOHbwocmTKCMKm0ixzbEaGH306wET48wCMX0cQ8mzJ8T/YixbrjmmAOMMGMCK+j</span>
+<span class="content">gabAdGHSR9SkXJTGjFYwcOIA2WdSswGFmTGRhLtqzZs2jTnj0W1CoaenDXtXVrJq7db3PpkrnL1</span>
+<span class="content">1pevWL6Cpb2FzCYwYiRFTbsRRiMBpAjS55MubLly5gza4a8kvHbYAUeiB5NurTp06hTq17N+sGI</span>
+<span class="content">zp7rgm5Nu7bt26RfB1scW4uw0LiDCx+uu17vMr+HK1/eungP3sev/KZAvbr169iza9/Ovbt3Cs6</span>
+<span class="content">hR6/yO6f58+jTq1/Pvj36CbDHHwbtvr79+/hzwt8tP0z5/AAGKOB+xvX3xX8CJqggewQ+Z+CB9L</span>
+<span class="content">H33YQJLGhfg+I9+ASC6ckQ/8GHIIYo4ogkUmChexhq2AWH6DlA4oswhijDie2lqOIWLJ5HQYw8k</span>
+<span class="content">lghjevZeGMWOQJp5H1CDildhEc2iWR8SlpRpJNUvgdllFRMeWEJAXTp5ZdghikmCRksmCSWU2jp</span>
+<span class="content">3g0kiOnmm2KWmeCZaEahZnsZwKmnniQoSGedGzIJIA17FurmC3NeCWigwOAkIKFuXnBBCilc4MK</span>
+<span class="content">lmLpwgZ6IDqjook3cyR6kYlrKAQeZZropnJ0G+CeoS9yZgAgO1GqrrQTAmUKXKZzq66l7SnDrsL</span>
+<span class="content">WaqN6rsCZxp4sw5mros15K0OOPVvKXLKM9OKoesy86C+2z0vJI7XnIXmuEqDIQi/9rlyYg4O678</span>
+<span class="content">MYrb7w8RKvurcamV665RIi6HqQqbCDwwAQXbLDBCHTZKoD78iuEv+oBfPDEFA9sgcKJWuuwEhCn</span>
+<span class="content">J3HFIBd8cQAL59eww7LSeq+zAYfs8gYjC3tvsUF+unG/grYYI8svuxzztMfafPPDOZ/HLYkss6D</span>
+<span class="content">00kw37bTTP4sbtMZDn1v0eemu3KUKT3ft9dIxz0zz1AVWbXWjCQL89dpQY+wp1WYP0TF6arNtNw</span>
+<span class="content">sjl4zfyfzOfV7dd6+dd8Zlxy331TklkLW6SQcueJcyz5xvtYUb/sOyO2/t+OMBhBvjuObxbS7mz</span>
+<span class="content">Wq+uddRf062g5YfjvZ6is/c+OlPhy3/9uTkCj203+YBTnvTg79dueG85+T772C77aruNxcf0/HI</span>
+<span class="content">4608w8xvLOvixM4evdK2S14z3MQjHtPRI2q/feowgq5f9SiLjxH5IpofPfovqh+T6NdeL/vWLfT</span>
+<span class="content">v//8ADGAAu3cv3IWOfX1zX3sgJYAVOPCBEIygBCUYvOWBL27OwwgDJ8jBDj6wgtS7oNky6IMNev</span>
+<span class="content">CEEQShyRA4OgWOqksNRKEMV6DCvbEwfy78FwxnKMMaPkmEVSOhCXnoQR9e6IbJEuIOiVjE6a0Qi</span>
+<span class="content">LsTRkgCNEQmTtCI9dkBEmE1jAaAgAFgDKMYxzhGLgUghla8Ype+SMY2tnEHH2Fd6y73jZIA/wAC</span>
+<span class="content">S0wjBbuUEJWcY45C8GM17IjHM+pRjQHoYznCAchoeIOQeTzkB/mIEEFaAxuA9MUjE1JINErSgSN</span>
+<span class="content">T5DcA4AxAnqADt5AFBlbZyU9CcGSrXGUqY4EBXQCyCwOI5CdHVspb0iGXhnQlKLvUS1/KAZie3C</span>
+<span class="content">UxjVkHZApzmAEoJjPf4Mxn8nKac6imMK+JzTgA8wMoCKc4x0nOcpbTBMvsJhyA+S1DSVOdamBnO</span>
+<span class="content">/f0TniiQZ566hW06mlPM+DzTajS1LP42U8y/DNSmNpVoQhaUDEctFSYGmhD1/DQMFXqAhwwVAom</span>
+<span class="content">ugYUzHNPKbAARyn6UTiZAAcjXYMAPjCAlrr0pTMwjWlMPcDQlNr0pjjNqU53ytOe+vSnQA2qUId</span>
+<span class="content">K1KIa9ahITapSl8rUpjr1qVCNqlSHFAQAOw==</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>                               <i class="conum" data-value="5"></i><b>(5)</b>
+      <span class="tag">&lt;p</span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">text</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>Lorem ipsum dolor sit amet, consectetur
+        adipiscing elit. In tempus adipiscing felis, sit amet blandit ipsum
+        volutpat sed. Morbi porttitor, eget accumsan dictum, nisi libero
+        ultricies ipsum, in posuere mauris neque at erat.
+      <span class="tag">&lt;/p&gt;</span>
+    <span class="tag">&lt;/div&gt;</span>
+    <span class="tag">&lt;div</span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">right</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">style</span>=<span class="string"><span class="delimiter">&quot;</span><span class="key">width</span>: <span class="float">250px</span>; <span class="key">display</span>: <span class="value">inline-block</span>;<span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+      <span class="tag">&lt;img</span> <span class="attribute-name">src</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">cid:1</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>                                   <i class="conum" data-value="6"></i><b>(6)</b>
+      <span class="tag">&lt;p</span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">text</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>Lorem ipsum dolor sit amet, consectetur
+        adipiscing elit. In tempus adipiscing felis, sit amet blandit ipsum
+        volutpat sed. Morbi porttitor, eget accumsan dictum, nisi libero
+        ultricies ipsum, in posuere mauris neque at erat.
+      <span class="tag">&lt;/p&gt;</span>
+    <span class="tag">&lt;/div&gt;</span>
+  <span class="tag">&lt;/div&gt;</span>
+  <span class="tag">&lt;footer</span> <span class="attribute-name">style</span>=<span class="string"><span class="delimiter">&quot;</span><span class="key">padding</span>: <span class="float">30px</span>; <span class="key">color</span>: <span class="color">#ffffff</span>; <span class="key">font-family</span>: <span class="value">Arial</span>, <span class="value">sans-serif</span>; <span class="key">font-size</span>: <span class="float">14px</span>; <span class="key">background</span>: <span class="color">#ee4c50</span>;<span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+    <span class="tag">&lt;div</span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">social</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">style</span>=<span class="string"><span class="delimiter">&quot;</span><span class="key">text-align</span>: <span class="value">center</span>;<span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+      <span class="tag">&lt;a</span> <span class="attribute-name">href</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">http://www.twitter.com/</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">style</span>=<span class="string"><span class="delimiter">&quot;</span><span class="key">display</span>: <span class="value">inline-block</span>; <span class="key">color</span>: <span class="color">#ffffff</span>;<span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>   <i class="conum" data-value="7"></i><b>(7)</b>
+        <span class="tag">&lt;img</span> <span class="attribute-name">src</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">cid:2</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">alt</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">Twitter</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>                           <i class="conum" data-value="8"></i><b>(8)</b>
+      <span class="tag">&lt;/a&gt;</span>
+      <span class="tag">&lt;a</span> <span class="attribute-name">href</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">http://www.facebook.com/</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">style</span>=<span class="string"><span class="delimiter">&quot;</span><span class="key">display</span>: <span class="value">inline-block</span>; <span class="key">color</span>: <span class="color">#ffffff</span>;<span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>    <i class="conum" data-value="9"></i><b>(9)</b>
+        <span class="tag">&lt;img</span> <span class="attribute-name">src</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">images/fb.gif</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">alt</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">Facebook</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>                      <i class="conum" data-value="10"></i><b>(10)</b>
+      <span class="tag">&lt;/a&gt;</span>
+    <span class="tag">&lt;/div&gt;</span>
+    <span class="tag">&lt;div</span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">sender-info</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">style</span>=<span class="string"><span class="delimiter">&quot;</span><span class="key">text-align</span>: <span class="value">center</span>; <span class="key">margin-top</span>: <span class="float">20px</span>;<span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+      <span class="entity">&amp;reg;</span> Someone, somewhere 2013 <span class="tag">&lt;br&gt;</span>
+      <span class="tag">&lt;a</span> <span class="attribute-name">href</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">#</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">white</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>Unsubscribe<span class="tag">&lt;/a&gt;</span>to this newsletter instantly         <i class="conum" data-value="11"></i><b>(11)</b>
+    <span class="tag">&lt;/div&gt;</span>
+  <span class="tag">&lt;/footer&gt;</span>
+<span class="tag">&lt;/body&gt;</span>
+<span class="tag">&lt;/html&gt;</span></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>_</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>_</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>_</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>_</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
+<td>The data URL starts with <code>data:</code> followed by the mimetype (<code>image/gif</code>) and
+the image converted to a base64 string.</td>
+</tr>
+</table>
+</div>
+<div class="paragraph tab-container-end">
+<p>-</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_skip_some_images"><a class="anchor" href="#_skip_some_images"></a>Skip some images</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>In the case you need to inline an image manually, you can tell Ogham to skip
+the image by placing the <code>data-inline-image</code> attribute with the <code>"skip"</code> value
+on the <code>&lt;img&gt;</code> tag.</p>
+</div>
+<div class="paragraph tab-container  no-max-height">
+<p>Skip embedding</p>
+</div>
+<div class="paragraph tab">
+<p><span class="image"><img src="../../images//icons/java-logo.png" alt="java logo" width="16" height="30"></span> Java</p>
+</div>
+<div class="listingblock collapse-lines:1-10,12-28,36-48 irrelevant-lines:1-10,12-19 highlight-lines:30-31">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">fr.sii.ogham.sample.standard.email</span>;
+
+<span class="keyword">import</span> <span class="include">java.util.Properties</span>;
+
+<span class="keyword">import</span> <span class="include">fr.sii.ogham.core.builder.MessagingBuilder</span>;
+<span class="keyword">import</span> <span class="include">fr.sii.ogham.core.exception.MessagingException</span>;
+<span class="keyword">import</span> <span class="include">fr.sii.ogham.core.service.MessagingService</span>;
+<span class="keyword">import</span> <span class="include">fr.sii.ogham.email.message.Email</span>;
+
+<span class="directive">public</span> <span class="type">class</span> <span class="class">HtmlWithImagesAndCssTemplateSample</span> {
+  <span class="directive">public</span> <span class="directive">static</span> <span class="type">void</span> main(<span class="predefined-type">String</span><span class="type">[]</span> args) <span class="directive">throws</span> MessagingException {
+    <span class="comment">// configure properties (could be stored in a properties file or defined</span>
+    <span class="comment">// in System properties)</span>
+    <span class="predefined-type">Properties</span> properties = <span class="keyword">new</span> <span class="predefined-type">Properties</span>();
+    properties.setProperty(<span class="string"><span class="delimiter">&quot;</span><span class="content">mail.smtp.host</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;your server host&gt;</span><span class="delimiter">&quot;</span></span>);
+    properties.setProperty(<span class="string"><span class="delimiter">&quot;</span><span class="content">mail.smtp.port</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;your server port&gt;</span><span class="delimiter">&quot;</span></span>);
+    properties.setProperty(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.email.from.default-value</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;email address to display for the sender user&gt;</span><span class="delimiter">&quot;</span></span>);
+    <span class="comment">// Instantiate the messaging service using default behavior and</span>
+    <span class="comment">// provided properties</span>
+    MessagingService service = MessagingBuilder.standard()
+        .environment()
+          .properties(properties)
+          .and()
+        .build();
+    <span class="comment">// send the email using fluent API</span>
+    <span class="comment">// Note that the extension of the template is not given. This version</span>
+    <span class="comment">// automatically takes the provided path and adds the '.html' extension</span>
+    <span class="comment">// for the HTML template and '.txt.ftl' for text template</span>
+    service.send(<span class="keyword">new</span> Email()
+            .body().template(<span class="string"><span class="delimiter">&quot;</span><span class="content">classpath:/template/withImagesAndCss/resources</span><span class="delimiter">&quot;</span></span>,    <i class="conum" data-value="1"></i><b>(1)</b>
+                              <span class="keyword">new</span> SimpleBean(<span class="string"><span class="delimiter">&quot;</span><span class="content">foo</span><span class="delimiter">&quot;</span></span>, <span class="integer">42</span>))        <i class="conum" data-value="2"></i><b>(2)</b>
+            .to(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham-test@yopmail.com</span><span class="delimiter">&quot;</span></span>));
+  }
+
+  <span class="directive">public</span> <span class="directive">static</span> <span class="type">class</span> <span class="class">SimpleBean</span> {
+    <span class="directive">private</span> <span class="predefined-type">String</span> name;
+    <span class="directive">private</span> <span class="type">int</span> value;
+    <span class="directive">public</span> SimpleBean(<span class="predefined-type">String</span> name, <span class="type">int</span> value) {
+      <span class="local-variable">super</span>();
+      <span class="local-variable">this</span>.name = name;
+      <span class="local-variable">this</span>.value = value;
+    }
+    <span class="directive">public</span> <span class="predefined-type">String</span> getName() {
+      <span class="keyword">return</span> name;
+    }
+    <span class="directive">public</span> <span class="type">int</span> getValue() {
+      <span class="keyword">return</span> value;
+    }
+  }
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The path to the templates (<code>/template/withImagesAndCss/resources.html</code> for the main body,
+<code>/template/withImagesAndCss/resources.txt.ftl</code> for the text alternative)</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>The template context</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p><a href="https://github.com/groupe-sii/ogham/blob/master/sample-standard-usage/src/main/java/fr/sii/ogham/sample/standard/email/HtmlWithImagesAndCssTemplateSample.java?ts=2">Source code of the sample</a></p>
+</div>
+<div class="paragraph tab">
+<p><span class="image"><img src="../../images//icons/thymeleaf-html.jpg" alt="thymeleaf html" width="30" height="30"></span> ThymeLeaf template</p>
+</div>
+<div class="listingblock collapse-lines:1-40,44-49 highlight-lines:42">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="html"><span class="doctype">&lt;!DOCTYPE html&gt;</span>
+<span class="tag">&lt;html</span> <span class="attribute-name">xmlns:th</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">http://www.thymeleaf.org</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+<span class="tag">&lt;head&gt;</span>
+<span class="tag">&lt;meta</span> <span class="attribute-name">http-equiv</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">Content-Type</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">content</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">text/html; charset=UTF-8</span><span class="delimiter">&quot;</span></span> <span class="tag">/&gt;</span>
+<span class="tag">&lt;title&gt;</span>HtmlWithImagesAndCssTemplateSample<span class="tag">&lt;/title&gt;</span>
+<span class="tag">&lt;meta</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">viewport</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">content</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">width=device-width, initial-scale=1.0</span><span class="delimiter">&quot;</span></span> <span class="tag">/&gt;</span>
+<span class="tag">&lt;link</span> <span class="attribute-name">href</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">css/layout.css</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">rel</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">stylesheet</span><span class="delimiter">&quot;</span></span> <span class="tag">/&gt;</span>                             <i class="conum" data-value="1"></i><b>(1)</b>
+<span class="tag">&lt;link</span> <span class="attribute-name">href</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">css/theme.css</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">rel</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">stylesheet</span><span class="delimiter">&quot;</span></span> <span class="tag">/&gt;</span>                              <i class="conum" data-value="2"></i><b>(2)</b>
+<span class="tag">&lt;/head&gt;</span>
+<span class="tag">&lt;body&gt;</span>
+  <span class="tag">&lt;header&gt;</span>
+    <span class="tag">&lt;img</span> <span class="attribute-name">src</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">images/h1.gif</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">alt</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">Creating Email Magic</span><span class="delimiter">&quot;</span></span> <span class="tag">/&gt;</span>                      <i class="conum" data-value="3"></i><b>(3)</b>
+  <span class="tag">&lt;/header&gt;</span>
+  <span class="tag">&lt;div</span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">content</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+    <span class="tag">&lt;span</span> <span class="attribute-name">th:text</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">${name}</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>name<span class="tag">&lt;/span&gt;</span>
+    <span class="tag">&lt;p</span> <span class="attribute-name">th:text</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">${value}</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>value<span class="tag">&lt;/p&gt;</span>
+    <span class="tag">&lt;div</span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">left</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+      <span class="tag">&lt;img</span> <span class="attribute-name">src</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">images/left.gif</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">data-inline-image</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">base64</span><span class="delimiter">&quot;</span></span> <span class="tag">/&gt;</span>                  <i class="conum" data-value="4"></i><b>(4)</b>
+      <span class="tag">&lt;p</span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">text</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. In
+        tempus adipiscing felis, sit amet blandit ipsum volutpat sed. Morbi
+        porttitor, eget accumsan dictum, nisi libero ultricies ipsum, in
+        posuere mauris neque at erat.
+      <span class="tag">&lt;/p&gt;</span>
+    <span class="tag">&lt;/div&gt;</span>
+    <span class="tag">&lt;div</span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">right</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+      <span class="tag">&lt;img</span> <span class="attribute-name">src</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">images/right.gif</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">data-inline-image</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">attach</span><span class="delimiter">&quot;</span></span> <span class="tag">/&gt;</span>                 <i class="conum" data-value="5"></i><b>(5)</b>
+      <span class="tag">&lt;p</span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">text</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. In
+        tempus adipiscing felis, sit amet blandit ipsum volutpat sed. Morbi
+        porttitor, eget accumsan dictum, nisi libero ultricies ipsum, in
+        posuere mauris neque at erat.
+      <span class="tag">&lt;/p&gt;</span>
+    <span class="tag">&lt;/div&gt;</span>
+  <span class="tag">&lt;/div&gt;</span>
+  <span class="tag">&lt;footer&gt;</span>
+    <span class="tag">&lt;div</span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">social</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+      <span class="tag">&lt;a</span> <span class="attribute-name">href</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">http://www.twitter.com/</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+        <span class="tag">&lt;img</span> <span class="attribute-name">src</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">images/tw.gif</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">alt</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">Twitter</span><span class="delimiter">&quot;</span></span> <span class="tag">/&gt;</span>                       <i class="conum" data-value="6"></i><b>(6)</b>
+      <span class="tag">&lt;/a&gt;</span>
+      <span class="tag">&lt;a</span> <span class="attribute-name">href</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">http://www.facebook.com/</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+        <span class="tag">&lt;img</span> <span class="attribute-name">src</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">images/fb.gif</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">alt</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">Facebook</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">data-inline-image</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">skip</span><span class="delimiter">&quot;</span></span> <span class="tag">/&gt;</span>           <i class="conum" data-value="7"></i><b>(7)</b>
+      <span class="tag">&lt;/a&gt;</span>
+    <span class="tag">&lt;/div&gt;</span>
+    <span class="tag">&lt;div</span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">sender-info</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+      <span class="entity">&amp;reg;</span> Someone, somewhere 2013<span class="tag">&lt;br</span> <span class="tag">/&gt;</span>
+      <span class="tag">&lt;a</span> <span class="attribute-name">href</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">#</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">white</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">data-inline-styles</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">skip</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>Unsubscribe<span class="tag">&lt;/a&gt;</span> to this newsletter instantly  <i class="conum" data-value="8"></i><b>(8)</b>
+    <span class="tag">&lt;/div&gt;</span>
+  <span class="tag">&lt;/footer&gt;</span>
+<span class="tag">&lt;/body&gt;</span>
+<span class="tag">&lt;/html&gt;</span></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>_</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>_</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>_</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>_</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
+<td>_</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="6"></i><b>6</b></td>
+<td>_</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="7"></i><b>7</b></td>
+<td>Indicate to Ogham to skip inlining using <code>skip</code> value</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p><a href="https://github.com/groupe-sii/ogham/blob/master/sample-standard-usage/src/main/resources/template/withImagesAndCss/resources.html?ts=2">Source code of the HTML template</a></p>
+</div>
+<div class="paragraph tab">
+<p><span class="image"><img src="../../images//icons/html.png" alt="html" width="37" height="30"></span> Generated HTML</p>
+</div>
+<div class="listingblock collapse-lines:1-87,91-96 highlight-lines:89">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="html"><span class="doctype">&lt;!doctype html&gt;</span>
+<span class="tag">&lt;html&gt;</span>
+<span class="tag">&lt;head&gt;</span>                                                <i class="conum" data-value="1"></i><b>(1)</b>
+<span class="tag">&lt;meta</span> <span class="attribute-name">http-equiv</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">Content-Type</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">content</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">text/html; charset=UTF-8</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+<span class="tag">&lt;title&gt;</span>Demystifying Email Design<span class="tag">&lt;/title&gt;</span>
+<span class="tag">&lt;meta</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">viewport</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">content</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">width=device-width, initial-scale=1.0</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+<span class="tag">&lt;/head&gt;</span>
+<span class="tag">&lt;body</span> <span class="attribute-name">style</span>=<span class="string"><span class="delimiter">&quot;</span><span class="key">margin</span>: <span class="float">10px</span> <span class="value">auto</span> <span class="float">30px</span> <span class="value">auto</span>; <span class="key">width</span>: <span class="float">600px</span>; <span class="key">border</span>: <span class="float">1px</span> <span class="value">solid</span> <span class="color">#ccc</span>;<span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>         <i class="conum" data-value="2"></i><b>(2)</b>
+  <span class="tag">&lt;header</span> <span class="attribute-name">style</span>=<span class="string"><span class="delimiter">&quot;</span><span class="key">padding</span>: <span class="float">40px</span> <span class="float">30px</span>; <span class="key">background</span>: <span class="color">#70bbd9</span>;<span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+    <span class="tag">&lt;img</span> <span class="attribute-name">src</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">cid:0</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">alt</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">Creating Email Magic</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">style</span>=<span class="string"><span class="delimiter">&quot;</span><span class="key">display</span>: <span class="value">block</span>; <span class="key">margin</span>: <span class="value">auto</span>;<span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>      <i class="conum" data-value="3"></i><b>(3)</b>
+  <span class="tag">&lt;/header&gt;</span>
+  <span class="tag">&lt;div</span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">content</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">style</span>=<span class="string"><span class="delimiter">&quot;</span><span class="key">padding</span>: <span class="float">40px</span> <span class="float">30px</span>; <span class="key">text-align</span>: <span class="value">justify</span>;<span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>              <i class="conum" data-value="4"></i><b>(4)</b>
+    <span class="tag">&lt;span&gt;</span>foo<span class="tag">&lt;/span&gt;</span>
+    <span class="tag">&lt;p&gt;</span>42<span class="tag">&lt;/p&gt;</span>
+    <span class="tag">&lt;div</span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">left</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">style</span>=<span class="string"><span class="delimiter">&quot;</span><span class="key">width</span>: <span class="float">250px</span>; <span class="key">display</span>: <span class="value">inline-block</span>; <span class="key">margin-right</span>: <span class="float">36px</span>;<span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+      <span class="tag">&lt;img</span> <span class="attribute-name">src</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">data:image/gif;base64,R0lGODlh+gCMANUAAOxRVfySUllNTaNvTPS1j</span>
+<span class="content">vlpbfRUWPuKjdJ+Tvn8/v2qrNJQVv7d3vh2e+n0/fH4/fd8VOPx/Oft8/3q7PT5/sxQVct8TueC</span>
+<span class="content">RsRNU/7Rt/3IyiowPPaNTpZIUHpeSpNnTf3U1CM6RO72/fLl6vyeZP2uguWIUDg7R15PTfmQUFJ</span>
+<span class="content">ERDk/TS41QzA3Rdx6P//59vpeYsBOVO/3/f7n6P24j/7g4T88R//38zNCRTM6Rv2/wf7P0NSATv</span>
+<span class="content">pWWv///xU2QyH/C1hNUCBEYXRhWE1QPD94cGFja2V0IGJlZ2luPSLvu78iIGlkPSJXNU0wTXBDZ</span>
+<span class="content">WhpSHpyZVN6TlRjemtjOWQiPz4gPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIg</span>
+<span class="content">eDp4bXB0az0iQWRvYmUgWE1QIENvcmUgNS4wLWMwNjAgNjEuMTM0Nzc3LCAyMDEwLzAyLzEyLTE</span>
+<span class="content">3OjMyOjAwICAgICAgICAiPiA8cmRmOlJERiB4bWxuczpyZGY9Imh0dHA6Ly93d3cudzMub3JnLz</span>
+<span class="content">E5OTkvMDIvMjItcmRmLXN5bnRheC1ucyMiPiA8cmRmOkRlc2NyaXB0aW9uIHJkZjphYm91dD0iI</span>
+<span class="content">iB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtbG5zOnhtcE1NPSJo</span>
+<span class="content">dHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvbW0vIiB4bWxuczpzdFJlZj0iaHR0cDovL25zLmF</span>
+<span class="content">kb2JlLmNvbS94YXAvMS4wL3NUeXBlL1Jlc291cmNlUmVmIyIgeG1wOkNyZWF0b3JUb29sPSJBZG</span>
+<span class="content">9iZSBQaG90b3Nob3AgQ1M1IE1hY2ludG9zaCIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDoxM</span>
+<span class="content">Tc1MTc0QUJFMTUxMUUyQjUwQ0YzRjY0Nzg2NURGMCIgeG1wTU06RG9jdW1lbnRJRD0ieG1wLmRp</span>
+<span class="content">ZDoxMTc1MTc0QkJFMTUxMUUyQjUwQ0YzRjY0Nzg2NURGMCI+IDx4bXBNTTpEZXJpdmVkRnJvbSB</span>
+<span class="content">zdFJlZjppbnN0YW5jZUlEPSJ4bXAuaWlkOjExNzUxNzQ4QkUxNTExRTJCNTBDRjNGNjQ3ODY1RE</span>
+<span class="content">YwIiBzdFJlZjpkb2N1bWVudElEPSJ4bXAuZGlkOjExNzUxNzQ5QkUxNTExRTJCNTBDRjNGNjQ3O</span>
+<span class="content">DY1REYwIi8+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hw</span>
+<span class="content">YWNrZXQgZW5kPSJyIj8+Af/+/fz7+vn49/b19PPy8fDv7u3s6+rp6Ofm5eTj4uHg397d3Nva2dj</span>
+<span class="content">X1tXU09LR0M/OzczLysnIx8bFxMPCwcC/vr28u7q5uLe2tbSzsrGwr66trKuqqainpqWko6KhoJ</span>
+<span class="content">+enZybmpmYl5aVlJOSkZCPjo2Mi4qJiIeGhYSDgoGAf359fHt6eXh3dnV0c3JxcG9ubWxramloZ</span>
+<span class="content">2ZlZGNiYWBfXl1cW1pZWFdWVVRTUlFQT05NTEtKSUhHRkVEQ0JBQD8+PTw7Ojk4NzY1NDMyMTAv</span>
+<span class="content">Li0sKyopKCcmJSQjIiEgHx4dHBsaGRgXFhUUExIREA8ODQwLCgkIBwYFBAMCAQAAIfkEAAAAAAA</span>
+<span class="content">sAAAAAPoAjAAABv/An3BILBqPyKRyyWw6n9CodEqtWq/YrHbL7Xq/4LB4TC6bz+i0es1uu9/wuH</span>
+<span class="content">xOr9vv+Lx+z+/7/4CBgoOEhYaHiImKi4yNjo+QkZKTlJWWl5iZmpucnZ6foKGio6Slpo45HRgVr</span>
+<span class="content">K2ur7CxsrO0tbauMR0hp3o2Bj3AwcLDxMXGx8jJysYLu7x3McvS09TVyx3Pd7/W3N3exxXZdt/k</span>
+<span class="content">5d0L4nXm6+zJ6Olz7fLzwO/wcccwChoHwfr8whpo0FEAmQEACBMqXMiwocOF24jZu/fmmA4fPl4</span>
+<span class="content">U7HEx48YeEzAyOHbwocmTKCMKm0ixzbEaGH306wET48wCMX0cQ8mzJ8T/YixbrjmmAOMMGMCK+j</span>
+<span class="content">gabAdGHSR9SkXJTGjFYwcOIA2WdSswGFmTGRhLtqzZs2jTnj0W1CoaenDXtXVrJq7db3PpkrnL1</span>
+<span class="content">1pevWL6Cpb2FzCYwYiRFTbsRRiMBpAjS55MubLly5gza4a8kvHbYAUeiB5NurTp06hTq17N+sGI</span>
+<span class="content">zp7rgm5Nu7bt26RfB1scW4uw0LiDCx+uu17vMr+HK1/eungP3sev/KZAvbr169iza9/Ovbt3Cs6</span>
+<span class="content">hR6/yO6f58+jTq1/Pvj36CbDHHwbtvr79+/hzwt8tP0z5/AAGKOB+xvX3xX8CJqggewQ+Z+CB9L</span>
+<span class="content">H33YQJLGhfg+I9+ASC6ckQ/8GHIIYo4ogkUmChexhq2AWH6DlA4oswhijDie2lqOIWLJ5HQYw8k</span>
+<span class="content">lghjevZeGMWOQJp5H1CDildhEc2iWR8SlpRpJNUvgdllFRMeWEJAXTp5ZdghikmCRksmCSWU2jp</span>
+<span class="content">3g0kiOnmm2KWmeCZaEahZnsZwKmnniQoSGedGzIJIA17FurmC3NeCWigwOAkIKFuXnBBCilc4MK</span>
+<span class="content">lmLpwgZ6IDqjook3cyR6kYlrKAQeZZropnJ0G+CeoS9yZgAgO1GqrrQTAmUKXKZzq66l7SnDrsL</span>
+<span class="content">WaqN6rsCZxp4sw5mros15K0OOPVvKXLKM9OKoesy86C+2z0vJI7XnIXmuEqDIQi/9rlyYg4O678</span>
+<span class="content">MYrb7w8RKvurcamV665RIi6HqQqbCDwwAQXbLDBCHTZKoD78iuEv+oBfPDEFA9sgcKJWuuwEhCn</span>
+<span class="content">J3HFIBd8cQAL59eww7LSeq+zAYfs8gYjC3tvsUF+unG/grYYI8svuxzztMfafPPDOZ/HLYkss6D</span>
+<span class="content">00kw37bTTP4sbtMZDn1v0eemu3KUKT3ft9dIxz0zz1AVWbXWjCQL89dpQY+wp1WYP0TF6arNtNw</span>
+<span class="content">sjl4zfyfzOfV7dd6+dd8Zlxy331TklkLW6SQcueJcyz5xvtYUb/sOyO2/t+OMBhBvjuObxbS7mz</span>
+<span class="content">Wq+uddRf062g5YfjvZ6is/c+OlPhy3/9uTkCj203+YBTnvTg79dueG85+T772C77aruNxcf0/HI</span>
+<span class="content">4608w8xvLOvixM4evdK2S14z3MQjHtPRI2q/feowgq5f9SiLjxH5IpofPfovqh+T6NdeL/vWLfT</span>
+<span class="content">v//8ADGAAu3cv3IWOfX1zX3sgJYAVOPCBEIygBCUYvOWBL27OwwgDJ8jBDj6wgtS7oNky6IMNev</span>
+<span class="content">CEEQShyRA4OgWOqksNRKEMV6DCvbEwfy78FwxnKMMaPkmEVSOhCXnoQR9e6IbJEuIOiVjE6a0Qi</span>
+<span class="content">LsTRkgCNEQmTtCI9dkBEmE1jAaAgAFgDKMYxzhGLgUghla8Ype+SMY2tnEHH2Fd6y73jZIA/wAC</span>
+<span class="content">S0wjBbuUEJWcY45C8GM17IjHM+pRjQHoYznCAchoeIOQeTzkB/mIEEFaAxuA9MUjE1JINErSgSN</span>
+<span class="content">T5DcA4AxAnqADt5AFBlbZyU9CcGSrXGUqY4EBXQCyCwOI5CdHVspb0iGXhnQlKLvUS1/KAZie3C</span>
+<span class="content">UxjVkHZApzmAEoJjPf4Mxn8nKac6imMK+JzTgA8wMoCKc4x0nOcpbTBMvsJhyA+S1DSVOdamBnO</span>
+<span class="content">/f0TniiQZ566hW06mlPM+DzTajS1LP42U8y/DNSmNpVoQhaUDEctFSYGmhD1/DQMFXqAhwwVAom</span>
+<span class="content">ugYUzHNPKbAARyn6UTiZAAcjXYMAPjCAlrr0pTMwjWlMPcDQlNr0pjjNqU53ytOe+vSnQA2qUId</span>
+<span class="content">K1KIa9ahITapSl8rUpjr1qVCNqlSHFAQAOw==</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>                               <i class="conum" data-value="5"></i><b>(5)</b>
+      <span class="tag">&lt;p</span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">text</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>Lorem ipsum dolor sit amet, consectetur
+        adipiscing elit. In tempus adipiscing felis, sit amet blandit ipsum
+        volutpat sed. Morbi porttitor, eget accumsan dictum, nisi libero
+        ultricies ipsum, in posuere mauris neque at erat.
+      <span class="tag">&lt;/p&gt;</span>
+    <span class="tag">&lt;/div&gt;</span>
+    <span class="tag">&lt;div</span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">right</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">style</span>=<span class="string"><span class="delimiter">&quot;</span><span class="key">width</span>: <span class="float">250px</span>; <span class="key">display</span>: <span class="value">inline-block</span>;<span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+      <span class="tag">&lt;img</span> <span class="attribute-name">src</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">cid:1</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>                                   <i class="conum" data-value="6"></i><b>(6)</b>
+      <span class="tag">&lt;p</span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">text</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>Lorem ipsum dolor sit amet, consectetur
+        adipiscing elit. In tempus adipiscing felis, sit amet blandit ipsum
+        volutpat sed. Morbi porttitor, eget accumsan dictum, nisi libero
+        ultricies ipsum, in posuere mauris neque at erat.
+      <span class="tag">&lt;/p&gt;</span>
+    <span class="tag">&lt;/div&gt;</span>
+  <span class="tag">&lt;/div&gt;</span>
+  <span class="tag">&lt;footer</span> <span class="attribute-name">style</span>=<span class="string"><span class="delimiter">&quot;</span><span class="key">padding</span>: <span class="float">30px</span>; <span class="key">color</span>: <span class="color">#ffffff</span>; <span class="key">font-family</span>: <span class="value">Arial</span>, <span class="value">sans-serif</span>; <span class="key">font-size</span>: <span class="float">14px</span>; <span class="key">background</span>: <span class="color">#ee4c50</span>;<span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+    <span class="tag">&lt;div</span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">social</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">style</span>=<span class="string"><span class="delimiter">&quot;</span><span class="key">text-align</span>: <span class="value">center</span>;<span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+      <span class="tag">&lt;a</span> <span class="attribute-name">href</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">http://www.twitter.com/</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">style</span>=<span class="string"><span class="delimiter">&quot;</span><span class="key">display</span>: <span class="value">inline-block</span>; <span class="key">color</span>: <span class="color">#ffffff</span>;<span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>   <i class="conum" data-value="7"></i><b>(7)</b>
+        <span class="tag">&lt;img</span> <span class="attribute-name">src</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">cid:2</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">alt</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">Twitter</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>                           <i class="conum" data-value="8"></i><b>(8)</b>
+      <span class="tag">&lt;/a&gt;</span>
+      <span class="tag">&lt;a</span> <span class="attribute-name">href</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">http://www.facebook.com/</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">style</span>=<span class="string"><span class="delimiter">&quot;</span><span class="key">display</span>: <span class="value">inline-block</span>; <span class="key">color</span>: <span class="color">#ffffff</span>;<span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>    <i class="conum" data-value="9"></i><b>(9)</b>
+        <span class="tag">&lt;img</span> <span class="attribute-name">src</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">images/fb.gif</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">alt</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">Facebook</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>                      <i class="conum" data-value="10"></i><b>(10)</b>
+      <span class="tag">&lt;/a&gt;</span>
+    <span class="tag">&lt;/div&gt;</span>
+    <span class="tag">&lt;div</span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">sender-info</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">style</span>=<span class="string"><span class="delimiter">&quot;</span><span class="key">text-align</span>: <span class="value">center</span>; <span class="key">margin-top</span>: <span class="float">20px</span>;<span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+      <span class="entity">&amp;reg;</span> Someone, somewhere 2013 <span class="tag">&lt;br&gt;</span>
+      <span class="tag">&lt;a</span> <span class="attribute-name">href</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">#</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">white</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>Unsubscribe<span class="tag">&lt;/a&gt;</span>to this newsletter instantly         <i class="conum" data-value="11"></i><b>(11)</b>
+    <span class="tag">&lt;/div&gt;</span>
+  <span class="tag">&lt;/footer&gt;</span>
+<span class="tag">&lt;/body&gt;</span>
+<span class="tag">&lt;/html&gt;</span></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>_</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>_</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>_</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>_</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
+<td>_</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="6"></i><b>6</b></td>
+<td>_</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="7"></i><b>7</b></td>
+<td>_</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="8"></i><b>8</b></td>
+<td>_</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="9"></i><b>9</b></td>
+<td>_</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="10"></i><b>10</b></td>
+<td>The image is not inlined at all (the original <code>src</code> attribute is unchanged)</td>
+</tr>
+</table>
+</div>
+<div class="paragraph tab-container-end">
+<p>-</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="title">Future thoughts</div>
+<div class="paragraph">
+<p>In future version of Ogham, a new strategy may be added in order to automatically
+serve local images and fill the HTML with the associated URL.</p>
+</div>
+<div class="paragraph">
+<p>The images may be automatically served by:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>first uploading them somewhere before sending the email</p>
+</li>
+<li>
+<p>automatically registering endpoints into your web application (adding Spring
+controller for example) that uses Ogham</p>
+</li>
+<li>
+<p>starting a local server (by running a command or a docker image for example)</p>
+</li>
+<li>
+<p>using tools like ngrok to expose local files/http server</p>
+</li>
+<li>
+<p>&#8230;&#8203;</p>
+</li>
+</ul>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2020-04-06 09:58:47 UTC
+</div>
+</div>
+</body>
+</html>
