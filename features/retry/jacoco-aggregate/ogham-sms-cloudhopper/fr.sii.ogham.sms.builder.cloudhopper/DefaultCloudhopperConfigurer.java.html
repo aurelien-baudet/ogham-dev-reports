@@ -12,7 +12,6 @@ import static fr.sii.ogham.sms.CloudhopperConstants.DEFAULT_CONNECT_RETRY_DELAY;
 import static fr.sii.ogham.sms.CloudhopperConstants.DEFAULT_CONNECT_TIMEOUT;
 import static fr.sii.ogham.sms.CloudhopperConstants.DEFAULT_ENQUIRE_LINK_INTERVAL;
 import static fr.sii.ogham.sms.CloudhopperConstants.DEFAULT_ENQUIRE_LINK_RESPONSE_TIMEOUT;
-import static fr.sii.ogham.sms.CloudhopperConstants.DEFAULT_LAST_INTERACTION_EXPIRATION_DELAY;
 import static fr.sii.ogham.sms.CloudhopperConstants.DEFAULT_ENQUIRE_LINK_REUSE_RESPONSE_TIMEOUT;
 import static fr.sii.ogham.sms.CloudhopperConstants.DEFAULT_GSM7BIT_PACKED_ENCODING_PRIORITY;
 import static fr.sii.ogham.sms.CloudhopperConstants.DEFAULT_GSM8_ENCODING_PRIORITY;
@@ -20,6 +19,7 @@ import static fr.sii.ogham.sms.CloudhopperConstants.DEFAULT_INTERFACE_VERSION;
 import static fr.sii.ogham.sms.CloudhopperConstants.DEFAULT_KEEP_ALIVE_CONNECT_AT_STARTUP;
 import static fr.sii.ogham.sms.CloudhopperConstants.DEFAULT_KEEP_ALIVE_ENABLED;
 import static fr.sii.ogham.sms.CloudhopperConstants.DEFAULT_KEEP_ALIVE_MAX_CONSECUTIVE_TIMEOUTS;
+import static fr.sii.ogham.sms.CloudhopperConstants.DEFAULT_LAST_INTERACTION_EXPIRATION_DELAY;
 import static fr.sii.ogham.sms.CloudhopperConstants.DEFAULT_LATIN1_ENCODING_PRIORITY;
 import static fr.sii.ogham.sms.CloudhopperConstants.DEFAULT_REQUEST_EXPIRY_TIMEOUT;
 import static fr.sii.ogham.sms.CloudhopperConstants.DEFAULT_RESPONSE_TIMEOUT;
@@ -229,26 +229,27 @@ public final class DefaultCloudhopperConfigurer {
 <span class="fc" id="L229">						.maxConsecutiveTimeouts().properties(&quot;${ogham.sms.cloudhopper.session.keep-alive.max-consecutive-timeouts}&quot;).defaultValue(overrideIfNotSet(DEFAULT_KEEP_ALIVE_MAX_CONSECUTIVE_TIMEOUTS)).and()</span>
 <span class="fc" id="L230">						.and()</span>
 <span class="fc" id="L231">					.connectRetry()</span>
-<span class="fc" id="L232">						.fixedDelay()</span>
-<span class="fc" id="L233">							.maxRetries().properties(&quot;${ogham.sms.cloudhopper.session.connect-retry.max-attempts}&quot;).defaultValue(overrideIfNotSet(DEFAULT_CONNECT_MAX_RETRIES)).and()</span>
-<span class="fc" id="L234">							.delay().properties(&quot;${ogham.sms.cloudhopper.session.connect-retry.delay-between-attempts}&quot;).defaultValue(overrideIfNotSet(DEFAULT_CONNECT_RETRY_DELAY)).and()</span>
-<span class="fc" id="L235">							.and()</span>
-<span class="fc" id="L236">						.exponentialDelay()</span>
-<span class="fc" id="L237">							.maxRetries().properties(&quot;${ogham.sms.cloudhopper.session.connect-retry.max-attempts}&quot;).defaultValue(overrideIfNotSet(DEFAULT_CONNECT_MAX_RETRIES)).and()</span>
-<span class="fc" id="L238">							.initialDelay().properties(&quot;${ogham.sms.cloudhopper.session.connect-retry.exponential-intial-delay}&quot;).and()</span>
-<span class="fc" id="L239">							.and()</span>
-<span class="fc" id="L240">						.perExecutionDelay()</span>
-<span class="fc" id="L241">							.maxRetries().properties(&quot;${ogham.sms.cloudhopper.session.connect-retry.max-attempts}&quot;).defaultValue(overrideIfNotSet(DEFAULT_CONNECT_MAX_RETRIES)).and()</span>
-<span class="fc" id="L242">							.delays().properties(&quot;${ogham.sms.cloudhopper.session.connect-retry.per-execution-delays}&quot;).and()</span>
-<span class="fc" id="L243">							.and()</span>
-<span class="fc" id="L244">						.fixedInterval()</span>
-<span class="fc" id="L245">							.maxRetries().properties(&quot;${ogham.sms.cloudhopper.session.connect-retry.max-attempts}&quot;).defaultValue(overrideIfNotSet(DEFAULT_CONNECT_MAX_RETRIES)).and()</span>
-<span class="fc" id="L246">							.interval().properties(&quot;${ogham.sms.cloudhopper.session.connect-retry.execution-interval}&quot;);							</span>
+<span class="fc" id="L232">						.retryable(new DefaultConnectRetryablePredicate())</span>
+<span class="fc" id="L233">						.fixedDelay()</span>
+<span class="fc" id="L234">							.maxRetries().properties(&quot;${ogham.sms.cloudhopper.session.connect-retry.max-attempts}&quot;).defaultValue(overrideIfNotSet(DEFAULT_CONNECT_MAX_RETRIES)).and()</span>
+<span class="fc" id="L235">							.delay().properties(&quot;${ogham.sms.cloudhopper.session.connect-retry.delay-between-attempts}&quot;).defaultValue(overrideIfNotSet(DEFAULT_CONNECT_RETRY_DELAY)).and()</span>
+<span class="fc" id="L236">							.and()</span>
+<span class="fc" id="L237">						.exponentialDelay()</span>
+<span class="fc" id="L238">							.maxRetries().properties(&quot;${ogham.sms.cloudhopper.session.connect-retry.max-attempts}&quot;).defaultValue(overrideIfNotSet(DEFAULT_CONNECT_MAX_RETRIES)).and()</span>
+<span class="fc" id="L239">							.initialDelay().properties(&quot;${ogham.sms.cloudhopper.session.connect-retry.exponential-intial-delay}&quot;).and()</span>
+<span class="fc" id="L240">							.and()</span>
+<span class="fc" id="L241">						.perExecutionDelay()</span>
+<span class="fc" id="L242">							.maxRetries().properties(&quot;${ogham.sms.cloudhopper.session.connect-retry.max-attempts}&quot;).defaultValue(overrideIfNotSet(DEFAULT_CONNECT_MAX_RETRIES)).and()</span>
+<span class="fc" id="L243">							.delays().properties(&quot;${ogham.sms.cloudhopper.session.connect-retry.per-execution-delays}&quot;).and()</span>
+<span class="fc" id="L244">							.and()</span>
+<span class="fc" id="L245">						.fixedInterval()</span>
+<span class="fc" id="L246">							.maxRetries().properties(&quot;${ogham.sms.cloudhopper.session.connect-retry.max-attempts}&quot;).defaultValue(overrideIfNotSet(DEFAULT_CONNECT_MAX_RETRIES)).and()</span>
+<span class="fc" id="L247">							.interval().properties(&quot;${ogham.sms.cloudhopper.session.connect-retry.execution-interval}&quot;);</span>
 			// @formatter:on
-<span class="fc" id="L248">		}</span>
+<span class="fc" id="L249">		}</span>
 		
 		private static boolean canUseCloudhopper() {
-<span class="fc" id="L251">			return ClasspathUtils.exists(&quot;com.cloudhopper.smpp.SmppClient&quot;);</span>
+<span class="fc" id="L252">			return ClasspathUtils.exists(&quot;com.cloudhopper.smpp.SmppClient&quot;);</span>
 		}
 	}
 

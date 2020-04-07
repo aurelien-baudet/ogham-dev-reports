@@ -200,47 +200,82 @@ import fr.sii.ogham.sms.message.Sms;
 <span class="fc" id="L200">					.and()</span>
 <span class="fc" id="L201">				.and()</span>
 <span class="fc" id="L202">			.failIfMissingVariant().defaultValue(overrideIfNotSet(true)).and()</span>
-<span class="fc" id="L203">			.listPossiblePaths().defaultValue(overrideIfNotSet(true));</span>
+<span class="fc" id="L203">			.listPossiblePaths().defaultValue(overrideIfNotSet(true)).and()</span>
+<span class="fc" id="L204">			.autoRetry()</span>
+<span class="fc" id="L205">				.fixedDelay()</span>
+<span class="fc" id="L206">					.maxRetries().properties(&quot;${ogham.email.send-retry.max-attempts}&quot;).and()</span>
+<span class="fc" id="L207">					.delay().properties(&quot;${ogham.email.send-retry.delay-between-attempts}&quot;).and()</span>
+<span class="fc" id="L208">					.and()</span>
+<span class="fc" id="L209">				.exponentialDelay()</span>
+<span class="fc" id="L210">					.maxRetries().properties(&quot;${ogham.email.send-retry.max-attempts}&quot;).and()</span>
+<span class="fc" id="L211">					.initialDelay().properties(&quot;${ogham.email.send-retry.exponential-intial-delay}&quot;).and()</span>
+<span class="fc" id="L212">					.and()</span>
+<span class="fc" id="L213">				.perExecutionDelay()</span>
+<span class="fc" id="L214">					.maxRetries().properties(&quot;${ogham.email.send-retry.max-attempts}&quot;).and()</span>
+<span class="fc" id="L215">					.delays().properties(&quot;${ogham.email.send-retry.per-execution-delays}&quot;).and()</span>
+<span class="fc" id="L216">					.and()</span>
+<span class="fc" id="L217">				.fixedInterval()</span>
+<span class="fc" id="L218">					.maxRetries().properties(&quot;${ogham.email.send-retry.max-attempts}&quot;).and()</span>
+<span class="fc" id="L219">					.interval().properties(&quot;${ogham.email.send-retry.execution-interval}&quot;);</span>
 		// @formatter:on
-<span class="fc" id="L205">	}</span>
+<span class="fc" id="L221">	}</span>
 
 	@Override
 	public void configure(SmsBuilder builder) {
 		// @formatter:off
-<span class="fc" id="L210">		builder</span>
-<span class="fc" id="L211">			.autofill()</span>
-<span class="fc" id="L212">				.from()</span>
-<span class="fc" id="L213">					.defaultValue().properties(&quot;${ogham.sms.from.default-value}&quot;).and()</span>
-<span class="fc" id="L214">					.and()</span>
-<span class="fc" id="L215">				.to()</span>
-<span class="fc" id="L216">					.defaultValue().properties(&quot;${ogham.sms.to.default-value}&quot;).and()</span>
-<span class="fc" id="L217">					.and()</span>
-<span class="fc" id="L218">				.and()</span>
-<span class="fc" id="L219">			.numbers()</span>
-<span class="fc" id="L220">				.from()</span>
-<span class="fc" id="L221">					.format()</span>
-<span class="fc" id="L222">						.alphanumericCode().properties(&quot;${ogham.sms.from.alphanumeric-code-format.enable}&quot;).defaultValue(overrideIfNotSet(true)).and()</span>
-<span class="fc" id="L223">						.shortCode().properties(&quot;${ogham.sms.from.short-code-format.enable}&quot;).defaultValue(overrideIfNotSet(true)).and()</span>
-<span class="fc" id="L224">						.internationalNumber().properties(&quot;${ogham.sms.from.international-format.enable}&quot;).defaultValue(overrideIfNotSet(true)).and()</span>
-<span class="fc" id="L225">						.and()</span>
-<span class="fc" id="L226">					.and()</span>
-<span class="fc" id="L227">				.to()</span>
-<span class="fc" id="L228">					.format()</span>
-<span class="fc" id="L229">						.internationalNumber().properties(&quot;${ogham.sms.to.international-format.enable}&quot;).defaultValue(overrideIfNotSet(true));</span>
+<span class="fc" id="L226">		builder</span>
+<span class="fc" id="L227">			.autofill()</span>
+<span class="fc" id="L228">				.from()</span>
+<span class="fc" id="L229">					.defaultValue().properties(&quot;${ogham.sms.from.default-value}&quot;).and()</span>
+<span class="fc" id="L230">					.and()</span>
+<span class="fc" id="L231">				.to()</span>
+<span class="fc" id="L232">					.defaultValue().properties(&quot;${ogham.sms.to.default-value}&quot;).and()</span>
+<span class="fc" id="L233">					.and()</span>
+<span class="fc" id="L234">				.and()</span>
+<span class="fc" id="L235">			.numbers()</span>
+<span class="fc" id="L236">				.from()</span>
+<span class="fc" id="L237">					.format()</span>
+<span class="fc" id="L238">						.alphanumericCode().properties(&quot;${ogham.sms.from.alphanumeric-code-format.enable}&quot;).defaultValue(overrideIfNotSet(true)).and()</span>
+<span class="fc" id="L239">						.shortCode().properties(&quot;${ogham.sms.from.short-code-format.enable}&quot;).defaultValue(overrideIfNotSet(true)).and()</span>
+<span class="fc" id="L240">						.internationalNumber().properties(&quot;${ogham.sms.from.international-format.enable}&quot;).defaultValue(overrideIfNotSet(true)).and()</span>
+<span class="fc" id="L241">						.and()</span>
+<span class="fc" id="L242">					.and()</span>
+<span class="fc" id="L243">				.to()</span>
+<span class="fc" id="L244">					.format()</span>
+<span class="fc" id="L245">						.internationalNumber().properties(&quot;${ogham.sms.to.international-format.enable}&quot;).defaultValue(overrideIfNotSet(true)).and()</span>
+<span class="fc" id="L246">						.and()</span>
+<span class="fc" id="L247">					.and()</span>
+<span class="fc" id="L248">				.and()</span>
+<span class="fc" id="L249">			.autoRetry()</span>
+<span class="fc" id="L250">				.fixedDelay()</span>
+<span class="fc" id="L251">					.maxRetries().properties(&quot;${ogham.sms.send-retry.max-attempts}&quot;).and()</span>
+<span class="fc" id="L252">					.delay().properties(&quot;${ogham.sms.send-retry.delay-between-attempts}&quot;).and()</span>
+<span class="fc" id="L253">					.and()</span>
+<span class="fc" id="L254">				.exponentialDelay()</span>
+<span class="fc" id="L255">					.maxRetries().properties(&quot;${ogham.sms.send-retry.max-attempts}&quot;).and()</span>
+<span class="fc" id="L256">					.initialDelay().properties(&quot;${ogham.sms.send-retry.exponential-intial-delay}&quot;).and()</span>
+<span class="fc" id="L257">					.and()</span>
+<span class="fc" id="L258">				.perExecutionDelay()</span>
+<span class="fc" id="L259">					.maxRetries().properties(&quot;${ogham.sms.send-retry.max-attempts}&quot;).and()</span>
+<span class="fc" id="L260">					.delays().properties(&quot;${ogham.sms.send-retry.per-execution-delays}&quot;).and()</span>
+<span class="fc" id="L261">					.and()</span>
+<span class="fc" id="L262">				.fixedInterval()</span>
+<span class="fc" id="L263">					.maxRetries().properties(&quot;${ogham.sms.send-retry.max-attempts}&quot;).and()</span>
+<span class="fc" id="L264">					.interval().properties(&quot;${ogham.sms.send-retry.execution-interval}&quot;);</span>
 		// @formatter:on
-<span class="fc" id="L231">	}</span>
+<span class="fc" id="L266">	}</span>
 
 	@Override
 	public void configure(MimetypeDetectionBuilder&lt;?&gt; builder) {
 		// @formatter:off
-<span class="fc" id="L236">		builder</span>
-<span class="fc" id="L237">			.tika()</span>
-<span class="fc" id="L238">				.instance(new Tika())</span>
-<span class="fc" id="L239">				.failIfOctetStream().properties(&quot;${ogham.mimetype.tika.fail-if-octet-stream}&quot;).defaultValue(overrideIfNotSet(true)).and()</span>
-<span class="fc" id="L240">				.and()</span>
-<span class="fc" id="L241">			.defaultMimetype().properties(&quot;${ogham.mimetype.default-mimetype}&quot;).defaultValue(overrideIfNotSet(&quot;application/octet-stream&quot;));</span>
+<span class="fc" id="L271">		builder</span>
+<span class="fc" id="L272">			.tika()</span>
+<span class="fc" id="L273">				.instance(new Tika())</span>
+<span class="fc" id="L274">				.failIfOctetStream().properties(&quot;${ogham.mimetype.tika.fail-if-octet-stream}&quot;).defaultValue(overrideIfNotSet(true)).and()</span>
+<span class="fc" id="L275">				.and()</span>
+<span class="fc" id="L276">			.defaultMimetype().properties(&quot;${ogham.mimetype.default-mimetype}&quot;).defaultValue(overrideIfNotSet(&quot;application/octet-stream&quot;));</span>
 		// @formatter:on
-<span class="fc" id="L243">	}</span>
+<span class="fc" id="L278">	}</span>
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>
