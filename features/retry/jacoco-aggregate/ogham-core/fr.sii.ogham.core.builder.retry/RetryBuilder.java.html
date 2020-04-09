@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>RetryBuilder.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">reporting</a> &gt; <a href="../index.html" class="el_bundle">ogham-core</a> &gt; <a href="index.source.html" class="el_package">fr.sii.ogham.core.builder.retry</a> &gt; <span class="el_source">RetryBuilder.java</span></div><h1>RetryBuilder.java</h1><pre class="source lang-java linenums">package fr.sii.ogham.core.builder.retry;
 
 import java.util.function.Predicate;
+import java.util.function.UnaryOperator;
 
 import fr.sii.ogham.core.async.Awaiter;
 import fr.sii.ogham.core.async.ThreadSleepAwaiter;
@@ -67,9 +68,9 @@ public class RetryBuilder&lt;P&gt; extends AbstractParent&lt;P&gt; implements Bu
 	 *            for registering instances and property evaluation
 	 */
 	public RetryBuilder(P parent, BuildContext buildContext) {
-<span class="fc" id="L70">		super(parent);</span>
-<span class="fc" id="L71">		this.buildContext = buildContext;</span>
-<span class="fc" id="L72">	}</span>
+<span class="fc" id="L71">		super(parent);</span>
+<span class="fc" id="L72">		this.buildContext = buildContext;</span>
+<span class="fc" id="L73">	}</span>
 
 	/**
 	 * Retry several times with a fixed delay between each try until the maximum
@@ -107,10 +108,10 @@ public class RetryBuilder&lt;P&gt; extends AbstractParent&lt;P&gt; implements Bu
 	 * @return the builder to configure retry delay and maximum attempts
 	 */
 	public FixedDelayBuilder&lt;RetryBuilder&lt;P&gt;&gt; fixedDelay() {
-<span class="fc bfc" id="L110" title="All 2 branches covered.">		if (fixedDelay == null) {</span>
-<span class="fc" id="L111">			fixedDelay = new FixedDelayBuilder&lt;&gt;(this, buildContext);</span>
+<span class="fc bfc" id="L111" title="All 2 branches covered.">		if (fixedDelay == null) {</span>
+<span class="fc" id="L112">			fixedDelay = new FixedDelayBuilder&lt;&gt;(this, buildContext);</span>
 		}
-<span class="fc" id="L113">		return fixedDelay;</span>
+<span class="fc" id="L114">		return fixedDelay;</span>
 	}
 
 	/**
@@ -149,10 +150,10 @@ public class RetryBuilder&lt;P&gt; extends AbstractParent&lt;P&gt; implements Bu
 	 * @return the builder to configure initial delay and maximum attempts
 	 */
 	public ExponentialDelayBuilder&lt;RetryBuilder&lt;P&gt;&gt; exponentialDelay() {
-<span class="fc bfc" id="L152" title="All 2 branches covered.">		if (exponentialDelay == null) {</span>
-<span class="fc" id="L153">			exponentialDelay = new ExponentialDelayBuilder&lt;&gt;(this, buildContext);</span>
+<span class="fc bfc" id="L153" title="All 2 branches covered.">		if (exponentialDelay == null) {</span>
+<span class="fc" id="L154">			exponentialDelay = new ExponentialDelayBuilder&lt;&gt;(this, buildContext);</span>
 		}
-<span class="fc" id="L155">		return exponentialDelay;</span>
+<span class="fc" id="L156">		return exponentialDelay;</span>
 	}
 
 	/**
@@ -194,10 +195,10 @@ public class RetryBuilder&lt;P&gt; extends AbstractParent&lt;P&gt; implements Bu
 	 * @return the builder to configure retry delay and maximum attempts
 	 */
 	public PerExecutionDelayBuilder&lt;RetryBuilder&lt;P&gt;&gt; perExecutionDelay() {
-<span class="fc bfc" id="L197" title="All 2 branches covered.">		if (perExecutionDelay == null) {</span>
-<span class="fc" id="L198">			perExecutionDelay = new PerExecutionDelayBuilder&lt;&gt;(this, buildContext);</span>
+<span class="fc bfc" id="L198" title="All 2 branches covered.">		if (perExecutionDelay == null) {</span>
+<span class="fc" id="L199">			perExecutionDelay = new PerExecutionDelayBuilder&lt;&gt;(this, buildContext);</span>
 		}
-<span class="fc" id="L200">		return perExecutionDelay;</span>
+<span class="fc" id="L201">		return perExecutionDelay;</span>
 	}
 
 	/**
@@ -248,10 +249,10 @@ public class RetryBuilder&lt;P&gt; extends AbstractParent&lt;P&gt; implements Bu
 	 * @return the builder to configure retry delay and maximum attempts
 	 */
 	public FixedIntervalBuilder&lt;RetryBuilder&lt;P&gt;&gt; fixedInterval() {
-<span class="fc bfc" id="L251" title="All 2 branches covered.">		if (fixedInterval == null) {</span>
-<span class="fc" id="L252">			fixedInterval = new FixedIntervalBuilder&lt;&gt;(this, buildContext);</span>
+<span class="fc bfc" id="L252" title="All 2 branches covered.">		if (fixedInterval == null) {</span>
+<span class="fc" id="L253">			fixedInterval = new FixedIntervalBuilder&lt;&gt;(this, buildContext);</span>
 		}
-<span class="fc" id="L254">		return fixedInterval;</span>
+<span class="fc" id="L255">		return fixedInterval;</span>
 	}
 
 	/**
@@ -265,8 +266,8 @@ public class RetryBuilder&lt;P&gt; extends AbstractParent&lt;P&gt; implements Bu
 	 * @return this instance for fluent chaining
 	 */
 	public RetryBuilder&lt;P&gt; awaiter(Awaiter impl) {
-<span class="nc" id="L268">		this.awaiter = impl;</span>
-<span class="nc" id="L269">		return this;</span>
+<span class="nc" id="L269">		this.awaiter = impl;</span>
+<span class="nc" id="L270">		return this;</span>
 	}
 
 	/**
@@ -292,8 +293,8 @@ public class RetryBuilder&lt;P&gt; extends AbstractParent&lt;P&gt; implements Bu
 	 * @return this builder for fluent chaining
 	 */
 	public RetryBuilder&lt;P&gt; executor(RetryExecutor executor) {
-<span class="nc" id="L295">		this.executor = executor;</span>
-<span class="nc" id="L296">		return this;</span>
+<span class="nc" id="L296">		this.executor = executor;</span>
+<span class="nc" id="L297">		return this;</span>
 	}
 
 	/**
@@ -320,8 +321,8 @@ public class RetryBuilder&lt;P&gt; extends AbstractParent&lt;P&gt; implements Bu
 	 * @return this instance for fluent chaining
 	 */
 	public RetryBuilder&lt;P&gt; executor(RetryExecutorFactory factory) {
-<span class="fc" id="L323">		this.executorFactory = factory;</span>
-<span class="fc" id="L324">		return this;</span>
+<span class="fc" id="L324">		this.executorFactory = factory;</span>
+<span class="fc" id="L325">		return this;</span>
 	}
 
 	/**
@@ -346,8 +347,32 @@ public class RetryBuilder&lt;P&gt; extends AbstractParent&lt;P&gt; implements Bu
 	 * @return this instance for fluent chaining
 	 */
 	public RetryBuilder&lt;P&gt; retryable(Predicate&lt;Throwable&gt; retryable) {
-<span class="fc" id="L349">		this.retryable = retryable;</span>
-<span class="fc" id="L350">		return this;</span>
+<span class="fc" id="L350">		this.retryable = retryable;</span>
+<span class="fc" id="L351">		return this;</span>
+	}
+
+	/**
+	 * Combine the current configured predicate with another.
+	 * 
+	 * &lt;p&gt;
+	 * This may be useful when an implementation wants to add additional checks
+	 * to the ones configured by Ogham core or other implementations.
+	 * 
+	 * &lt;p&gt;
+	 * If no predicate is currently configured, a predicate that accepts
+	 * everything is provided.
+	 * 
+	 * &lt;p&gt;
+	 * &lt;strong&gt;NOTE:&lt;/strong&gt; This is advanced usage mostly for developers that
+	 * extend Ogham with new implementations.
+	 * 
+	 * @param merger
+	 *            a function used to merge predicates
+	 * @return this instance for fluent chaining
+	 */
+	public RetryBuilder&lt;P&gt; retryable(UnaryOperator&lt;Predicate&lt;Throwable&gt;&gt; merger) {
+<span class="pc bpc" id="L374" title="1 of 2 branches missed.">		retryable = merger.apply(retryable == null ? (error -&gt; true) : retryable);</span>
+<span class="fc" id="L375">		return this;</span>
 	}
 
 	/**
@@ -376,61 +401,61 @@ public class RetryBuilder&lt;P&gt; extends AbstractParent&lt;P&gt; implements Bu
 	 */
 	@SuppressWarnings(&quot;squid:S1905&quot;)
 	public RetryBuilder&lt;P&gt; retryable(Condition&lt;Throwable&gt; retryable) {
-<span class="nc bnc" id="L379" title="All 2 branches missed.">		return retryable(retryable == null ? (Predicate&lt;Throwable&gt;) null : retryable::accept);</span>
+<span class="nc bnc" id="L404" title="All 2 branches missed.">		return retryable(retryable == null ? (Predicate&lt;Throwable&gt;) null : retryable::accept);</span>
 	}
 
 	@Override
 	public RetryExecutor build() {
-<span class="pc bpc" id="L384" title="1 of 2 branches missed.">		if (executor != null) {</span>
-<span class="nc" id="L385">			return executor;</span>
+<span class="pc bpc" id="L409" title="1 of 2 branches missed.">		if (executor != null) {</span>
+<span class="nc" id="L410">			return executor;</span>
 		}
-<span class="fc" id="L387">		Builder&lt;RetryStrategy&gt; retryStrategy = buildRetryStrategy();</span>
-<span class="fc bfc" id="L388" title="All 2 branches covered.">		if (retryStrategy == null) {</span>
-<span class="fc" id="L389">			return null;</span>
+<span class="fc" id="L412">		Builder&lt;RetryStrategy&gt; retryStrategy = buildRetryStrategy();</span>
+<span class="fc bfc" id="L413" title="All 2 branches covered.">		if (retryStrategy == null) {</span>
+<span class="fc" id="L414">			return null;</span>
 		}
-<span class="fc" id="L391">		BuilderToRetryStrategyProviderBridge retryProvider = new BuilderToRetryStrategyProviderBridge(retryStrategy);</span>
-<span class="fc" id="L392">		Awaiter builtAwaiter = buildAwaiter();</span>
-<span class="fc bfc" id="L393" title="All 2 branches covered.">		if (executorFactory != null) {</span>
-<span class="fc" id="L394">			return executorFactory.create(retryProvider, builtAwaiter);</span>
+<span class="fc" id="L416">		BuilderToRetryStrategyProviderBridge retryProvider = new BuilderToRetryStrategyProviderBridge(retryStrategy);</span>
+<span class="fc" id="L417">		Awaiter builtAwaiter = buildAwaiter();</span>
+<span class="fc bfc" id="L418" title="All 2 branches covered.">		if (executorFactory != null) {</span>
+<span class="fc" id="L419">			return executorFactory.create(retryProvider, builtAwaiter);</span>
 		}
-<span class="fc" id="L396">		return buildContext.register(new SimpleRetryExecutor(retryProvider, builtAwaiter, buildRetryable()));</span>
+<span class="fc" id="L421">		return buildContext.register(new SimpleRetryExecutor(retryProvider, builtAwaiter, buildRetryable()));</span>
 	}
 
 	private Builder&lt;RetryStrategy&gt; buildRetryStrategy() {
-<span class="fc bfc" id="L400" title="All 2 branches covered.">		if (isConfigured(perExecutionDelay)) {</span>
-<span class="fc" id="L401">			return perExecutionDelay;</span>
+<span class="fc bfc" id="L425" title="All 2 branches covered.">		if (isConfigured(perExecutionDelay)) {</span>
+<span class="fc" id="L426">			return perExecutionDelay;</span>
 		}
-<span class="fc bfc" id="L403" title="All 2 branches covered.">		if (isConfigured(exponentialDelay)) {</span>
-<span class="fc" id="L404">			return exponentialDelay;</span>
+<span class="fc bfc" id="L428" title="All 2 branches covered.">		if (isConfigured(exponentialDelay)) {</span>
+<span class="fc" id="L429">			return exponentialDelay;</span>
 		}
-<span class="fc bfc" id="L406" title="All 2 branches covered.">		if (isConfigured(fixedInterval)) {</span>
-<span class="fc" id="L407">			return fixedInterval;</span>
+<span class="fc bfc" id="L431" title="All 2 branches covered.">		if (isConfigured(fixedInterval)) {</span>
+<span class="fc" id="L432">			return fixedInterval;</span>
 		}
-<span class="fc bfc" id="L409" title="All 2 branches covered.">		if (isConfigured(fixedDelay)) {</span>
-<span class="fc" id="L410">			return fixedDelay;</span>
+<span class="fc bfc" id="L434" title="All 2 branches covered.">		if (isConfigured(fixedDelay)) {</span>
+<span class="fc" id="L435">			return fixedDelay;</span>
 		}
-<span class="fc" id="L412">		return null;</span>
+<span class="fc" id="L437">		return null;</span>
 	}
 
 	private static boolean isConfigured(Builder&lt;RetryStrategy&gt; builder) {
-<span class="fc bfc" id="L416" title="All 2 branches covered.">		if (builder == null) {</span>
-<span class="fc" id="L417">			return false;</span>
+<span class="fc bfc" id="L441" title="All 2 branches covered.">		if (builder == null) {</span>
+<span class="fc" id="L442">			return false;</span>
 		}
-<span class="fc bfc" id="L419" title="All 2 branches covered.">		return builder.build() != null;</span>
+<span class="fc bfc" id="L444" title="All 2 branches covered.">		return builder.build() != null;</span>
 	}
 
 	private Awaiter buildAwaiter() {
-<span class="pc bpc" id="L423" title="1 of 2 branches missed.">		if (awaiter == null) {</span>
-<span class="fc" id="L424">			return new ThreadSleepAwaiter();</span>
+<span class="pc bpc" id="L448" title="1 of 2 branches missed.">		if (awaiter == null) {</span>
+<span class="fc" id="L449">			return new ThreadSleepAwaiter();</span>
 		}
-<span class="nc" id="L426">		return awaiter;</span>
+<span class="nc" id="L451">		return awaiter;</span>
 	}
 
 	private Predicate&lt;Throwable&gt; buildRetryable() {
-<span class="fc bfc" id="L430" title="All 2 branches covered.">		if (retryable == null) {</span>
-<span class="fc" id="L431">			return e -&gt; e instanceof Exception;</span>
+<span class="fc bfc" id="L455" title="All 2 branches covered.">		if (retryable == null) {</span>
+<span class="fc" id="L456">			return e -&gt; e instanceof Exception;</span>
 		}
-<span class="fc" id="L433">		return retryable;</span>
+<span class="fc" id="L458">		return retryable;</span>
 	}
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>
