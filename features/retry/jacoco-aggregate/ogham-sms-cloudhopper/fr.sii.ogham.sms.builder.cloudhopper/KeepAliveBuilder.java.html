@@ -431,10 +431,9 @@ public class KeepAliveBuilder extends AbstractParent&lt;SessionBuilder&gt; imple
 <span class="nc" id="L431">		return executor(() -&gt; executor);</span>
 	}
 
-	
-	
 	/**
-	 * The maximum number of consecutive timeouts to {@link EnquireLink} requests to consider that a new session is required.
+	 * The maximum number of consecutive timeouts to {@link EnquireLink}
+	 * requests to consider that a new session is required.
 	 * 
 	 * &lt;p&gt;
 	 * The value set using this method takes precedence over any property and
@@ -468,17 +467,20 @@ public class KeepAliveBuilder extends AbstractParent&lt;SessionBuilder&gt; imple
 	 * @return this instance for fluent chaining
 	 */
 	public KeepAliveBuilder maxConsecutiveTimeouts(Integer max) {
-<span class="fc" id="L471">		maxConsecutiveTimeoutsValueBuilder.setValue(max);</span>
-<span class="fc" id="L472">		return this;</span>
+<span class="fc" id="L470">		maxConsecutiveTimeoutsValueBuilder.setValue(max);</span>
+<span class="fc" id="L471">		return this;</span>
 	}
 
 	/**
-	 * The maximum number of consecutive timeouts to {@link EnquireLink} requests to consider that a new session is required.
+	 * The maximum number of consecutive timeouts to {@link EnquireLink}
+	 * requests to consider that a new session is required.
 	 * 
 	 * &lt;p&gt;
-	 * This method is mainly used by {@link Configurer}s to register some property keys and/or a default value.
-	 * The aim is to let developer be able to externalize its configuration (using system properties, configuration file or anything else).
-	 * If the developer doesn't configure any value for the registered properties, the default value is used (if set).
+	 * This method is mainly used by {@link Configurer}s to register some
+	 * property keys and/or a default value. The aim is to let developer be able
+	 * to externalize its configuration (using system properties, configuration
+	 * file or anything else). If the developer doesn't configure any value for
+	 * the registered properties, the default value is used (if set).
 	 * 
 	 * &lt;pre&gt;
 	 * .maxConsecutiveTimeouts()
@@ -497,8 +499,8 @@ public class KeepAliveBuilder extends AbstractParent&lt;SessionBuilder&gt; imple
 	 *   .defaultValue(3)
 	 * &lt;/pre&gt;
 	 * 
-	 * The value {@code 5} is used regardless of the value of the properties
-	 * and default value.
+	 * The value {@code 5} is used regardless of the value of the properties and
+	 * default value.
 	 * 
 	 * &lt;p&gt;
 	 * See {@link ConfigurationValueBuilder} for more information.
@@ -507,19 +509,19 @@ public class KeepAliveBuilder extends AbstractParent&lt;SessionBuilder&gt; imple
 	 * @return the builder to configure property keys/default value
 	 */
 	public ConfigurationValueBuilder&lt;KeepAliveBuilder, Integer&gt; maxConsecutiveTimeouts() {
-<span class="fc" id="L510">		return maxConsecutiveTimeoutsValueBuilder;</span>
+<span class="fc" id="L512">		return maxConsecutiveTimeoutsValueBuilder;</span>
 	}
-	
+
 	@Override
 	public KeepAliveOptions build() {
-<span class="fc" id="L515">		KeepAliveOptions keepAliveOptions = new KeepAliveOptions();</span>
-<span class="fc" id="L516">		keepAliveOptions.setEnable(enableValueBuilder.getValue());</span>
-<span class="fc" id="L517">		keepAliveOptions.setEnquireLinkInterval(enquireLinkIntervalValueBuilder.getValue());</span>
-<span class="fc" id="L518">		keepAliveOptions.setEnquireLinkTimeout(enquireLinkTimeoutValueBuilder.getValue());</span>
-<span class="fc" id="L519">		keepAliveOptions.setConnectAtStartup(connectAtStartupValueBuilder.getValue());</span>
-<span class="fc bfc" id="L520" title="All 2 branches covered.">		keepAliveOptions.setExecutor(executorFactory != null ? executorFactory : defaultEnquireLinkTimerFactory());</span>
-<span class="fc" id="L521">		keepAliveOptions.setMaxConsecutiveTimeouts(maxConsecutiveTimeoutsValueBuilder.getValue());</span>
-<span class="fc" id="L522">		return keepAliveOptions;</span>
+<span class="fc" id="L517">		KeepAliveOptions keepAliveOptions = new KeepAliveOptions();</span>
+<span class="fc" id="L518">		keepAliveOptions.setEnable(enableValueBuilder.getValue());</span>
+<span class="fc" id="L519">		keepAliveOptions.setEnquireLinkInterval(enquireLinkIntervalValueBuilder.getValue());</span>
+<span class="fc" id="L520">		keepAliveOptions.setEnquireLinkTimeout(enquireLinkTimeoutValueBuilder.getValue());</span>
+<span class="fc" id="L521">		keepAliveOptions.setConnectAtStartup(connectAtStartupValueBuilder.getValue());</span>
+<span class="fc bfc" id="L522" title="All 2 branches covered.">		keepAliveOptions.setExecutor(executorFactory != null ? executorFactory : defaultEnquireLinkTimerFactory());</span>
+<span class="fc" id="L523">		keepAliveOptions.setMaxConsecutiveTimeouts(maxConsecutiveTimeoutsValueBuilder.getValue());</span>
+<span class="fc" id="L524">		return keepAliveOptions;</span>
 	}
 
 	/**
@@ -534,14 +536,13 @@ public class KeepAliveBuilder extends AbstractParent&lt;SessionBuilder&gt; imple
 	 * @return the factory
 	 */
 	public static Supplier&lt;ScheduledExecutorService&gt; defaultEnquireLinkTimerFactory() {
-<span class="pc" id="L537">		return () -&gt; Executors.newSingleThreadScheduledExecutor(new ThreadFactory() {</span>
-			@Override
-			public Thread newThread(Runnable runnable) {
-<span class="nc" id="L540">				Thread thread = new Thread(runnable);</span>
-<span class="nc" id="L541">				thread.setName(&quot;EnquireLink-&quot; + enquireLinkThreadCounter.incrementAndGet());</span>
-<span class="nc" id="L542">				return thread;</span>
-			}
-		});
+<span class="pc" id="L539">		return () -&gt; Executors.newSingleThreadScheduledExecutor(KeepAliveBuilder::newThread);</span>
+	}
+
+	private static Thread newThread(Runnable runnable) {
+<span class="nc" id="L543">		Thread thread = new Thread(runnable);</span>
+<span class="nc" id="L544">		thread.setName(&quot;EnquireLink-&quot; + enquireLinkThreadCounter.incrementAndGet());</span>
+<span class="nc" id="L545">		return thread;</span>
 	}
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

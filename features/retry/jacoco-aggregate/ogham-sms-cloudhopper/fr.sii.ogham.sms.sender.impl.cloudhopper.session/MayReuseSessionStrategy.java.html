@@ -109,13 +109,13 @@ public class MayReuseSessionStrategy extends BaseSessionHandlingStrategy impleme
 <span class="fc" id="L109">	}</span>
 
 	@Override
-	protected SmppSession connect(SmppClient client) throws SmppException {
+	protected synchronized SmppSession connect(SmppClient client) throws SmppException {
 <span class="fc" id="L113">		SmppSession session = super.connect(client);</span>
 <span class="fc" id="L114">		updateLastSentOrSession();</span>
 <span class="fc" id="L115">		return session;</span>
 	}
 
-	private boolean isSessionStillAlive() throws SmppException {
+	private boolean isSessionStillAlive() {
 <span class="fc" id="L119">		long elapsedTime = now() - lastSentOrSession;</span>
 <span class="fc bfc" id="L120" title="All 2 branches covered.">		boolean skipEnquireLink = elapsedTime &lt; configuration.getReuseSession().getLastInteractionExpirationDelay();</span>
 <span class="fc" id="L121">		LOG.trace(&quot;Skip EnquireLink? {} {} =&gt; {}&quot;, elapsedTime, configuration.getReuseSession().getLastInteractionExpirationDelay(), skipEnquireLink);</span>

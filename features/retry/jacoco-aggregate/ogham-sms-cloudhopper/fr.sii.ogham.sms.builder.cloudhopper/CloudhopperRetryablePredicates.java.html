@@ -52,11 +52,12 @@ public final class CloudhopperRetryablePredicates {
 	 *            the error to analyze
 	 * @return true if a connect may be retried
 	 */
+	@SuppressWarnings(&quot;squid:S1126&quot;)
 	public static boolean canRetryConnecting(Throwable error) {
-<span class="pc bpc" id="L56" title="3 of 8 branches missed.">		if (fatalJvmError(error) || invalidCredentials(error) || invalidSystemType(error) || alreadyBound(error)) {</span>
-<span class="fc" id="L57">			return false;</span>
+<span class="pc bpc" id="L57" title="3 of 8 branches missed.">		if (fatalJvmError(error) || invalidCredentials(error) || invalidSystemType(error) || alreadyBound(error)) {</span>
+<span class="fc" id="L58">			return false;</span>
 		}
-<span class="fc" id="L59">		return true;</span>
+<span class="fc" id="L60">		return true;</span>
 	}
 
 	/**
@@ -73,10 +74,10 @@ public final class CloudhopperRetryablePredicates {
 	 *         credentials)
 	 */
 	public static boolean invalidCredentials(Throwable error) {
-<span class="fc bfc" id="L76" title="All 2 branches covered.">		if (error instanceof SmppBindException) {</span>
-<span class="fc" id="L77">			return isCommandStatus((SmppBindException) error, STATUS_INVPASWD, STATUS_INVSYSID);</span>
+<span class="fc bfc" id="L77" title="All 2 branches covered.">		if (error instanceof SmppBindException) {</span>
+<span class="fc" id="L78">			return isCommandStatus((SmppBindException) error, STATUS_INVPASWD, STATUS_INVSYSID);</span>
 		}
-<span class="fc" id="L79">		return false;</span>
+<span class="fc" id="L80">		return false;</span>
 	}
 
 	/**
@@ -94,10 +95,10 @@ public final class CloudhopperRetryablePredicates {
 	 *         {@code system_type})
 	 */
 	public static boolean invalidSystemType(Throwable error) {
-<span class="pc bpc" id="L97" title="1 of 2 branches missed.">		if (error instanceof SmppBindException) {</span>
-<span class="nc" id="L98">			return isCommandStatus((SmppBindException) error, STATUS_INVSERTYP);</span>
+<span class="pc bpc" id="L98" title="1 of 2 branches missed.">		if (error instanceof SmppBindException) {</span>
+<span class="nc" id="L99">			return isCommandStatus((SmppBindException) error, STATUS_INVSERTYP);</span>
 		}
-<span class="fc" id="L100">		return false;</span>
+<span class="fc" id="L101">		return false;</span>
 	}
 
 	/**
@@ -112,10 +113,10 @@ public final class CloudhopperRetryablePredicates {
 	 * @return true if the error is issued due to a bind failure (already bound)
 	 */
 	public static boolean alreadyBound(Throwable error) {
-<span class="pc bpc" id="L115" title="1 of 2 branches missed.">		if (error instanceof SmppBindException) {</span>
-<span class="nc" id="L116">			return isCommandStatus((SmppBindException) error, STATUS_ALYBND);</span>
+<span class="pc bpc" id="L116" title="1 of 2 branches missed.">		if (error instanceof SmppBindException) {</span>
+<span class="nc" id="L117">			return isCommandStatus((SmppBindException) error, STATUS_ALYBND);</span>
 		}
-<span class="fc" id="L118">		return false;</span>
+<span class="fc" id="L119">		return false;</span>
 	}
 
 	/**
@@ -140,7 +141,7 @@ public final class CloudhopperRetryablePredicates {
 	 * @return the predicate
 	 */
 	public static Predicate&lt;Throwable&gt; canRetryConnecting() {
-<span class="fc" id="L143">		return CloudhopperRetryablePredicates::canRetryConnecting;</span>
+<span class="fc" id="L144">		return CloudhopperRetryablePredicates::canRetryConnecting;</span>
 	}
 
 	/**
@@ -162,18 +163,19 @@ public final class CloudhopperRetryablePredicates {
 	 *            the error to analyze
 	 * @return true if a connect may be retried
 	 */
+	@SuppressWarnings(&quot;squid:S1126&quot;)
 	public static boolean canResendMessage(Throwable error) {
-<span class="pc bpc" id="L166" title="2 of 6 branches missed.">		if (isDataCodingError(error) || isEncodingError(error) || messagePreparationFailed(error)) {</span>
-<span class="fc" id="L167">			return false;</span>
+<span class="pc bpc" id="L168" title="2 of 6 branches missed.">		if (isDataCodingError(error) || isEncodingError(error) || messagePreparationFailed(error)) {</span>
+<span class="fc" id="L169">			return false;</span>
 		}
 		// @formatter:off
-<span class="pc bpc" id="L170" title="1 of 2 branches missed.">		if (hasAnyCause(error, CloudhopperRetryablePredicates::isDataCodingError)</span>
-<span class="pc bpc" id="L171" title="1 of 2 branches missed.">				|| hasAnyCause(error, CloudhopperRetryablePredicates::isEncodingError)</span>
-<span class="fc bfc" id="L172" title="All 2 branches covered.">				|| hasAnyCause(error, CloudhopperRetryablePredicates::messagePreparationFailed)) {</span>
-<span class="fc" id="L173">			return false;</span>
+<span class="pc bpc" id="L172" title="1 of 2 branches missed.">		if (hasAnyCause(error, CloudhopperRetryablePredicates::isDataCodingError)</span>
+<span class="pc bpc" id="L173" title="1 of 2 branches missed.">				|| hasAnyCause(error, CloudhopperRetryablePredicates::isEncodingError)</span>
+<span class="fc bfc" id="L174" title="All 2 branches covered.">				|| hasAnyCause(error, CloudhopperRetryablePredicates::messagePreparationFailed)) {</span>
+<span class="fc" id="L175">			return false;</span>
 		}
 		// @formatter:on
-<span class="fc" id="L176">		return true;</span>
+<span class="fc" id="L178">		return true;</span>
 	}
 
 	/**
@@ -187,7 +189,7 @@ public final class CloudhopperRetryablePredicates {
 	 * @return true if it is a data coding error
 	 */
 	public static boolean isDataCodingError(Throwable error) {
-<span class="fc" id="L190">		return error instanceof DataCodingException;</span>
+<span class="fc" id="L192">		return error instanceof DataCodingException;</span>
 	}
 
 	/**
@@ -201,7 +203,7 @@ public final class CloudhopperRetryablePredicates {
 	 * @return true if it is an encoding error
 	 */
 	public static boolean isEncodingError(Throwable error) {
-<span class="fc" id="L204">		return error instanceof EncodingException;</span>
+<span class="fc" id="L206">		return error instanceof EncodingException;</span>
 	}
 
 	/**
@@ -216,7 +218,7 @@ public final class CloudhopperRetryablePredicates {
 	 * @return true if it is a preparation error
 	 */
 	public static boolean messagePreparationFailed(Throwable error) {
-<span class="fc" id="L219">		return error instanceof MessagePreparationException;</span>
+<span class="fc" id="L221">		return error instanceof MessagePreparationException;</span>
 	}
 
 	/**
@@ -237,11 +239,11 @@ public final class CloudhopperRetryablePredicates {
 	 * @return the predicate that indicates if the message can be sent again
 	 */
 	public static Predicate&lt;Throwable&gt; canResendMessage() {
-<span class="fc" id="L240">		return CloudhopperRetryablePredicates::canResendMessage;</span>
+<span class="fc" id="L242">		return CloudhopperRetryablePredicates::canResendMessage;</span>
 	}
 
 	private static boolean isCommandStatus(SmppBindException e, Integer... statuses) {
-<span class="fc" id="L244">		return asList(statuses).contains(e.getBindResponse().getCommandStatus());</span>
+<span class="fc" id="L246">		return asList(statuses).contains(e.getBindResponse().getCommandStatus());</span>
 	}
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

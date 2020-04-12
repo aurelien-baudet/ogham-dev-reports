@@ -70,14 +70,15 @@ public final class SendMessageRetryablePredicates {
 	 *            the error to analyze
 	 * @return true if the message can be sent again
 	 */
+	@SuppressWarnings(&quot;squid:S1126&quot;)
 	public static boolean canResendMessage(Throwable error) {
-<span class="pc bpc" id="L74" title="1 of 4 branches missed.">		if (fatalJvmError(error) || isMessagePreparationError(error)) {</span>
-<span class="fc" id="L75">			return false;</span>
+<span class="pc bpc" id="L75" title="1 of 4 branches missed.">		if (fatalJvmError(error) || isMessagePreparationError(error)) {</span>
+<span class="fc" id="L76">			return false;</span>
 		}
-<span class="pc bpc" id="L77" title="1 of 4 branches missed.">		if (hasAnyCause(error, ExceptionUtils::fatalJvmError) || hasAnyCause(error, SendMessageRetryablePredicates::isMessagePreparationError)) {</span>
-<span class="fc" id="L78">			return false;</span>
+<span class="pc bpc" id="L78" title="1 of 4 branches missed.">		if (hasAnyCause(error, ExceptionUtils::fatalJvmError) || hasAnyCause(error, SendMessageRetryablePredicates::isMessagePreparationError)) {</span>
+<span class="fc" id="L79">			return false;</span>
 		}
-<span class="fc" id="L80">		return true;</span>
+<span class="fc" id="L81">		return true;</span>
 	}
 
 	/**
@@ -102,11 +103,11 @@ public final class SendMessageRetryablePredicates {
 	 */
 	public static boolean isMessagePreparationError(Throwable error) {
 		// @formatter:off
-<span class="fc bfc" id="L105" title="All 2 branches covered.">		return parsingFailed(error) </span>
-<span class="fc bfc" id="L106" title="All 2 branches covered.">				|| messageIsInvalid(error) </span>
-<span class="pc bpc" id="L107" title="1 of 2 branches missed.">				|| resourceIsUnresolved(error) </span>
-<span class="pc bpc" id="L108" title="1 of 2 branches missed.">				|| mimetypeIsUndetectable(error)</span>
-<span class="pc bpc" id="L109" title="1 of 2 branches missed.">				|| developerError(error);</span>
+<span class="fc bfc" id="L106" title="All 2 branches covered.">		return parsingFailed(error) </span>
+<span class="fc bfc" id="L107" title="All 2 branches covered.">				|| messageIsInvalid(error) </span>
+<span class="pc bpc" id="L108" title="1 of 2 branches missed.">				|| resourceIsUnresolved(error) </span>
+<span class="pc bpc" id="L109" title="1 of 2 branches missed.">				|| mimetypeIsUndetectable(error)</span>
+<span class="pc bpc" id="L110" title="1 of 2 branches missed.">				|| developerError(error);</span>
 		// @formatter:on
 	}
 
@@ -119,7 +120,7 @@ public final class SendMessageRetryablePredicates {
 	 */
 	public static boolean parsingFailed(Throwable error) {
 		// @formatter:off
-<span class="pc bpc" id="L122" title="5 of 14 branches missed.">		return error instanceof ParseException </span>
+<span class="pc bpc" id="L123" title="5 of 14 branches missed.">		return error instanceof ParseException </span>
 				|| error instanceof BeanException 
 				|| error instanceof EngineDetectionException 
 				|| error instanceof ContextException
@@ -138,7 +139,7 @@ public final class SendMessageRetryablePredicates {
 	 */
 	public static boolean messageIsInvalid(Throwable error) {
 		// @formatter:off
-<span class="pc bpc" id="L141" title="1 of 4 branches missed.">		return error instanceof InvalidMessageException </span>
+<span class="pc bpc" id="L142" title="1 of 4 branches missed.">		return error instanceof InvalidMessageException </span>
 				|| error instanceof FillMessageException;
 		// @formatter:on
 	}
@@ -151,7 +152,7 @@ public final class SendMessageRetryablePredicates {
 	 * @return true if a resource can't be resolved
 	 */
 	public static boolean resourceIsUnresolved(Throwable error) {
-<span class="fc" id="L154">		return error instanceof ResourceResolutionException;</span>
+<span class="fc" id="L155">		return error instanceof ResourceResolutionException;</span>
 	}
 
 	/**
@@ -163,7 +164,7 @@ public final class SendMessageRetryablePredicates {
 	 * @return true if a resource mimetype can't be determined
 	 */
 	public static boolean mimetypeIsUndetectable(Throwable error) {
-<span class="fc" id="L166">		return error instanceof MimeTypeDetectionException;</span>
+<span class="fc" id="L167">		return error instanceof MimeTypeDetectionException;</span>
 	}
 
 	/**
@@ -177,7 +178,7 @@ public final class SendMessageRetryablePredicates {
 	 */
 	public static boolean developerError(Throwable error) {
 		// @formatter:off
-<span class="pc bpc" id="L180" title="2 of 4 branches missed.">		return error instanceof IllegalArgumentException</span>
+<span class="pc bpc" id="L181" title="2 of 4 branches missed.">		return error instanceof IllegalArgumentException</span>
 				|| error instanceof NullPointerException;
 		// @formatter:on
 	}
@@ -204,7 +205,7 @@ public final class SendMessageRetryablePredicates {
 	 * @return the predicate
 	 */
 	public static Predicate&lt;Throwable&gt; canResendMessage() {
-<span class="fc" id="L207">		return SendMessageRetryablePredicates::canResendMessage;</span>
+<span class="fc" id="L208">		return SendMessageRetryablePredicates::canResendMessage;</span>
 	}
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

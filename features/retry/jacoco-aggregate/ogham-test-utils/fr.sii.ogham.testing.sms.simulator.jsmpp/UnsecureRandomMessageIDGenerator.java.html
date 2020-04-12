@@ -27,10 +27,12 @@ import org.jsmpp.util.RandomMessageIDGenerator;
 public class UnsecureRandomMessageIDGenerator implements MessageIDGenerator {
 	private final Random random;
 
-<span class="fc" id="L30">	public UnsecureRandomMessageIDGenerator() {</span>
-<span class="fc" id="L31">		random = new Random();</span>
-<span class="fc" id="L32">	}</span>
+	@SuppressWarnings(&quot;java:S2245&quot;)
+<span class="fc" id="L31">	public UnsecureRandomMessageIDGenerator() {</span>
+<span class="fc" id="L32">		random = new Random();</span>
+<span class="fc" id="L33">	}</span>
 
+	@SuppressWarnings({ &quot;squid:S00112&quot;, &quot;squid:S109&quot; })  // code copied from Cloudhopper
 	@Override
 	public MessageId newMessageId() {
 		/*
@@ -38,11 +40,11 @@ public class UnsecureRandomMessageIDGenerator implements MessageIDGenerator {
 		 * database using random
 		 */
 		try {
-<span class="fc" id="L41">			synchronized (random) {</span>
-<span class="fc" id="L42">				return new MessageId(Integer.toString(random.nextInt(Integer.MAX_VALUE), 16));</span>
+<span class="fc" id="L43">			synchronized (random) {</span>
+<span class="fc" id="L44">				return new MessageId(Integer.toString(random.nextInt(Integer.MAX_VALUE), 16));</span>
 			}
-<span class="nc" id="L44">		} catch (PDUStringException e) {</span>
-<span class="nc" id="L45">			throw new RuntimeException(&quot;Failed creating message id&quot;, e);</span>
+<span class="nc" id="L46">		} catch (PDUStringException e) {</span>
+<span class="nc" id="L47">			throw new RuntimeException(&quot;Failed creating message id&quot;, e);</span>
 		}
 	}
 }
