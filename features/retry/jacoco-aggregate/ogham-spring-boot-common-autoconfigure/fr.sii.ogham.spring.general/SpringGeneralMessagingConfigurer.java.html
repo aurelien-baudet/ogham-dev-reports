@@ -54,103 +54,112 @@ public class SpringGeneralMessagingConfigurer implements SpringMessagingConfigur
 <span class="fc" id="L54">	}</span>
 
 	private void configure(EmailBuilder builder) {
+		// configure mimetype detection for images
+<span class="fc" id="L58">		configureImageInliningMimetype(builder.images().inline().mimetype());</span>
 		// @formatter:off
-<span class="fc" id="L58">		builder</span>
-<span class="fc" id="L59">			.autofill()</span>
-<span class="fc" id="L60">				.subject()</span>
-<span class="fc" id="L61">					.defaultValue().value(ofNullable(emailProperties.getSubject().getDefaultValue())).and()</span>
-<span class="fc" id="L62">					.htmlTitle().value(ofNullable(emailProperties.getSubject().getExtractHtmlTitle().isEnable())).and()</span>
-<span class="fc" id="L63">					.text().value(ofNullable(emailProperties.getSubject().getExtractFromText().getFirstLinePrefix())).and()</span>
-<span class="fc" id="L64">					.and()</span>
-<span class="fc" id="L65">				.from()</span>
-<span class="fc" id="L66">					.defaultValue().value(ofNullable(emailProperties.getFrom().getDefaultValue())).and()</span>
-<span class="fc" id="L67">					.and()</span>
-<span class="fc" id="L68">				.to()</span>
-<span class="fc" id="L69">					.defaultValue().value(ofNullable(asArray(emailProperties.getTo().getDefaultValue(), String.class))).and()</span>
-<span class="fc" id="L70">					.and()</span>
-<span class="fc" id="L71">				.cc()</span>
-<span class="fc" id="L72">					.defaultValue().value(ofNullable(asArray(emailProperties.getCc().getDefaultValue(), String.class))).and()</span>
-<span class="fc" id="L73">					.and()</span>
-<span class="fc" id="L74">				.bcc()</span>
-<span class="fc" id="L75">					.defaultValue().value(ofNullable(asArray(emailProperties.getBcc().getDefaultValue(), String.class))).and()</span>
-<span class="fc" id="L76">					.and()</span>
-<span class="fc" id="L77">				.and()</span>
-<span class="fc" id="L78">			.autoRetry()</span>
-<span class="fc" id="L79">				.fixedDelay()</span>
-<span class="fc" id="L80">					.maxRetries().value(ofNullable(emailProperties.getSendRetry().getMaxAttempts())).and()</span>
-<span class="fc" id="L81">					.delay().value(ofNullable(emailProperties.getSendRetry().getDelayBetweenAttempts())).and()</span>
-<span class="fc" id="L82">					.and()</span>
-<span class="fc" id="L83">				.exponentialDelay()</span>
-<span class="fc" id="L84">					.maxRetries().value(ofNullable(emailProperties.getSendRetry().getMaxAttempts())).and()</span>
-<span class="fc" id="L85">					.initialDelay().value(ofNullable(emailProperties.getSendRetry().getExponentialInitialDelay())).and()</span>
-<span class="fc" id="L86">					.and()</span>
-<span class="fc" id="L87">				.perExecutionDelay()</span>
-<span class="fc" id="L88">					.maxRetries().value(ofNullable(emailProperties.getSendRetry().getMaxAttempts())).and()</span>
-<span class="fc" id="L89">					.delays().value(ofNullable(asArray(emailProperties.getSendRetry().getPerExecutionDelays(), Long.class))).and()</span>
-<span class="fc" id="L90">					.and()</span>
-<span class="fc" id="L91">				.fixedInterval()</span>
-<span class="fc" id="L92">					.maxRetries().value(ofNullable(emailProperties.getSendRetry().getMaxAttempts())).and()</span>
-<span class="fc" id="L93">					.interval().value(ofNullable(emailProperties.getSendRetry().getExecutionInterval()));</span>
+<span class="fc" id="L60">		builder</span>
+<span class="fc" id="L61">			.autofill()</span>
+<span class="fc" id="L62">				.subject()</span>
+<span class="fc" id="L63">					.defaultValue().value(ofNullable(emailProperties.getSubject().getDefaultValue())).and()</span>
+<span class="fc" id="L64">					.htmlTitle().value(ofNullable(emailProperties.getSubject().getExtractHtmlTitle().isEnable())).and()</span>
+<span class="fc" id="L65">					.text().value(ofNullable(emailProperties.getSubject().getExtractFromText().getFirstLinePrefix())).and()</span>
+<span class="fc" id="L66">					.and()</span>
+<span class="fc" id="L67">				.from()</span>
+<span class="fc" id="L68">					.defaultValue().value(ofNullable(emailProperties.getFrom().getDefaultValue())).and()</span>
+<span class="fc" id="L69">					.and()</span>
+<span class="fc" id="L70">				.to()</span>
+<span class="fc" id="L71">					.defaultValue().value(ofNullable(asArray(emailProperties.getTo().getDefaultValue(), String.class))).and()</span>
+<span class="fc" id="L72">					.and()</span>
+<span class="fc" id="L73">				.cc()</span>
+<span class="fc" id="L74">					.defaultValue().value(ofNullable(asArray(emailProperties.getCc().getDefaultValue(), String.class))).and()</span>
+<span class="fc" id="L75">					.and()</span>
+<span class="fc" id="L76">				.bcc()</span>
+<span class="fc" id="L77">					.defaultValue().value(ofNullable(asArray(emailProperties.getBcc().getDefaultValue(), String.class))).and()</span>
+<span class="fc" id="L78">					.and()</span>
+<span class="fc" id="L79">				.and()</span>
+<span class="fc" id="L80">			.autoRetry()</span>
+<span class="fc" id="L81">				.fixedDelay()</span>
+<span class="fc" id="L82">					.maxRetries().value(ofNullable(emailProperties.getSendRetry().getMaxAttempts())).and()</span>
+<span class="fc" id="L83">					.delay().value(ofNullable(emailProperties.getSendRetry().getDelayBetweenAttempts())).and()</span>
+<span class="fc" id="L84">					.and()</span>
+<span class="fc" id="L85">				.exponentialDelay()</span>
+<span class="fc" id="L86">					.maxRetries().value(ofNullable(emailProperties.getSendRetry().getMaxAttempts())).and()</span>
+<span class="fc" id="L87">					.initialDelay().value(ofNullable(emailProperties.getSendRetry().getExponentialInitialDelay())).and()</span>
+<span class="fc" id="L88">					.and()</span>
+<span class="fc" id="L89">				.perExecutionDelay()</span>
+<span class="fc" id="L90">					.maxRetries().value(ofNullable(emailProperties.getSendRetry().getMaxAttempts())).and()</span>
+<span class="fc" id="L91">					.delays().value(ofNullable(asArray(emailProperties.getSendRetry().getPerExecutionDelays(), Long.class))).and()</span>
+<span class="fc" id="L92">					.and()</span>
+<span class="fc" id="L93">				.fixedInterval()</span>
+<span class="fc" id="L94">					.maxRetries().value(ofNullable(emailProperties.getSendRetry().getMaxAttempts())).and()</span>
+<span class="fc" id="L95">					.interval().value(ofNullable(emailProperties.getSendRetry().getExecutionInterval()));</span>
 		// @formatter:on
-<span class="fc" id="L95">	}</span>
+<span class="fc" id="L97">	}</span>
 
 	private void configure(SmsBuilder builder) {
 		// @formatter:off
-<span class="fc" id="L99">		builder</span>
-<span class="fc" id="L100">			.autofill()</span>
-<span class="fc" id="L101">				.from()</span>
-<span class="fc" id="L102">					.defaultValue().value(ofNullable(smsProperties.getFrom().getDefaultValue())).and()</span>
-<span class="fc" id="L103">					.and()</span>
-<span class="fc" id="L104">				.to()</span>
-<span class="fc" id="L105">					.defaultValue().value(ofNullable(asArray(smsProperties.getTo().getDefaultValue(), String.class))).and()</span>
-<span class="fc" id="L106">					.and()</span>
-<span class="fc" id="L107">				.and()</span>
-<span class="fc" id="L108">			.numbers()</span>
-<span class="fc" id="L109">				.from()</span>
-<span class="fc" id="L110">					.format()</span>
-<span class="fc" id="L111">						.alphanumericCode().value(ofNullable(smsProperties.getFrom().getAlphanumericCodeFormat().getEnable())).and()</span>
-<span class="fc" id="L112">						.shortCode().value(ofNullable(smsProperties.getFrom().getShortCodeFormat().getEnable())).and()</span>
-<span class="fc" id="L113">						.internationalNumber().value(ofNullable(smsProperties.getFrom().getInternationalFormat().getEnable())).and()</span>
-<span class="fc" id="L114">						.and()</span>
-<span class="fc" id="L115">					.and()</span>
-<span class="fc" id="L116">				.to()</span>
-<span class="fc" id="L117">					.format()</span>
-<span class="fc" id="L118">						.internationalNumber().value(ofNullable(smsProperties.getTo().getInternationalFormat().getEnable())).and()</span>
-<span class="fc" id="L119">						.and()</span>
-<span class="fc" id="L120">					.and()</span>
-<span class="fc" id="L121">				.and()</span>
-<span class="fc" id="L122">			.autoRetry()</span>
-<span class="fc" id="L123">				.fixedDelay()</span>
-<span class="fc" id="L124">					.maxRetries().value(ofNullable(smsProperties.getSendRetry().getMaxAttempts())).and()</span>
-<span class="fc" id="L125">					.delay().value(ofNullable(smsProperties.getSendRetry().getDelayBetweenAttempts())).and()</span>
-<span class="fc" id="L126">					.and()</span>
-<span class="fc" id="L127">				.exponentialDelay()</span>
-<span class="fc" id="L128">					.maxRetries().value(ofNullable(smsProperties.getSendRetry().getMaxAttempts())).and()</span>
-<span class="fc" id="L129">					.initialDelay().value(ofNullable(smsProperties.getSendRetry().getExponentialInitialDelay())).and()</span>
-<span class="fc" id="L130">					.and()</span>
-<span class="fc" id="L131">				.perExecutionDelay()</span>
-<span class="fc" id="L132">					.maxRetries().value(ofNullable(smsProperties.getSendRetry().getMaxAttempts())).and()</span>
-<span class="fc" id="L133">					.delays().value(ofNullable(asArray(smsProperties.getSendRetry().getPerExecutionDelays(), Long.class))).and()</span>
-<span class="fc" id="L134">					.and()</span>
-<span class="fc" id="L135">				.fixedInterval()</span>
-<span class="fc" id="L136">					.maxRetries().value(ofNullable(smsProperties.getSendRetry().getMaxAttempts())).and()</span>
-<span class="fc" id="L137">					.interval().value(ofNullable(smsProperties.getSendRetry().getExecutionInterval()));</span>
+<span class="fc" id="L101">		builder</span>
+<span class="fc" id="L102">			.autofill()</span>
+<span class="fc" id="L103">				.from()</span>
+<span class="fc" id="L104">					.defaultValue().value(ofNullable(smsProperties.getFrom().getDefaultValue())).and()</span>
+<span class="fc" id="L105">					.and()</span>
+<span class="fc" id="L106">				.to()</span>
+<span class="fc" id="L107">					.defaultValue().value(ofNullable(asArray(smsProperties.getTo().getDefaultValue(), String.class))).and()</span>
+<span class="fc" id="L108">					.and()</span>
+<span class="fc" id="L109">				.and()</span>
+<span class="fc" id="L110">			.numbers()</span>
+<span class="fc" id="L111">				.from()</span>
+<span class="fc" id="L112">					.format()</span>
+<span class="fc" id="L113">						.alphanumericCode().value(ofNullable(smsProperties.getFrom().getAlphanumericCodeFormat().getEnable())).and()</span>
+<span class="fc" id="L114">						.shortCode().value(ofNullable(smsProperties.getFrom().getShortCodeFormat().getEnable())).and()</span>
+<span class="fc" id="L115">						.internationalNumber().value(ofNullable(smsProperties.getFrom().getInternationalFormat().getEnable())).and()</span>
+<span class="fc" id="L116">						.and()</span>
+<span class="fc" id="L117">					.and()</span>
+<span class="fc" id="L118">				.to()</span>
+<span class="fc" id="L119">					.format()</span>
+<span class="fc" id="L120">						.internationalNumber().value(ofNullable(smsProperties.getTo().getInternationalFormat().getEnable())).and()</span>
+<span class="fc" id="L121">						.and()</span>
+<span class="fc" id="L122">					.and()</span>
+<span class="fc" id="L123">				.and()</span>
+<span class="fc" id="L124">			.autoRetry()</span>
+<span class="fc" id="L125">				.fixedDelay()</span>
+<span class="fc" id="L126">					.maxRetries().value(ofNullable(smsProperties.getSendRetry().getMaxAttempts())).and()</span>
+<span class="fc" id="L127">					.delay().value(ofNullable(smsProperties.getSendRetry().getDelayBetweenAttempts())).and()</span>
+<span class="fc" id="L128">					.and()</span>
+<span class="fc" id="L129">				.exponentialDelay()</span>
+<span class="fc" id="L130">					.maxRetries().value(ofNullable(smsProperties.getSendRetry().getMaxAttempts())).and()</span>
+<span class="fc" id="L131">					.initialDelay().value(ofNullable(smsProperties.getSendRetry().getExponentialInitialDelay())).and()</span>
+<span class="fc" id="L132">					.and()</span>
+<span class="fc" id="L133">				.perExecutionDelay()</span>
+<span class="fc" id="L134">					.maxRetries().value(ofNullable(smsProperties.getSendRetry().getMaxAttempts())).and()</span>
+<span class="fc" id="L135">					.delays().value(ofNullable(asArray(smsProperties.getSendRetry().getPerExecutionDelays(), Long.class))).and()</span>
+<span class="fc" id="L136">					.and()</span>
+<span class="fc" id="L137">				.fixedInterval()</span>
+<span class="fc" id="L138">					.maxRetries().value(ofNullable(smsProperties.getSendRetry().getMaxAttempts())).and()</span>
+<span class="fc" id="L139">					.interval().value(ofNullable(smsProperties.getSendRetry().getExecutionInterval()));</span>
 		// @formatter:on
-<span class="fc" id="L139">	}</span>
+<span class="fc" id="L141">	}</span>
 
 	private void configure(MimetypeDetectionBuilder&lt;?&gt; builder) {
 		// @formatter:off
-<span class="fc" id="L143">		builder</span>
-<span class="fc" id="L144">			.tika()</span>
-<span class="fc" id="L145">				.failIfOctetStream().value(ofNullable(mimetypeProperties.getTika().isFailIfOctetStream())).and()</span>
-<span class="fc" id="L146">				.and()</span>
-<span class="fc" id="L147">			.defaultMimetype().value(ofNullable(mimetypeProperties.getDefaultMimetype()));</span>
+<span class="fc" id="L145">		builder</span>
+<span class="fc" id="L146">			.tika()</span>
+<span class="fc" id="L147">				.failIfOctetStream().value(ofNullable(mimetypeProperties.getTika().isFailIfOctetStream())).and()</span>
+<span class="fc" id="L148">				.and()</span>
+<span class="fc" id="L149">			.defaultMimetype().value(ofNullable(mimetypeProperties.getDefaultMimetype()));</span>
 		// @formatter:on
-<span class="fc" id="L149">	}</span>
+<span class="fc" id="L151">	}</span>
+
+	private void configureImageInliningMimetype(MimetypeDetectionBuilder&lt;?&gt; builder) {
+		// @formatter:off
+<span class="fc" id="L155">		builder</span>
+<span class="fc" id="L156">			.allowed().value(ofNullable(asArray(emailProperties.getImageInlining().getAllowedMimetypes(), String.class)));</span>
+		// @formatter:on
+<span class="fc" id="L158">	}</span>
 
 	@Override
 	public int getOrder() {
-<span class="fc" id="L153">		return CoreConstants.DEFAULT_MESSAGING_CONFIGURER_PRIORITY + 1000;</span>
+<span class="fc" id="L162">		return CoreConstants.DEFAULT_MESSAGING_CONFIGURER_PRIORITY + 1000;</span>
 	}
 
 }

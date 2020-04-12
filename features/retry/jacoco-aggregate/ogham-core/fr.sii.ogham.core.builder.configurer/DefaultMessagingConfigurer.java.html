@@ -162,7 +162,7 @@ import fr.sii.ogham.sms.message.Sms;
 <span class="fc" id="L162">		configure(builder.css().inline());</span>
 <span class="fc" id="L163">		configure(builder.images().inline());</span>
 		// configure mimetype detection for images
-<span class="fc" id="L165">		configure(builder.images().inline().mimetype());</span>
+<span class="fc" id="L165">		configureImageInliningMimetype(builder.images().inline().mimetype());</span>
 
 		// @formatter:off
 <span class="fc" id="L168">		builder</span>
@@ -281,5 +281,16 @@ import fr.sii.ogham.sms.message.Sms;
 <span class="fc" id="L281">			.defaultMimetype().properties(&quot;${ogham.mimetype.default-mimetype}&quot;).defaultValue(overrideIfNotSet(&quot;application/octet-stream&quot;));</span>
 		// @formatter:on
 <span class="fc" id="L283">	}</span>
+
+	protected void configureImageInliningMimetype(MimetypeDetectionBuilder&lt;?&gt; builder) {
+		// @formatter:off
+<span class="fc" id="L287">		builder</span>
+<span class="fc" id="L288">			.tika()</span>
+<span class="fc" id="L289">				.instance(new Tika())</span>
+<span class="fc" id="L290">				.failIfOctetStream().defaultValue(overrideIfNotSet(true)).and()</span>
+<span class="fc" id="L291">				.and()</span>
+<span class="fc" id="L292">			.allowed().properties(&quot;${ogham.email.image-inlining.allowed-mimtypes}&quot;).defaultValue(overrideIfNotSet(new String[] { &quot;image/*&quot; }));</span>
+		// @formatter:on
+<span class="fc" id="L294">	}</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>
