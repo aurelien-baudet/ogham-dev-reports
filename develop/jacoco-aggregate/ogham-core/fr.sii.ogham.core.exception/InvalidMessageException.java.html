@@ -2,22 +2,36 @@
 
 import static fr.sii.ogham.core.CoreConstants.SERIAL_VERSION_UID;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import fr.sii.ogham.core.message.Message;
 
+/**
+ * Specialized exception that is thrown when a message is not valid (some fields
+ * are required or need to conform a particular format). This exception provides
+ * the violations.
+ * 
+ * @author Aurélien Baudet
+ *
+ */
 public class InvalidMessageException extends MessageException {
 	private static final long serialVersionUID = SERIAL_VERSION_UID;
-	
+
 	private final Set&lt;String&gt; violations;
-	
+
 	public InvalidMessageException(String message, Message msg, Set&lt;String&gt; violations) {
-<span class="fc" id="L15">		super(message, msg);</span>
-<span class="fc" id="L16">		this.violations = violations;</span>
-<span class="fc" id="L17">	}</span>
+<span class="fc" id="L24">		super(message, msg);</span>
+<span class="fc" id="L25">		this.violations = violations;</span>
+<span class="fc" id="L26">	}</span>
+
+	public InvalidMessageException(String message, Message msg, String violation) {
+<span class="fc" id="L29">		this(message, msg, new HashSet&lt;&gt;());</span>
+<span class="fc" id="L30">		violations.add(violation);</span>
+<span class="fc" id="L31">	}</span>
 
 	public Set&lt;String&gt; getViolations() {
-<span class="nc" id="L20">		return violations;</span>
+<span class="nc" id="L34">		return violations;</span>
 	}
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

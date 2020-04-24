@@ -10,7 +10,7 @@ import fr.sii.ogham.core.message.content.Content;
 import fr.sii.ogham.core.message.content.MayHaveStringContent;
 import fr.sii.ogham.core.message.content.StringContent;
 import fr.sii.ogham.core.mimetype.MimeTypeProvider;
-import fr.sii.ogham.email.exception.sendgrid.ContentHandlerException;
+import fr.sii.ogham.email.exception.handler.ContentHandlerException;
 import fr.sii.ogham.email.message.Email;
 
 /**
@@ -72,9 +72,9 @@ public final class StringContentHandler implements SendGridContentHandler {
 <span class="fc" id="L72">				final String mime = mimeProvider.detect(contentStr).toString();</span>
 <span class="fc" id="L73">				LOG.debug(&quot;Email content has detected type {}&quot;, mime);</span>
 <span class="fc" id="L74">				LOG.trace(&quot;content: {}&quot;, content);</span>
-<span class="fc" id="L75">				setMimeContent(email, contentStr, mime);</span>
+<span class="fc" id="L75">				setMimeContent(email, contentStr, mime, content);</span>
 <span class="fc" id="L76">			} catch (MimeTypeDetectionException e) {</span>
-<span class="fc" id="L77">				throw new ContentHandlerException(&quot;Unable to set the email content&quot;, e);</span>
+<span class="fc" id="L77">				throw new ContentHandlerException(&quot;Unable to set the email content&quot;, content, e);</span>
 <span class="fc" id="L78">			}</span>
 <span class="fc" id="L79">		} else {</span>
 <span class="fc" id="L80">			throw new IllegalArgumentException(&quot;This instance can only work with MayHaveStringContent instances, but was passed &quot; + content.getClass().getSimpleName());</span>
@@ -82,13 +82,13 @@ public final class StringContentHandler implements SendGridContentHandler {
 
 <span class="fc" id="L83">	}</span>
 
-	private static void setMimeContent(final SendGrid.Email email, final String contentStr, final String mime) throws ContentHandlerException {
+	private static void setMimeContent(final SendGrid.Email email, final String contentStr, final String mime, Content content) throws ContentHandlerException {
 <span class="fc bfc" id="L86" title="All 2 branches covered.">		if (&quot;text/plain&quot;.equals(mime)) {</span>
 <span class="fc" id="L87">			email.setText(contentStr);</span>
 <span class="fc bfc" id="L88" title="All 2 branches covered.">		} else if (&quot;text/html&quot;.equals(mime)) {</span>
 <span class="fc" id="L89">			email.setHtml(contentStr);</span>
 		} else {
-<span class="fc" id="L91">			throw new ContentHandlerException(&quot;MIME type &quot; + mime + &quot; is not supported&quot;);</span>
+<span class="fc" id="L91">			throw new ContentHandlerException(&quot;MIME type &quot; + mime + &quot; is not supported&quot;, content);</span>
 		}
 <span class="fc" id="L93">	}</span>
 

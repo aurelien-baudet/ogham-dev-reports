@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>MultiImplementationSender.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">reporting</a> &gt; <a href="../index.html" class="el_bundle">ogham-core</a> &gt; <a href="index.source.html" class="el_package">fr.sii.ogham.core.sender</a> &gt; <span class="el_source">MultiImplementationSender.java</span></div><h1>MultiImplementationSender.java</h1><pre class="source lang-java linenums">package fr.sii.ogham.core.sender;
 
-import static fr.sii.ogham.core.util.LogUtils.summarize;
+import static fr.sii.ogham.core.util.LogUtils.logString;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -86,10 +86,10 @@ public abstract class MultiImplementationSender&lt;M extends Message&gt; impleme
 	public void send(Message message) throws MessageException {
 <span class="fc" id="L87">		MessageSender sender = getSender(message);</span>
 <span class="pc bpc" id="L88" title="1 of 2 branches missed.">		if (sender == null) {</span>
-<span class="nc" id="L89">			LOG.warn(&quot;No implementation is able to send the message {}. Skipping&quot;, summarize(message));</span>
+<span class="nc" id="L89">			LOG.warn(&quot;No implementation is able to send the message {}. Skipping&quot;, logString(message));</span>
 <span class="nc" id="L90">			return;</span>
 		}
-<span class="fc" id="L92">		LOG.debug(&quot;Sending message {} using {} implementation&quot;, summarize(message), sender);</span>
+<span class="fc" id="L92">		LOG.debug(&quot;Sending message {} using {} implementation&quot;, logString(message), sender);</span>
 <span class="fc" id="L93">		sender.send(message);</span>
 <span class="fc" id="L94">	}</span>
 
@@ -120,7 +120,7 @@ public abstract class MultiImplementationSender&lt;M extends Message&gt; impleme
 <span class="fc" id="L120">			LOG.debug(&quot;Can handle the message type {}. Is there any implementation available to send it ?&quot;, message.getClass());</span>
 <span class="fc bfc" id="L121" title="All 2 branches covered.">			for (Implementation impl : implementations.getOrdered()) {</span>
 <span class="fc bfc" id="L122" title="All 2 branches covered.">				if (impl.getCondition().accept(message)) {</span>
-<span class="fc" id="L123">					LOG.debug(&quot;The implementation {} can handle the message {}&quot;, impl.getSender(), summarize(message));</span>
+<span class="fc" id="L123">					LOG.debug(&quot;The implementation {} can handle the message {}&quot;, impl.getSender(), logString(message));</span>
 <span class="fc" id="L124">					return impl.getSender();</span>
 				}
 <span class="fc" id="L126">			}</span>

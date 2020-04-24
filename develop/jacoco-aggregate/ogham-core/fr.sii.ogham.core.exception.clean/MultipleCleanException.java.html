@@ -5,19 +5,30 @@ import static java.util.Collections.unmodifiableList;
 
 import java.util.List;
 
+/**
+ * Some resources may be opened while Ogham runs. That's why there is a cleanup
+ * mechanism to free/close some resources. Clean-up may fail for any reason.
+ * 
+ * This is a wrapper exception used when performing a full cleanup. It is thrown
+ * when at least one cleanup has raised an error. It keeps the list of cleanup
+ * failures.
+ * 
+ * @author Aurélien Baudet
+ *
+ */
 public class MultipleCleanException extends CleanException {
 	private static final long serialVersionUID = SERIAL_VERSION_UID;
 
 	private final List&lt;CleanException&gt; causes;
-	
+
 	public MultipleCleanException(String message, List&lt;CleanException&gt; causes) {
-<span class="fc" id="L14">		super(message);</span>
-<span class="fc" id="L15">		this.causes = unmodifiableList(causes);</span>
-<span class="fc" id="L16">	}</span>
+<span class="fc" id="L25">		super(message);</span>
+<span class="fc" id="L26">		this.causes = unmodifiableList(causes);</span>
+<span class="fc" id="L27">	}</span>
 
 	public List&lt;CleanException&gt; getCauses() {
-<span class="nc" id="L19">		return causes;</span>
+<span class="nc" id="L30">		return causes;</span>
 	}
-	
+
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

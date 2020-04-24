@@ -109,13 +109,13 @@ public class EncoderBuilder extends AbstractParent&lt;CloudhopperBuilder&gt; imp
 	public EncoderBuilder(CloudhopperBuilder parent, BuildContext buildContext) {
 <span class="fc" id="L110">		super(parent);</span>
 <span class="fc" id="L111">		this.buildContext = buildContext;</span>
-<span class="fc" id="L112">		gsm7PackedValueBuilder = new StandardEncodingHelper(this, NAME_GSM7, buildContext);</span>
-<span class="fc" id="L113">		gsm8ValueBuilder = new StandardEncodingHelper(this, NAME_GSM, buildContext);</span>
-<span class="fc" id="L114">		ucs2ValueBuilder = new StandardEncodingHelper(this, NAME_UCS_2, buildContext);</span>
-<span class="fc" id="L115">		latin1ValueBuilder = new StandardEncodingHelper(this, NAME_ISO_8859_1, buildContext);</span>
+<span class="fc" id="L112">		gsm7PackedValueBuilder = buildContext.newConfigurationValueBuilder(ctx -&gt; new StandardEncodingHelper(this, NAME_GSM7, ctx));</span>
+<span class="fc" id="L113">		gsm8ValueBuilder = buildContext.newConfigurationValueBuilder(ctx -&gt; new StandardEncodingHelper(this, NAME_GSM, ctx));</span>
+<span class="fc" id="L114">		ucs2ValueBuilder = buildContext.newConfigurationValueBuilder(ctx -&gt; new StandardEncodingHelper(this, NAME_UCS_2, ctx));</span>
+<span class="fc" id="L115">		latin1ValueBuilder = buildContext.newConfigurationValueBuilder(ctx -&gt; new StandardEncodingHelper(this, NAME_ISO_8859_1, ctx));</span>
 <span class="fc" id="L116">		customEncoders = new PriorizedList&lt;&gt;();</span>
-<span class="fc" id="L117">		autoGuessValueBuilder = new ConfigurationValueBuilderHelper&lt;&gt;(this, Boolean.class, buildContext);</span>
-<span class="fc" id="L118">		fallbackCharsetNameValueBuilder = new ConfigurationValueBuilderHelper&lt;&gt;(this, String.class, buildContext);</span>
+<span class="fc" id="L117">		autoGuessValueBuilder = buildContext.newConfigurationValueBuilder(this, Boolean.class);</span>
+<span class="fc" id="L118">		fallbackCharsetNameValueBuilder = buildContext.newConfigurationValueBuilder(this, String.class);</span>
 <span class="fc" id="L119">	}</span>
 
 	/**

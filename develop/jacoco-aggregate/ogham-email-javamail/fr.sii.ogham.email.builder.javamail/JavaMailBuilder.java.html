@@ -51,8 +51,8 @@ import fr.sii.ogham.core.resource.NamedResource;
 import fr.sii.ogham.core.resource.OverrideNameWrapper;
 import fr.sii.ogham.email.attachment.Attachment;
 import fr.sii.ogham.email.builder.EmailBuilder;
-import fr.sii.ogham.email.exception.javamail.AttachmentResourceHandlerException;
-import fr.sii.ogham.email.exception.javamail.UnresolvableAttachmentResourceHandlerException;
+import fr.sii.ogham.email.exception.handler.AttachmentResourceHandlerException;
+import fr.sii.ogham.email.exception.handler.UnresolvableAttachmentResourceHandlerException;
 import fr.sii.ogham.email.message.Email;
 import fr.sii.ogham.email.message.content.ContentWithAttachments;
 import fr.sii.ogham.email.sender.impl.JavaMailSender;
@@ -208,9 +208,9 @@ public class JavaMailBuilder extends AbstractParent&lt;EmailBuilder&gt; implemen
 	public JavaMailBuilder(EmailBuilder parent, BuildContext buildContext) {
 <span class="fc" id="L209">		super(parent);</span>
 <span class="fc" id="L210">		this.buildContext = buildContext;</span>
-<span class="fc" id="L211">		hostValueBuilder = new ConfigurationValueBuilderHelper&lt;&gt;(this, String.class, buildContext);</span>
-<span class="fc" id="L212">		portValueBuilder = new ConfigurationValueBuilderHelper&lt;&gt;(this, Integer.class, buildContext);</span>
-<span class="fc" id="L213">		charsetValueBuilder = new ConfigurationValueBuilderHelper&lt;&gt;(this, Charset.class, buildContext);</span>
+<span class="fc" id="L211">		hostValueBuilder = buildContext.newConfigurationValueBuilder(this, String.class);</span>
+<span class="fc" id="L212">		portValueBuilder = buildContext.newConfigurationValueBuilder(this, Integer.class);</span>
+<span class="fc" id="L213">		charsetValueBuilder = buildContext.newConfigurationValueBuilder(this, Charset.class);</span>
 <span class="fc" id="L214">		additionalProperties = new Properties();</span>
 <span class="fc" id="L215">	}</span>
 

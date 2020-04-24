@@ -42,9 +42,9 @@ public class SenderNumberFormatBuilder extends AbstractParent&lt;SenderNumberBui
 	public SenderNumberFormatBuilder(SenderNumberBuilder parent, BuildContext buildContext) {
 <span class="fc" id="L43">		super(parent);</span>
 <span class="fc" id="L44">		this.buildContext = buildContext;</span>
-<span class="fc" id="L45">		enableAlphanumericValueBuilder = new ConfigurationValueBuilderHelper&lt;&gt;(this, Boolean.class, buildContext);</span>
-<span class="fc" id="L46">		enableShortCodeValueBuilder = new ConfigurationValueBuilderHelper&lt;&gt;(this, Boolean.class, buildContext);</span>
-<span class="fc" id="L47">		enableInternationalValueBuilder = new ConfigurationValueBuilderHelper&lt;&gt;(this, Boolean.class, buildContext);</span>
+<span class="fc" id="L45">		enableAlphanumericValueBuilder = buildContext.newConfigurationValueBuilder(this, Boolean.class);</span>
+<span class="fc" id="L46">		enableShortCodeValueBuilder = buildContext.newConfigurationValueBuilder(this, Boolean.class);</span>
+<span class="fc" id="L47">		enableInternationalValueBuilder = buildContext.newConfigurationValueBuilder(this, Boolean.class);</span>
 <span class="fc" id="L48">	}</span>
 
 	/**
@@ -297,13 +297,13 @@ public class SenderNumberFormatBuilder extends AbstractParent&lt;SenderNumberBui
 	@Override
 	public PhoneNumberTranslator build() {
 <span class="fc" id="L299">		CompositePhoneNumberTranslator translator = buildContext.register(new CompositePhoneNumberTranslator());</span>
-<span class="fc bfc" id="L300" title="All 2 branches covered.">		if (enabled(enableAlphanumericValueBuilder)) {</span>
+<span class="pc bpc" id="L300" title="1 of 2 branches missed.">		if (enabled(enableAlphanumericValueBuilder)) {</span>
 <span class="fc" id="L301">			translator.add(buildContext.register(new AlphanumericCodeNumberFormatHandler()));</span>
 		}
-<span class="fc bfc" id="L303" title="All 2 branches covered.">		if (enabled(enableShortCodeValueBuilder)) {</span>
+<span class="pc bpc" id="L303" title="1 of 2 branches missed.">		if (enabled(enableShortCodeValueBuilder)) {</span>
 <span class="fc" id="L304">			translator.add(buildContext.register(new ShortCodeNumberFormatHandler()));</span>
 		}
-<span class="fc bfc" id="L306" title="All 2 branches covered.">		if (enabled(enableInternationalValueBuilder)) {</span>
+<span class="pc bpc" id="L306" title="1 of 2 branches missed.">		if (enabled(enableInternationalValueBuilder)) {</span>
 <span class="fc" id="L307">			translator.add(buildContext.register(new InternationalNumberFormatHandler()));</span>
 		}
 <span class="fc" id="L309">		translator.add(buildContext.register(new DefaultHandler()));</span>

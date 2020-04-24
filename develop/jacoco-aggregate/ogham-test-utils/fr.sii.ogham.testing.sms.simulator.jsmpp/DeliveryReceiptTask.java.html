@@ -82,9 +82,9 @@ class DeliveryReceiptTask implements Runnable {
 
 	public void run() {
 <span class="fc" id="L84">		SessionState state = session.getSessionState();</span>
-<span class="fc bfc" id="L85" title="All 2 branches covered.">		if (!state.isReceivable()) {</span>
-<span class="fc" id="L86">			LOG.debug(&quot;Not sending delivery receipt for message id {} since session state is {}&quot;, messageId, state);</span>
-<span class="fc" id="L87">			return;</span>
+<span class="pc bpc" id="L85" title="1 of 2 branches missed.">		if (!state.isReceivable()) {</span>
+<span class="nc" id="L86">			LOG.debug(&quot;Not sending delivery receipt for message id {} since session state is {}&quot;, messageId, state);</span>
+<span class="nc" id="L87">			return;</span>
 		}
 <span class="fc" id="L89">		String stringValue = Integer.valueOf(messageId.getValue(), TWO_BYTES).toString();</span>
 		try {
@@ -93,8 +93,8 @@ class DeliveryReceiptTask implements Runnable {
 <span class="fc" id="L93">			session.deliverShortMessage(&quot;mc&quot;, sourceAddrTon, sourceAddrNpi, sourceAddress, destAddrTon, destAddrNpi, destAddress, new ESMClass(MessageMode.DEFAULT,</span>
 <span class="fc" id="L94">					MessageType.SMSC_DEL_RECEIPT, GSMSpecificFeature.DEFAULT), (byte) 0, (byte) 0, new RegisteredDelivery(0), DataCodings.ZERO, delRec.toString().getBytes());</span>
 <span class="fc" id="L95">			LOG.debug(&quot;Sending delivery receipt for message id {}: {}&quot;, messageId, stringValue);</span>
-<span class="fc" id="L96">		} catch (Exception e) {</span>
-<span class="fc" id="L97">			LOG.error(&quot;Failed sending delivery_receipt for message id {}: {}&quot;, messageId, stringValue, e);</span>
+<span class="nc" id="L96">		} catch (Exception e) {</span>
+<span class="nc" id="L97">			LOG.error(&quot;Failed sending delivery_receipt for message id {}: {}&quot;, messageId, stringValue, e);</span>
 <span class="fc" id="L98">		}</span>
 <span class="fc" id="L99">	}</span>
 }

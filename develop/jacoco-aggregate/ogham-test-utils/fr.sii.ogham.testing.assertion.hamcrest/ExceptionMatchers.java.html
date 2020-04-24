@@ -2,10 +2,39 @@
 
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
 
 import org.hamcrest.Matcher;
 
 public final class ExceptionMatchers {
+
+	/**
+	 * Returns a matcher that verifies that any exception in the stack matches
+	 * the finder exists.
+	 *
+	 * @param expectedClass
+	 *            to find the cause in exception stack
+	 * @param &lt;T&gt;
+	 *            type of the outer exception
+	 * @return the matcher
+	 */
+	public static &lt;T extends Throwable&gt; Matcher&lt;T&gt; hasAnyCause(final Class&lt;? extends Throwable&gt; expectedClass) {
+<span class="fc" id="L22">		return hasAnyCause(instanceOf(expectedClass));</span>
+	}
+
+	/**
+	 * Returns a matcher that verifies that any exception in the stack matches
+	 * the finder exists.
+	 *
+	 * @param finder
+	 *            to find the cause in exception stack, the finder is also the matcher
+	 * @param &lt;T&gt;
+	 *            type of the outer exception
+	 * @return the matcher
+	 */
+	public static &lt;T extends Throwable&gt; Matcher&lt;T&gt; hasAnyCause(final Matcher&lt;? extends Throwable&gt; finder) {
+<span class="fc" id="L36">		return new ThrowableAnyCauseMatcher&lt;&gt;(finder, notNullValue(Throwable.class));</span>
+	}
 
 	/**
 	 * Returns a matcher that verifies that any exception in the stack matches
@@ -20,7 +49,7 @@ public final class ExceptionMatchers {
 	 * @return the matcher
 	 */
 	public static &lt;T extends Throwable&gt; Matcher&lt;T&gt; hasAnyCause(final Matcher&lt;? extends Throwable&gt; finder, final Matcher&lt;? extends Throwable&gt; matcher) {
-<span class="fc" id="L23">		return new ThrowableAnyCauseMatcher&lt;&gt;(finder, matcher);</span>
+<span class="fc" id="L52">		return new ThrowableAnyCauseMatcher&lt;&gt;(finder, matcher);</span>
 	}
 
 	/**
@@ -37,7 +66,7 @@ public final class ExceptionMatchers {
 	 * @return the matcher
 	 */
 	public static &lt;T extends Throwable&gt; Matcher&lt;T&gt; hasAnyCause(final Class&lt;? extends Throwable&gt; expectedClass, final Matcher&lt;? extends Throwable&gt; matcher) {
-<span class="fc" id="L40">		return new ThrowableAnyCauseMatcher&lt;&gt;(instanceOf(expectedClass), matcher);</span>
+<span class="fc" id="L69">		return new ThrowableAnyCauseMatcher&lt;&gt;(instanceOf(expectedClass), matcher);</span>
 	}
 
 	/**
@@ -51,7 +80,7 @@ public final class ExceptionMatchers {
 	 * @return the matcher
 	 */
 	public static &lt;T extends Throwable&gt; Matcher&lt;T&gt; hasMessage(final Matcher&lt;? extends String&gt; matcher) {
-<span class="fc" id="L54">		return new ThrowableMessageMatcher&lt;&gt;(matcher);</span>
+<span class="fc" id="L83">		return new ThrowableMessageMatcher&lt;&gt;(matcher);</span>
 	}
 
 	/**
@@ -70,7 +99,7 @@ public final class ExceptionMatchers {
 	 * @return the matcher
 	 */
 	public static &lt;T extends Throwable&gt; Matcher&lt;T&gt; hasMessage(String expectedMessage) {
-<span class="fc" id="L73">		return new ThrowableMessageMatcher&lt;&gt;(is(expectedMessage));</span>
+<span class="fc" id="L102">		return new ThrowableMessageMatcher&lt;&gt;(is(expectedMessage));</span>
 	}
 
 	private ExceptionMatchers() {

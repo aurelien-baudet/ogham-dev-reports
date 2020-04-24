@@ -68,8 +68,8 @@ public class FixedDelayBuilder&lt;P&gt; extends AbstractParent&lt;P&gt; implemen
 	public FixedDelayBuilder(P parent, BuildContext buildContext) {
 <span class="fc" id="L69">		super(parent);</span>
 <span class="fc" id="L70">		this.buildContext = buildContext;</span>
-<span class="fc" id="L71">		maxRetriesValueBuilder = new ConfigurationValueBuilderHelper&lt;&gt;(this, Integer.class, buildContext);</span>
-<span class="fc" id="L72">		delayValueBuilder = new ConfigurationValueBuilderHelper&lt;&gt;(this, Long.class, buildContext);</span>
+<span class="fc" id="L71">		maxRetriesValueBuilder = buildContext.newConfigurationValueBuilder(this, Integer.class);</span>
+<span class="fc" id="L72">		delayValueBuilder = buildContext.newConfigurationValueBuilder(this, Long.class);</span>
 <span class="fc" id="L73">	}</span>
 
 	/**
@@ -234,15 +234,18 @@ public class FixedDelayBuilder&lt;P&gt; extends AbstractParent&lt;P&gt; implemen
 	public RetryStrategy build() {
 <span class="fc" id="L235">		int evaluatedMaxRetries = buildMaxRetries();</span>
 <span class="fc" id="L236">		long evaluatedDelay = buildDelay();</span>
-<span class="fc" id="L237">		return buildContext.register(new FixedDelayRetry(evaluatedMaxRetries, evaluatedDelay));</span>
+<span class="fc bfc" id="L237" title="All 4 branches covered.">		if (evaluatedMaxRetries == 0 || evaluatedDelay == 0) {</span>
+<span class="fc" id="L238">			return null;</span>
+		}
+<span class="fc" id="L240">		return buildContext.register(new FixedDelayRetry(evaluatedMaxRetries, evaluatedDelay));</span>
 	}
 
 	private int buildMaxRetries() {
-<span class="fc" id="L241">		return maxRetriesValueBuilder.getValue(0);</span>
+<span class="fc" id="L244">		return maxRetriesValueBuilder.getValue(0);</span>
 	}
 
 	private long buildDelay() {
-<span class="fc" id="L245">		return delayValueBuilder.getValue(0L);</span>
+<span class="fc" id="L248">		return delayValueBuilder.getValue(0L);</span>
 	}
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

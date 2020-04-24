@@ -4,6 +4,9 @@ import static fr.sii.ogham.core.CoreConstants.SERIAL_VERSION_UID;
 import static java.util.Collections.unmodifiableList;
 
 import java.util.List;
+import java.util.stream.Collectors;
+
+import fr.sii.ogham.core.util.ExceptionUtils;
 
 public class MultipleCauseExceptionWrapper extends Exception {
 	private static final long serialVersionUID = SERIAL_VERSION_UID;
@@ -11,17 +14,23 @@ public class MultipleCauseExceptionWrapper extends Exception {
 	private final List&lt;Exception&gt; causes;
 
 	public MultipleCauseExceptionWrapper(String message, List&lt;Exception&gt; causes) {
-<span class="nc" id="L14">		super(message);</span>
-<span class="nc" id="L15">		this.causes = unmodifiableList(causes);</span>
-<span class="nc" id="L16">	}</span>
+<span class="nc" id="L17">		super(message);</span>
+<span class="nc" id="L18">		this.causes = unmodifiableList(causes);</span>
+<span class="nc" id="L19">	}</span>
 
 	public MultipleCauseExceptionWrapper(List&lt;Exception&gt; causes) {
-<span class="fc" id="L19">		super();</span>
-<span class="fc" id="L20">		this.causes = unmodifiableList(causes);</span>
-<span class="fc" id="L21">	}</span>
+<span class="fc" id="L22">		super(toCauseString(causes));</span>
+<span class="fc" id="L23">		this.causes = unmodifiableList(causes);</span>
+<span class="fc" id="L24">	}</span>
 
 	public List&lt;Exception&gt; getCauses() {
-<span class="fc" id="L24">		return causes;</span>
+<span class="fc" id="L27">		return causes;</span>
+	}
+	
+	private static String toCauseString(List&lt;Exception&gt; causes) {
+<span class="fc" id="L31">		return causes.stream()</span>
+<span class="fc" id="L32">				.map(ExceptionUtils::toString)</span>
+<span class="fc" id="L33">				.collect(Collectors.joining(&quot;\n- &quot;, &quot;List of original failures:\n- &quot;, &quot;\n&quot;));</span>
 	}
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

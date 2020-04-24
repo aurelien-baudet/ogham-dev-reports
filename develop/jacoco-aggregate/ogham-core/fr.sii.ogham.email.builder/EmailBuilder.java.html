@@ -3,6 +3,7 @@
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import fr.sii.ogham.core.async.Awaiter;
 import fr.sii.ogham.core.builder.ActivableAtRuntime;
 import fr.sii.ogham.core.builder.Builder;
 import fr.sii.ogham.core.builder.MessagingBuilder;
@@ -16,15 +17,23 @@ import fr.sii.ogham.core.builder.configurer.Configurer;
 import fr.sii.ogham.core.builder.configurer.MessagingConfigurer;
 import fr.sii.ogham.core.builder.context.BuildContext;
 import fr.sii.ogham.core.builder.env.EnvironmentBuilder;
+import fr.sii.ogham.core.builder.retry.RetryBuilder;
 import fr.sii.ogham.core.builder.sender.SenderImplementationBuilderHelper;
 import fr.sii.ogham.core.builder.template.DetectorBuilder;
 import fr.sii.ogham.core.builder.template.TemplateBuilderHelper;
 import fr.sii.ogham.core.builder.template.VariantBuilder;
+import fr.sii.ogham.core.condition.Condition;
 import fr.sii.ogham.core.condition.fluent.MessageConditions;
 import fr.sii.ogham.core.filler.MessageFiller;
 import fr.sii.ogham.core.fluent.AbstractParent;
 import fr.sii.ogham.core.message.content.MultiTemplateContent;
 import fr.sii.ogham.core.message.content.Variant;
+import fr.sii.ogham.core.retry.ExponentialDelayRetry;
+import fr.sii.ogham.core.retry.FixedDelayRetry;
+import fr.sii.ogham.core.retry.FixedIntervalRetry;
+import fr.sii.ogham.core.retry.PerExecutionDelayRetry;
+import fr.sii.ogham.core.retry.RetryExecutor;
+import fr.sii.ogham.core.sender.AutoRetrySender;
 import fr.sii.ogham.core.sender.ConditionalSender;
 import fr.sii.ogham.core.sender.ContentTranslatorSender;
 import fr.sii.ogham.core.sender.FillerSender;
@@ -35,6 +44,7 @@ import fr.sii.ogham.core.translator.content.EveryContentTranslator;
 import fr.sii.ogham.core.translator.content.MultiContentTranslator;
 import fr.sii.ogham.core.translator.content.TemplateContentTranslator;
 import fr.sii.ogham.core.translator.resource.AttachmentResourceTranslator;
+import fr.sii.ogham.core.util.BuilderUtils;
 import fr.sii.ogham.email.attachment.Attachment;
 import fr.sii.ogham.email.message.Email;
 import fr.sii.ogham.email.sender.AttachmentResourceTranslatorSender;
@@ -338,7 +348,7 @@ import fr.sii.ogham.template.common.adapter.VariantResolver;
  *
  */
 public class EmailBuilder extends AbstractParent&lt;MessagingBuilder&gt; implements Builder&lt;ConditionalSender&gt; {
-<span class="fc" id="L341">	private static final Logger LOG = LoggerFactory.getLogger(EmailBuilder.class);</span>
+<span class="fc" id="L351">	private static final Logger LOG = LoggerFactory.getLogger(EmailBuilder.class);</span>
 
 	private final BuildContext buildContext;
 	private final TemplateBuilderHelper&lt;EmailBuilder&gt; templateBuilderHelper;
@@ -347,7 +357,8 @@ public class EmailBuilder extends AbstractParent&lt;MessagingBuilder&gt; impleme
 	private AutofillEmailBuilder autofillBuilder;
 	private CssHandlingBuilder cssBuilder;
 	private ImageHandlingBuilder imageBuilder;
-
+	private RetryBuilder&lt;EmailBuilder&gt; retryBuilder;
+	
 	/**
 	 * Initializes the builder with a parent builder. The parent builder is used
 	 * when calling {@link #and()} method. The {@link EnvironmentBuilder} is
@@ -359,11 +370,11 @@ public class EmailBuilder extends AbstractParent&lt;MessagingBuilder&gt; impleme
 	 *            for registering instances and property evaluation
 	 */
 	public EmailBuilder(MessagingBuilder parent, BuildContext buildContext) {
-<span class="fc" id="L362">		super(parent);</span>
-<span class="fc" id="L363">		this.buildContext = buildContext;</span>
-<span class="fc" id="L364">		templateBuilderHelper = new TemplateBuilderHelper&lt;&gt;(this, buildContext);</span>
-<span class="fc" id="L365">		senderBuilderHelper = new SenderImplementationBuilderHelper&lt;&gt;(this, buildContext);</span>
-<span class="fc" id="L366">	}</span>
+<span class="fc" id="L373">		super(parent);</span>
+<span class="fc" id="L374">		this.buildContext = buildContext;</span>
+<span class="fc" id="L375">		templateBuilderHelper = new TemplateBuilderHelper&lt;&gt;(this, buildContext);</span>
+<span class="fc" id="L376">		senderBuilderHelper = new SenderImplementationBuilderHelper&lt;&gt;(this, buildContext);</span>
+<span class="fc" id="L377">	}</span>
 
 	/**
 	 * Configures how {@link Attachment}s are handled.
@@ -437,10 +448,10 @@ public class EmailBuilder extends AbstractParent&lt;MessagingBuilder&gt; impleme
 	 * @return the builder to configure attachment handling
 	 */
 	public AttachmentHandlingBuilder attachments() {
-<span class="pc bpc" id="L440" title="1 of 2 branches missed.">		if (attachmentBuilder == null) {</span>
-<span class="fc" id="L441">			attachmentBuilder = new AttachmentHandlingBuilder(this, buildContext);</span>
+<span class="pc bpc" id="L451" title="1 of 2 branches missed.">		if (attachmentBuilder == null) {</span>
+<span class="fc" id="L452">			attachmentBuilder = new AttachmentHandlingBuilder(this, buildContext);</span>
 		}
-<span class="fc" id="L443">		return attachmentBuilder;</span>
+<span class="fc" id="L454">		return attachmentBuilder;</span>
 	}
 
 	/**
@@ -488,10 +499,10 @@ public class EmailBuilder extends AbstractParent&lt;MessagingBuilder&gt; impleme
 	 * @return the builder to configure autofilling of Email
 	 */
 	public AutofillEmailBuilder autofill() {
-<span class="pc bpc" id="L491" title="1 of 2 branches missed.">		if (autofillBuilder == null) {</span>
-<span class="fc" id="L492">			autofillBuilder = new AutofillEmailBuilder(this, buildContext);</span>
+<span class="fc bfc" id="L502" title="All 2 branches covered.">		if (autofillBuilder == null) {</span>
+<span class="fc" id="L503">			autofillBuilder = new AutofillEmailBuilder(this, buildContext);</span>
 		}
-<span class="fc" id="L494">		return autofillBuilder;</span>
+<span class="fc" id="L505">		return autofillBuilder;</span>
 	}
 
 	/**
@@ -512,10 +523,10 @@ public class EmailBuilder extends AbstractParent&lt;MessagingBuilder&gt; impleme
 	 * @return the builder to configure css handling
 	 */
 	public CssHandlingBuilder css() {
-<span class="fc bfc" id="L515" title="All 2 branches covered.">		if (cssBuilder == null) {</span>
-<span class="fc" id="L516">			cssBuilder = new CssHandlingBuilder(this, buildContext);</span>
+<span class="fc bfc" id="L526" title="All 2 branches covered.">		if (cssBuilder == null) {</span>
+<span class="fc" id="L527">			cssBuilder = new CssHandlingBuilder(this, buildContext);</span>
 		}
-<span class="fc" id="L518">		return cssBuilder;</span>
+<span class="fc" id="L529">		return cssBuilder;</span>
 	}
 
 	/**
@@ -552,10 +563,10 @@ public class EmailBuilder extends AbstractParent&lt;MessagingBuilder&gt; impleme
 	 * @return the builder to configure images handling
 	 */
 	public ImageHandlingBuilder images() {
-<span class="fc bfc" id="L555" title="All 2 branches covered.">		if (imageBuilder == null) {</span>
-<span class="fc" id="L556">			imageBuilder = new ImageHandlingBuilder(this, buildContext);</span>
+<span class="fc bfc" id="L566" title="All 2 branches covered.">		if (imageBuilder == null) {</span>
+<span class="fc" id="L567">			imageBuilder = new ImageHandlingBuilder(this, buildContext);</span>
 		}
-<span class="fc" id="L558">		return imageBuilder;</span>
+<span class="fc" id="L569">		return imageBuilder;</span>
 	}
 
 	/**
@@ -599,7 +610,7 @@ public class EmailBuilder extends AbstractParent&lt;MessagingBuilder&gt; impleme
 	 * @return the builder to configure the implementation
 	 */
 	public &lt;T extends Builder&lt;? extends TemplateParser&gt;&gt; T template(Class&lt;T&gt; builderClass) {
-<span class="fc" id="L602">		return templateBuilderHelper.register(builderClass);</span>
+<span class="fc" id="L613">		return templateBuilderHelper.register(builderClass);</span>
 	}
 
 	/**
@@ -636,8 +647,8 @@ public class EmailBuilder extends AbstractParent&lt;MessagingBuilder&gt; impleme
 	 * @return this instance for fluent chaining
 	 */
 	public EmailBuilder customSender(MessageSender sender) {
-<span class="fc" id="L639">		senderBuilderHelper.customSender(sender);</span>
-<span class="fc" id="L640">		return this;</span>
+<span class="fc" id="L650">		senderBuilderHelper.customSender(sender);</span>
+<span class="fc" id="L651">		return this;</span>
 	}
 
 	/**
@@ -698,7 +709,7 @@ public class EmailBuilder extends AbstractParent&lt;MessagingBuilder&gt; impleme
 	 * 
 	 */
 	public &lt;T extends Builder&lt;? extends MessageSender&gt;&gt; T sender(Class&lt;T&gt; builderClass) {
-<span class="fc" id="L701">		return senderBuilderHelper.register(builderClass);</span>
+<span class="fc" id="L712">		return senderBuilderHelper.register(builderClass);</span>
 	}
 
 	/**
@@ -743,8 +754,8 @@ public class EmailBuilder extends AbstractParent&lt;MessagingBuilder&gt; impleme
 	 * @return this instance for fluent chaining
 	 */
 	public EmailBuilder failIfMissingVariant(Boolean fail) {
-<span class="nc" id="L746">		templateBuilderHelper.failIfMissingVariant(fail);</span>
-<span class="nc" id="L747">		return this;</span>
+<span class="nc" id="L757">		templateBuilderHelper.failIfMissingVariant(fail);</span>
+<span class="nc" id="L758">		return this;</span>
 	}
 
 	/**
@@ -791,7 +802,7 @@ public class EmailBuilder extends AbstractParent&lt;MessagingBuilder&gt; impleme
 	 * @return the builder to configure property keys/default value
 	 */
 	public ConfigurationValueBuilder&lt;EmailBuilder, Boolean&gt; failIfMissingVariant() {
-<span class="fc" id="L794">		return new ConfigurationValueBuilderDelegate&lt;&gt;(this, templateBuilderHelper.failIfMissingVariant());</span>
+<span class="fc" id="L805">		return new ConfigurationValueBuilderDelegate&lt;&gt;(this, templateBuilderHelper.failIfMissingVariant());</span>
 	}
 
 	/**
@@ -831,8 +842,8 @@ public class EmailBuilder extends AbstractParent&lt;MessagingBuilder&gt; impleme
 	 * @return this instance for fluent chaining
 	 */
 	public EmailBuilder listPossiblePaths(Boolean enable) {
-<span class="nc" id="L834">		templateBuilderHelper.listPossiblePaths(enable);</span>
-<span class="nc" id="L835">		return this;</span>
+<span class="nc" id="L845">		templateBuilderHelper.listPossiblePaths(enable);</span>
+<span class="nc" id="L846">		return this;</span>
 	}
 
 	/**
@@ -873,7 +884,7 @@ public class EmailBuilder extends AbstractParent&lt;MessagingBuilder&gt; impleme
 	 * @return the builder to configure property keys/default value
 	 */
 	public ConfigurationValueBuilder&lt;EmailBuilder, Boolean&gt; listPossiblePaths() {
-<span class="fc" id="L876">		return new ConfigurationValueBuilderDelegate&lt;&gt;(this, templateBuilderHelper.listPossiblePaths());</span>
+<span class="fc" id="L887">		return new ConfigurationValueBuilderDelegate&lt;&gt;(this, templateBuilderHelper.listPossiblePaths());</span>
 	}
 
 	/**
@@ -884,77 +895,125 @@ public class EmailBuilder extends AbstractParent&lt;MessagingBuilder&gt; impleme
 	 * @return this instance for fluent chaining
 	 */
 	public EmailBuilder missingVariant(VariantResolver resolver) {
-<span class="nc" id="L887">		templateBuilderHelper.missingVariant(resolver);</span>
-<span class="nc" id="L888">		return this;</span>
+<span class="nc" id="L898">		templateBuilderHelper.missingVariant(resolver);</span>
+<span class="nc" id="L899">		return this;</span>
+	}
+	
+	/**
+	 * Configure automatic retry if message couldn't be sent.
+	 * 
+	 * 
+	 * For example:
+	 * 
+	 * &lt;pre&gt;
+	 * .autoRetry()
+	 *   .fixedDelay()
+	 *     .maxRetries().properties(&quot;${ogham.email.send-retry.max-attempts}&quot;).and()
+	 *     .delay().properties(&quot;${ogham.email.send-retry.delay-between-attempts}&quot;)
+	 * &lt;/pre&gt;
+	 * 
+	 * 
+	 * &lt;p&gt;
+	 * This builder lets you configure:
+	 * &lt;ul&gt;
+	 * &lt;li&gt;The retry strategy:
+	 * &lt;ul&gt;
+	 * &lt;li&gt;{@link FixedDelayRetry}: wait for a fixed delay after the last
+	 * failure&lt;/li&gt;
+	 * &lt;li&gt;{@link FixedIntervalRetry}: wait for a fixed delay between executions
+	 * (do not wait for the end of the action)&lt;/li&gt;
+	 * &lt;li&gt;{@link ExponentialDelayRetry}: start with a delay, the next delay
+	 * will be doubled on so on&lt;/li&gt;
+	 * &lt;li&gt;{@link PerExecutionDelayRetry}: provide a custom delay for each
+	 * execution&lt;/li&gt;
+	 * &lt;/ul&gt;
+	 * &lt;/li&gt;
+	 * &lt;li&gt;The {@link RetryExecutor} implementation&lt;/li&gt;
+	 * &lt;li&gt;The {@link Awaiter} implementation&lt;/li&gt;
+	 * &lt;li&gt;The {@link Condition} used to determine if the raised error should
+	 * trigger a retry or not&lt;/li&gt;
+	 * &lt;/ul&gt;
+	 * 
+	 * @return the builder to configure retry management
+	 */
+	public RetryBuilder&lt;EmailBuilder&gt; autoRetry() {
+<span class="fc bfc" id="L940" title="All 2 branches covered.">		if (retryBuilder == null) {</span>
+<span class="fc" id="L941">			retryBuilder = new RetryBuilder&lt;&gt;(this, buildContext);</span>
+		}
+<span class="fc" id="L943">		return retryBuilder;</span>
 	}
 
 	@Override
 	public ConditionalSender build() {
-<span class="fc" id="L893">		EmailSender emailSender = buildContext.register(new EmailSender());</span>
-<span class="fc" id="L894">		ConditionalSender sender = emailSender;</span>
-<span class="fc" id="L895">		senderBuilderHelper.addSenders(emailSender);</span>
-<span class="fc bfc" id="L896" title="All 2 branches covered.">		if (autofillBuilder != null) {</span>
-<span class="fc" id="L897">			MessageFiller messageFiller = autofillBuilder.build();</span>
-<span class="fc" id="L898">			LOG.debug(&quot;Automatic filling of message enabled {}&quot;, messageFiller);</span>
-<span class="fc" id="L899">			sender = buildContext.register(new FillerSender(messageFiller, sender));</span>
+<span class="fc" id="L948">		EmailSender emailSender = buildContext.register(new EmailSender());</span>
+<span class="fc" id="L949">		ConditionalSender sender = emailSender;</span>
+<span class="fc" id="L950">		senderBuilderHelper.addSenders(emailSender);</span>
+<span class="fc bfc" id="L951" title="All 2 branches covered.">		if (autofillBuilder != null) {</span>
+<span class="fc" id="L952">			MessageFiller messageFiller = autofillBuilder.build();</span>
+<span class="fc" id="L953">			LOG.debug(&quot;Automatic filling of message enabled {}&quot;, messageFiller);</span>
+<span class="fc" id="L954">			sender = buildContext.register(new FillerSender(messageFiller, sender));</span>
 		}
-<span class="fc bfc" id="L901" title="All 2 branches covered.">		if (attachmentBuilder != null) {</span>
-<span class="fc" id="L902">			AttachmentResourceTranslator resourceTranslator = attachmentBuilder.build();</span>
-<span class="fc" id="L903">			LOG.debug(&quot;Resource translation enabled {}&quot;, resourceTranslator);</span>
-<span class="fc" id="L904">			sender = buildContext.register(new AttachmentResourceTranslatorSender(resourceTranslator, sender));</span>
+<span class="fc bfc" id="L956" title="All 2 branches covered.">		if (attachmentBuilder != null) {</span>
+<span class="fc" id="L957">			AttachmentResourceTranslator resourceTranslator = attachmentBuilder.build();</span>
+<span class="fc" id="L958">			LOG.debug(&quot;Resource translation enabled {}&quot;, resourceTranslator);</span>
+<span class="fc" id="L959">			sender = buildContext.register(new AttachmentResourceTranslatorSender(resourceTranslator, sender));</span>
 		}
-<span class="fc bfc" id="L906" title="All 6 branches covered.">		if (templateBuilderHelper.hasRegisteredTemplates() || cssBuilder != null || imageBuilder != null) {</span>
-<span class="fc" id="L907">			ContentTranslator translator = buildContentTranslator();</span>
-<span class="fc" id="L908">			LOG.debug(&quot;Content translation enabled {}&quot;, translator);</span>
-<span class="fc" id="L909">			sender = buildContext.register(new ContentTranslatorSender(translator, sender));</span>
-
+<span class="fc bfc" id="L961" title="All 6 branches covered.">		if (templateBuilderHelper.hasRegisteredTemplates() || cssBuilder != null || imageBuilder != null) {</span>
+<span class="fc" id="L962">			ContentTranslator translator = buildContentTranslator();</span>
+<span class="fc" id="L963">			LOG.debug(&quot;Content translation enabled {}&quot;, translator);</span>
+<span class="fc" id="L964">			sender = buildContext.register(new ContentTranslatorSender(translator, sender));</span>
 		}
-<span class="fc" id="L912">		return sender;</span>
+<span class="fc" id="L966">		RetryExecutor retryExecutor = BuilderUtils.build(retryBuilder);</span>
+<span class="fc bfc" id="L967" title="All 2 branches covered.">		if (retryExecutor != null) {</span>
+<span class="fc" id="L968">			LOG.debug(&quot;Automatic retry of message sending enabled {}&quot;, retryExecutor);</span>
+<span class="fc" id="L969">			sender = buildContext.register(new AutoRetrySender(sender, retryExecutor));</span>
+		}
+<span class="fc" id="L971">		return sender;</span>
 	}
 
 	private ContentTranslator buildContentTranslator() {
-<span class="fc" id="L916">		EveryContentTranslator translator = buildContext.register(new EveryContentTranslator());</span>
-<span class="fc" id="L917">		addTemplateTranslator(translator);</span>
-<span class="fc" id="L918">		addMultiContent(translator);</span>
-<span class="fc" id="L919">		addCssInlining(translator);</span>
-<span class="fc" id="L920">		addImageInlining(translator);</span>
-<span class="fc" id="L921">		return translator;</span>
+<span class="fc" id="L975">		EveryContentTranslator translator = buildContext.register(new EveryContentTranslator());</span>
+<span class="fc" id="L976">		addTemplateTranslator(translator);</span>
+<span class="fc" id="L977">		addMultiContent(translator);</span>
+<span class="fc" id="L978">		addCssInlining(translator);</span>
+<span class="fc" id="L979">		addImageInlining(translator);</span>
+<span class="fc" id="L980">		return translator;</span>
 	}
 
 	private void addTemplateTranslator(EveryContentTranslator translator) {
-<span class="fc bfc" id="L925" title="All 2 branches covered.">		if (!templateBuilderHelper.hasRegisteredTemplates()) {</span>
-<span class="fc" id="L926">			return;</span>
+<span class="fc bfc" id="L984" title="All 2 branches covered.">		if (!templateBuilderHelper.hasRegisteredTemplates()) {</span>
+<span class="fc" id="L985">			return;</span>
 		}
-<span class="fc" id="L928">		TemplateParser templateParser = templateBuilderHelper.buildTemplateParser();</span>
-<span class="fc" id="L929">		LOG.debug(&quot;Registering content translator that parses templates using {}&quot;, templateParser);</span>
-<span class="fc" id="L930">		translator.addTranslator(buildContext.register(new TemplateContentTranslator(templateParser, templateBuilderHelper.buildVariant())));</span>
-<span class="fc" id="L931">	}</span>
+<span class="fc" id="L987">		TemplateParser templateParser = templateBuilderHelper.buildTemplateParser();</span>
+<span class="fc" id="L988">		LOG.debug(&quot;Registering content translator that parses templates using {}&quot;, templateParser);</span>
+<span class="fc" id="L989">		translator.addTranslator(buildContext.register(new TemplateContentTranslator(templateParser, templateBuilderHelper.buildVariant())));</span>
+<span class="fc" id="L990">	}</span>
 
 	private void addMultiContent(EveryContentTranslator translator) {
-<span class="fc" id="L934">		translator.addTranslator(buildContext.register(new MultiContentTranslator(translator)));</span>
-<span class="fc" id="L935">	}</span>
+<span class="fc" id="L993">		translator.addTranslator(buildContext.register(new MultiContentTranslator(translator)));</span>
+<span class="fc" id="L994">	}</span>
 
 	private void addImageInlining(EveryContentTranslator translator) {
-<span class="fc bfc" id="L938" title="All 2 branches covered.">		if (imageBuilder == null) {</span>
-<span class="fc" id="L939">			return;</span>
+<span class="fc bfc" id="L997" title="All 2 branches covered.">		if (imageBuilder == null) {</span>
+<span class="fc" id="L998">			return;</span>
 		}
-<span class="fc" id="L941">		ContentTranslator imageInliner = imageBuilder.build();</span>
-<span class="pc bpc" id="L942" title="1 of 2 branches missed.">		if (imageInliner != null) {</span>
-<span class="fc" id="L943">			LOG.debug(&quot;Image inlining is enabled&quot;);</span>
-<span class="fc" id="L944">			translator.addTranslator(imageInliner);</span>
+<span class="fc" id="L1000">		ContentTranslator imageInliner = imageBuilder.build();</span>
+<span class="pc bpc" id="L1001" title="1 of 2 branches missed.">		if (imageInliner != null) {</span>
+<span class="fc" id="L1002">			LOG.debug(&quot;Image inlining is enabled&quot;);</span>
+<span class="fc" id="L1003">			translator.addTranslator(imageInliner);</span>
 		}
-<span class="fc" id="L946">	}</span>
+<span class="fc" id="L1005">	}</span>
 
 	private void addCssInlining(EveryContentTranslator translator) {
-<span class="fc bfc" id="L949" title="All 2 branches covered.">		if (cssBuilder == null) {</span>
-<span class="fc" id="L950">			return;</span>
+<span class="fc bfc" id="L1008" title="All 2 branches covered.">		if (cssBuilder == null) {</span>
+<span class="fc" id="L1009">			return;</span>
 		}
-<span class="fc" id="L952">		ContentTranslator cssInliner = cssBuilder.build();</span>
-<span class="pc bpc" id="L953" title="1 of 2 branches missed.">		if (cssInliner != null) {</span>
-<span class="fc" id="L954">			LOG.debug(&quot;CSS inlining is enabled&quot;);</span>
-<span class="fc" id="L955">			translator.addTranslator(cssInliner);</span>
+<span class="fc" id="L1011">		ContentTranslator cssInliner = cssBuilder.build();</span>
+<span class="pc bpc" id="L1012" title="1 of 2 branches missed.">		if (cssInliner != null) {</span>
+<span class="fc" id="L1013">			LOG.debug(&quot;CSS inlining is enabled&quot;);</span>
+<span class="fc" id="L1014">			translator.addTranslator(cssInliner);</span>
 		}
-<span class="fc" id="L957">	}</span>
+<span class="fc" id="L1016">	}</span>
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

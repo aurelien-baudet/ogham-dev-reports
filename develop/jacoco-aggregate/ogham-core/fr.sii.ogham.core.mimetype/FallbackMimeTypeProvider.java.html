@@ -14,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import fr.sii.ogham.core.exception.mimetype.MimeTypeDetectionException;
+import fr.sii.ogham.core.exception.mimetype.NoMimetypeDetectorException;
 import fr.sii.ogham.core.util.IOUtils;
 
 /**
@@ -24,7 +25,7 @@ import fr.sii.ogham.core.util.IOUtils;
  *
  */
 public class FallbackMimeTypeProvider implements MimeTypeProvider {
-<span class="fc" id="L27">	private static final Logger LOG = LoggerFactory.getLogger(FallbackMimeTypeProvider.class);</span>
+<span class="fc" id="L28">	private static final Logger LOG = LoggerFactory.getLogger(FallbackMimeTypeProvider.class);</span>
 
 	/**
 	 * The list of delegate implementations to try
@@ -32,95 +33,95 @@ public class FallbackMimeTypeProvider implements MimeTypeProvider {
 	private List&lt;MimeTypeProvider&gt; providers;
 
 	public FallbackMimeTypeProvider(MimeTypeProvider... providers) {
-<span class="fc" id="L35">		this(new ArrayList&lt;&gt;(Arrays.asList(providers)));</span>
-<span class="fc" id="L36">	}</span>
+<span class="fc" id="L36">		this(new ArrayList&lt;&gt;(Arrays.asList(providers)));</span>
+<span class="fc" id="L37">	}</span>
 
 	public FallbackMimeTypeProvider(List&lt;MimeTypeProvider&gt; providers) {
-<span class="fc" id="L39">		super();</span>
-<span class="fc" id="L40">		this.providers = providers;</span>
-<span class="fc" id="L41">	}</span>
+<span class="fc" id="L40">		super();</span>
+<span class="fc" id="L41">		this.providers = providers;</span>
+<span class="fc" id="L42">	}</span>
 
 	@Override
 	public MimeType getMimeType(File file) throws MimeTypeDetectionException {
-<span class="fc bfc" id="L45" title="All 2 branches covered.">		for (MimeTypeProvider provider : providers) {</span>
+<span class="fc bfc" id="L46" title="All 2 branches covered.">		for (MimeTypeProvider provider : providers) {</span>
 			try {
-<span class="fc" id="L47">				LOG.debug(&quot;Trying to get mime type for file {} using {}&quot;, file, provider);</span>
-<span class="fc" id="L48">				MimeType mimetype = provider.getMimeType(file);</span>
-<span class="fc" id="L49">				LOG.debug(&quot;{} has detected mime type {} for file {}&quot;, provider, mimetype, file);</span>
-<span class="fc" id="L50">				return mimetype;</span>
-<span class="fc" id="L51">			} catch (MimeTypeDetectionException e) {</span>
+<span class="fc" id="L48">				LOG.debug(&quot;Trying to get mime type for file {} using {}&quot;, file, provider);</span>
+<span class="fc" id="L49">				MimeType mimetype = provider.getMimeType(file);</span>
+<span class="fc" id="L50">				LOG.debug(&quot;{} has detected mime type {} for file {}&quot;, provider, mimetype, file);</span>
+<span class="fc" id="L51">				return mimetype;</span>
+<span class="fc" id="L52">			} catch (MimeTypeDetectionException e) {</span>
 				// nothing to do =&gt; try next one
-<span class="fc" id="L53">				LOG.debug(&quot;{} could not detect mime type for file {}. Cause: {}&quot;, provider, file, e);</span>
+<span class="fc" id="L54">				LOG.debug(&quot;{} could not detect mime type for file {}. Cause: {}&quot;, provider, file, e);</span>
 			}
-<span class="fc" id="L55">		}</span>
-<span class="fc" id="L56">		throw new MimeTypeDetectionException(&quot;No mimetype provider could provide the mimetype for the file &quot; + file);</span>
+<span class="fc" id="L56">		}</span>
+<span class="fc" id="L57">		throw new NoMimetypeDetectorException(&quot;No mimetype provider could provide the mimetype for the file &quot; + file);</span>
 	}
 
 	@Override
 	public MimeType getMimeType(String fileName) throws MimeTypeDetectionException {
-<span class="fc bfc" id="L61" title="All 2 branches covered.">		for (MimeTypeProvider provider : providers) {</span>
+<span class="fc bfc" id="L62" title="All 2 branches covered.">		for (MimeTypeProvider provider : providers) {</span>
 			try {
-<span class="fc" id="L63">				LOG.debug(&quot;Trying to get mime type for file {} using {}&quot;, fileName, provider);</span>
-<span class="fc" id="L64">				MimeType mimetype = provider.getMimeType(fileName);</span>
-<span class="fc" id="L65">				LOG.debug(&quot;{} has detected mime type {} for file {}&quot;, provider, mimetype, fileName);</span>
-<span class="fc" id="L66">				return mimetype;</span>
-<span class="fc" id="L67">			} catch (MimeTypeDetectionException e) {</span>
+<span class="fc" id="L64">				LOG.debug(&quot;Trying to get mime type for file {} using {}&quot;, fileName, provider);</span>
+<span class="fc" id="L65">				MimeType mimetype = provider.getMimeType(fileName);</span>
+<span class="fc" id="L66">				LOG.debug(&quot;{} has detected mime type {} for file {}&quot;, provider, mimetype, fileName);</span>
+<span class="fc" id="L67">				return mimetype;</span>
+<span class="fc" id="L68">			} catch (MimeTypeDetectionException e) {</span>
 				// nothing to do =&gt; try next one
-<span class="fc" id="L69">				LOG.debug(&quot;{} could not detect mime type for file {}. Cause: {}&quot;, provider, fileName, e);</span>
+<span class="fc" id="L70">				LOG.debug(&quot;{} could not detect mime type for file {}. Cause: {}&quot;, provider, fileName, e);</span>
 			}
-<span class="fc" id="L71">		}</span>
-<span class="fc" id="L72">		throw new MimeTypeDetectionException(&quot;No mimetype provider could provide the mimetype for the file &quot; + fileName);</span>
+<span class="fc" id="L72">		}</span>
+<span class="fc" id="L73">		throw new NoMimetypeDetectorException(&quot;No mimetype provider could provide the mimetype for the file &quot; + fileName);</span>
 	}
 
 	@Override
 	public MimeType detect(InputStream stream) throws MimeTypeDetectionException {
 		try {
-<span class="fc" id="L78">			ByteArrayInputStream copy = new ByteArrayInputStream(IOUtils.toByteArray(stream));</span>
-<span class="fc" id="L79">			MimeType mimetype = detect(copy);</span>
-<span class="fc bfc" id="L80" title="All 2 branches covered.">			if(mimetype==null) {</span>
-<span class="fc" id="L81">				throw new MimeTypeDetectionException(&quot;No mimetype provider could provide the mimetype from the provided content&quot;);</span>
+<span class="fc" id="L79">			ByteArrayInputStream copy = new ByteArrayInputStream(IOUtils.toByteArray(stream));</span>
+<span class="fc" id="L80">			MimeType mimetype = detect(copy);</span>
+<span class="fc bfc" id="L81" title="All 2 branches covered.">			if(mimetype==null) {</span>
+<span class="fc" id="L82">				throw new NoMimetypeDetectorException(&quot;No mimetype provider could provide the mimetype from the provided content&quot;);</span>
 			}
-<span class="fc" id="L83">			return mimetype;</span>
-<span class="nc" id="L84">		} catch (IOException e) {</span>
-<span class="nc" id="L85">			throw new MimeTypeDetectionException(&quot;Can't read the content of the stream&quot;, e);</span>
+<span class="fc" id="L84">			return mimetype;</span>
+<span class="nc" id="L85">		} catch (IOException e) {</span>
+<span class="nc" id="L86">			throw new NoMimetypeDetectorException(&quot;Can't read the content of the stream&quot;, e);</span>
 		}
 	}
 
 	private MimeType detect(ByteArrayInputStream copy) {
-<span class="fc" id="L90">		MimeType mimetype = null;</span>
-<span class="fc bfc" id="L91" title="All 2 branches covered.">		for (MimeTypeProvider provider : providers) {</span>
+<span class="fc" id="L91">		MimeType mimetype = null;</span>
+<span class="fc bfc" id="L92" title="All 2 branches covered.">		for (MimeTypeProvider provider : providers) {</span>
 			try {
-<span class="fc" id="L93">				LOG.debug(&quot;Trying to get mime type from stream using {}&quot;, provider);</span>
-<span class="fc" id="L94">				mimetype = provider.detect(copy);</span>
-<span class="fc" id="L95">				LOG.debug(&quot;{} has detected mime type {} from stream&quot;, provider, mimetype);</span>
-<span class="fc" id="L96">				break;</span>
-<span class="fc" id="L97">			} catch (MimeTypeDetectionException e) {</span>
+<span class="fc" id="L94">				LOG.debug(&quot;Trying to get mime type from stream using {}&quot;, provider);</span>
+<span class="fc" id="L95">				mimetype = provider.detect(copy);</span>
+<span class="fc" id="L96">				LOG.debug(&quot;{} has detected mime type {} from stream&quot;, provider, mimetype);</span>
+<span class="fc" id="L97">				break;</span>
+<span class="fc" id="L98">			} catch (MimeTypeDetectionException e) {</span>
 				// try next one =&gt; move read cursor to beginning
-<span class="fc" id="L99">				copy.reset();</span>
-<span class="fc" id="L100">				LOG.debug(&quot;{} could not detect mime type from stream. Cause: {}&quot;, provider, e);</span>
+<span class="fc" id="L100">				copy.reset();</span>
+<span class="fc" id="L101">				LOG.debug(&quot;{} could not detect mime type from stream. Cause: {}&quot;, provider, e);</span>
 			}
-<span class="fc" id="L102">		}</span>
-<span class="fc" id="L103">		return mimetype;</span>
+<span class="fc" id="L103">		}</span>
+<span class="fc" id="L104">		return mimetype;</span>
 	}
 
 	@Override
 	@SuppressWarnings(&quot;squid:S1192&quot;)
 	public MimeType detect(String content) throws MimeTypeDetectionException {
-<span class="pc bpc" id="L109" title="1 of 2 branches missed.">		for (MimeTypeProvider provider : providers) {</span>
+<span class="pc bpc" id="L110" title="1 of 2 branches missed.">		for (MimeTypeProvider provider : providers) {</span>
 			try {
-<span class="fc" id="L111">				LOG.debug(&quot;Trying to get mime type using {} from content&quot;, provider);</span>
-<span class="fc" id="L112">				LOG.trace(&quot;content: {}&quot;, content);</span>
-<span class="fc" id="L113">				MimeType mimetype = provider.detect(content);</span>
-<span class="fc" id="L114">				LOG.debug(&quot;{} has detected mime type {} from content&quot;, provider, mimetype);</span>
-<span class="fc" id="L115">				LOG.trace(&quot;content: {}&quot;, content);</span>
-<span class="fc" id="L116">				return mimetype;</span>
-<span class="nc" id="L117">			} catch (MimeTypeDetectionException e) {</span>
+<span class="fc" id="L112">				LOG.debug(&quot;Trying to get mime type using {} from content&quot;, provider);</span>
+<span class="fc" id="L113">				LOG.trace(&quot;content: {}&quot;, content);</span>
+<span class="fc" id="L114">				MimeType mimetype = provider.detect(content);</span>
+<span class="fc" id="L115">				LOG.debug(&quot;{} has detected mime type {} from content&quot;, provider, mimetype);</span>
+<span class="fc" id="L116">				LOG.trace(&quot;content: {}&quot;, content);</span>
+<span class="fc" id="L117">				return mimetype;</span>
+<span class="nc" id="L118">			} catch (MimeTypeDetectionException e) {</span>
 				// nothing to do =&gt; try next one
-<span class="nc" id="L119">				LOG.debug(&quot;{} could not detect mime type from content. Cause: {}&quot;, provider, e);</span>
-<span class="nc" id="L120">				LOG.trace(&quot;content: {}&quot;, content);</span>
+<span class="nc" id="L120">				LOG.debug(&quot;{} could not detect mime type from content. Cause: {}&quot;, provider, e);</span>
+<span class="nc" id="L121">				LOG.trace(&quot;content: {}&quot;, content);</span>
 			}
-<span class="nc" id="L122">		}</span>
-<span class="nc" id="L123">		throw new MimeTypeDetectionException(&quot;No mimetype provider could provide the mimetype from the provided content&quot;);</span>
+<span class="nc" id="L123">		}</span>
+<span class="nc" id="L124">		throw new NoMimetypeDetectorException(&quot;No mimetype provider could provide the mimetype from the provided content&quot;);</span>
 	}
 
 	/**
@@ -131,8 +132,8 @@ public class FallbackMimeTypeProvider implements MimeTypeProvider {
 	 *            the implementation to register
 	 */
 	public void addProvider(MimeTypeProvider provider) {
-<span class="nc" id="L134">		providers.add(provider);</span>
-<span class="nc" id="L135">	}</span>
+<span class="nc" id="L135">		providers.add(provider);</span>
+<span class="nc" id="L136">	}</span>
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

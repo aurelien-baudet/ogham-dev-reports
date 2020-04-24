@@ -102,7 +102,7 @@ public class SendGridV4Builder extends AbstractSendGridBuilder&lt;SendGridV4Buil
 	private SendGridClient client;
 	private SendGridInterceptor interceptor;
 	private Client clientHelper;
-	private ConfigurationValueBuilderHelper&lt;SendGridV4Builder, Boolean&gt; unitTestingValueBuilder;
+	private final ConfigurationValueBuilderHelper&lt;SendGridV4Builder, Boolean&gt; unitTestingValueBuilder;
 
 	/**
 	 * Default constructor when using SendGrid sender without all Ogham work.
@@ -130,7 +130,7 @@ public class SendGridV4Builder extends AbstractSendGridBuilder&lt;SendGridV4Buil
 	 */
 	public SendGridV4Builder(EmailBuilder parent, BuildContext buildContext) {
 <span class="fc" id="L132">		super(SendGridV4Builder.class, parent, buildContext);</span>
-<span class="fc" id="L133">		unitTestingValueBuilder = new ConfigurationValueBuilderHelper&lt;&gt;(this, Boolean.class, buildContext);</span>
+<span class="fc" id="L133">		unitTestingValueBuilder = buildContext.newConfigurationValueBuilder(this, Boolean.class);</span>
 <span class="fc" id="L134">	}</span>
 
 	/**
@@ -152,7 +152,7 @@ public class SendGridV4Builder extends AbstractSendGridBuilder&lt;SendGridV4Buil
 	@Override
 	public ConfigurationValueBuilder&lt;SendGridV4Builder, String&gt; username() {
 <span class="fc" id="L154">		LOG.warn(&quot;username and password are no more available with SendGrid v4&quot;);</span>
-<span class="fc" id="L155">		return new ConfigurationValueBuilderHelper&lt;&gt;(this, String.class, buildContext);</span>
+<span class="fc" id="L155">		return buildContext.newConfigurationValueBuilder(this, String.class);</span>
 	}
 
 	/**
@@ -174,7 +174,7 @@ public class SendGridV4Builder extends AbstractSendGridBuilder&lt;SendGridV4Buil
 	@Override
 	public ConfigurationValueBuilder&lt;SendGridV4Builder, String&gt; password() {
 <span class="fc" id="L176">		LOG.warn(&quot;username and password are no more available with SendGrid v4&quot;);</span>
-<span class="fc" id="L177">		return new ConfigurationValueBuilderHelper&lt;&gt;(this, String.class, buildContext);</span>
+<span class="fc" id="L177">		return buildContext.newConfigurationValueBuilder(this, String.class);</span>
 	}
 
 	/**

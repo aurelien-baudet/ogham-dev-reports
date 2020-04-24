@@ -2,7 +2,10 @@
 
 import java.util.List;
 import java.util.Properties;
+import java.util.function.Function;
 
+import fr.sii.ogham.core.builder.configuration.ConfigurationValueBuilder;
+import fr.sii.ogham.core.builder.configuration.ConfigurationValueBuilderHelper;
 import fr.sii.ogham.core.convert.Converter;
 import fr.sii.ogham.core.convert.DefaultConverter;
 import fr.sii.ogham.core.env.JavaPropertiesResolver;
@@ -26,29 +29,44 @@ public class DefaultBuildContext implements BuildContext {
 	private final Converter converter;
 
 	public DefaultBuildContext() {
-<span class="fc" id="L29">		super();</span>
-<span class="fc" id="L30">		this.converter = new DefaultConverter();</span>
-<span class="fc" id="L31">		this.propertyResolver = new JavaPropertiesResolver(new Properties(), converter);</span>
-<span class="fc" id="L32">	}</span>
+<span class="fc" id="L32">		this(new Properties());</span>
+<span class="fc" id="L33">	}</span>
+
+	public DefaultBuildContext(Properties props) {
+<span class="fc" id="L36">		super();</span>
+<span class="fc" id="L37">		this.converter = new DefaultConverter();</span>
+<span class="fc" id="L38">		this.propertyResolver = new JavaPropertiesResolver(props, converter);</span>
+<span class="fc" id="L39">	}</span>
 
 	@Override
 	public &lt;T&gt; T register(T instance) {
-<span class="fc" id="L36">		return instance;</span>
+<span class="fc" id="L43">		return instance;</span>
 	}
 
 	@Override
 	public &lt;T&gt; T evaluate(List&lt;String&gt; properties, Class&lt;T&gt; resultClass) {
-<span class="fc" id="L41">		return BuilderUtils.evaluate(properties, getPropertyResolver(), resultClass);</span>
+<span class="fc" id="L48">		return BuilderUtils.evaluate(properties, getPropertyResolver(), resultClass);</span>
 	}
 
 	@Override
 	public PropertyResolver getPropertyResolver() {
-<span class="fc" id="L46">		return propertyResolver;</span>
+<span class="fc" id="L53">		return propertyResolver;</span>
 	}
 
 	@Override
 	public Converter getConverter() {
-<span class="fc" id="L51">		return converter;</span>
+<span class="fc" id="L58">		return converter;</span>
+	}
+
+	@Override
+	@SuppressWarnings(&quot;unchecked&quot;)
+	public &lt;P, V, T extends ConfigurationValueBuilder&lt;P, V&gt;&gt; T newConfigurationValueBuilder(P parent, Class&lt;V&gt; valueClass) {
+<span class="fc" id="L64">		return newConfigurationValueBuilder(ctx -&gt; (T) new ConfigurationValueBuilderHelper&lt;&gt;(parent, valueClass, ctx));</span>
+	}
+
+	@Override
+	public &lt;P, V, T extends ConfigurationValueBuilder&lt;P, V&gt;&gt; T newConfigurationValueBuilder(Function&lt;BuildContext, T&gt; factory) {
+<span class="fc" id="L69">		return factory.apply(this);</span>
 	}
 
 }

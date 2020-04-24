@@ -7,6 +7,7 @@ import java.util.List;
 
 import fr.sii.ogham.core.clean.Cleanable;
 import fr.sii.ogham.core.exception.clean.CleanException;
+import fr.sii.ogham.core.exception.clean.CleanableException;
 import fr.sii.ogham.core.exception.clean.MultipleCleanException;
 
 /**
@@ -32,34 +33,34 @@ public class CleanableRegistry implements Registry&lt;Object&gt;, Cleanable {
 	 * Initializes an empty registry
 	 */
 	public CleanableRegistry() {
-<span class="fc" id="L35">		super();</span>
-<span class="fc" id="L36">		this.cleanables = new ArrayDeque&lt;&gt;();</span>
-<span class="fc" id="L37">	}</span>
+<span class="fc" id="L36">		super();</span>
+<span class="fc" id="L37">		this.cleanables = new ArrayDeque&lt;&gt;();</span>
+<span class="fc" id="L38">	}</span>
 
 	@Override
 	public void register(Object obj) {
-<span class="fc bfc" id="L41" title="All 2 branches covered.">		if (obj instanceof Cleanable) {</span>
-<span class="fc" id="L42">			cleanables.add((Cleanable) obj);</span>
+<span class="fc bfc" id="L42" title="All 2 branches covered.">		if (obj instanceof Cleanable) {</span>
+<span class="fc" id="L43">			cleanables.add((Cleanable) obj);</span>
 		}
-<span class="fc" id="L44">	}</span>
+<span class="fc" id="L45">	}</span>
 
 	@Override
 	public void clean() throws CleanException {
-<span class="fc" id="L48">		List&lt;CleanException&gt; failures = new ArrayList&lt;&gt;();</span>
-<span class="fc bfc" id="L49" title="All 2 branches covered.">		while (!cleanables.isEmpty()) {</span>
-<span class="fc" id="L50">			clean(cleanables.pop(), failures);</span>
+<span class="fc" id="L49">		List&lt;CleanException&gt; failures = new ArrayList&lt;&gt;();</span>
+<span class="fc bfc" id="L50" title="All 2 branches covered.">		while (!cleanables.isEmpty()) {</span>
+<span class="fc" id="L51">			clean(cleanables.pop(), failures);</span>
 		}
-<span class="fc bfc" id="L52" title="All 2 branches covered.">		if (!failures.isEmpty()) {</span>
-<span class="fc" id="L53">			throw new MultipleCleanException(&quot;Failed to cleanup several resources&quot;, failures);</span>
+<span class="fc bfc" id="L53" title="All 2 branches covered.">		if (!failures.isEmpty()) {</span>
+<span class="fc" id="L54">			throw new MultipleCleanException(&quot;Failed to cleanup several resources&quot;, failures);</span>
 		}
-<span class="fc" id="L55">	}</span>
+<span class="fc" id="L56">	}</span>
 
 	private static void clean(Cleanable cleanable, List&lt;CleanException&gt; failures) {
 		try {
-<span class="fc" id="L59">			cleanable.clean();</span>
-<span class="fc" id="L60">		} catch (CleanException e) {</span>
-<span class="fc" id="L61">			failures.add(e);</span>
-<span class="fc" id="L62">		}</span>
-<span class="fc" id="L63">	}</span>
+<span class="fc" id="L60">			cleanable.clean();</span>
+<span class="fc" id="L61">		} catch (CleanException e) {</span>
+<span class="fc" id="L62">			failures.add(new CleanableException(e, cleanable));</span>
+<span class="fc" id="L63">		}</span>
+<span class="fc" id="L64">	}</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

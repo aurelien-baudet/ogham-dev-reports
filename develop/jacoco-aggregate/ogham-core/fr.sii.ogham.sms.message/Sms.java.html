@@ -12,6 +12,7 @@ import fr.sii.ogham.core.message.capability.HasToFluent;
 import fr.sii.ogham.core.message.content.Content;
 import fr.sii.ogham.core.message.content.StringContent;
 import fr.sii.ogham.core.message.fluent.SingleContentBuilder;
+import fr.sii.ogham.core.util.Loggable;
 import fr.sii.ogham.core.util.EqualsBuilder;
 import fr.sii.ogham.core.util.HashCodeBuilder;
 import fr.sii.ogham.core.util.StringUtils;
@@ -28,7 +29,7 @@ import fr.sii.ogham.core.util.StringUtils;
  * @author Aurélien Baudet
  *
  */
-public class Sms implements Message, HasContentFluent&lt;Sms&gt;, HasRecipients&lt;Recipient&gt;, HasRecipientsFluent&lt;Sms, Recipient&gt;, HasToFluent&lt;Sms&gt; {
+public class Sms implements Message, HasContentFluent&lt;Sms&gt;, HasRecipients&lt;Recipient&gt;, HasRecipientsFluent&lt;Sms, Recipient&gt;, HasToFluent&lt;Sms&gt;, Loggable {
 	/**
 	 * The number of the sender
 	 */
@@ -47,10 +48,10 @@ public class Sms implements Message, HasContentFluent&lt;Sms&gt;, HasRecipients&
 	private final SingleContentBuilder&lt;Sms&gt; messageBuilder;
 
 	public Sms() {
-<span class="fc" id="L50">		super();</span>
-<span class="fc" id="L51">		recipients = new ArrayList&lt;&gt;();</span>
-<span class="fc" id="L52">		messageBuilder = new SingleContentBuilder&lt;&gt;(this);</span>
-<span class="fc" id="L53">	}</span>
+<span class="fc" id="L51">		super();</span>
+<span class="fc" id="L52">		recipients = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L53">		messageBuilder = new SingleContentBuilder&lt;&gt;(this);</span>
+<span class="fc" id="L54">	}</span>
 
 	// ----------------------- Getter/Setters -----------------------//
 
@@ -60,7 +61,7 @@ public class Sms implements Message, HasContentFluent&lt;Sms&gt;, HasRecipients&
 	 * @return SMS sender
 	 */
 	public Sender getFrom() {
-<span class="fc" id="L63">		return from;</span>
+<span class="fc" id="L64">		return from;</span>
 	}
 
 	/**
@@ -70,8 +71,8 @@ public class Sms implements Message, HasContentFluent&lt;Sms&gt;, HasRecipients&
 	 *            SMS sender to set
 	 */
 	public void setFrom(Sender from) {
-<span class="fc" id="L73">		this.from = from;</span>
-<span class="fc" id="L74">	}</span>
+<span class="fc" id="L74">		this.from = from;</span>
+<span class="fc" id="L75">	}</span>
 
 	/**
 	 * Set the sender phone number of the SMS as string.
@@ -80,8 +81,8 @@ public class Sms implements Message, HasContentFluent&lt;Sms&gt;, HasRecipients&
 	 *            SMS sender phone number to set
 	 */
 	public void setFrom(String phoneNumber) {
-<span class="nc" id="L83">		setFrom(new Sender(phoneNumber));</span>
-<span class="nc" id="L84">	}</span>
+<span class="nc" id="L84">		setFrom(new Sender(phoneNumber));</span>
+<span class="nc" id="L85">	}</span>
 
 	/**
 	 * Get the recipients (to) of the SMS
@@ -89,7 +90,7 @@ public class Sms implements Message, HasContentFluent&lt;Sms&gt;, HasRecipients&
 	 * @return SMS recipients
 	 */
 	public List&lt;Recipient&gt; getRecipients() {
-<span class="fc" id="L92">		return recipients;</span>
+<span class="fc" id="L93">		return recipients;</span>
 	}
 
 	/**
@@ -99,26 +100,26 @@ public class Sms implements Message, HasContentFluent&lt;Sms&gt;, HasRecipients&
 	 *            SMS recipients
 	 */
 	public void setRecipients(List&lt;Recipient&gt; to) {
-<span class="nc" id="L102">		this.recipients = to;</span>
-<span class="nc" id="L103">	}</span>
+<span class="nc" id="L103">		this.recipients = to;</span>
+<span class="nc" id="L104">	}</span>
 
 	@Override
 	public Content getContent() {
-<span class="fc bfc" id="L107" title="All 2 branches covered.">		if (content != null) {</span>
-<span class="fc" id="L108">			return content;</span>
+<span class="fc bfc" id="L108" title="All 2 branches covered.">		if (content != null) {</span>
+<span class="fc" id="L109">			return content;</span>
 		}
 		// NOTE: normally it can't be null but EqualsVerifier uses reflection to
 		// set it to null
-<span class="fc bfc" id="L112" title="All 2 branches covered.">		if (messageBuilder != null) {</span>
-<span class="fc" id="L113">			return messageBuilder.build();</span>
+<span class="fc bfc" id="L113" title="All 2 branches covered.">		if (messageBuilder != null) {</span>
+<span class="fc" id="L114">			return messageBuilder.build();</span>
 		}
-<span class="fc" id="L115">		return null;</span>
+<span class="fc" id="L116">		return null;</span>
 	}
 
 	@Override
 	public void setContent(Content content) {
-<span class="fc" id="L120">		this.content = content;</span>
-<span class="fc" id="L121">	}</span>
+<span class="fc" id="L121">		this.content = content;</span>
+<span class="fc" id="L122">	}</span>
 
 	// ----------------------- Fluent API -----------------------//
 
@@ -151,8 +152,8 @@ public class Sms implements Message, HasContentFluent&lt;Sms&gt;, HasRecipients&
 	 * @see #message()
 	 */
 	public Sms content(Content content) {
-<span class="fc" id="L154">		setContent(content);</span>
-<span class="fc" id="L155">		return this;</span>
+<span class="fc" id="L155">		setContent(content);</span>
+<span class="fc" id="L156">		return this;</span>
 	}
 
 	/**
@@ -179,7 +180,7 @@ public class Sms implements Message, HasContentFluent&lt;Sms&gt;, HasRecipients&
 	 * @see #message()
 	 */
 	public Sms content(String content) {
-<span class="fc" id="L182">		return content(new StringContent(content));</span>
+<span class="fc" id="L183">		return content(new StringContent(content));</span>
 	}
 
 	/**
@@ -198,7 +199,7 @@ public class Sms implements Message, HasContentFluent&lt;Sms&gt;, HasRecipients&
 	 * @since 3.0.0
 	 */
 	public SingleContentBuilder&lt;Sms&gt; message() {
-<span class="fc" id="L201">		return messageBuilder;</span>
+<span class="fc" id="L202">		return messageBuilder;</span>
 	}
 
 	/**
@@ -209,8 +210,8 @@ public class Sms implements Message, HasContentFluent&lt;Sms&gt;, HasRecipients&
 	 * @return this instance for fluent chaining
 	 */
 	public Sms from(Sender from) {
-<span class="fc" id="L212">		setFrom(from);</span>
-<span class="fc" id="L213">		return this;</span>
+<span class="fc" id="L213">		setFrom(from);</span>
+<span class="fc" id="L214">		return this;</span>
 	}
 
 	/**
@@ -222,8 +223,8 @@ public class Sms implements Message, HasContentFluent&lt;Sms&gt;, HasRecipients&
 	 */
 	@Override
 	public Sms recipients(List&lt;Recipient&gt; recipients) {
-<span class="nc" id="L225">		setRecipients(recipients);</span>
-<span class="nc" id="L226">		return this;</span>
+<span class="nc" id="L226">		setRecipients(recipients);</span>
+<span class="nc" id="L227">		return this;</span>
 	}
 
 	/**
@@ -235,8 +236,8 @@ public class Sms implements Message, HasContentFluent&lt;Sms&gt;, HasRecipients&
 	 */
 	@Override
 	public Sms recipient(Recipient... recipients) {
-<span class="fc" id="L238">		this.recipients.addAll(Arrays.asList(recipients));</span>
-<span class="fc" id="L239">		return this;</span>
+<span class="fc" id="L239">		this.recipients.addAll(Arrays.asList(recipients));</span>
+<span class="fc" id="L240">		return this;</span>
 	}
 
 	/**
@@ -247,7 +248,7 @@ public class Sms implements Message, HasContentFluent&lt;Sms&gt;, HasRecipients&
 	 * @return this instance for fluent chaining
 	 */
 	public Sms from(String phoneNumber) {
-<span class="fc" id="L250">		return from(null, phoneNumber);</span>
+<span class="fc" id="L251">		return from(null, phoneNumber);</span>
 	}
 
 	/**
@@ -258,7 +259,7 @@ public class Sms implements Message, HasContentFluent&lt;Sms&gt;, HasRecipients&
 	 * @return this instance for fluent chaining
 	 */
 	public Sms from(PhoneNumber phoneNumber) {
-<span class="nc" id="L261">		return from(null, phoneNumber);</span>
+<span class="nc" id="L262">		return from(null, phoneNumber);</span>
 	}
 
 	/**
@@ -271,7 +272,7 @@ public class Sms implements Message, HasContentFluent&lt;Sms&gt;, HasRecipients&
 	 * @return this instance for fluent chaining
 	 */
 	public Sms from(String name, String phoneNumber) {
-<span class="fc" id="L274">		return from(name, new PhoneNumber(phoneNumber));</span>
+<span class="fc" id="L275">		return from(name, new PhoneNumber(phoneNumber));</span>
 	}
 
 	/**
@@ -284,7 +285,7 @@ public class Sms implements Message, HasContentFluent&lt;Sms&gt;, HasRecipients&
 	 * @return this instance for fluent chaining
 	 */
 	public Sms from(String name, PhoneNumber phoneNumber) {
-<span class="fc" id="L287">		return from(new Sender(name, phoneNumber));</span>
+<span class="fc" id="L288">		return from(new Sender(name, phoneNumber));</span>
 	}
 
 	/**
@@ -295,10 +296,10 @@ public class Sms implements Message, HasContentFluent&lt;Sms&gt;, HasRecipients&
 	 * @return this instance for fluent chaining
 	 */
 	public Sms to(PhoneNumber... numbers) {
-<span class="fc bfc" id="L298" title="All 2 branches covered.">		for (PhoneNumber number : numbers) {</span>
-<span class="fc" id="L299">			to((String) null, number);</span>
+<span class="fc bfc" id="L299" title="All 2 branches covered.">		for (PhoneNumber number : numbers) {</span>
+<span class="fc" id="L300">			to((String) null, number);</span>
 		}
-<span class="fc" id="L301">		return this;</span>
+<span class="fc" id="L302">		return this;</span>
 	}
 
 	/**
@@ -309,10 +310,10 @@ public class Sms implements Message, HasContentFluent&lt;Sms&gt;, HasRecipients&
 	 * @return this instance for fluent chaining
 	 */
 	public Sms to(String... numbers) {
-<span class="fc bfc" id="L312" title="All 2 branches covered.">		for (String num : numbers) {</span>
-<span class="fc" id="L313">			to(new Recipient(num));</span>
+<span class="fc bfc" id="L313" title="All 2 branches covered.">		for (String num : numbers) {</span>
+<span class="fc" id="L314">			to(new Recipient(num));</span>
 		}
-<span class="fc" id="L315">		return this;</span>
+<span class="fc" id="L316">		return this;</span>
 	}
 
 	/**
@@ -325,8 +326,8 @@ public class Sms implements Message, HasContentFluent&lt;Sms&gt;, HasRecipients&
 	 * @return this instance for fluent chaining
 	 */
 	public Sms to(String name, PhoneNumber number) {
-<span class="fc" id="L328">		to(new Recipient(name, number));</span>
-<span class="fc" id="L329">		return this;</span>
+<span class="fc" id="L329">		to(new Recipient(name, number));</span>
+<span class="fc" id="L330">		return this;</span>
 	}
 
 	/**
@@ -337,8 +338,8 @@ public class Sms implements Message, HasContentFluent&lt;Sms&gt;, HasRecipients&
 	 * @return this instance for fluent chaining
 	 */
 	public Sms to(Recipient... recipients) {
-<span class="fc" id="L340">		recipient(recipients);</span>
-<span class="fc" id="L341">		return this;</span>
+<span class="fc" id="L341">		recipient(recipients);</span>
+<span class="fc" id="L342">		return this;</span>
 	}
 
 	// ----------------------- Utilities -----------------------//
@@ -351,13 +352,13 @@ public class Sms implements Message, HasContentFluent&lt;Sms&gt;, HasRecipients&
 	 * @return the list of recipients
 	 */
 	public static Recipient[] toRecipient(PhoneNumber[] to) {
-<span class="nc" id="L354">		Recipient[] addresses = new Recipient[to.length];</span>
-<span class="nc" id="L355">		int i = 0;</span>
-<span class="nc bnc" id="L356" title="All 2 branches missed.">		for (PhoneNumber t : to) {</span>
-<span class="nc" id="L357">			addresses[i] = new Recipient(t);</span>
-<span class="nc" id="L358">			i++;</span>
+<span class="nc" id="L355">		Recipient[] addresses = new Recipient[to.length];</span>
+<span class="nc" id="L356">		int i = 0;</span>
+<span class="nc bnc" id="L357" title="All 2 branches missed.">		for (PhoneNumber t : to) {</span>
+<span class="nc" id="L358">			addresses[i] = new Recipient(t);</span>
+<span class="nc" id="L359">			i++;</span>
 		}
-<span class="nc" id="L360">		return addresses;</span>
+<span class="nc" id="L361">		return addresses;</span>
 	}
 
 	/**
@@ -368,41 +369,42 @@ public class Sms implements Message, HasContentFluent&lt;Sms&gt;, HasRecipients&
 	 * @return the list of recipients
 	 */
 	public static Recipient[] toRecipient(String[] to) {
-<span class="nc" id="L371">		Recipient[] addresses = new Recipient[to.length];</span>
-<span class="nc" id="L372">		int i = 0;</span>
-<span class="nc bnc" id="L373" title="All 2 branches missed.">		for (String t : to) {</span>
-<span class="nc" id="L374">			addresses[i] = new Recipient(t);</span>
-<span class="nc" id="L375">			i++;</span>
+<span class="nc" id="L372">		Recipient[] addresses = new Recipient[to.length];</span>
+<span class="nc" id="L373">		int i = 0;</span>
+<span class="nc bnc" id="L374" title="All 2 branches missed.">		for (String t : to) {</span>
+<span class="nc" id="L375">			addresses[i] = new Recipient(t);</span>
+<span class="nc" id="L376">			i++;</span>
 		}
-<span class="nc" id="L377">		return addresses;</span>
+<span class="nc" id="L378">		return addresses;</span>
 	}
 
 	@Override
 	public String toString() {
-<span class="fc" id="L382">		return toString(true);</span>
+<span class="fc" id="L383">		return toString(false);</span>
 	}
 
-	public String toSummaryString() {
-<span class="fc" id="L386">		return toString(false);</span>
+	@Override
+	public String toLogString() {
+<span class="nc" id="L388">		return toString(true);</span>
 	}
 
 	@Override
 	public int hashCode() {
-<span class="fc" id="L391">		return new HashCodeBuilder().append(from, recipients, getContent()).hashCode();</span>
+<span class="fc" id="L393">		return new HashCodeBuilder().append(from, recipients, getContent()).hashCode();</span>
 	}
 
 	@Override
 	public boolean equals(Object obj) {
-<span class="fc" id="L396">		return new EqualsBuilder(this, obj).appendFields(&quot;from&quot;, &quot;recipients&quot;, &quot;content&quot;).isEqual();</span>
+<span class="fc" id="L398">		return new EqualsBuilder(this, obj).appendFields(&quot;from&quot;, &quot;recipients&quot;, &quot;content&quot;).isEqual();</span>
 	}
 
 	private String toString(boolean includeContent) {
-<span class="fc" id="L400">		StringBuilder builder = new StringBuilder();</span>
-<span class="fc" id="L401">		builder.append(&quot;Sms message\r\nFrom: &quot;).append(from);</span>
-<span class="fc" id="L402">		builder.append(&quot;\r\nTo: &quot;).append(StringUtils.join(recipients, &quot;, &quot;));</span>
-<span class="fc bfc" id="L403" title="All 2 branches covered.">		builder.append(&quot;\r\n----------------------------------\r\n&quot;).append(includeContent ? getContent() : &quot;&lt;Content skipped&gt;&quot;);</span>
-<span class="fc" id="L404">		builder.append(&quot;\r\n==================================\r\n&quot;);</span>
-<span class="fc" id="L405">		return builder.toString();</span>
+<span class="fc" id="L402">		StringBuilder builder = new StringBuilder();</span>
+<span class="fc" id="L403">		builder.append(&quot;Sms message\r\nFrom: &quot;).append(from);</span>
+<span class="fc" id="L404">		builder.append(&quot;\r\nTo: &quot;).append(StringUtils.join(recipients, &quot;, &quot;));</span>
+<span class="pc bpc" id="L405" title="1 of 2 branches missed.">		builder.append(&quot;\r\n----------------------------------\r\n&quot;).append(includeContent ? getContent() : &quot;&lt;Content skipped&gt;&quot;);</span>
+<span class="fc" id="L406">		builder.append(&quot;\r\n==================================\r\n&quot;);</span>
+<span class="fc" id="L407">		return builder.toString();</span>
 	}
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

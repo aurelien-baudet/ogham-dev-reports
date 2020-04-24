@@ -7,19 +7,21 @@ import org.springframework.boot.context.properties.NestedConfigurationProperty;
 	private AutoGuessProperties autoGuess = new AutoGuessProperties();
 	/**
 	 * Set which Cloudhopper Charset should be used if nothing else is
-	 * configured.
+	 * configured.&lt;br /&gt;
+	 * &lt;br /&gt;
+	 * Default: &lt;i&gt;&quot;GSM&quot;&lt;/i&gt;
 	 */
-<span class="fc" id="L12">	private String defaultCharset = &quot;GSM&quot;;</span>
-<span class="fc" id="L13">	@NestedConfigurationProperty</span>
-	private Gsm7bitPackedProperties gsm7bitPacked = new Gsm7bitPackedProperties();
+	private String defaultCharset;
 <span class="fc" id="L15">	@NestedConfigurationProperty</span>
-	private Gsm8bitProperties gsm8bit = new Gsm8bitProperties();
+	private Gsm7bitPackedProperties gsm7bitPacked = new Gsm7bitPackedProperties();
 <span class="fc" id="L17">	@NestedConfigurationProperty</span>
-	private Latin1Properties latin1 = new Latin1Properties();
+	private Gsm8bitProperties gsm8bit = new Gsm8bitProperties();
 <span class="fc" id="L19">	@NestedConfigurationProperty</span>
+	private Latin1Properties latin1 = new Latin1Properties();
+<span class="fc" id="L21">	@NestedConfigurationProperty</span>
 	private Ucs2Properties ucs2 = new Ucs2Properties();
 
-<span class="fc" id="L22">	public static class AutoGuessProperties {</span>
+<span class="fc" id="L24">	public static class AutoGuessProperties {</span>
 		/**
 		 * Enable/disable automatic guessing of message encoding.
 		 * 
@@ -48,152 +50,169 @@ import org.springframework.boot.context.properties.NestedConfigurationProperty;
 		 * enabled (using {@link #autoGuess(Boolean)}) and UCS-2 is enabled
 		 * (using {@link #ucs2(Integer)}).&lt;/li&gt;
 		 * &lt;/ul&gt;
+		 * 
+		 * Default: &lt;i&gt;true&lt;/i&gt;
 		 */
-<span class="fc" id="L52">		private boolean enable = true;</span>
+		private Boolean enable;
 
-		public boolean isEnable() {
-<span class="nc" id="L55">			return enable;</span>
+		public Boolean getEnable() {
+<span class="fc" id="L59">			return enable;</span>
 		}
 
-		public void setEnable(boolean enable) {
-<span class="fc" id="L59">			this.enable = enable;</span>
-<span class="fc" id="L60">		}</span>
+		public void setEnable(Boolean enable) {
+<span class="fc" id="L63">			this.enable = enable;</span>
+<span class="fc" id="L64">		}</span>
+
 	}
 
-<span class="fc" id="L63">	public static class Gsm7bitPackedProperties {</span>
+<span class="fc" id="L68">	public static class Gsm7bitPackedProperties {</span>
 		/**
 		 * Set priority for encoding text messages using GSM 7-bit encoding. GSM
 		 * 7-bit encoding and GSM 8-bit encoding use the same character tables.
 		 * Only 7 bits are necessary to represents characters. In GSM 8-bit
 		 * encoding a leading 0 is added. However, GSM 7-bit encoding is packed.
 		 * Every character is &quot;merged&quot; with the next one in order to use more
-		 * characters for the same number of octets.
+		 * characters for the same number of octets.&lt;br /&gt;
+		 * &lt;br /&gt;
 		 * 
-		 * &lt;p&gt;
-		 * If priority value is 0 or negative, it disables GSM 7-bit encoding.
+		 * If priority value is 0 or negative, it disables GSM 7-bit
+		 * encoding.&lt;br /&gt;
+		 * &lt;br /&gt;
 		 * 
-		 * &lt;p&gt;
-		 * Disabled by default as most services doesn't support it.
+		 * It is disabled by default as most services doesn't support it.&lt;br /&gt;
+		 * &lt;br /&gt;
 		 * 
+		 * Default: &lt;i&gt;0&lt;/i&gt;
 		 */
-<span class="fc" id="L79">		private int priority = 0;</span>
+		private Integer priority;
 
-		public int getPriority() {
-<span class="nc" id="L82">			return priority;</span>
+		public Integer getPriority() {
+<span class="fc" id="L90">			return priority;</span>
 		}
 
-		public void setPriority(int priority) {
-<span class="fc" id="L86">			this.priority = priority;</span>
-<span class="fc" id="L87">		}</span>
+		public void setPriority(Integer priority) {
+<span class="fc" id="L94">			this.priority = priority;</span>
+<span class="fc" id="L95">		}</span>
 	}
 
-<span class="fc" id="L90">	public static class Gsm8bitProperties {</span>
+<span class="fc" id="L98">	public static class Gsm8bitProperties {</span>
 		/**
 		 * Set priority for encoding text messages using GSM 8-bit encoding. GSM
 		 * 7-bit encoding and GSM 8-bit encoding use the same character tables.
 		 * Only 7 bits are necessary to represents characters. In GSM 8-bit
-		 * encoding a leading 0 is added.
+		 * encoding a leading 0 is added.&lt;br /&gt;
+		 * &lt;br /&gt;
 		 * 
-		 * &lt;p&gt;
-		 * If priority value is 0 or negative, it disables GSM 8-bit encoding.
+		 * If priority value is 0 or negative, it disables GSM 8-bit
+		 * encoding.&lt;br /&gt;
+		 * &lt;br /&gt;
+		 * 
+		 * Default: &lt;i&gt;99000&lt;/i&gt;
 		 * 
 		 */
-<span class="fc" id="L101">		private int priority = 99000;</span>
+		private Integer priority;
 
-		public int getPriority() {
-<span class="nc" id="L104">			return priority;</span>
+		public Integer getPriority() {
+<span class="fc" id="L116">			return priority;</span>
 		}
 
-		public void setPriority(int priority) {
-<span class="fc" id="L108">			this.priority = priority;</span>
-<span class="fc" id="L109">		}</span>
+		public void setPriority(Integer priority) {
+<span class="fc" id="L120">			this.priority = priority;</span>
+<span class="fc" id="L121">		}</span>
 	}
 
-<span class="fc" id="L112">	public static class Latin1Properties {</span>
+<span class="fc" id="L124">	public static class Latin1Properties {</span>
 		/**
-		 * Set priority for encoding text messages using Latin-1 (ISO-8859-1).
+		 * Set priority for encoding text messages using Latin-1
+		 * (ISO-8859-1).&lt;br /&gt;
+		 * &lt;br /&gt;
 		 * 
-		 * &lt;p&gt;
-		 * If priority value is 0 or negative, it disables Latin-1 encoding.
+		 * If priority value is 0 or negative, it disables Latin-1
+		 * encoding.&lt;br /&gt;
+		 * &lt;br /&gt;
 		 * 
+		 * Default: &lt;i&gt;98000&lt;/i&gt;
 		 */
-<span class="fc" id="L120">		private int priority = 98000;</span>
+		private Integer priority;
 
-		public int getPriority() {
-<span class="nc" id="L123">			return priority;</span>
+		public Integer getPriority() {
+<span class="fc" id="L139">			return priority;</span>
 		}
 
-		public void setPriority(int priority) {
-<span class="fc" id="L127">			this.priority = priority;</span>
-<span class="fc" id="L128">		}</span>
+		public void setPriority(Integer priority) {
+<span class="fc" id="L143">			this.priority = priority;</span>
+<span class="fc" id="L144">		}</span>
 	}
 
-<span class="fc" id="L131">	public static class Ucs2Properties {</span>
+<span class="fc" id="L147">	public static class Ucs2Properties {</span>
 		/**
 		 * Set priority for encoding text messages using UCS-2. UCS-2 uses two
-		 * octets per character.
+		 * octets per character.&lt;br /&gt;
+		 * &lt;br /&gt;
 		 * 
-		 * &lt;p&gt;
-		 * If priority value is 0 or negative, it disables UCS-2 encoding.
+		 * If priority value is 0 or negative, it disables UCS-2 encoding.&lt;br /&gt;
+		 * &lt;br /&gt;
+		 * 
+		 * Default: &lt;i&gt;90000&lt;/i&gt;
 		 * 
 		 */
-<span class="fc" id="L140">		private int priority = 90000;</span>
+		private Integer priority;
 
-		public int getPriority() {
-<span class="nc" id="L143">			return priority;</span>
+		public Integer getPriority() {
+<span class="fc" id="L162">			return priority;</span>
 		}
 
-		public void setPriority(int priority) {
-<span class="fc" id="L147">			this.priority = priority;</span>
-<span class="fc" id="L148">		}</span>
+		public void setPriority(Integer priority) {
+<span class="fc" id="L166">			this.priority = priority;</span>
+<span class="fc" id="L167">		}</span>
 	}
 
 	public AutoGuessProperties getAutoGuess() {
-<span class="fc" id="L152">		return autoGuess;</span>
+<span class="fc" id="L171">		return autoGuess;</span>
 	}
 
 	public void setAutoGuess(AutoGuessProperties autoGuess) {
-<span class="fc" id="L156">		this.autoGuess = autoGuess;</span>
-<span class="fc" id="L157">	}</span>
+<span class="fc" id="L175">		this.autoGuess = autoGuess;</span>
+<span class="fc" id="L176">	}</span>
 
 	public String getDefaultCharset() {
-<span class="nc" id="L160">		return defaultCharset;</span>
+<span class="fc" id="L179">		return defaultCharset;</span>
 	}
 
 	public void setDefaultCharset(String defaultCharset) {
-<span class="fc" id="L164">		this.defaultCharset = defaultCharset;</span>
-<span class="fc" id="L165">	}</span>
+<span class="fc" id="L183">		this.defaultCharset = defaultCharset;</span>
+<span class="fc" id="L184">	}</span>
 
 	public Gsm7bitPackedProperties getGsm7bitPacked() {
-<span class="fc" id="L168">		return gsm7bitPacked;</span>
+<span class="fc" id="L187">		return gsm7bitPacked;</span>
 	}
 
 	public void setGsm7bitPacked(Gsm7bitPackedProperties gsm7bitPacked) {
-<span class="fc" id="L172">		this.gsm7bitPacked = gsm7bitPacked;</span>
-<span class="fc" id="L173">	}</span>
+<span class="fc" id="L191">		this.gsm7bitPacked = gsm7bitPacked;</span>
+<span class="fc" id="L192">	}</span>
 
 	public Gsm8bitProperties getGsm8bit() {
-<span class="fc" id="L176">		return gsm8bit;</span>
+<span class="fc" id="L195">		return gsm8bit;</span>
 	}
 
 	public void setGsm8bitPacked(Gsm8bitProperties gsm8bitPacked) {
-<span class="nc" id="L180">		this.gsm8bit = gsm8bitPacked;</span>
-<span class="nc" id="L181">	}</span>
+<span class="nc" id="L199">		this.gsm8bit = gsm8bitPacked;</span>
+<span class="nc" id="L200">	}</span>
 
 	public Latin1Properties getLatin1() {
-<span class="fc" id="L184">		return latin1;</span>
+<span class="fc" id="L203">		return latin1;</span>
 	}
 
 	public void setLatin1(Latin1Properties latin1) {
-<span class="fc" id="L188">		this.latin1 = latin1;</span>
-<span class="fc" id="L189">	}</span>
+<span class="fc" id="L207">		this.latin1 = latin1;</span>
+<span class="fc" id="L208">	}</span>
 
 	public Ucs2Properties getUcs2() {
-<span class="fc" id="L192">		return ucs2;</span>
+<span class="fc" id="L211">		return ucs2;</span>
 	}
 
 	public void setUcs2(Ucs2Properties ucs2) {
-<span class="fc" id="L196">		this.ucs2 = ucs2;</span>
-<span class="fc" id="L197">	}</span>
+<span class="fc" id="L215">		this.ucs2 = ucs2;</span>
+<span class="fc" id="L216">	}</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

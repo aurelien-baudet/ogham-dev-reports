@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>SessionBuilder.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">reporting</a> &gt; <a href="../index.html" class="el_bundle">ogham-sms-cloudhopper</a> &gt; <a href="index.source.html" class="el_package">fr.sii.ogham.sms.builder.cloudhopper</a> &gt; <span class="el_source">SessionBuilder.java</span></div><h1>SessionBuilder.java</h1><pre class="source lang-java linenums">package fr.sii.ogham.sms.builder.cloudhopper;
 
+import com.cloudhopper.smpp.pdu.EnquireLink;
+
 import fr.sii.ogham.core.builder.Builder;
 import fr.sii.ogham.core.builder.configuration.ConfigurationValueBuilder;
 import fr.sii.ogham.core.builder.configuration.ConfigurationValueBuilderHelper;
@@ -9,6 +11,8 @@ import fr.sii.ogham.core.builder.env.EnvironmentBuilder;
 import fr.sii.ogham.core.builder.retry.RetryBuilder;
 import fr.sii.ogham.core.fluent.AbstractParent;
 import fr.sii.ogham.core.retry.FixedDelayRetry;
+import fr.sii.ogham.sms.sender.impl.cloudhopper.KeepAliveOptions;
+import fr.sii.ogham.sms.sender.impl.cloudhopper.ReuseSessionOptions;
 
 /**
  * Configures Cloudhopper session management (timeouts, retry, session name...).
@@ -28,8 +32,9 @@ public class SessionBuilder extends AbstractParent&lt;CloudhopperBuilder&gt; imp
 	private final ConfigurationValueBuilderHelper&lt;SessionBuilder, Long&gt; responseValueBuilder;
 	private final ConfigurationValueBuilderHelper&lt;SessionBuilder, Long&gt; unbindValueBuilder;
 	private final ConfigurationValueBuilderHelper&lt;SessionBuilder, String&gt; sessionNameValueBuilder;
-	private final ConfigurationValueBuilderHelper&lt;SessionBuilder, Boolean&gt; keepSessionValueBuilder;
 	private RetryBuilder&lt;SessionBuilder&gt; connectRetryBuilder;
+	private ReuseSessionBuilder reuseSessionBuilder;
+	private KeepAliveBuilder keepAliveBuilder;
 
 	/**
 	 * Initializes the builder with a parent builder. The parent builder is used
@@ -42,20 +47,19 @@ public class SessionBuilder extends AbstractParent&lt;CloudhopperBuilder&gt; imp
 	 *            for registering instances and property evaluation
 	 */
 	public SessionBuilder(CloudhopperBuilder parent, BuildContext buildContext) {
-<span class="fc" id="L45">		super(parent);</span>
-<span class="fc" id="L46">		this.buildContext = buildContext;</span>
-<span class="fc" id="L47">		bindValueBuilder = new ConfigurationValueBuilderHelper&lt;&gt;(this, Long.class, buildContext);</span>
-<span class="fc" id="L48">		connectValueBuilder = new ConfigurationValueBuilderHelper&lt;&gt;(this, Long.class, buildContext);</span>
-<span class="fc" id="L49">		requestExpiryValueBuilder = new ConfigurationValueBuilderHelper&lt;&gt;(this, Long.class, buildContext);</span>
-<span class="fc" id="L50">		windowMonitorInvervalValueBuilder = new ConfigurationValueBuilderHelper&lt;&gt;(this, Long.class, buildContext);</span>
-<span class="fc" id="L51">		windowWaitValueBuilder = new ConfigurationValueBuilderHelper&lt;&gt;(this, Long.class, buildContext);</span>
-<span class="fc" id="L52">		windowSizeValueBuilder = new ConfigurationValueBuilderHelper&lt;&gt;(this, Integer.class, buildContext);</span>
-<span class="fc" id="L53">		writeValueBuilder = new ConfigurationValueBuilderHelper&lt;&gt;(this, Long.class, buildContext);</span>
-<span class="fc" id="L54">		responseValueBuilder = new ConfigurationValueBuilderHelper&lt;&gt;(this, Long.class, buildContext);</span>
-<span class="fc" id="L55">		unbindValueBuilder = new ConfigurationValueBuilderHelper&lt;&gt;(this, Long.class, buildContext);</span>
-<span class="fc" id="L56">		sessionNameValueBuilder = new ConfigurationValueBuilderHelper&lt;&gt;(this, String.class, buildContext);</span>
-<span class="fc" id="L57">		keepSessionValueBuilder = new ConfigurationValueBuilderHelper&lt;&gt;(this, Boolean.class, buildContext);</span>
-<span class="fc" id="L58">	}</span>
+<span class="fc" id="L50">		super(parent);</span>
+<span class="fc" id="L51">		this.buildContext = buildContext;</span>
+<span class="fc" id="L52">		bindValueBuilder = buildContext.newConfigurationValueBuilder(this, Long.class);</span>
+<span class="fc" id="L53">		connectValueBuilder = buildContext.newConfigurationValueBuilder(this, Long.class);</span>
+<span class="fc" id="L54">		requestExpiryValueBuilder = buildContext.newConfigurationValueBuilder(this, Long.class);</span>
+<span class="fc" id="L55">		windowMonitorInvervalValueBuilder = buildContext.newConfigurationValueBuilder(this, Long.class);</span>
+<span class="fc" id="L56">		windowWaitValueBuilder = buildContext.newConfigurationValueBuilder(this, Long.class);</span>
+<span class="fc" id="L57">		windowSizeValueBuilder = buildContext.newConfigurationValueBuilder(this, Integer.class);</span>
+<span class="fc" id="L58">		writeValueBuilder = buildContext.newConfigurationValueBuilder(this, Long.class);</span>
+<span class="fc" id="L59">		responseValueBuilder = buildContext.newConfigurationValueBuilder(this, Long.class);</span>
+<span class="fc" id="L60">		unbindValueBuilder = buildContext.newConfigurationValueBuilder(this, Long.class);</span>
+<span class="fc" id="L61">		sessionNameValueBuilder = buildContext.newConfigurationValueBuilder(this, String.class);</span>
+<span class="fc" id="L62">	}</span>
 
 	/**
 	 * A name for the session (used to name threads).
@@ -92,8 +96,8 @@ public class SessionBuilder extends AbstractParent&lt;CloudhopperBuilder&gt; imp
 	 * @return this instance for fluent chaining
 	 */
 	public SessionBuilder sessionName(String name) {
-<span class="nc" id="L95">		sessionNameValueBuilder.setValue(name);</span>
-<span class="nc" id="L96">		return this;</span>
+<span class="nc" id="L99">		sessionNameValueBuilder.setValue(name);</span>
+<span class="nc" id="L100">		return this;</span>
 	}
 
 	/**
@@ -133,7 +137,7 @@ public class SessionBuilder extends AbstractParent&lt;CloudhopperBuilder&gt; imp
 	 * @return the builder to configure property keys/default value
 	 */
 	public ConfigurationValueBuilder&lt;SessionBuilder, String&gt; sessionName() {
-<span class="fc" id="L136">		return sessionNameValueBuilder;</span>
+<span class="fc" id="L140">		return sessionNameValueBuilder;</span>
 	}
 
 	/**
@@ -172,8 +176,8 @@ public class SessionBuilder extends AbstractParent&lt;CloudhopperBuilder&gt; imp
 	 * @return this instance for fluent chaining
 	 */
 	public SessionBuilder bindTimeout(Long timeout) {
-<span class="nc" id="L175">		bindValueBuilder.setValue(timeout);</span>
-<span class="nc" id="L176">		return this;</span>
+<span class="nc" id="L179">		bindValueBuilder.setValue(timeout);</span>
+<span class="nc" id="L180">		return this;</span>
 	}
 
 	/**
@@ -214,7 +218,7 @@ public class SessionBuilder extends AbstractParent&lt;CloudhopperBuilder&gt; imp
 	 * @return the builder to configure property keys/default value
 	 */
 	public ConfigurationValueBuilder&lt;SessionBuilder, Long&gt; bindTimeout() {
-<span class="fc" id="L217">		return bindValueBuilder;</span>
+<span class="fc" id="L221">		return bindValueBuilder;</span>
 	}
 
 	/**
@@ -253,8 +257,8 @@ public class SessionBuilder extends AbstractParent&lt;CloudhopperBuilder&gt; imp
 	 * @return this instance for fluent chaining
 	 */
 	public SessionBuilder connectTimeout(Long timeout) {
-<span class="nc" id="L256">		connectValueBuilder.setValue(timeout);</span>
-<span class="nc" id="L257">		return this;</span>
+<span class="nc" id="L260">		connectValueBuilder.setValue(timeout);</span>
+<span class="nc" id="L261">		return this;</span>
 	}
 
 	/**
@@ -295,7 +299,7 @@ public class SessionBuilder extends AbstractParent&lt;CloudhopperBuilder&gt; imp
 	 * @return the builder to configure property keys/default value
 	 */
 	public ConfigurationValueBuilder&lt;SessionBuilder, Long&gt; connectTimeout() {
-<span class="fc" id="L298">		return connectValueBuilder;</span>
+<span class="fc" id="L302">		return connectValueBuilder;</span>
 	}
 
 	/**
@@ -313,10 +317,10 @@ public class SessionBuilder extends AbstractParent&lt;CloudhopperBuilder&gt; imp
 	 * @return the builder to configure the retry handling
 	 */
 	public RetryBuilder&lt;SessionBuilder&gt; connectRetry() {
-<span class="fc bfc" id="L316" title="All 2 branches covered.">		if (connectRetryBuilder == null) {</span>
-<span class="fc" id="L317">			connectRetryBuilder = new RetryBuilder&lt;&gt;(this, buildContext);</span>
+<span class="fc bfc" id="L320" title="All 2 branches covered.">		if (connectRetryBuilder == null) {</span>
+<span class="fc" id="L321">			connectRetryBuilder = new RetryBuilder&lt;&gt;(this, buildContext);</span>
 		}
-<span class="fc" id="L319">		return connectRetryBuilder;</span>
+<span class="fc" id="L323">		return connectRetryBuilder;</span>
 	}
 
 	/**
@@ -355,8 +359,8 @@ public class SessionBuilder extends AbstractParent&lt;CloudhopperBuilder&gt; imp
 	 * @return this instance for fluent chaining
 	 */
 	public SessionBuilder requestExpiryTimeout(Long timeout) {
-<span class="nc" id="L358">		requestExpiryValueBuilder.setValue(timeout);</span>
-<span class="nc" id="L359">		return this;</span>
+<span class="nc" id="L362">		requestExpiryValueBuilder.setValue(timeout);</span>
+<span class="nc" id="L363">		return this;</span>
 	}
 
 	/**
@@ -397,7 +401,7 @@ public class SessionBuilder extends AbstractParent&lt;CloudhopperBuilder&gt; imp
 	 * @return the builder to configure property keys/default value
 	 */
 	public ConfigurationValueBuilder&lt;SessionBuilder, Long&gt; requestExpiryTimeout() {
-<span class="fc" id="L400">		return requestExpiryValueBuilder;</span>
+<span class="fc" id="L404">		return requestExpiryValueBuilder;</span>
 	}
 
 	/**
@@ -439,8 +443,8 @@ public class SessionBuilder extends AbstractParent&lt;CloudhopperBuilder&gt; imp
 	 * @return this instance for fluent chaining
 	 */
 	public SessionBuilder windowMonitorInterval(Long timeout) {
-<span class="nc" id="L442">		windowMonitorInvervalValueBuilder.setValue(timeout);</span>
-<span class="nc" id="L443">		return this;</span>
+<span class="nc" id="L446">		windowMonitorInvervalValueBuilder.setValue(timeout);</span>
+<span class="nc" id="L447">		return this;</span>
 	}
 
 	/**
@@ -484,7 +488,7 @@ public class SessionBuilder extends AbstractParent&lt;CloudhopperBuilder&gt; imp
 	 * @return the builder to configure property keys/default value
 	 */
 	public ConfigurationValueBuilder&lt;SessionBuilder, Long&gt; windowMonitorInterval() {
-<span class="fc" id="L487">		return windowMonitorInvervalValueBuilder;</span>
+<span class="fc" id="L491">		return windowMonitorInvervalValueBuilder;</span>
 	}
 
 	/**
@@ -523,8 +527,8 @@ public class SessionBuilder extends AbstractParent&lt;CloudhopperBuilder&gt; imp
 	 * @return this instance for fluent chaining
 	 */
 	public SessionBuilder windowSize(Integer size) {
-<span class="nc" id="L526">		windowSizeValueBuilder.setValue(size);</span>
-<span class="nc" id="L527">		return this;</span>
+<span class="nc" id="L530">		windowSizeValueBuilder.setValue(size);</span>
+<span class="nc" id="L531">		return this;</span>
 	}
 
 	/**
@@ -565,7 +569,7 @@ public class SessionBuilder extends AbstractParent&lt;CloudhopperBuilder&gt; imp
 	 * @return the builder to configure property keys/default value
 	 */
 	public ConfigurationValueBuilder&lt;SessionBuilder, Integer&gt; windowSize() {
-<span class="fc" id="L568">		return windowSizeValueBuilder;</span>
+<span class="fc" id="L572">		return windowSizeValueBuilder;</span>
 	}
 
 	/**
@@ -605,8 +609,8 @@ public class SessionBuilder extends AbstractParent&lt;CloudhopperBuilder&gt; imp
 	 * @return this instance for fluent chaining
 	 */
 	public SessionBuilder windowWait(Long duration) {
-<span class="nc" id="L608">		windowWaitValueBuilder.setValue(duration);</span>
-<span class="nc" id="L609">		return this;</span>
+<span class="nc" id="L612">		windowWaitValueBuilder.setValue(duration);</span>
+<span class="nc" id="L613">		return this;</span>
 	}
 
 	/**
@@ -647,7 +651,7 @@ public class SessionBuilder extends AbstractParent&lt;CloudhopperBuilder&gt; imp
 	 * @return the builder to configure property keys/default value
 	 */
 	public ConfigurationValueBuilder&lt;SessionBuilder, Long&gt; windowWait() {
-<span class="fc" id="L650">		return windowWaitValueBuilder;</span>
+<span class="fc" id="L654">		return windowWaitValueBuilder;</span>
 	}
 
 	/**
@@ -687,8 +691,8 @@ public class SessionBuilder extends AbstractParent&lt;CloudhopperBuilder&gt; imp
 	 * @return this instance for fluent chaining
 	 */
 	public SessionBuilder writeTimeout(Long timeout) {
-<span class="nc" id="L690">		writeValueBuilder.setValue(timeout);</span>
-<span class="nc" id="L691">		return this;</span>
+<span class="nc" id="L694">		writeValueBuilder.setValue(timeout);</span>
+<span class="nc" id="L695">		return this;</span>
 	}
 
 	/**
@@ -730,7 +734,7 @@ public class SessionBuilder extends AbstractParent&lt;CloudhopperBuilder&gt; imp
 	 * @return the builder to configure property keys/default value
 	 */
 	public ConfigurationValueBuilder&lt;SessionBuilder, Long&gt; writeTimeout() {
-<span class="fc" id="L733">		return writeValueBuilder;</span>
+<span class="fc" id="L737">		return writeValueBuilder;</span>
 	}
 
 	/**
@@ -773,8 +777,8 @@ public class SessionBuilder extends AbstractParent&lt;CloudhopperBuilder&gt; imp
 	 * @return this instance for fluent chaining
 	 */
 	public SessionBuilder responseTimeout(Long timeout) {
-<span class="nc" id="L776">		responseValueBuilder.setValue(timeout);</span>
-<span class="nc" id="L777">		return this;</span>
+<span class="fc" id="L780">		responseValueBuilder.setValue(timeout);</span>
+<span class="fc" id="L781">		return this;</span>
 	}
 
 	/**
@@ -819,7 +823,7 @@ public class SessionBuilder extends AbstractParent&lt;CloudhopperBuilder&gt; imp
 	 * @return the builder to configure property keys/default value
 	 */
 	public ConfigurationValueBuilder&lt;SessionBuilder, Long&gt; responseTimeout() {
-<span class="fc" id="L822">		return responseValueBuilder;</span>
+<span class="fc" id="L826">		return responseValueBuilder;</span>
 	}
 
 	/**
@@ -861,8 +865,8 @@ public class SessionBuilder extends AbstractParent&lt;CloudhopperBuilder&gt; imp
 	 * @return this instance for fluent chaining
 	 */
 	public SessionBuilder unbindTimeout(Long timeout) {
-<span class="nc" id="L864">		unbindValueBuilder.setValue(timeout);</span>
-<span class="nc" id="L865">		return this;</span>
+<span class="nc" id="L868">		unbindValueBuilder.setValue(timeout);</span>
+<span class="nc" id="L869">		return this;</span>
 	}
 
 	/**
@@ -906,105 +910,104 @@ public class SessionBuilder extends AbstractParent&lt;CloudhopperBuilder&gt; imp
 	 * @return the builder to configure property keys/default value
 	 */
 	public ConfigurationValueBuilder&lt;SessionBuilder, Long&gt; unbindTimeout() {
-<span class="fc" id="L909">		return unbindValueBuilder;</span>
+<span class="fc" id="L913">		return unbindValueBuilder;</span>
 	}
 
 	/**
-	 * Keep the previous session open instead of closing and reopening one.
+	 * Reuse the previous session instead of closing and reopening one if
+	 * possible. However, if the session has been closed by the remote server, a
+	 * new session will be created.
 	 * 
 	 * &lt;p&gt;
-	 * The value set using this method takes precedence over any property and
-	 * default value configured using {@link #keepSession()}.
+	 * When sending the first message, a new session is created. Later, when
+	 * sending the next message, if the session is still alive, this session is
+	 * reused. As the connection is not actively maintained, the session may be
+	 * killed by the server. Therefore to check if the session is still alive,
+	 * an {@link EnquireLink} request is sent. If a response is received from
+	 * the server, then the session is still alive and the message can be sent
+	 * using the same session. If a failure response or no response is received
+	 * after some time from the server, then a new session must be created.
 	 * 
-	 * &lt;pre&gt;
-	 * .keepSession(true)
-	 * .keepSession()
-	 *   .properties(&quot;${custom.property.high-priority}&quot;, &quot;${custom.property.low-priority}&quot;)
-	 *   .defaultValue(false)
-	 * &lt;/pre&gt;
-	 * 
-	 * &lt;pre&gt;
-	 * .keepSession(true)
-	 * .keepSession()
-	 *   .properties(&quot;${custom.property.high-priority}&quot;, &quot;${custom.property.low-priority}&quot;)
-	 *   .defaultValue(false)
-	 * &lt;/pre&gt;
-	 * 
-	 * In both cases, {@code keepSession(true)} is used.
 	 * 
 	 * &lt;p&gt;
-	 * If this method is called several times, only the last value is used.
+	 * To check if the session is still alive, the {@link EnquireLink} request
+	 * is sent just before sending the real message. In order to prevent sending
+	 * an {@link EnquireLink} request before &lt;strong&gt;every&lt;/strong&gt; message, the
+	 * date of the last sent message or {@link EnquireLink} is kept. This date
+	 * is compared to a delay to ensure that no {@link EnquireLink} is sent
+	 * during this delay.
 	 * 
 	 * &lt;p&gt;
-	 * If {@code null} value is set, it is like not setting a value at all. The
-	 * property/default value configuration is applied.
+	 * This builder let you configure:
+	 * &lt;ul&gt;
+	 * &lt;li&gt;Enable/disable reuse session management&lt;/li&gt;
+	 * &lt;li&gt;The maximum time to wait for a response from the server for
+	 * {@link EnquireLink} request&lt;/li&gt;
+	 * &lt;li&gt;The time to wait before sending a new {@link EnquireLink} request
+	 * again&lt;/li&gt;
+	 * &lt;/ul&gt;
 	 * 
-	 * @param keepOpened
-	 *            true to reuse same session for sending messages
-	 * @return this instance for fluent chaining
+	 * &lt;p&gt;
+	 * &lt;strong&gt;NOTE:&lt;/strong&gt; If {@link #keepAlive()} strategy is enabled, this
+	 * option has no effect.
+	 * 
+	 * @return the builder to configure reuse session strategy
 	 */
-	public SessionBuilder keepSession(Boolean keepOpened) {
-<span class="fc" id="L947">		keepSessionValueBuilder.setValue(keepOpened);</span>
-<span class="fc" id="L948">		return this;</span>
+	public ReuseSessionBuilder reuseSession() {
+<span class="fc bfc" id="L957" title="All 2 branches covered.">		if (reuseSessionBuilder == null) {</span>
+<span class="fc" id="L958">			reuseSessionBuilder = new ReuseSessionBuilder(this, buildContext);</span>
+		}
+<span class="fc" id="L960">		return reuseSessionBuilder;</span>
 	}
 
 	/**
-	 * Keep the previous session open instead of closing and reopening one.
+	 * Configure keep alive management. Keep alive strategy actively maintains
+	 * the session opened by sending {@link EnquireLink} messages to the server.
 	 * 
 	 * &lt;p&gt;
-	 * This method is mainly used by {@link Configurer}s to register some
-	 * property keys and/or a default value. The aim is to let developer be able
-	 * to externalize its configuration (using system properties, configuration
-	 * file or anything else). If the developer doesn't configure any value for
-	 * the registered properties, the default value is used (if set).
-	 * 
-	 * &lt;pre&gt;
-	 * .keepSession()
-	 *   .properties(&quot;${custom.property.high-priority}&quot;, &quot;${custom.property.low-priority}&quot;)
-	 *   .defaultValue(false)
-	 * &lt;/pre&gt;
+	 * Even if client sends messages to keep session alive, the connection may
+	 * be broken or closed by the server. Therefore, automatic reconnection is
+	 * done.
 	 * 
 	 * &lt;p&gt;
-	 * Non-null value set using {@link #keepSession(Boolean)} takes precedence
-	 * over property values and default value.
+	 * This builder let you configure:
+	 * &lt;ul&gt;
+	 * &lt;li&gt;Enable/disable active keep alive management&lt;/li&gt;
+	 * &lt;li&gt;The time to wait between two {@link EnquireLink} messages&lt;/li&gt;
+	 * &lt;li&gt;The maximum time to wait for a response from the server for
+	 * {@link EnquireLink} request&lt;/li&gt;
+	 * &lt;/ul&gt;
 	 * 
-	 * &lt;pre&gt;
-	 * .keepSession(true)
-	 * .keepSession()
-	 *   .properties(&quot;${custom.property.high-priority}&quot;, &quot;${custom.property.low-priority}&quot;)
-	 *   .defaultValue(false)
-	 * &lt;/pre&gt;
+	 * &lt;strong&gt;NOTE:&lt;/strong&gt; If this strategy is enabled,
+	 * {@link #reuseSession()} has no effect.
 	 * 
-	 * The value {@code true} is used regardless of the value of the properties
-	 * and default value.
-	 * 
-	 * &lt;p&gt;
-	 * See {@link ConfigurationValueBuilder} for more information.
-	 * 
-	 * 
-	 * @return the builder to configure property keys/default value
+	 * @return the builder to configure keep alive management
 	 */
-	public ConfigurationValueBuilder&lt;SessionBuilder, Boolean&gt; keepSession() {
-<span class="nc" id="L988">		return keepSessionValueBuilder;</span>
+	public KeepAliveBuilder keepAlive() {
+<span class="fc bfc" id="L987" title="All 2 branches covered.">		if (keepAliveBuilder == null) {</span>
+<span class="fc" id="L988">			keepAliveBuilder = new KeepAliveBuilder(this, buildContext);</span>
+		}
+<span class="fc" id="L990">		return keepAliveBuilder;</span>
 	}
 
 	@Override
 	public CloudhopperSessionOptions build() {
-<span class="fc" id="L993">		CloudhopperSessionOptions sessionOpts = buildContext.register(new CloudhopperSessionOptions());</span>
-<span class="fc" id="L994">		sessionOpts.setBindTimeout(bindValueBuilder.getValue());</span>
-<span class="fc" id="L995">		sessionOpts.setConnectTimeout(connectValueBuilder.getValue());</span>
-<span class="fc" id="L996">		sessionOpts.setRequestExpiryTimeout(requestExpiryValueBuilder.getValue());</span>
-<span class="fc" id="L997">		sessionOpts.setWindowMonitorInterval(windowMonitorInvervalValueBuilder.getValue());</span>
-<span class="fc" id="L998">		sessionOpts.setWindowSize(windowSizeValueBuilder.getValue());</span>
-<span class="fc" id="L999">		sessionOpts.setWindowWaitTimeout(windowWaitValueBuilder.getValue());</span>
-<span class="fc" id="L1000">		sessionOpts.setWriteTimeout(writeValueBuilder.getValue());</span>
-<span class="fc" id="L1001">		sessionOpts.setResponseTimeout(responseValueBuilder.getValue());</span>
-<span class="fc" id="L1002">		sessionOpts.setUnbindTimeout(unbindValueBuilder.getValue());</span>
-<span class="fc" id="L1003">		sessionOpts.setKeepSession(keepSessionValueBuilder.getValue(false));</span>
-<span class="pc bpc" id="L1004" title="1 of 2 branches missed.">		if (connectRetryBuilder != null) {</span>
-<span class="fc" id="L1005">			sessionOpts.setConnectRetry(connectRetryBuilder.build());</span>
+<span class="fc" id="L995">		CloudhopperSessionOptions sessionOpts = buildContext.register(new CloudhopperSessionOptions());</span>
+<span class="fc" id="L996">		sessionOpts.setBindTimeout(bindValueBuilder.getValue());</span>
+<span class="fc" id="L997">		sessionOpts.setConnectTimeout(connectValueBuilder.getValue());</span>
+<span class="fc" id="L998">		sessionOpts.setRequestExpiryTimeout(requestExpiryValueBuilder.getValue());</span>
+<span class="fc" id="L999">		sessionOpts.setWindowMonitorInterval(windowMonitorInvervalValueBuilder.getValue());</span>
+<span class="fc" id="L1000">		sessionOpts.setWindowSize(windowSizeValueBuilder.getValue());</span>
+<span class="fc" id="L1001">		sessionOpts.setWindowWaitTimeout(windowWaitValueBuilder.getValue());</span>
+<span class="fc" id="L1002">		sessionOpts.setWriteTimeout(writeValueBuilder.getValue());</span>
+<span class="fc" id="L1003">		sessionOpts.setResponseTimeout(responseValueBuilder.getValue());</span>
+<span class="fc" id="L1004">		sessionOpts.setUnbindTimeout(unbindValueBuilder.getValue());</span>
+<span class="pc bpc" id="L1005" title="1 of 2 branches missed.">		if (connectRetryBuilder != null) {</span>
+<span class="fc" id="L1006">			sessionOpts.setConnectRetry(connectRetryBuilder.build());</span>
 		}
-<span class="fc" id="L1007">		return sessionOpts;</span>
+<span class="fc bfc" id="L1008" title="All 2 branches covered.">		sessionOpts.setKeepAlive(keepAliveBuilder != null ? keepAliveBuilder.build() : new KeepAliveOptions(false));</span>
+<span class="fc bfc" id="L1009" title="All 2 branches covered.">		sessionOpts.setReuseSession(reuseSessionBuilder != null ? reuseSessionBuilder.build() : new ReuseSessionOptions(false));</span>
+<span class="fc" id="L1010">		return sessionOpts;</span>
 	}
 
 }

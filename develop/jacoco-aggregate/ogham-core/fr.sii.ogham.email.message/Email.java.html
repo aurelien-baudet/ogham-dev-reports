@@ -15,6 +15,7 @@ import fr.sii.ogham.core.message.content.Content;
 import fr.sii.ogham.core.message.content.MultiContent;
 import fr.sii.ogham.core.message.content.StringContent;
 import fr.sii.ogham.core.message.fluent.SingleContentBuilder;
+import fr.sii.ogham.core.util.Loggable;
 import fr.sii.ogham.core.util.EqualsBuilder;
 import fr.sii.ogham.core.util.HashCodeBuilder;
 import fr.sii.ogham.core.util.StringUtils;
@@ -38,7 +39,7 @@ import fr.sii.ogham.email.message.fluent.EmbedBuilder;
  * @author Aurélien Baudet
  *
  */
-public class Email implements Message, HasContentFluent&lt;Email&gt;, HasSubject, HasSubjectFluent&lt;Email&gt;, HasRecipients&lt;Recipient&gt;, HasRecipientsFluent&lt;Email, Recipient&gt;, HasToFluent&lt;Email&gt; {
+public class Email implements Message, HasContentFluent&lt;Email&gt;, HasSubject, HasSubjectFluent&lt;Email&gt;, HasRecipients&lt;Recipient&gt;, HasRecipientsFluent&lt;Email, Recipient&gt;, HasToFluent&lt;Email&gt;, Loggable {
 	/**
 	 * The subject
 	 */
@@ -74,30 +75,30 @@ public class Email implements Message, HasContentFluent&lt;Email&gt;, HasSubject
 	 * Instantiates an empty email
 	 */
 	public Email() {
-<span class="fc" id="L77">		super();</span>
-<span class="fc" id="L78">		recipients = new ArrayList&lt;&gt;();</span>
-<span class="fc" id="L79">		attachments = new ArrayList&lt;&gt;();</span>
-<span class="fc" id="L80">		htmlBuilder = new SingleContentBuilder&lt;&gt;(this);</span>
-<span class="fc" id="L81">		textBuilder = new SingleContentBuilder&lt;&gt;(this);</span>
-<span class="fc" id="L82">		bodyBuilder = new BodyBuilder(this);</span>
-<span class="fc" id="L83">		attachBuilder = new AttachBuilder(this);</span>
-<span class="fc" id="L84">		embedBuilder = new EmbedBuilder(this);</span>
-<span class="fc" id="L85">	}</span>
+<span class="fc" id="L78">		super();</span>
+<span class="fc" id="L79">		recipients = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L80">		attachments = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L81">		htmlBuilder = new SingleContentBuilder&lt;&gt;(this);</span>
+<span class="fc" id="L82">		textBuilder = new SingleContentBuilder&lt;&gt;(this);</span>
+<span class="fc" id="L83">		bodyBuilder = new BodyBuilder(this);</span>
+<span class="fc" id="L84">		attachBuilder = new AttachBuilder(this);</span>
+<span class="fc" id="L85">		embedBuilder = new EmbedBuilder(this);</span>
+<span class="fc" id="L86">	}</span>
 
 	// ----------------------- Getter/Setters -----------------------//
 
 	@Override
 	public Content getContent() {
-<span class="fc bfc" id="L91" title="All 2 branches covered.">		if (content != null) {</span>
-<span class="fc" id="L92">			return content;</span>
+<span class="fc bfc" id="L92" title="All 2 branches covered.">		if (content != null) {</span>
+<span class="fc" id="L93">			return content;</span>
 		}
-<span class="fc" id="L94">		return buildContent();</span>
+<span class="fc" id="L95">		return buildContent();</span>
 	}
 
 	@Override
 	public void setContent(Content content) {
-<span class="fc" id="L99">		this.content = content;</span>
-<span class="fc" id="L100">	}</span>
+<span class="fc" id="L100">		this.content = content;</span>
+<span class="fc" id="L101">	}</span>
 
 	/**
 	 * Get the sender address
@@ -105,7 +106,7 @@ public class Email implements Message, HasContentFluent&lt;Email&gt;, HasSubject
 	 * @return the sender address
 	 */
 	public EmailAddress getFrom() {
-<span class="fc" id="L108">		return from;</span>
+<span class="fc" id="L109">		return from;</span>
 	}
 
 	/**
@@ -115,8 +116,8 @@ public class Email implements Message, HasContentFluent&lt;Email&gt;, HasSubject
 	 *            the sender address
 	 */
 	public void setFrom(EmailAddress from) {
-<span class="fc" id="L118">		this.from = from;</span>
-<span class="fc" id="L119">	}</span>
+<span class="fc" id="L119">		this.from = from;</span>
+<span class="fc" id="L120">	}</span>
 
 	/**
 	 * Set the sender address as string (typical address syntax is of the form
@@ -128,8 +129,8 @@ public class Email implements Message, HasContentFluent&lt;Email&gt;, HasSubject
 	 *            &amp;lt;user@host.domain&amp;gt;&quot;).
 	 */
 	public void setFrom(String from) {
-<span class="fc" id="L131">		setFrom(new EmailAddress(from));</span>
-<span class="fc" id="L132">	}</span>
+<span class="fc" id="L132">		setFrom(new EmailAddress(from));</span>
+<span class="fc" id="L133">	}</span>
 
 	/**
 	 * Get the list of recipients of the mail.
@@ -138,7 +139,7 @@ public class Email implements Message, HasContentFluent&lt;Email&gt;, HasSubject
 	 */
 	@Override
 	public List&lt;Recipient&gt; getRecipients() {
-<span class="fc" id="L141">		return recipients;</span>
+<span class="fc" id="L142">		return recipients;</span>
 	}
 
 	/**
@@ -149,8 +150,8 @@ public class Email implements Message, HasContentFluent&lt;Email&gt;, HasSubject
 	 */
 	@Override
 	public void setRecipients(List&lt;Recipient&gt; recipients) {
-<span class="nc" id="L152">		this.recipients = recipients;</span>
-<span class="nc" id="L153">	}</span>
+<span class="nc" id="L153">		this.recipients = recipients;</span>
+<span class="nc" id="L154">	}</span>
 
 	/**
 	 * Get the subject of the mail.
@@ -158,7 +159,7 @@ public class Email implements Message, HasContentFluent&lt;Email&gt;, HasSubject
 	 * @return the subject of the mail
 	 */
 	public String getSubject() {
-<span class="fc" id="L161">		return subject;</span>
+<span class="fc" id="L162">		return subject;</span>
 	}
 
 	/**
@@ -168,8 +169,8 @@ public class Email implements Message, HasContentFluent&lt;Email&gt;, HasSubject
 	 *            the subject of the mail
 	 */
 	public void setSubject(String subject) {
-<span class="fc" id="L171">		this.subject = subject;</span>
-<span class="fc" id="L172">	}</span>
+<span class="fc" id="L172">		this.subject = subject;</span>
+<span class="fc" id="L173">	}</span>
 
 	/**
 	 * Get the list of attachments.
@@ -177,23 +178,23 @@ public class Email implements Message, HasContentFluent&lt;Email&gt;, HasSubject
 	 * @return the list of attachments
 	 */
 	public List&lt;Attachment&gt; getAttachments() {
-<span class="fc" id="L180">		List&lt;Attachment&gt; merged = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L181">		List&lt;Attachment&gt; merged = new ArrayList&lt;&gt;();</span>
 		// NOTE: normally it can't be null but EqualsVerifier uses reflection to
 		// set it to null
-<span class="fc bfc" id="L183" title="All 2 branches covered.">		if (attachments != null) {</span>
-<span class="fc" id="L184">			merged.addAll(attachments);</span>
+<span class="fc bfc" id="L184" title="All 2 branches covered.">		if (attachments != null) {</span>
+<span class="fc" id="L185">			merged.addAll(attachments);</span>
 		}
 		// NOTE: normally it can't be null but EqualsVerifier uses reflection to
 		// set it to null
-<span class="fc bfc" id="L188" title="All 2 branches covered.">		if (attachBuilder != null) {</span>
-<span class="fc" id="L189">			merged.addAll(attachBuilder.build());</span>
+<span class="fc bfc" id="L189" title="All 2 branches covered.">		if (attachBuilder != null) {</span>
+<span class="fc" id="L190">			merged.addAll(attachBuilder.build());</span>
 		}
 		// NOTE: normally it can't be null but EqualsVerifier uses reflection to
 		// set it to null
-<span class="fc bfc" id="L193" title="All 2 branches covered.">		if (embedBuilder != null) {</span>
-<span class="fc" id="L194">			merged.addAll(embedBuilder.build());</span>
+<span class="fc bfc" id="L194" title="All 2 branches covered.">		if (embedBuilder != null) {</span>
+<span class="fc" id="L195">			merged.addAll(embedBuilder.build());</span>
 		}
-<span class="fc" id="L196">		return merged;</span>
+<span class="fc" id="L197">		return merged;</span>
 	}
 
 	/**
@@ -203,8 +204,8 @@ public class Email implements Message, HasContentFluent&lt;Email&gt;, HasSubject
 	 *            the list of attachments
 	 */
 	public void setAttachments(List&lt;Attachment&gt; attachments) {
-<span class="nc" id="L206">		this.attachments = attachments;</span>
-<span class="nc" id="L207">	}</span>
+<span class="nc" id="L207">		this.attachments = attachments;</span>
+<span class="nc" id="L208">	}</span>
 
 	// ----------------------- Fluent API -----------------------//
 
@@ -216,8 +217,8 @@ public class Email implements Message, HasContentFluent&lt;Email&gt;, HasSubject
 	 * @return this instance for fluent chaining
 	 */
 	public Email subject(String subject) {
-<span class="fc" id="L219">		setSubject(subject);</span>
-<span class="fc" id="L220">		return this;</span>
+<span class="fc" id="L220">		setSubject(subject);</span>
+<span class="fc" id="L221">		return this;</span>
 	}
 
 	/**
@@ -251,8 +252,8 @@ public class Email implements Message, HasContentFluent&lt;Email&gt;, HasSubject
 	 * @see #text()
 	 */
 	public Email content(Content content) {
-<span class="fc" id="L254">		setContent(content);</span>
-<span class="fc" id="L255">		return this;</span>
+<span class="fc" id="L255">		setContent(content);</span>
+<span class="fc" id="L256">		return this;</span>
 	}
 
 	/**
@@ -281,7 +282,7 @@ public class Email implements Message, HasContentFluent&lt;Email&gt;, HasSubject
 	 * @see #text()
 	 */
 	public Email content(String content) {
-<span class="fc" id="L284">		return content(new StringContent(content));</span>
+<span class="fc" id="L285">		return content(new StringContent(content));</span>
 	}
 
 	/**
@@ -305,7 +306,7 @@ public class Email implements Message, HasContentFluent&lt;Email&gt;, HasSubject
 	 * @since 3.0.0
 	 */
 	public SingleContentBuilder&lt;Email&gt; html() {
-<span class="fc" id="L308">		return htmlBuilder;</span>
+<span class="fc" id="L309">		return htmlBuilder;</span>
 	}
 
 	/**
@@ -330,7 +331,7 @@ public class Email implements Message, HasContentFluent&lt;Email&gt;, HasSubject
 	 * @since 3.0.0
 	 */
 	public SingleContentBuilder&lt;Email&gt; text() {
-<span class="fc" id="L333">		return textBuilder;</span>
+<span class="fc" id="L334">		return textBuilder;</span>
 	}
 
 	/**
@@ -394,7 +395,7 @@ public class Email implements Message, HasContentFluent&lt;Email&gt;, HasSubject
 	 * @since 3.0.0
 	 */
 	public BodyBuilder body() {
-<span class="fc" id="L397">		return bodyBuilder;</span>
+<span class="fc" id="L398">		return bodyBuilder;</span>
 	}
 
 	/**
@@ -413,7 +414,7 @@ public class Email implements Message, HasContentFluent&lt;Email&gt;, HasSubject
 	 * @since 3.0.0
 	 */
 	public AttachBuilder attach() {
-<span class="fc" id="L416">		return attachBuilder;</span>
+<span class="fc" id="L417">		return attachBuilder;</span>
 	}
 
 	/**
@@ -434,7 +435,7 @@ public class Email implements Message, HasContentFluent&lt;Email&gt;, HasSubject
 	 * @since 3.0.0
 	 */
 	public EmbedBuilder embed() {
-<span class="fc" id="L437">		return embedBuilder;</span>
+<span class="fc" id="L438">		return embedBuilder;</span>
 	}
 
 	/**
@@ -446,8 +447,8 @@ public class Email implements Message, HasContentFluent&lt;Email&gt;, HasSubject
 	 * @return this instance for fluent chaining
 	 */
 	public Email from(EmailAddress from) {
-<span class="fc" id="L449">		setFrom(from);</span>
-<span class="fc" id="L450">		return this;</span>
+<span class="fc" id="L450">		setFrom(from);</span>
+<span class="fc" id="L451">		return this;</span>
 	}
 
 	/**
@@ -461,8 +462,8 @@ public class Email implements Message, HasContentFluent&lt;Email&gt;, HasSubject
 	 * @return this instance for fluent chaining
 	 */
 	public Email from(String from) {
-<span class="fc" id="L464">		setFrom(from);</span>
-<span class="fc" id="L465">		return this;</span>
+<span class="fc" id="L465">		setFrom(from);</span>
+<span class="fc" id="L466">		return this;</span>
 	}
 
 	/**
@@ -474,8 +475,8 @@ public class Email implements Message, HasContentFluent&lt;Email&gt;, HasSubject
 	 */
 	@Override
 	public Email recipients(List&lt;Recipient&gt; recipients) {
-<span class="nc" id="L477">		setRecipients(recipients);</span>
-<span class="nc" id="L478">		return this;</span>
+<span class="nc" id="L478">		setRecipients(recipients);</span>
+<span class="nc" id="L479">		return this;</span>
 	}
 
 	/**
@@ -486,8 +487,8 @@ public class Email implements Message, HasContentFluent&lt;Email&gt;, HasSubject
 	 * @return this instance for fluent chaining
 	 */
 	public Email attach(List&lt;Attachment&gt; attachments) {
-<span class="nc" id="L489">		setAttachments(attachments);</span>
-<span class="nc" id="L490">		return this;</span>
+<span class="nc" id="L490">		setAttachments(attachments);</span>
+<span class="nc" id="L491">		return this;</span>
 	}
 
 	/**
@@ -498,10 +499,10 @@ public class Email implements Message, HasContentFluent&lt;Email&gt;, HasSubject
 	 * @return this instance for fluent chaining
 	 */
 	public Email attach(Attachment... attachments) {
-<span class="fc bfc" id="L501" title="All 2 branches covered.">		for (Attachment attachment : attachments) {</span>
-<span class="fc" id="L502">			attach(attachment);</span>
+<span class="fc bfc" id="L502" title="All 2 branches covered.">		for (Attachment attachment : attachments) {</span>
+<span class="fc" id="L503">			attach(attachment);</span>
 		}
-<span class="fc" id="L504">		return this;</span>
+<span class="fc" id="L505">		return this;</span>
 	}
 
 	/**
@@ -512,8 +513,8 @@ public class Email implements Message, HasContentFluent&lt;Email&gt;, HasSubject
 	 * @return this instance for fluent chaining
 	 */
 	public Email attach(Attachment attachment) {
-<span class="fc" id="L515">		attachments.add(attachment);</span>
-<span class="fc" id="L516">		return this;</span>
+<span class="fc" id="L516">		attachments.add(attachment);</span>
+<span class="fc" id="L517">		return this;</span>
 	}
 
 	/**
@@ -525,8 +526,8 @@ public class Email implements Message, HasContentFluent&lt;Email&gt;, HasSubject
 	 */
 	@Override
 	public Email recipient(Recipient... recipients) {
-<span class="fc" id="L528">		this.recipients.addAll(Arrays.asList(recipients));</span>
-<span class="fc" id="L529">		return this;</span>
+<span class="fc" id="L529">		this.recipients.addAll(Arrays.asList(recipients));</span>
+<span class="fc" id="L530">		return this;</span>
 	}
 
 	/**
@@ -538,10 +539,10 @@ public class Email implements Message, HasContentFluent&lt;Email&gt;, HasSubject
 	 * @return this instance for fluent chaining
 	 */
 	public Email to(String... to) {
-<span class="fc bfc" id="L541" title="All 2 branches covered.">		for (String t : to) {</span>
-<span class="fc" id="L542">			to(new EmailAddress(t));</span>
+<span class="fc bfc" id="L542" title="All 2 branches covered.">		for (String t : to) {</span>
+<span class="fc" id="L543">			to(new EmailAddress(t));</span>
 		}
-<span class="fc" id="L544">		return this;</span>
+<span class="fc" id="L545">		return this;</span>
 	}
 
 	/**
@@ -552,10 +553,10 @@ public class Email implements Message, HasContentFluent&lt;Email&gt;, HasSubject
 	 * @return this instance for fluent chaining
 	 */
 	public Email to(EmailAddress... to) {
-<span class="fc bfc" id="L555" title="All 2 branches covered.">		for (EmailAddress t : to) {</span>
-<span class="fc" id="L556">			recipient(t, RecipientType.TO);</span>
+<span class="fc bfc" id="L556" title="All 2 branches covered.">		for (EmailAddress t : to) {</span>
+<span class="fc" id="L557">			recipient(t, RecipientType.TO);</span>
 		}
-<span class="fc" id="L558">		return this;</span>
+<span class="fc" id="L559">		return this;</span>
 	}
 
 	/**
@@ -567,10 +568,10 @@ public class Email implements Message, HasContentFluent&lt;Email&gt;, HasSubject
 	 * @return this instance for fluent chaining
 	 */
 	public Email cc(String... cc) {
-<span class="fc bfc" id="L570" title="All 2 branches covered.">		for (String c : cc) {</span>
-<span class="fc" id="L571">			cc(new EmailAddress(c));</span>
+<span class="fc bfc" id="L571" title="All 2 branches covered.">		for (String c : cc) {</span>
+<span class="fc" id="L572">			cc(new EmailAddress(c));</span>
 		}
-<span class="fc" id="L573">		return this;</span>
+<span class="fc" id="L574">		return this;</span>
 	}
 
 	/**
@@ -581,10 +582,10 @@ public class Email implements Message, HasContentFluent&lt;Email&gt;, HasSubject
 	 * @return this instance for fluent chaining
 	 */
 	public Email cc(EmailAddress... cc) {
-<span class="fc bfc" id="L584" title="All 2 branches covered.">		for (EmailAddress c : cc) {</span>
-<span class="fc" id="L585">			recipient(c, RecipientType.CC);</span>
+<span class="fc bfc" id="L585" title="All 2 branches covered.">		for (EmailAddress c : cc) {</span>
+<span class="fc" id="L586">			recipient(c, RecipientType.CC);</span>
 		}
-<span class="fc" id="L587">		return this;</span>
+<span class="fc" id="L588">		return this;</span>
 	}
 
 	/**
@@ -596,10 +597,10 @@ public class Email implements Message, HasContentFluent&lt;Email&gt;, HasSubject
 	 * @return this instance for fluent chaining
 	 */
 	public Email bcc(String... bcc) {
-<span class="fc bfc" id="L599" title="All 2 branches covered.">		for (String b : bcc) {</span>
-<span class="fc" id="L600">			bcc(new EmailAddress(b));</span>
+<span class="fc bfc" id="L600" title="All 2 branches covered.">		for (String b : bcc) {</span>
+<span class="fc" id="L601">			bcc(new EmailAddress(b));</span>
 		}
-<span class="fc" id="L602">		return this;</span>
+<span class="fc" id="L603">		return this;</span>
 	}
 
 	/**
@@ -610,10 +611,10 @@ public class Email implements Message, HasContentFluent&lt;Email&gt;, HasSubject
 	 * @return this instance for fluent chaining
 	 */
 	public Email bcc(EmailAddress... bcc) {
-<span class="fc bfc" id="L613" title="All 2 branches covered.">		for (EmailAddress b : bcc) {</span>
-<span class="fc" id="L614">			recipient(b, RecipientType.BCC);</span>
+<span class="fc bfc" id="L614" title="All 2 branches covered.">		for (EmailAddress b : bcc) {</span>
+<span class="fc" id="L615">			recipient(b, RecipientType.BCC);</span>
 		}
-<span class="fc" id="L616">		return this;</span>
+<span class="fc" id="L617">		return this;</span>
 	}
 
 	/**
@@ -626,8 +627,8 @@ public class Email implements Message, HasContentFluent&lt;Email&gt;, HasSubject
 	 * @return this instance for fluent chaining
 	 */
 	public Email recipient(EmailAddress recipient, RecipientType type) {
-<span class="fc" id="L629">		recipient(new Recipient(recipient, type));</span>
-<span class="fc" id="L630">		return this;</span>
+<span class="fc" id="L630">		recipient(new Recipient(recipient, type));</span>
+<span class="fc" id="L631">		return this;</span>
 	}
 
 	// ----------------------- Utilities -----------------------//
@@ -643,13 +644,13 @@ public class Email implements Message, HasContentFluent&lt;Email&gt;, HasSubject
 	 * @return the list of recipients
 	 */
 	public static Recipient[] toRecipient(List&lt;String&gt; to) {
-<span class="nc" id="L646">		Recipient[] addresses = new Recipient[to.size()];</span>
-<span class="nc" id="L647">		int i = 0;</span>
-<span class="nc bnc" id="L648" title="All 2 branches missed.">		for (String t : to) {</span>
-<span class="nc" id="L649">			addresses[i] = new Recipient(t);</span>
-<span class="nc" id="L650">			i++;</span>
-<span class="nc" id="L651">		}</span>
-<span class="nc" id="L652">		return addresses;</span>
+<span class="nc" id="L647">		Recipient[] addresses = new Recipient[to.size()];</span>
+<span class="nc" id="L648">		int i = 0;</span>
+<span class="nc bnc" id="L649" title="All 2 branches missed.">		for (String t : to) {</span>
+<span class="nc" id="L650">			addresses[i] = new Recipient(t);</span>
+<span class="nc" id="L651">			i++;</span>
+<span class="nc" id="L652">		}</span>
+<span class="nc" id="L653">		return addresses;</span>
 	}
 
 	/**
@@ -661,13 +662,13 @@ public class Email implements Message, HasContentFluent&lt;Email&gt;, HasSubject
 	 * @return the list of recipients
 	 */
 	public static Recipient[] toRecipient(EmailAddress[] to) {
-<span class="nc" id="L664">		Recipient[] addresses = new Recipient[to.length];</span>
-<span class="nc" id="L665">		int i = 0;</span>
-<span class="nc bnc" id="L666" title="All 2 branches missed.">		for (EmailAddress t : to) {</span>
-<span class="nc" id="L667">			addresses[i] = new Recipient(t);</span>
-<span class="nc" id="L668">			i++;</span>
+<span class="nc" id="L665">		Recipient[] addresses = new Recipient[to.length];</span>
+<span class="nc" id="L666">		int i = 0;</span>
+<span class="nc bnc" id="L667" title="All 2 branches missed.">		for (EmailAddress t : to) {</span>
+<span class="nc" id="L668">			addresses[i] = new Recipient(t);</span>
+<span class="nc" id="L669">			i++;</span>
 		}
-<span class="nc" id="L670">		return addresses;</span>
+<span class="nc" id="L671">		return addresses;</span>
 	}
 
 	/**
@@ -681,82 +682,83 @@ public class Email implements Message, HasContentFluent&lt;Email&gt;, HasSubject
 	 * @return the list of recipients
 	 */
 	public static Recipient[] toRecipient(String[] to) {
-<span class="nc" id="L684">		Recipient[] addresses = new Recipient[to.length];</span>
-<span class="nc" id="L685">		int i = 0;</span>
-<span class="nc bnc" id="L686" title="All 2 branches missed.">		for (String t : to) {</span>
-<span class="nc" id="L687">			addresses[i] = new Recipient(t);</span>
-<span class="nc" id="L688">			i++;</span>
+<span class="nc" id="L685">		Recipient[] addresses = new Recipient[to.length];</span>
+<span class="nc" id="L686">		int i = 0;</span>
+<span class="nc bnc" id="L687" title="All 2 branches missed.">		for (String t : to) {</span>
+<span class="nc" id="L688">			addresses[i] = new Recipient(t);</span>
+<span class="nc" id="L689">			i++;</span>
 		}
-<span class="nc" id="L690">		return addresses;</span>
+<span class="nc" id="L691">		return addresses;</span>
 	}
 
 	@Override
 	public String toString() {
-<span class="fc" id="L695">		return toString(true);</span>
+<span class="fc" id="L696">		return toString(false);</span>
 	}
 
-	public String toSummaryString() {
-<span class="fc" id="L699">		return toString(false);</span>
+	@Override
+	public String toLogString() {
+<span class="nc" id="L701">		return toString(true);</span>
 	}
 
 	@Override
 	public int hashCode() {
-<span class="fc" id="L704">		return new HashCodeBuilder().append(subject, getContent(), from, recipients, getAttachments()).hashCode();</span>
+<span class="fc" id="L706">		return new HashCodeBuilder().append(subject, getContent(), from, recipients, getAttachments()).hashCode();</span>
 	}
 
 	@Override
 	public boolean equals(Object obj) {
-<span class="fc" id="L709">		return new EqualsBuilder(this, obj).appendFields(&quot;subject&quot;, &quot;content&quot;, &quot;from&quot;, &quot;recipients&quot;, &quot;attachments&quot;).isEqual();</span>
+<span class="fc" id="L711">		return new EqualsBuilder(this, obj).appendFields(&quot;subject&quot;, &quot;content&quot;, &quot;from&quot;, &quot;recipients&quot;, &quot;attachments&quot;).isEqual();</span>
 	}
 
 	private String toString(boolean includeContent) {
-<span class="fc" id="L713">		StringBuilder builder = new StringBuilder();</span>
-<span class="fc" id="L714">		builder.append(&quot;Email message\r\nFrom: &quot;).append(from);</span>
-<span class="fc bfc" id="L715" title="All 2 branches covered.">		for (RecipientType type : RecipientType.values()) {</span>
-<span class="fc" id="L716">			List&lt;EmailAddress&gt; addresses = new ArrayList&lt;&gt;();</span>
-<span class="fc bfc" id="L717" title="All 2 branches covered.">			for (Recipient recipient : recipients) {</span>
-<span class="fc bfc" id="L718" title="All 2 branches covered.">				if (type == recipient.getType()) {</span>
-<span class="fc" id="L719">					addresses.add(recipient.getAddress());</span>
+<span class="fc" id="L715">		StringBuilder builder = new StringBuilder();</span>
+<span class="fc" id="L716">		builder.append(&quot;Email message\r\nFrom: &quot;).append(from);</span>
+<span class="fc bfc" id="L717" title="All 2 branches covered.">		for (RecipientType type : RecipientType.values()) {</span>
+<span class="fc" id="L718">			List&lt;EmailAddress&gt; addresses = new ArrayList&lt;&gt;();</span>
+<span class="fc bfc" id="L719" title="All 2 branches covered.">			for (Recipient recipient : recipients) {</span>
+<span class="fc bfc" id="L720" title="All 2 branches covered.">				if (type == recipient.getType()) {</span>
+<span class="fc" id="L721">					addresses.add(recipient.getAddress());</span>
 				}
-<span class="fc" id="L721">			}</span>
-<span class="fc bfc" id="L722" title="All 2 branches covered.">			if (!addresses.isEmpty()) {</span>
-<span class="fc" id="L723">				builder.append(&quot;\r\n&quot;);</span>
-<span class="fc" id="L724">				builder.append(type).append(&quot;: &quot;);</span>
-<span class="fc" id="L725">				builder.append(StringUtils.join(addresses, &quot;, &quot;));</span>
+<span class="fc" id="L723">			}</span>
+<span class="fc bfc" id="L724" title="All 2 branches covered.">			if (!addresses.isEmpty()) {</span>
+<span class="fc" id="L725">				builder.append(&quot;\r\n&quot;);</span>
+<span class="fc" id="L726">				builder.append(type).append(&quot;: &quot;);</span>
+<span class="fc" id="L727">				builder.append(StringUtils.join(addresses, &quot;, &quot;));</span>
 			}
 		}
-<span class="fc" id="L728">		builder.append(&quot;\r\nSubject: &quot;).append(subject);</span>
-<span class="fc bfc" id="L729" title="All 2 branches covered.">		builder.append(&quot;\r\n----------------------------------\r\n&quot;).append(includeContent ? getContent() : &quot;&lt;Content skipped&gt;&quot;);</span>
-<span class="pc bpc" id="L730" title="1 of 4 branches missed.">		if (attachments != null &amp;&amp; !attachments.isEmpty()) {</span>
-<span class="fc" id="L731">			builder.append(&quot;\r\n----------------------------------&quot;).append(&quot;\r\nAttachments: &quot;).append(getAttachments());</span>
+<span class="fc" id="L730">		builder.append(&quot;\r\nSubject: &quot;).append(subject);</span>
+<span class="pc bpc" id="L731" title="1 of 2 branches missed.">		builder.append(&quot;\r\n----------------------------------\r\n&quot;).append(includeContent ? getContent() : &quot;&lt;Content skipped&gt;&quot;);</span>
+<span class="pc bpc" id="L732" title="1 of 4 branches missed.">		if (attachments != null &amp;&amp; !attachments.isEmpty()) {</span>
+<span class="fc" id="L733">			builder.append(&quot;\r\n----------------------------------&quot;).append(&quot;\r\nAttachments: &quot;).append(getAttachments());</span>
 		}
-<span class="fc" id="L733">		builder.append(&quot;\r\n==================================\r\n&quot;);</span>
-<span class="fc" id="L734">		return builder.toString();</span>
+<span class="fc" id="L735">		builder.append(&quot;\r\n==================================\r\n&quot;);</span>
+<span class="fc" id="L736">		return builder.toString();</span>
 	}
 
 	private Content buildContent() {
 		// NOTE: normally it can't be null but EqualsVerifier uses reflection to
 		// set it to null
-<span class="fc bfc" id="L740" title="All 2 branches covered.">		Content html = htmlBuilder == null ? null : htmlBuilder.build();</span>
+<span class="fc bfc" id="L742" title="All 2 branches covered.">		Content html = htmlBuilder == null ? null : htmlBuilder.build();</span>
 		// NOTE: normally it can't be null but EqualsVerifier uses reflection to
 		// set it to null
-<span class="fc bfc" id="L743" title="All 2 branches covered.">		Content text = textBuilder == null ? null : textBuilder.build();</span>
-<span class="fc bfc" id="L744" title="All 4 branches covered.">		if (html != null &amp;&amp; text != null) {</span>
-<span class="fc" id="L745">			return new MultiContent(text, html);</span>
+<span class="fc bfc" id="L745" title="All 2 branches covered.">		Content text = textBuilder == null ? null : textBuilder.build();</span>
+<span class="fc bfc" id="L746" title="All 4 branches covered.">		if (html != null &amp;&amp; text != null) {</span>
+<span class="fc" id="L747">			return new MultiContent(text, html);</span>
 		}
-<span class="fc bfc" id="L747" title="All 2 branches covered.">		if (html != null) {</span>
-<span class="fc" id="L748">			return html;</span>
+<span class="fc bfc" id="L749" title="All 2 branches covered.">		if (html != null) {</span>
+<span class="fc" id="L750">			return html;</span>
 		}
-<span class="fc bfc" id="L750" title="All 2 branches covered.">		if (text != null) {</span>
-<span class="fc" id="L751">			return text;</span>
+<span class="fc bfc" id="L752" title="All 2 branches covered.">		if (text != null) {</span>
+<span class="fc" id="L753">			return text;</span>
 		}
 		// NOTE: normally it can't be null but EqualsVerifier uses reflection to
 		// set it to null
-<span class="fc bfc" id="L755" title="All 2 branches covered.">		Content body = bodyBuilder == null ? null : bodyBuilder.build();</span>
-<span class="fc bfc" id="L756" title="All 2 branches covered.">		if (body != null) {</span>
-<span class="fc" id="L757">			return body;</span>
+<span class="fc bfc" id="L757" title="All 2 branches covered.">		Content body = bodyBuilder == null ? null : bodyBuilder.build();</span>
+<span class="fc bfc" id="L758" title="All 2 branches covered.">		if (body != null) {</span>
+<span class="fc" id="L759">			return body;</span>
 		}
-<span class="fc" id="L759">		return null;</span>
+<span class="fc" id="L761">		return null;</span>
 	}
 
 }

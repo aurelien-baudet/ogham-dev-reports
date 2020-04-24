@@ -49,8 +49,8 @@ public class AutofillSubjectBuilder extends AbstractAutofillDefaultValueBuilder&
 	 */
 	public AutofillSubjectBuilder(AutofillEmailBuilder parent, BuildContext buildContext) {
 <span class="fc" id="L51">		super(AutofillSubjectBuilder.class, parent, String.class, buildContext);</span>
-<span class="fc" id="L52">		enableHtmlTitleValueBuilder = new ConfigurationValueBuilderHelper&lt;&gt;(myself, Boolean.class, buildContext);</span>
-<span class="fc" id="L53">		firstLinePrefixValueBuilder = new ConfigurationValueBuilderHelper&lt;&gt;(myself, String.class, buildContext);</span>
+<span class="fc" id="L52">		enableHtmlTitleValueBuilder = buildContext.newConfigurationValueBuilder(myself, Boolean.class);</span>
+<span class="fc" id="L53">		firstLinePrefixValueBuilder = buildContext.newConfigurationValueBuilder(myself, String.class);</span>
 <span class="fc" id="L54">	}</span>
 	
 	/**
@@ -247,7 +247,7 @@ public class AutofillSubjectBuilder extends AbstractAutofillDefaultValueBuilder&
 <span class="fc" id="L247">			provider.addProvider(buildContext.register(new TextPrefixSubjectProvider(prefix)));</span>
 		}
 <span class="fc" id="L249">		boolean htmlTitle = enableHtmlTitleValueBuilder.getValue(false);</span>
-<span class="fc bfc" id="L250" title="All 2 branches covered.">		if (htmlTitle) {</span>
+<span class="pc bpc" id="L250" title="1 of 2 branches missed.">		if (htmlTitle) {</span>
 <span class="fc" id="L251">			provider.addProvider(buildContext.register(new HtmlTitleSubjectProvider()));</span>
 		}
 <span class="fc" id="L253">		SubjectProvider multiContentProvider = buildContext.register(new MultiContentSubjectProvider(provider));</span>

@@ -214,41 +214,65 @@ public final class BuilderUtils {
 		}
 	}
 
+	/**
+	 * Build the instance using the provided builder.
+	 * 
+	 * &lt;p&gt;
+	 * If builder is {@code null}, it returns {@code null}.
+	 * 
+	 * &lt;p&gt;
+	 * If builder is not {@code null}, the value of {@link Builder#build()} is
+	 * used. The returned value may be {@code null}.
+	 * 
+	 * @param &lt;T&gt;
+	 *            the type of the built instance
+	 * @param builder
+	 *            the builder
+	 * @return the built instance or null if builder is null or if it returns
+	 *         null
+	 */
+	public static &lt;T&gt; T build(Builder&lt;T&gt; builder) {
+<span class="fc bfc" id="L235" title="All 2 branches covered.">		if (builder == null) {</span>
+<span class="fc" id="L236">			return null;</span>
+		}
+<span class="fc" id="L238">		return builder.build();</span>
+	}
+
 	private static &lt;T, B extends Builder&lt;? extends T&gt;, P&gt; B instantiate(Class&lt;B&gt; builderClass, P parent, BuildContext buildContext)
 			throws InstantiationException, IllegalAccessException, InvocationTargetException {
 		try {
-<span class="fc" id="L220">			return builderClass.getConstructor(parent.getClass(), BuildContext.class).newInstance(parent, buildContext);</span>
-<span class="fc" id="L221">		} catch (NoSuchMethodException e) {</span>
+<span class="fc" id="L244">			return builderClass.getConstructor(parent.getClass(), BuildContext.class).newInstance(parent, buildContext);</span>
+<span class="fc" id="L245">		} catch (NoSuchMethodException e) {</span>
 			// skip
 		}
 		try {
-<span class="nc" id="L225">			return builderClass.getConstructor(parent.getClass()).newInstance(parent);</span>
-<span class="fc" id="L226">		} catch (NoSuchMethodException e) {</span>
+<span class="nc" id="L249">			return builderClass.getConstructor(parent.getClass()).newInstance(parent);</span>
+<span class="fc" id="L250">		} catch (NoSuchMethodException e) {</span>
 			// skip
 		}
 		try {
-<span class="nc" id="L230">			return builderClass.getConstructor(BuildContext.class).newInstance(buildContext);</span>
-<span class="fc" id="L231">		} catch (NoSuchMethodException e) {</span>
+<span class="nc" id="L254">			return builderClass.getConstructor(BuildContext.class).newInstance(buildContext);</span>
+<span class="fc" id="L255">		} catch (NoSuchMethodException e) {</span>
 			// skip
 		}
 		try {
-<span class="fc" id="L235">			return builderClass.getConstructor().newInstance();</span>
-<span class="fc" id="L236">		} catch (NoSuchMethodException e) {</span>
+<span class="fc" id="L259">			return builderClass.getConstructor().newInstance();</span>
+<span class="fc" id="L260">		} catch (NoSuchMethodException e) {</span>
 			// skip
 		}
-<span class="fc" id="L239">		StringJoiner joiner = new StringJoiner(&quot;\n- &quot;, &quot;\n- &quot;, &quot;\n&quot;);</span>
-<span class="fc" id="L240">		joiner.add(&quot;constructor(&quot; + parent.getClass().getName() + &quot;, &quot; + BuildContext.class.getName() + &quot;)\n   if you want fluent chaining and inherit current build context&quot;);</span>
-<span class="fc" id="L241">		joiner.add(&quot;constructor(&quot; + parent.getClass().getName() + &quot;)\n   if you want fluent chaining&quot;);</span>
-<span class="fc" id="L242">		joiner.add(&quot;constructor(&quot; + BuildContext.class.getName() + &quot;)\n   if you don't want fluent chaining but inherit current build context&quot;);</span>
-<span class="fc" id="L243">		joiner.add(&quot;constructor()\n   if you don't want fluent chaining and inherit current build context&quot;);</span>
-<span class="fc" id="L244">		throw new BuildException(&quot;No matching constructor found. The builder implementation must provide one of following constructors:&quot; + joiner.toString());</span>
+<span class="fc" id="L263">		StringJoiner joiner = new StringJoiner(&quot;\n- &quot;, &quot;\n- &quot;, &quot;\n&quot;);</span>
+<span class="fc" id="L264">		joiner.add(&quot;constructor(&quot; + parent.getClass().getName() + &quot;, &quot; + BuildContext.class.getName() + &quot;)\n   if you want fluent chaining and inherit current build context&quot;);</span>
+<span class="fc" id="L265">		joiner.add(&quot;constructor(&quot; + parent.getClass().getName() + &quot;)\n   if you want fluent chaining&quot;);</span>
+<span class="fc" id="L266">		joiner.add(&quot;constructor(&quot; + BuildContext.class.getName() + &quot;)\n   if you don't want fluent chaining but inherit current build context&quot;);</span>
+<span class="fc" id="L267">		joiner.add(&quot;constructor()\n   if you don't want fluent chaining and inherit current build context&quot;);</span>
+<span class="fc" id="L268">		throw new BuildException(&quot;No matching constructor found. The builder implementation must provide one of following constructors:&quot; + joiner.toString());</span>
 	}
 
 	private static Converter getConverter() {
-<span class="nc bnc" id="L248" title="All 2 branches missed.">		if (converter == null) {</span>
-<span class="nc" id="L249">			converter = new DefaultConverter();</span>
+<span class="nc bnc" id="L272" title="All 2 branches missed.">		if (converter == null) {</span>
+<span class="nc" id="L273">			converter = new DefaultConverter();</span>
 		}
-<span class="nc" id="L251">		return converter;</span>
+<span class="nc" id="L275">		return converter;</span>
 	}
 
 	private BuilderUtils() {
