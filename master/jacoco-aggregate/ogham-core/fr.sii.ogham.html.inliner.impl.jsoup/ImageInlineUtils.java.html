@@ -6,6 +6,7 @@ import static fr.sii.ogham.html.inliner.ImageInlinerConstants.INLINE_MODE_ATTR;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+import org.jsoup.nodes.Node;
 import org.jsoup.select.Elements;
 
 import fr.sii.ogham.html.inliner.ImageInlinerConstants;
@@ -28,18 +29,19 @@ public final class ImageInlineUtils {
 	 *            the actual mode
 	 * @return true if this mode is allowed, false otherwise
 	 */
-	public static boolean isInlineModeAllowed(Element img, InlineMode mode) {
+	@SuppressWarnings(&quot;squid:S1126&quot;)
+	public static boolean isInlineModeAllowed(Node img, InlineMode mode) {
 		// if already inlined =&gt; reject (do not inline twice)
-<span class="pc bpc" id="L33" title="1 of 2 branches missed.">		if (!img.attr(INLINED_ATTR).isEmpty()) {</span>
-<span class="nc" id="L34">			return false;</span>
+<span class="pc bpc" id="L35" title="1 of 2 branches missed.">		if (!img.attr(INLINED_ATTR).isEmpty()) {</span>
+<span class="nc" id="L36">			return false;</span>
 		}
 		// if inline mode defined but not the wanted mode =&gt; reject
-<span class="fc bfc" id="L37" title="All 4 branches covered.">		if (!img.attr(INLINE_MODE_ATTR).isEmpty() &amp;&amp; !img.attr(INLINE_MODE_ATTR).equals(mode.mode())) {</span>
-<span class="fc" id="L38">			return false;</span>
+<span class="fc bfc" id="L39" title="All 4 branches covered.">		if (!img.attr(INLINE_MODE_ATTR).isEmpty() &amp;&amp; !mode.is(img.attr(INLINE_MODE_ATTR))) {</span>
+<span class="fc" id="L40">			return false;</span>
 		}
 		// if inline mode defined and matches the wanted mode =&gt; allow
 		// if no inline mode defined =&gt; allow (any mode allowed)
-<span class="fc" id="L42">		return true;</span>
+<span class="fc" id="L44">		return true;</span>
 	}
 
 	/**
@@ -54,13 +56,13 @@ public final class ImageInlineUtils {
 	 * @return the cleaned html
 	 */
 	public static String removeOghamAttributes(String html) {
-<span class="fc" id="L57">		Document doc = Jsoup.parse(html);</span>
-<span class="fc" id="L58">		Elements imgs = doc.select(&quot;img&quot;);</span>
-<span class="fc bfc" id="L59" title="All 2 branches covered.">		for (Element img : imgs) {</span>
-<span class="fc" id="L60">			img.removeAttr(INLINE_MODE_ATTR);</span>
-<span class="fc" id="L61">			img.removeAttr(INLINED_ATTR);</span>
-<span class="fc" id="L62">		}</span>
-<span class="fc" id="L63">		return doc.outerHtml();</span>
+<span class="fc" id="L59">		Document doc = Jsoup.parse(html);</span>
+<span class="fc" id="L60">		Elements imgs = doc.select(&quot;img&quot;);</span>
+<span class="fc bfc" id="L61" title="All 2 branches covered.">		for (Element img : imgs) {</span>
+<span class="fc" id="L62">			img.removeAttr(INLINE_MODE_ATTR);</span>
+<span class="fc" id="L63">			img.removeAttr(INLINED_ATTR);</span>
+<span class="fc" id="L64">		}</span>
+<span class="fc" id="L65">		return doc.outerHtml();</span>
 	}
 
 	private ImageInlineUtils() {

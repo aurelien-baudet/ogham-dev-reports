@@ -7,7 +7,7 @@ import fr.sii.ogham.core.resource.resolver.ClassPathResolver;
 import fr.sii.ogham.core.resource.resolver.DelegateResourceResolver;
 import fr.sii.ogham.core.resource.resolver.ResourceResolver;
 import fr.sii.ogham.template.thymeleaf.common.adapter.AbstractTemplateResolverOptionsAdapter;
-import fr.sii.ogham.template.thymeleaf.common.adapter.TemplateResolverAdapter;
+import fr.sii.ogham.template.thymeleaf.common.adapter.TemplateResolverOptionsApplier;
 import fr.sii.ogham.template.thymeleaf.v2.resolver.FixClassLoaderTemplateResolver;
 
 /**
@@ -17,18 +17,22 @@ import fr.sii.ogham.template.thymeleaf.v2.resolver.FixClassLoaderTemplateResolve
  * @author Aurélien Baudet
  *
  */
-<span class="fc" id="L20">public class FixClassPathResolverAdapter extends AbstractTemplateResolverOptionsAdapter implements TemplateResolverAdapter {</span>
+public class FixClassPathResolverAdapter extends AbstractTemplateResolverOptionsAdapter {
+	public FixClassPathResolverAdapter(TemplateResolverOptionsApplier optionsSetter) {
+<span class="fc" id="L22">		super(optionsSetter);</span>
+<span class="fc" id="L23">	}</span>
+
 	@Override
 	public boolean supports(ResourceResolver resolver) {
-<span class="pc bpc" id="L23" title="1 of 2 branches missed.">		ResourceResolver actualResolver = resolver instanceof DelegateResourceResolver ? ((DelegateResourceResolver) resolver).getActualResourceResolver() : resolver;</span>
-<span class="fc" id="L24">		return actualResolver instanceof ClassPathResolver;</span>
+<span class="fc bfc" id="L27" title="All 2 branches covered.">		ResourceResolver actualResolver = resolver instanceof DelegateResourceResolver ? ((DelegateResourceResolver) resolver).getActualResourceResolver() : resolver;</span>
+<span class="fc" id="L28">		return actualResolver instanceof ClassPathResolver;</span>
 	}
 
 	@Override
 	public ITemplateResolver adapt(ResourceResolver resolver) {
-<span class="fc" id="L29">		FixClassLoaderTemplateResolver templateResolver = new FixClassLoaderTemplateResolver();</span>
-<span class="fc" id="L30">		applyOptions(templateResolver);</span>
-<span class="fc" id="L31">		return templateResolver;</span>
+<span class="fc" id="L33">		FixClassLoaderTemplateResolver templateResolver = new FixClassLoaderTemplateResolver();</span>
+<span class="fc" id="L34">		applyOptions(templateResolver);</span>
+<span class="fc" id="L35">		return templateResolver;</span>
 	}
 
 }

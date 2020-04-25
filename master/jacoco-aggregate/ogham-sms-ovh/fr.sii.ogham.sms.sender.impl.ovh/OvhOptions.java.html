@@ -5,8 +5,8 @@
  * &lt;ul&gt;
  * &lt;li&gt;noStop: do not display STOP footer. Disabled by default&lt;/li&gt;
  * &lt;li&gt;tag: mark the sent SMS with a tag (20 characters max)&lt;/li&gt;
- * &lt;li&gt;smsCoding: the SMS encoding. 7bits by default. If you change to UTF-8 (8bits),
- * the message limit will be 70 instead of 160&lt;/li&gt;
+ * &lt;li&gt;smsCoding: the SMS encoding. 7bits by default. If you change to Unicode,
+ * the message limit will be 70 instead of 160.&lt;/li&gt;
  * &lt;/ul&gt;
  * 
  * @author Aurélien Baudet
@@ -34,7 +34,7 @@ public class OvhOptions {
 
 	public OvhOptions(boolean noStop, String tag, SmsCoding smsCoding) {
 <span class="fc" id="L36">		super();</span>
-<span class="pc bpc" id="L37" title="1 of 2 branches missed.">		this.noStop = noStop ? 1 : 0;</span>
+<span class="fc" id="L37">		this.noStop = toInt(noStop);</span>
 <span class="fc" id="L38">		this.tag = tag;</span>
 <span class="fc" id="L39">		this.smsCoding = smsCoding;</span>
 <span class="fc" id="L40">	}</span>
@@ -52,7 +52,7 @@ public class OvhOptions {
 	}
 
 	public void setNoStop(boolean noStop) {
-<span class="nc bnc" id="L55" title="All 2 branches missed.">		this.noStop = noStop ? 1 : 0;</span>
+<span class="nc" id="L55">		this.noStop = toInt(noStop);</span>
 <span class="nc" id="L56">	}</span>
 
 	public void setTag(String tag) {
@@ -62,5 +62,9 @@ public class OvhOptions {
 	public void setSmsCoding(SmsCoding smsCoding) {
 <span class="nc" id="L63">		this.smsCoding = smsCoding;</span>
 <span class="nc" id="L64">	}</span>
+
+	private static int toInt(boolean noStop) {
+<span class="fc bfc" id="L67" title="All 2 branches covered.">		return noStop ? 1 : 0;</span>
+	}
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

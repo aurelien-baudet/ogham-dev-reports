@@ -2,7 +2,9 @@
 
 import org.apache.tika.Tika;
 
-import fr.sii.ogham.core.builder.AbstractParent;
+import fr.sii.ogham.core.builder.configuration.ConfigurationValueBuilder;
+import fr.sii.ogham.core.builder.configuration.ConfigurationValueBuilderDelegate;
+import fr.sii.ogham.core.fluent.AbstractParent;
 import fr.sii.ogham.core.mimetype.MimeTypeProvider;
 
 /**
@@ -35,25 +37,30 @@ public class TikaBuilderDelegate&lt;P&gt; extends AbstractParent&lt;P&gt; implem
 	 *            the instance that will really be updated
 	 */
 	public TikaBuilderDelegate(P parent, TikaBuilder&lt;?&gt; delegate) {
-<span class="nc" id="L38">		super(parent);</span>
-<span class="nc" id="L39">		this.delegate = delegate;</span>
-<span class="nc" id="L40">	}</span>
+<span class="nc" id="L40">		super(parent);</span>
+<span class="nc" id="L41">		this.delegate = delegate;</span>
+<span class="nc" id="L42">	}</span>
 
 	@Override
 	public TikaBuilderDelegate&lt;P&gt; instance(Tika tika) {
-<span class="nc" id="L44">		delegate.instance(tika);</span>
-<span class="nc" id="L45">		return this;</span>
+<span class="nc" id="L46">		delegate.instance(tika);</span>
+<span class="nc" id="L47">		return this;</span>
 	}
-	
+
 	@Override
-	public TikaBuilderDelegate&lt;P&gt; failIfOctetStream(boolean fail) {
-<span class="nc" id="L50">		delegate.failIfOctetStream(fail);</span>
-<span class="nc" id="L51">		return this;</span>
+	public TikaBuilder&lt;P&gt; failIfOctetStream(Boolean fail) {
+<span class="nc" id="L52">		delegate.failIfOctetStream(fail);</span>
+<span class="nc" id="L53">		return this;</span>
+	}
+
+	@Override
+	public ConfigurationValueBuilder&lt;TikaBuilder&lt;P&gt;, Boolean&gt; failIfOctetStream() {
+<span class="nc" id="L58">		return new ConfigurationValueBuilderDelegate&lt;&gt;(this, delegate.failIfOctetStream());</span>
 	}
 
 	@Override
 	public MimeTypeProvider build() {
-<span class="nc" id="L56">		return delegate.build();</span>
+<span class="nc" id="L63">		return delegate.build();</span>
 	}
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

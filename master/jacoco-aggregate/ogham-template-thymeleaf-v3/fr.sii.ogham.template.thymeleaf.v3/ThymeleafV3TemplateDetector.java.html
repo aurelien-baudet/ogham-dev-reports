@@ -64,11 +64,11 @@ public class ThymeleafV3TemplateDetector implements TemplateEngineDetector {
 			}
 <span class="fc bfc" id="L65" title="All 4 branches covered.">			return isThymeleafTemplate || isEmptyTemplate(resolvedTemplate);</span>
 <span class="nc" id="L66">		} catch (IOException e) {</span>
-<span class="nc" id="L67">			throw new EngineDetectionException(&quot;Failed to detect if template can be read by thymeleaf&quot;, e);</span>
+<span class="nc" id="L67">			throw new EngineDetectionException(&quot;Failed to detect because template can't be read by thymeleaf&quot;, e);</span>
 		}
 	}
 
-	private boolean isThymeleafTemplate(BufferedReader br) throws IOException {
+	private static boolean isThymeleafTemplate(BufferedReader br) throws IOException {
 		String line;
 		do {
 <span class="fc" id="L74">			line = br.readLine();</span>
@@ -79,17 +79,17 @@ public class ThymeleafV3TemplateDetector implements TemplateEngineDetector {
 <span class="fc" id="L79">		return false;</span>
 	}
 	
-	private boolean isEmptyTemplate(Resource template) throws IOException {
+	private static boolean isEmptyTemplate(Resource template) throws IOException {
 <span class="fc" id="L83">		try (InputStream stream = template.getInputStream()) {</span>
 <span class="fc bfc" id="L84" title="All 2 branches covered.">			return stream.read() == -1;</span>
 		}
 	}
 
-	private boolean containsThymeleafNamespace(String line) {
+	private static boolean containsThymeleafNamespace(String line) {
 <span class="fc" id="L89">		return NAMESPACE_PATTERN.matcher(line).find();</span>
 	}
 
-	private boolean containsThymeleafVariables(String line) {
+	private static boolean containsThymeleafVariables(String line) {
 <span class="fc" id="L93">		return VARIABLE_PATTERN.matcher(line).find();</span>
 	}
 
@@ -97,7 +97,7 @@ public class ThymeleafV3TemplateDetector implements TemplateEngineDetector {
 		try {
 <span class="fc" id="L98">			return resolver.getResource(templateName);</span>
 <span class="fc" id="L99">		} catch (ResourceResolutionException e) {</span>
-<span class="fc" id="L100">			LOG.trace(&quot;Thymeleaf detector can't be applied because &quot; + templateName + &quot; couldn't be resolved&quot;, e);</span>
+<span class="fc" id="L100">			LOG.trace(&quot;Thymeleaf detector can't be applied because {} couldn't be resolved&quot;, templateName, e);</span>
 <span class="fc" id="L101">			return null;</span>
 		}
 	}

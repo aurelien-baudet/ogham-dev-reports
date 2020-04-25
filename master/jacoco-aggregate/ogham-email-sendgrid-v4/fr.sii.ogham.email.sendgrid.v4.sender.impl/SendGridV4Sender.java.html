@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>SendGridV4Sender.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">reporting</a> &gt; <a href="../index.html" class="el_bundle">ogham-email-sendgrid-v4</a> &gt; <a href="index.source.html" class="el_package">fr.sii.ogham.email.sendgrid.v4.sender.impl</a> &gt; <span class="el_source">SendGridV4Sender.java</span></div><h1>SendGridV4Sender.java</h1><pre class="source lang-java linenums">package fr.sii.ogham.email.sendgrid.v4.sender.impl;
 
-import static fr.sii.ogham.core.util.LogUtils.summarize;
+import static fr.sii.ogham.core.util.LogUtils.logString;
+import static fr.sii.ogham.email.sendgrid.SendGridConstants.DEFAULT_SENDGRID_IMPLEMENTATION_PRIORITY;
+import static fr.sii.ogham.email.sendgrid.sender.EmailValidator.validate;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.regex.Pattern;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,6 +15,7 @@ import com.sendgrid.helpers.mail.Mail;
 import com.sendgrid.helpers.mail.objects.Attachments;
 import com.sendgrid.helpers.mail.objects.Personalization;
 
+import fr.sii.ogham.core.builder.priority.Priority;
 import fr.sii.ogham.core.exception.MessageException;
 import fr.sii.ogham.core.exception.mimetype.MimeTypeDetectionException;
 import fr.sii.ogham.core.mimetype.MimeTypeProvider;
@@ -21,7 +23,7 @@ import fr.sii.ogham.core.sender.AbstractSpecializedSender;
 import fr.sii.ogham.core.util.Base64Utils;
 import fr.sii.ogham.core.util.IOUtils;
 import fr.sii.ogham.email.attachment.Attachment;
-import fr.sii.ogham.email.exception.sendgrid.ContentHandlerException;
+import fr.sii.ogham.email.exception.handler.ContentHandlerException;
 import fr.sii.ogham.email.message.Email;
 import fr.sii.ogham.email.message.EmailAddress;
 import fr.sii.ogham.email.message.Recipient;
@@ -35,9 +37,10 @@ import fr.sii.ogham.email.sendgrid.v4.sender.impl.sendgrid.handler.SendGridConte
 /**
  * SendGrid-backed implementation of the email sender.
  */
+@Priority(properties = &quot;${ogham.email.implementation-priority.sendgrid}&quot;, defaultValue = DEFAULT_SENDGRID_IMPLEMENTATION_PRIORITY)
 public final class SendGridV4Sender extends AbstractSpecializedSender&lt;Email&gt; implements SendGridSender {
-
-<span class="fc" id="L40">	private static final Logger LOG = LoggerFactory.getLogger(SendGridV4Sender.class);</span>
+<span class="fc" id="L42">	private static final Logger LOG = LoggerFactory.getLogger(SendGridV4Sender.class);</span>
+<span class="fc" id="L43">	private static final Pattern CID = Pattern.compile(&quot;^&lt;(.+)&gt;$&quot;);</span>
 
 	private final SendGridClient delegate;
 	private final SendGridContentHandler handler;
@@ -56,8 +59,8 @@ public final class SendGridV4Sender extends AbstractSpecializedSender&lt;Email&g
 	 *            determines mimetype for attachments
 	 */
 	public SendGridV4Sender(final SendGridClient service, final SendGridContentHandler handler, MimeTypeProvider mimetypeProvider) {
-<span class="nc" id="L59">		this(service, handler, mimetypeProvider, null);</span>
-<span class="nc" id="L60">	}</span>
+<span class="fc" id="L62">		this(service, handler, mimetypeProvider, null);</span>
+<span class="fc" id="L63">	}</span>
 
 	/**
 	 * Constructor.
@@ -72,45 +75,42 @@ public final class SendGridV4Sender extends AbstractSpecializedSender&lt;Email&g
 	 * @param interceptor
 	 *            an extension point for customizing the email to send
 	 */
-<span class="fc" id="L75">	public SendGridV4Sender(final SendGridClient service, final SendGridContentHandler handler, MimeTypeProvider mimetypeProvider, SendGridInterceptor interceptor) {</span>
-<span class="pc bpc" id="L76" title="1 of 2 branches missed.">		if (service == null) {</span>
-<span class="nc" id="L77">			throw new IllegalArgumentException(&quot;[service] cannot be null&quot;);</span>
+<span class="fc" id="L78">	public SendGridV4Sender(final SendGridClient service, final SendGridContentHandler handler, MimeTypeProvider mimetypeProvider, SendGridInterceptor interceptor) {</span>
+<span class="fc bfc" id="L79" title="All 2 branches covered.">		if (service == null) {</span>
+<span class="fc" id="L80">			throw new IllegalArgumentException(&quot;[service] cannot be null&quot;);</span>
 		}
-<span class="pc bpc" id="L79" title="1 of 2 branches missed.">		if (handler == null) {</span>
-<span class="nc" id="L80">			throw new IllegalArgumentException(&quot;[handler] cannot be null&quot;);</span>
+<span class="fc bfc" id="L82" title="All 2 branches covered.">		if (handler == null) {</span>
+<span class="fc" id="L83">			throw new IllegalArgumentException(&quot;[handler] cannot be null&quot;);</span>
 		}
-<span class="pc bpc" id="L82" title="1 of 2 branches missed.">		if (mimetypeProvider == null) {</span>
-<span class="nc" id="L83">			throw new IllegalArgumentException(&quot;[mimetypeProvider] cannot be null&quot;);</span>
+<span class="fc bfc" id="L85" title="All 2 branches covered.">		if (mimetypeProvider == null) {</span>
+<span class="fc" id="L86">			throw new IllegalArgumentException(&quot;[mimetypeProvider] cannot be null&quot;);</span>
 		}
 
-<span class="fc" id="L86">		this.delegate = service;</span>
-<span class="fc" id="L87">		this.handler = handler;</span>
-<span class="fc" id="L88">		this.mimetypeProvider = mimetypeProvider;</span>
-<span class="fc" id="L89">		this.interceptor = interceptor;</span>
-<span class="fc" id="L90">	}</span>
+<span class="fc" id="L89">		this.delegate = service;</span>
+<span class="fc" id="L90">		this.handler = handler;</span>
+<span class="fc" id="L91">		this.mimetypeProvider = mimetypeProvider;</span>
+<span class="fc" id="L92">		this.interceptor = interceptor;</span>
+<span class="fc" id="L93">	}</span>
 
 	@Override
 	public void send(final Email message) throws MessageException {
-<span class="pc bpc" id="L94" title="1 of 2 branches missed.">		if (message == null) {</span>
-<span class="nc" id="L95">			throw new IllegalArgumentException(&quot;[message] cannot be null&quot;);</span>
+<span class="fc bfc" id="L97" title="All 2 branches covered.">		if (message == null) {</span>
+<span class="fc" id="L98">			throw new IllegalArgumentException(&quot;[message] cannot be null&quot;);</span>
 		}
-<span class="fc" id="L97">		final Set&lt;String&gt; violations = validate(message);</span>
-<span class="pc bpc" id="L98" title="1 of 2 branches missed.">		if (!violations.isEmpty()) {</span>
-<span class="nc" id="L99">			throw new MessageException(&quot;The provided email is invalid. (Violations: &quot; + violations + &quot;)&quot;, message);</span>
-		}
+<span class="fc" id="L100">		validate(message);</span>
 
 		try {
 <span class="fc" id="L103">			LOG.debug(&quot;Preparing to send email using SendGrid: {}&quot;, message);</span>
 <span class="fc" id="L104">			final Mail sgEmail = intercept(toSendGridEmail(message), message);</span>
 
-<span class="fc" id="L106">			LOG.debug(&quot;Sending email {}&quot;, summarize(message));</span>
+<span class="fc" id="L106">			LOG.debug(&quot;Sending email {}&quot;, logString(message));</span>
 <span class="fc" id="L107">			LOG.trace(&quot;SendGrid email: {}&quot;, sgEmail);</span>
 <span class="fc" id="L108">			delegate.send(sgEmail);</span>
 <span class="fc" id="L109">			LOG.debug(&quot;Email has been successfully sent&quot;);</span>
 <span class="nc" id="L110">		} catch (ContentHandlerException e) {</span>
 <span class="nc" id="L111">			throw new MessageException(&quot;A content-related error occurred when trying to build an email&quot;, message, e);</span>
-<span class="nc" id="L112">		} catch (AttachmentReadException e) {</span>
-<span class="nc" id="L113">			throw new MessageException(&quot;Attaching file to email failed when trying to send an email&quot;, message, e);</span>
+<span class="fc" id="L112">		} catch (AttachmentReadException e) {</span>
+<span class="fc" id="L113">			throw new MessageException(&quot;Attaching file to email failed when trying to send an email&quot;, message, e);</span>
 <span class="fc" id="L114">		} catch (SendGridException e) {</span>
 <span class="fc" id="L115">			throw new MessageException(&quot;A SendGrid-related error occurred when trying to send an email&quot;, message, e);</span>
 <span class="fc" id="L116">		}</span>
@@ -123,92 +123,79 @@ public final class SendGridV4Sender extends AbstractSpecializedSender&lt;Email&g
 <span class="nc" id="L123">		return interceptor.intercept(sendGridEmail, source);</span>
 	}
 
-	private Set&lt;String&gt; validate(final Email message) {
-<span class="fc" id="L127">		final Set&lt;String&gt; violations = new HashSet&lt;&gt;();</span>
-
-<span class="pc bpc" id="L129" title="1 of 2 branches missed.">		if (message.getContent() == null) {</span>
-<span class="nc" id="L130">			violations.add(&quot;Missing content&quot;);</span>
-		}
-<span class="pc bpc" id="L132" title="1 of 2 branches missed.">		if (message.getSubject() == null) {</span>
-<span class="nc" id="L133">			violations.add(&quot;Missing subject&quot;);</span>
-		}
-
-<span class="pc bpc" id="L136" title="1 of 2 branches missed.">		if (message.getFrom() == null) {</span>
-<span class="nc" id="L137">			violations.add(&quot;Missing sender email address&quot;);</span>
-		}
-
-<span class="pc bpc" id="L140" title="1 of 2 branches missed.">		if (message.getRecipients().isEmpty()) {</span>
-<span class="nc" id="L141">			violations.add(&quot;Missing recipients&quot;);</span>
-		}
-
-<span class="fc bfc" id="L144" title="All 2 branches covered.">		for (Recipient recipient : message.getRecipients()) {</span>
-<span class="pc bpc" id="L145" title="1 of 2 branches missed.">			if (recipient.getAddress().getAddress() == null) {</span>
-<span class="nc" id="L146">				violations.add(&quot;Missing recipient address &quot; + recipient);</span>
-			}
-<span class="fc" id="L148">		}</span>
-
-<span class="fc" id="L150">		return violations;</span>
-	}
-
 	private Mail toSendGridEmail(final Email message) throws ContentHandlerException, AttachmentReadException {
-<span class="fc" id="L154">		final Mail sendGridMail = new Mail();</span>
-<span class="fc" id="L155">		sendGridMail.setSubject(message.getSubject());</span>
+<span class="fc" id="L127">		final Mail sendGridMail = new Mail();</span>
+<span class="fc" id="L128">		sendGridMail.setSubject(message.getSubject());</span>
 
-<span class="fc" id="L157">		sendGridMail.setFrom(new com.sendgrid.helpers.mail.objects.Email(message.getFrom().getAddress(), message.getFrom().getPersonal()));</span>
+<span class="fc" id="L130">		sendGridMail.setFrom(new com.sendgrid.helpers.mail.objects.Email(message.getFrom().getAddress(), message.getFrom().getPersonal()));</span>
 
-<span class="fc bfc" id="L159" title="All 2 branches covered.">		for (Recipient recipient : message.getRecipients()) {</span>
-<span class="fc" id="L160">			sendGridMail.addPersonalization(toPersonalization(recipient));</span>
-<span class="fc" id="L161">		}</span>
+<span class="fc" id="L132">		sendGridMail.addPersonalization(toPersonalization(message));</span>
 
-<span class="fc" id="L163">		handler.setContent(sendGridMail, message.getContent());</span>
+<span class="fc" id="L134">		handler.setContent(message, sendGridMail, message.getContent());</span>
 
-<span class="fc bfc" id="L165" title="All 2 branches covered.">		for (Attachment attachment : message.getAttachments()) {</span>
-<span class="fc" id="L166">			addAttachment(sendGridMail, attachment);</span>
-<span class="fc" id="L167">		}</span>
+<span class="fc bfc" id="L136" title="All 2 branches covered.">		for (Attachment attachment : message.getAttachments()) {</span>
+<span class="fc" id="L137">			addAttachment(sendGridMail, attachment);</span>
+<span class="fc" id="L138">		}</span>
 
-<span class="fc" id="L169">		return sendGridMail;</span>
+<span class="fc" id="L140">		return sendGridMail;</span>
 	}
 
-	private Personalization toPersonalization(Recipient recipient) {
-<span class="fc" id="L173">		Personalization personalization = new Personalization();</span>
-<span class="fc" id="L174">		addRecipient(personalization, recipient);</span>
-<span class="fc" id="L175">		return personalization;</span>
+	private static Personalization toPersonalization(final Email message) {
+<span class="fc" id="L144">		Personalization personalization = new Personalization();</span>
+<span class="fc bfc" id="L145" title="All 2 branches covered.">		for (Recipient recipient : message.getRecipients()) {</span>
+<span class="fc" id="L146">			addRecipient(personalization, recipient);</span>
+<span class="fc" id="L147">		}</span>
+<span class="fc" id="L148">		return personalization;</span>
 	}
 
-	private void addRecipient(Personalization personalization, Recipient recipient) {
-<span class="fc" id="L179">		final EmailAddress address = recipient.getAddress();</span>
-<span class="pc bpc" id="L180" title="3 of 4 branches missed.">		switch (recipient.getType()) {</span>
-		case TO:
-<span class="fc" id="L182">			personalization.addTo(new com.sendgrid.helpers.mail.objects.Email(address.getAddress(), address.getPersonal()));</span>
-<span class="fc" id="L183">			break;</span>
-		case CC:
-<span class="nc" id="L185">			personalization.addCc(new com.sendgrid.helpers.mail.objects.Email(address.getAddress(), address.getPersonal()));</span>
-<span class="nc" id="L186">			break;</span>
-		case BCC:
-<span class="nc" id="L188">			personalization.addBcc(new com.sendgrid.helpers.mail.objects.Email(address.getAddress(), address.getPersonal()));</span>
-			break;
+	private static void addRecipient(Personalization personalization, Recipient recipient) {
+<span class="fc" id="L152">		final EmailAddress address = recipient.getAddress();</span>
+<span class="pc bpc" id="L153" title="1 of 4 branches missed.">		switch (recipient.getType()) {</span>
+			case TO:
+<span class="fc" id="L155">				personalization.addTo(new com.sendgrid.helpers.mail.objects.Email(address.getAddress(), address.getPersonal()));</span>
+<span class="fc" id="L156">				break;</span>
+			case CC:
+<span class="fc" id="L158">				personalization.addCc(new com.sendgrid.helpers.mail.objects.Email(address.getAddress(), address.getPersonal()));</span>
+<span class="fc" id="L159">				break;</span>
+			case BCC:
+<span class="fc" id="L161">				personalization.addBcc(new com.sendgrid.helpers.mail.objects.Email(address.getAddress(), address.getPersonal()));</span>
+				break;
 		}
-<span class="fc" id="L191">	}</span>
+<span class="fc" id="L164">	}</span>
 
 	private void addAttachment(final Mail sendGridMail, final Attachment attachment) throws AttachmentReadException {
 		try {
-<span class="fc" id="L195">			Attachments sendGridAttachment = new Attachments();</span>
-<span class="fc" id="L196">			byte[] bytes = IOUtils.toByteArray(attachment.getResource().getInputStream());</span>
-<span class="fc" id="L197">			sendGridAttachment.setContent(Base64Utils.encodeToString(bytes));</span>
-<span class="fc" id="L198">			sendGridAttachment.setContentId(attachment.getContentId());</span>
-<span class="fc" id="L199">			sendGridAttachment.setDisposition(attachment.getDisposition());</span>
-<span class="fc" id="L200">			sendGridAttachment.setFilename(attachment.getResource().getName());</span>
-<span class="fc" id="L201">			sendGridAttachment.setType(mimetypeProvider.detect(new ByteArrayInputStream(bytes)).toString());</span>
-<span class="fc" id="L202">			sendGridMail.addAttachments(sendGridAttachment);</span>
-<span class="nc" id="L203">		} catch (IOException e) {</span>
-<span class="nc" id="L204">			throw new AttachmentReadException(&quot;Failed to attach email attachment named &quot; + attachment.getResource().getName(), attachment, e);</span>
-<span class="nc" id="L205">		} catch (MimeTypeDetectionException e) {</span>
-<span class="nc" id="L206">			throw new AttachmentReadException(&quot;Failed to determine mimetype for email attachment named &quot; + attachment.getResource().getName(), attachment, e);</span>
-<span class="fc" id="L207">		}</span>
-<span class="fc" id="L208">	}</span>
+<span class="fc" id="L168">			Attachments sendGridAttachment = new Attachments();</span>
+<span class="fc" id="L169">			byte[] bytes = IOUtils.toByteArray(attachment.getResource().getInputStream());</span>
+<span class="fc" id="L170">			sendGridAttachment.setContent(Base64Utils.encodeToString(bytes));</span>
+<span class="fc" id="L171">			sendGridAttachment.setContentId(toCid(attachment.getContentId()));</span>
+<span class="fc" id="L172">			sendGridAttachment.setDisposition(attachment.getDisposition());</span>
+<span class="fc" id="L173">			sendGridAttachment.setFilename(attachment.getResource().getName());</span>
+<span class="fc" id="L174">			sendGridAttachment.setType(getMimetype(attachment, bytes));</span>
+<span class="fc" id="L175">			sendGridMail.addAttachments(sendGridAttachment);</span>
+<span class="fc" id="L176">		} catch (IOException e) {</span>
+<span class="fc" id="L177">			throw new AttachmentReadException(&quot;Failed to attach email attachment named &quot; + attachment.getResource().getName(), attachment, e);</span>
+<span class="nc" id="L178">		} catch (MimeTypeDetectionException e) {</span>
+<span class="nc" id="L179">			throw new AttachmentReadException(&quot;Failed to determine mimetype for email attachment named &quot; + attachment.getResource().getName(), attachment, e);</span>
+<span class="fc" id="L180">		}</span>
+<span class="fc" id="L181">	}</span>
+
+	private String getMimetype(Attachment attachment, byte[] bytes) throws MimeTypeDetectionException {
+<span class="fc bfc" id="L184" title="All 2 branches covered.">		if (attachment.getContentType() != null) {</span>
+<span class="fc" id="L185">			return attachment.getContentType();</span>
+		}
+<span class="fc" id="L187">		return mimetypeProvider.detect(new ByteArrayInputStream(bytes)).toString();</span>
+	}
+
+	private static String toCid(final String contentId) {
+<span class="fc bfc" id="L191" title="All 2 branches covered.">		if (contentId == null) {</span>
+<span class="fc" id="L192">			return null;</span>
+		}
+<span class="fc" id="L194">		return CID.matcher(contentId).replaceAll(&quot;$1&quot;);</span>
+	}
 
 	public SendGridClient getDelegate() {
-<span class="fc" id="L211">		return delegate;</span>
+<span class="fc" id="L198">		return delegate;</span>
 	}
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>
