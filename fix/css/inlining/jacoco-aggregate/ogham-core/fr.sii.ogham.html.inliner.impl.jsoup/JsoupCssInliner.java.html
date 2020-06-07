@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>JsoupCssInliner.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">reporting</a> &gt; <a href="../index.html" class="el_bundle">ogham-core</a> &gt; <a href="index.source.html" class="el_package">fr.sii.ogham.html.inliner.impl.jsoup</a> &gt; <span class="el_source">JsoupCssInliner.java</span></div><h1>JsoupCssInliner.java</h1><pre class="source lang-java linenums">package fr.sii.ogham.html.inliner.impl.jsoup;
+
+import static fr.sii.ogham.html.inliner.impl.jsoup.CssInlineUtils.isInlineModeAllowed;
+
+import java.util.List;
+import java.util.StringTokenizer;
+import java.util.regex.Pattern;
+
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.DataNode;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.parser.Tag;
+import org.jsoup.select.Elements;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import fr.sii.ogham.html.inliner.CssInliner;
+import fr.sii.ogham.html.inliner.CssInlinerConstants.InlineModes;
+import fr.sii.ogham.html.inliner.ExternalCss;
+
+<span class="fc" id="L22">public class JsoupCssInliner implements CssInliner {</span>
+<span class="fc" id="L23">	private static final Logger LOG = LoggerFactory.getLogger(JsoupCssInliner.class);</span>
+	
+	private static final String HREF_ATTR = &quot;href&quot;;
+	private static final String TEMP_STYLE_ATTR = &quot;data-cssstyle&quot;;
+	private static final String STYLE_ATTR = &quot;style&quot;;
+	private static final String STYLE_TAG = &quot;style&quot;;
+	private static final String CSS_LINKS_SELECTOR = &quot;link[rel*=\&quot;stylesheet\&quot;], link[type=\&quot;text/css\&quot;], link[href$=\&quot;.css\&quot;]&quot;;
+<span class="fc" id="L30">	private static final Pattern NEW_LINES = Pattern.compile(&quot;\n&quot;);</span>
+<span class="fc" id="L31">	private static final Pattern COMMENTS = Pattern.compile(&quot;/\\*.*?\\*/&quot;);</span>
+<span class="fc" id="L32">	private static final Pattern SPACES = Pattern.compile(&quot; +&quot;);</span>
+
+	@Override
+	public String inline(String htmlContent, List&lt;ExternalCss&gt; cssContents) {
+<span class="fc" id="L36">		Document doc = Jsoup.parse(htmlContent);</span>
+
+<span class="fc" id="L38">		internStyles(doc, cssContents);</span>
+<span class="fc" id="L39">		String stylesheet = fetchStyles(doc);</span>
+<span class="fc" id="L40">		extractStyles(doc, stylesheet);</span>
+<span class="fc" id="L41">		applyStyles(doc);</span>
+
+<span class="fc" id="L43">		return doc.outerHtml();</span>
+	}
+
+	/**
+	 * Applies the styles to a &lt;code&gt;data-cssstyle&lt;/code&gt; attribute. This is
+	 * because the styles need to be applied sequentially, but before the
+	 * &lt;code&gt;style&lt;/code&gt; defined for the element inline.
+	 *
+	 * @param doc
+	 *            the html document
+	 */
+	private static void extractStyles(Document doc, String stylesheet) {
+<span class="fc" id="L55">		String cleanedStylesheet = ignoreAtRules(stylesheet);</span>
+<span class="fc" id="L56">		cleanedStylesheet = NEW_LINES.matcher(cleanedStylesheet).replaceAll(&quot;&quot;);</span>
+<span class="fc" id="L57">		cleanedStylesheet = COMMENTS.matcher(cleanedStylesheet).replaceAll(&quot;&quot;);</span>
+<span class="fc" id="L58">		cleanedStylesheet = SPACES.matcher(cleanedStylesheet).replaceAll(&quot; &quot;);</span>
+<span class="fc" id="L59">		String styleRules = cleanedStylesheet.trim();</span>
+<span class="fc" id="L60">		String delims = &quot;{}&quot;;</span>
+<span class="fc" id="L61">		StringTokenizer st = new StringTokenizer(styleRules, delims);</span>
+<span class="fc bfc" id="L62" title="All 2 branches covered.">		while (st.countTokens() &gt; 1) {</span>
+<span class="fc" id="L63">			String selector = st.nextToken();</span>
+<span class="fc" id="L64">			String properties = st.nextToken();</span>
+<span class="fc" id="L65">			Elements selectedElements = doc.select(selector.trim());</span>
+<span class="fc bfc" id="L66" title="All 2 branches covered.">			for (Element selElem : selectedElements) {</span>
+<span class="fc" id="L67">				String oldProperties = selElem.attr(TEMP_STYLE_ATTR);</span>
+<span class="fc bfc" id="L68" title="All 2 branches covered.">				selElem.attr(TEMP_STYLE_ATTR, oldProperties.length() &gt; 0 ? concatenateProperties(oldProperties, properties) : properties);</span>
+<span class="fc" id="L69">			}</span>
+<span class="fc" id="L70">		}</span>
+<span class="fc" id="L71">	}</span>
+	
+	/**
+	 * Replace link tags with style tags in order to keep the same inclusion
+	 * order
+	 *
+	 * @param doc
+	 *            the html document
+	 * @param cssContents
+	 *            the list of external css files with their content
+	 */
+	private static void internStyles(Document doc, List&lt;ExternalCss&gt; cssContents) {
+<span class="fc" id="L83">		Elements els = doc.select(CSS_LINKS_SELECTOR);</span>
+<span class="fc bfc" id="L84" title="All 2 branches covered.">		for (Element e : els) {</span>
+<span class="fc bfc" id="L85" title="All 2 branches covered.">			if (isInlineModeAllowed(e, InlineModes.STYLE_ATTR)) {</span>
+<span class="fc" id="L86">				String path = e.attr(HREF_ATTR);</span>
+<span class="fc" id="L87">				String css = getCss(cssContents, path);</span>
+<span class="fc bfc" id="L88" title="All 2 branches covered.">				if (css != null) {</span>
+<span class="fc" id="L89">					Element style = new Element(Tag.valueOf(STYLE_TAG), &quot;&quot;);</span>
+<span class="fc" id="L90">					style.appendChild(new DataNode(css));</span>
+<span class="fc" id="L91">					e.replaceWith(style);</span>
+				}
+			}
+<span class="fc" id="L94">		}</span>
+<span class="fc" id="L95">	}</span>
+
+	private static String getCss(List&lt;ExternalCss&gt; cssContents, String path) {
+<span class="fc bfc" id="L98" title="All 2 branches covered.">		for (ExternalCss css : cssContents) {</span>
+<span class="fc bfc" id="L99" title="All 2 branches covered.">			if (css.getPath().getOriginalPath().contains(path)) {</span>
+<span class="fc" id="L100">				return css.getContent();</span>
+			}
+<span class="fc" id="L102">		}</span>
+<span class="fc" id="L103">		return null;</span>
+	}
+
+	/**
+	 * Generates a stylesheet from an html document
+	 *
+	 * @param doc
+	 *            the html document
+	 * @return a string representing the stylesheet.
+	 */
+	private static String fetchStyles(Document doc) {
+<span class="fc" id="L114">		Elements els = doc.select(STYLE_TAG);</span>
+<span class="fc" id="L115">		StringBuilder styles = new StringBuilder();</span>
+<span class="fc bfc" id="L116" title="All 2 branches covered.">		for (Element e : els) {</span>
+<span class="fc bfc" id="L117" title="All 2 branches covered.">			if (isInlineModeAllowed(e, InlineModes.STYLE_ATTR)) {</span>
+<span class="fc" id="L118">				styles.append(e.data());</span>
+<span class="fc" id="L119">				e.remove();</span>
+			}
+<span class="fc" id="L121">		}</span>
+<span class="fc" id="L122">		return styles.toString();</span>
+	}
+
+	/**
+	 * Transfers styles from the &lt;code&gt;data-cssstyle&lt;/code&gt; attribute to the
+	 * &lt;code&gt;style&lt;/code&gt; attribute.
+	 *
+	 * @param doc
+	 *            the html document
+	 */
+	private static void applyStyles(Document doc) {
+<span class="fc" id="L133">		Elements allStyledElements = doc.getElementsByAttribute(TEMP_STYLE_ATTR);</span>
+
+<span class="fc bfc" id="L135" title="All 2 branches covered.">		for (Element e : allStyledElements) {</span>
+<span class="fc bfc" id="L136" title="All 2 branches covered.">			if (isInlineModeAllowed(e, InlineModes.STYLE_ATTR)) {</span>
+<span class="fc" id="L137">				String newStyle = e.attr(TEMP_STYLE_ATTR);</span>
+<span class="fc" id="L138">				String oldStyle = e.attr(STYLE_ATTR);</span>
+<span class="fc" id="L139">				e.attr(STYLE_ATTR, (newStyle.trim() + &quot;;&quot; + oldStyle.trim()).replaceAll(&quot;;+&quot;, &quot;;&quot;).trim());</span>
+			}
+<span class="fc" id="L141">			e.removeAttr(TEMP_STYLE_ATTR);</span>
+<span class="fc" id="L142">		}</span>
+<span class="fc" id="L143">	}</span>
+
+	private static String concatenateProperties(String oldProp, String newProp) {
+<span class="fc" id="L146">		String prop = oldProp;</span>
+<span class="pc bpc" id="L147" title="1 of 2 branches missed.">		if (!prop.endsWith(&quot;;&quot;)) {</span>
+<span class="nc" id="L148">			prop += &quot;;&quot;;</span>
+		}
+<span class="fc" id="L150">		return prop.trim() + &quot; &quot; + newProp.trim() + &quot;;&quot;;</span>
+	}
+	
+
+	private static String ignoreAtRules(String stylesheet) {
+<span class="fc" id="L155">		StringBuilder sb = new StringBuilder();</span>
+<span class="fc" id="L156">		int line = 1;</span>
+<span class="fc" id="L157">		int startLine = 0;</span>
+<span class="fc" id="L158">		boolean inAtRule = false;</span>
+<span class="fc" id="L159">		boolean inNestedAtRule = false;</span>
+<span class="fc" id="L160">		int opened = 0;</span>
+<span class="fc" id="L161">		StringBuilder rule = new StringBuilder();</span>
+<span class="fc bfc" id="L162" title="All 2 branches covered.">		for (int i=0 ; i&lt;stylesheet.length() ; i++) {</span>
+<span class="fc" id="L163">			char c = stylesheet.charAt(i);</span>
+<span class="fc bfc" id="L164" title="All 2 branches covered.">			if (c == '\n') {</span>
+<span class="fc" id="L165">				line++;</span>
+			}
+<span class="fc bfc" id="L167" title="All 4 branches covered.">			if (c == '@' &amp;&amp; !inAtRule) {</span>
+<span class="fc" id="L168">				inAtRule = true;</span>
+<span class="fc" id="L169">				startLine = line;</span>
+			}
+<span class="fc bfc" id="L171" title="All 4 branches covered.">			if (inAtRule &amp;&amp; c == '{') {</span>
+<span class="fc" id="L172">				inNestedAtRule = true;</span>
+<span class="fc" id="L173">				opened++;</span>
+			}
+<span class="fc bfc" id="L175" title="All 6 branches covered.">			if (inAtRule &amp;&amp; inNestedAtRule &amp;&amp; c == '}') {</span>
+<span class="fc" id="L176">				opened--;</span>
+			}
+<span class="fc bfc" id="L178" title="All 6 branches covered.">			if (inAtRule &amp;&amp; !inNestedAtRule &amp;&amp; c == ';') {</span>
+<span class="fc" id="L179">				inAtRule = false;</span>
+<span class="fc" id="L180">				LOG.warn(&quot;{} rule is not handled by JsoupCssInliner implementation. Line {}:'{}' is skipped&quot;, rulename(rule), startLine, rule);</span>
+<span class="fc" id="L181">				continue;</span>
+			}
+<span class="fc bfc" id="L183" title="All 6 branches covered.">			if (inAtRule &amp;&amp; inNestedAtRule &amp;&amp; opened == 0) {</span>
+<span class="fc" id="L184">				inAtRule = false;</span>
+<span class="fc" id="L185">				inNestedAtRule = false;</span>
+<span class="fc" id="L186">				LOG.warn(&quot;{} rule is not handled by JsoupCssInliner implementation. Lines {}-{} are skipped&quot;, rulename(rule), startLine, line);</span>
+<span class="fc" id="L187">				continue;</span>
+			}
+<span class="fc bfc" id="L189" title="All 2 branches covered.">			if (!inAtRule) {</span>
+<span class="fc" id="L190">				sb.append(c);</span>
+<span class="fc" id="L191">				rule = new StringBuilder();</span>
+			} else {
+<span class="fc" id="L193">				rule.append(c);</span>
+			}
+		}
+<span class="fc" id="L196">		return sb.toString();</span>
+	}
+	
+	private static String rulename(StringBuilder rule) {
+<span class="fc" id="L200">		StringBuilder name = new StringBuilder();</span>
+<span class="pc bpc" id="L201" title="1 of 2 branches missed.">		for (int i=0 ; i&lt;rule.length() ; i++) {</span>
+<span class="fc" id="L202">			char c = rule.charAt(i);</span>
+<span class="pc bpc" id="L203" title="1 of 8 branches missed.">			if (c != '@' &amp;&amp; c != '-' &amp;&amp; !Character.isAlphabetic(c) &amp;&amp; !Character.isDigit(c)) {</span>
+<span class="fc" id="L204">				break;</span>
+			}
+<span class="fc" id="L206">			name.append(c);</span>
+		}
+<span class="fc" id="L208">		return name.toString();</span>
+	}
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>
