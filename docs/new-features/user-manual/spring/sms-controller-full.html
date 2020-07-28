@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.0.10">
+<title>Untitled</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
+<link rel="stylesheet" href="./asciidoctor.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script type="text/javascript" src="../..//javascripts/steps.js"></script>
+<script type="text/javascript" src="../..//javascripts/sourcecode/source-utils.js"></script>
+<script type="text/javascript" src="../..//javascripts/sourcecode/highlight-lines.js"></script>
+<script type="text/javascript" src="../..//javascripts/sourcecode/collapse-lines.js"></script>
+<script type="text/javascript" src="../..//javascripts/tabcontainer.js"></script>
+<script type="text/javascript" src="../..//javascripts/toc.js"></script>
+<link rel="stylesheet" type="text/css" href="../..//styles/custom-styles.css" />
+<link rel="stylesheet" type="text/css" href="../..//styles/tabcontainer.css" />
+<link rel="stylesheet" type="text/css" href="../..//styles/steps.css" />
+<link rel="stylesheet" type="text/css" href="../..//styles/toc.css" />
+<link rel="stylesheet" type="text/css" href="../..//styles/sourcecode/collapse-lines.css" />
+<link rel="stylesheet" type="text/css" href="../..//styles/sourcecode/highlight-lines.css" />
+</head>
+<body class="book">
+<div id="header">
+</div>
+<div id="content">
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>Usage of <code>MessagingService</code> is exactly the same as standalone usage. The only difference is that <code>MessagingService</code> is automatically created and injectable.
+The following sample shows a Spring Web that exposes one simple endpoint for sending SMS using Ogham. The sample shows several Ogham features at once:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Using text template (using FreeMarker)</p>
+</li>
+<li>
+<p>Templates are located in a sub-folder and prefix for SMS templates is configured through Ogham property</p>
+</li>
+<li>
+<p>SMS template extension is configured globally in order to avoid extension in Java code</p>
+</li>
+<li>
+<p>Using a configuration property to define the sender phone number</p>
+</li>
+<li>
+<p>The SMPP server host, port and authentication are defined using properties</p>
+</li>
+</ul>
+</div>
+<div class="paragraph tab-container no-max-height">
+<p>SMS Sample with Spring Boot</p>
+</div>
+<div class="paragraph tab">
+<p><span class="image"><img src="../../images//icons/java-logo.png" alt="java logo" width="16" height="30"></span> Java</p>
+</div>
+<div class="listingblock collapse-lines:1-16,45-57 irrelevant-lines:1-16 highlight-lines:30,31,37-40">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">package fr.sii.ogham.sample.springboot.sms;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
+
+import fr.sii.ogham.core.exception.MessagingException;
+import fr.sii.ogham.core.service.MessagingService;
+import fr.sii.ogham.sms.message.Sms;
+
+@SpringBootApplication
+@PropertySource("application-sms-template.properties")  // just needed to be able to run the sample
+public class TemplateSample {
+
+  public static void main(String[] args) throws MessagingException {
+    SpringApplication.run(TemplateSample.class, args);
+  }
+
+  @RestController
+  public static class SmsController {
+    // Messaging service is automatically created using Spring Boot features
+    // The configuration can be set into application-sms-template.properties
+    // The configuration files are stored into src/main/resources
+    @Autowired
+    MessagingService messagingService;                                              <i class="conum" data-value="1"></i><b>(1)</b>
+
+    @PostMapping(value="api/sms/template")
+    @ResponseStatus(HttpStatus.CREATED)
+    public void sendSms(@RequestParam("to") String to, @RequestParam("name") String name, @RequestParam("value") int value) throws MessagingException {
+      // send the SMS using fluent API
+      messagingService.send(new Sms()                                             <i class="conum" data-value="2"></i><b>(2)</b>
+                  .message().template("register",                     <i class="conum" data-value="3"></i><b>(3)</b>
+                            new SimpleBean(name, value))    <i class="conum" data-value="4"></i><b>(4)</b>
+                  .to(to));                                           <i class="conum" data-value="5"></i><b>(5)</b>
+    }
+  }
+
+  public static class SimpleBean {
+    private String name;
+    private int value;
+    public SimpleBean(String name, int value) {
+      super();
+      this.name = name;
+      this.value = value;
+    }
+    public String getName() {
+      return name;
+    }
+    public int getValue() {
+      return value;
+    }
+  }
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Inject Ogham service</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Use the Ogham service to send a SMS</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>Use a text template as SMS content</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>Use any Java object for evaluating template variables</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
+<td>The sender phone number that comes from request parameter</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p><a href="https://github.com/groupe-sii/ogham/blob/master/sample-spring-usage/src/main/java/fr/sii/ogham/sample/springboot/sms/TemplateSample.java?ts=2">Source code of the sample</a>.</p>
+</div>
+<div class="paragraph tab">
+<p><span class="image"><img src="../../images//icons/freemarker-logo.png" alt="freemarker logo" width="60" height="24"></span> Template</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>Hello ${name}, the confirmation code is ${value}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><a href="https://github.com/groupe-sii/ogham/blob/master/sample-spring-usage/src/main/resources/sms/register.txt.ftl?ts=2">Source code of the template</a></p>
+</div>
+<div class="paragraph tab">
+<p><span class="image"><img src="../../images//icons/properties.png" alt="properties" width="37" height="30"></span> Spring properties</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-python" data-lang="python"># ogham configuration for SMS
+ogham.sms.smpp.host=&lt;your server host&gt;                                  <i class="conum" data-value="1"></i><b>(1)</b>
+ogham.sms.smpp.port=&lt;your server port&gt;                                  <i class="conum" data-value="2"></i><b>(2)</b>
+ogham.sms.smpp.system-id=&lt;your server system ID&gt;                        <i class="conum" data-value="3"></i><b>(3)</b>
+ogham.sms.smpp.password=&lt;your server password&gt;                          <i class="conum" data-value="4"></i><b>(4)</b>
+ogham.sms.from.default-value=&lt;phone number to display for the sender&gt;   <i class="conum" data-value="5"></i><b>(5)</b>
+ogham.sms.template.path-prefix=/sms/                                    <i class="conum" data-value="6"></i><b>(6)</b>
+ogham.sms.template.path-suffix=.txt.ftl                                 <i class="conum" data-value="7"></i><b>(7)</b></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The SMPP host</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>The SMPP port</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>The SMPP system ID (account)</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>The SMPP password</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
+<td>The sender phone number that is declared globally</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="6"></i><b>6</b></td>
+<td>The path prefix for SMS templates</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="7"></i><b>7</b></td>
+<td>The path suffix for SMS templates (FreeMarker extension in this case)</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p><a href="https://github.com/groupe-sii/ogham/blob/master/sample-spring-usage/src/main/resources/application-sms-template.properties?ts=2">Source code of the properties</a></p>
+</div>
+<div class="paragraph tab-container-end">
+<p>-</p>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2020-07-28 08:13:00 UTC
+</div>
+</div>
+</body>
+</html>

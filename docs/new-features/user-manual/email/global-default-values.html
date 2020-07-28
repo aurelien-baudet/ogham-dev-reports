@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.0.10">
+<title>Globally configure default sender</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
+<link rel="stylesheet" href="./asciidoctor.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script type="text/javascript" src="../..//javascripts/steps.js"></script>
+<script type="text/javascript" src="../..//javascripts/sourcecode/source-utils.js"></script>
+<script type="text/javascript" src="../..//javascripts/sourcecode/highlight-lines.js"></script>
+<script type="text/javascript" src="../..//javascripts/sourcecode/collapse-lines.js"></script>
+<script type="text/javascript" src="../..//javascripts/tabcontainer.js"></script>
+<script type="text/javascript" src="../..//javascripts/toc.js"></script>
+<link rel="stylesheet" type="text/css" href="../..//styles/custom-styles.css" />
+<link rel="stylesheet" type="text/css" href="../..//styles/tabcontainer.css" />
+<link rel="stylesheet" type="text/css" href="../..//styles/steps.css" />
+<link rel="stylesheet" type="text/css" href="../..//styles/toc.css" />
+<link rel="stylesheet" type="text/css" href="../..//styles/sourcecode/collapse-lines.css" />
+<link rel="stylesheet" type="text/css" href="../..//styles/sourcecode/highlight-lines.css" />
+</head>
+<body class="book toc2 toc-left">
+<div id="header">
+<div id="toc" class="toc2">
+<div id="toctitle">Table of Contents</div>
+<ul class="sectlevel1">
+<li><a href="#_globally_configure_default_sender">Globally configure default sender</a></li>
+<li><a href="#_globally_configure_default_subject">Globally configure default subject</a></li>
+<li><a href="#_globally_configure_default_recipients">Globally configure default recipients</a></li>
+</ul>
+</div>
+</div>
+<div id="content">
+<div class="sect1">
+<h2 id="_globally_configure_default_sender"><a class="anchor" href="#_globally_configure_default_sender"></a>Globally configure default sender</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>You can configure sender address for all sent email by setting the property <code>ogham.email.from.default-value</code>.
+The value can either be an email address (<code>user@domain.host</code>) or an address with personal
+information (<code>User Name &lt;<a href="mailto:user@domain.host">user@domain.host</a>&gt;</code>). This property is used for every implementation (through
+SMTP, through SendGrid, &#8230;&#8203;).</p>
+</div>
+<div class="paragraph">
+<p>This global address is used only if nothing is specified in the email. If you explicitly set the sender
+address in the email constructor or using the setter, this value is used instead of the global one.</p>
+</div>
+<div class="paragraph tab-container no-max-height">
+<p>Basic sample</p>
+</div>
+<div class="paragraph tab">
+<p><span class="image"><img src="../../images//icons/java-logo.png" alt="java logo" width="16" height="30"></span> Java</p>
+</div>
+<div class="listingblock collapse-lines:1-9 irrelevant-lines:1-9 highlight-lines:17,35">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">package fr.sii.ogham.sample.standard.email;
+
+import java.util.Properties;
+
+import fr.sii.ogham.core.builder.MessagingBuilder;
+import fr.sii.ogham.core.exception.MessagingException;
+import fr.sii.ogham.core.service.MessagingService;
+import fr.sii.ogham.email.message.Email;
+
+public class OverrideDefaultSenderSample {
+  public static void main(String[] args) throws MessagingException {
+    // configure properties (could be stored in a properties file or defined
+    // in System properties)
+    Properties properties = new Properties();
+    properties.put("mail.smtp.host", "&lt;your server host&gt;");
+    properties.put("mail.smtp.port", "&lt;your server port&gt;");
+    properties.put("ogham.email.from.default-value", "foo.bar@test.com");  <i class="conum" data-value="1"></i><b>(1)</b>
+    // Instantiate the messaging service using default behavior and
+    // provided properties
+    MessagingService service = MessagingBuilder.standard()
+        .environment()
+          .properties(properties)
+          .and()
+        .build();
+    // send the email using fluent API
+    service.send(new Email()                                               <i class="conum" data-value="2"></i><b>(2)</b>
+            .subject("OverrideDefaultSenderSample")
+            .body().string("email content")
+            .to("ogham-test@yopmail.com"));
+    // =&gt; the sender address is foo.bar@test.com
+
+    service.send(new Email()
+        .subject("subject")
+        .body().string("email content")
+        .from("override@test.com")                                     <i class="conum" data-value="3"></i><b>(3)</b>
+        .to("ogham-test@yopmail.com"));
+    // =&gt; the sender address is now override@test.com
+  }
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Set the default sender address globally using properties</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Do not provide <code>from</code> field so the sender address is <code>foo.bar@test.com</code></td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>Override the default sender address by providing a <code>from</code> field. The address is now <code>override@test.com</code></td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p><a href="https://github.com/groupe-sii/ogham/blob/master/sample-standard-usage/src/main/java/fr/sii/ogham/sample/standard/email/OverrideDefaultSenderSample.java?ts=2">Source code of the sample</a>.</p>
+</div>
+<div class="paragraph tab-container-end">
+<p>-</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<code>mail.from</code> and <code>mail.smtp.from</code> also work
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_globally_configure_default_subject"><a class="anchor" href="#_globally_configure_default_subject"></a>Globally configure default subject</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>As for sender address, you can define globally a default subject for emails if none is explicitly
+provided (neither using <code>.subject(String)</code> method nor defining a subject directly in the template).
+The property is <code>ogham.email.subject.default-value</code>.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_globally_configure_default_recipients"><a class="anchor" href="#_globally_configure_default_recipients"></a>Globally configure default recipients</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>You can also use properties to define default recipients if none are provided:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>ogham.email.to.default-value</code>: set one or several recipient addresses (<code>to</code> field)</p>
+</li>
+<li>
+<p><code>ogham.email.cc.default-value</code>: set one or several recipient addresses (<code>cc</code> field)</p>
+</li>
+<li>
+<p><code>ogham.email.bcc.default-value</code>: set one or several recipient addresses (<code>bcc</code> field)</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>This can be convenient to set a <code>bcc</code> address for all sent messages for example (the <code>bcc</code> address
+will never be seen in received emails).</p>
+</div>
+<div class="paragraph">
+<p>To define several recipient addresses, you can provide a string separated by <code>,</code>.</p>
+</div>
+<div class="paragraph tab-container no-max-height">
+<p>Basic sample</p>
+</div>
+<div class="paragraph tab">
+<p><span class="image"><img src="../../images//icons/java-logo.png" alt="java logo" width="16" height="30"></span> Java</p>
+</div>
+<div class="listingblock collapse-lines:1-24,26-34,51-70 irrelevant-lines:1-24 highlight-lines:41-43">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">package oghamall.it.email;
+
+import static fr.sii.ogham.testing.assertion.OghamAssertions.assertThat;
+import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.containsInAnyOrder;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.startsWith;
+
+import java.io.IOException;
+import java.util.Properties;
+
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
+
+import com.icegreen.greenmail.junit.GreenMailRule;
+
+import fr.sii.ogham.core.builder.MessagingBuilder;
+import fr.sii.ogham.core.exception.MessagingException;
+import fr.sii.ogham.core.service.MessagingService;
+import fr.sii.ogham.email.message.Email;
+import fr.sii.ogham.testing.extension.greenmail.RandomPortGreenMailRule;
+import fr.sii.ogham.testing.extension.junit.LoggingTestRule;
+
+public class EmailPropertiesTest {
+
+  private MessagingService oghamService;
+
+  @Rule
+  public final LoggingTestRule loggingRule = new LoggingTestRule();
+
+  @Rule
+  public final GreenMailRule greenMail = new RandomPortGreenMailRule();
+
+  @Before
+  public void setUp() throws IOException {
+    Properties additional = new Properties();
+    additional.setProperty("mail.smtp.host", greenMail.getSmtp().getBindTo());
+    additional.setProperty("mail.smtp.port", String.valueOf(greenMail.getSmtp().getPort()));
+    additional.setProperty("ogham.email.from.default-value", "test.sender@sii.fr");
+    additional.setProperty("ogham.email.to.default-value", "recipient.to1@sii.fr,  recipient.to2@sii.fr , recipient.to3@sii.fr");   <i class="conum" data-value="1"></i><b>(1)</b>
+    additional.setProperty("ogham.email.cc.default-value", "recipient.cc1@sii.fr,recipient.cc2@sii.fr");                            <i class="conum" data-value="2"></i><b>(2)</b>
+    additional.setProperty("ogham.email.bcc.default-value", "recipient.bcc@sii.fr");                                                <i class="conum" data-value="3"></i><b>(3)</b>
+    oghamService = MessagingBuilder.standard()
+        .environment()
+          .properties("/application.properties")
+          .properties(additional)
+          .and()
+        .build();
+  }
+
+  @Test
+  public void simple() throws MessagingException, javax.mail.MessagingException {
+    oghamService.send(new Email()
+              .subject("Simple")
+              .content("string body"));
+    assertThat(greenMail).receivedMessages()
+        .count(is(6))
+        .every()
+          .subject(is("Simple"))
+          .body()
+            .contentAsString(is("string body"))
+            .contentType(startsWith("text/plain")).and()
+          .from()
+            .address(contains("test.sender@sii.fr")).and()
+          .to()
+            .address(containsInAnyOrder("recipient.to1@sii.fr", "recipient.to2@sii.fr", "recipient.to3@sii.fr")).and()
+          .cc()
+            .address(containsInAnyOrder("recipient.cc1@sii.fr", "recipient.cc2@sii.fr"));
+  }
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Define 3 <code>to</code> recipients</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Define 2 <code>cc</code> recipients</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>Define a single <code>bcc</code> recipient</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p><a href="https://github.com/groupe-sii/ogham/blob/master/ogham-all/src/test/java/oghamall/it/email/EmailPropertiesTest.java?ts=2">Source code of the sample</a>.</p>
+</div>
+<div class="paragraph tab-container-end">
+<p>-</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>The email addresses are trimmed:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">additional.setProperty("ogham.email.to.default-value", "  foo@example.com  ,    John Doe &lt;bar@example.com&gt;,   abc@example.com");</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The email addresses will be:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>foo@example.com</code></p>
+</li>
+<li>
+<p><code>John Doe &lt;<a href="mailto:bar@example.com">bar@example.com</a>&gt;</code></p>
+</li>
+<li>
+<p><code>abc@example.com</code></p>
+</li>
+</ul>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2020-07-28 08:13:00 UTC
+</div>
+</div>
+</body>
+</html>

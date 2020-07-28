@@ -1,0 +1,1161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.0.10">
+<title>Attach and reference images</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
+<link rel="stylesheet" href="./asciidoctor.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script type="text/javascript" src="../..//javascripts/steps.js"></script>
+<script type="text/javascript" src="../..//javascripts/sourcecode/source-utils.js"></script>
+<script type="text/javascript" src="../..//javascripts/sourcecode/highlight-lines.js"></script>
+<script type="text/javascript" src="../..//javascripts/sourcecode/collapse-lines.js"></script>
+<script type="text/javascript" src="../..//javascripts/tabcontainer.js"></script>
+<script type="text/javascript" src="../..//javascripts/toc.js"></script>
+<link rel="stylesheet" type="text/css" href="../..//styles/custom-styles.css" />
+<link rel="stylesheet" type="text/css" href="../..//styles/tabcontainer.css" />
+<link rel="stylesheet" type="text/css" href="../..//styles/steps.css" />
+<link rel="stylesheet" type="text/css" href="../..//styles/toc.css" />
+<link rel="stylesheet" type="text/css" href="../..//styles/sourcecode/collapse-lines.css" />
+<link rel="stylesheet" type="text/css" href="../..//styles/sourcecode/highlight-lines.css" />
+</head>
+<body class="book toc2 toc-left">
+<div id="header">
+<div id="toc" class="toc2">
+<div id="toctitle">Table of Contents</div>
+<ul class="sectlevel1">
+<li><a href="#_attach_and_reference_images">Attach and reference images</a></li>
+<li><a href="#_embed_using_data_url_scheme">Embed using data URL scheme</a></li>
+<li><a href="#_skip_some_images">Skip some images</a></li>
+<li><a href="#background-image-specific-image-strategy">Indicate a different strategy for specific images</a></li>
+</ul>
+</div>
+</div>
+<div id="content">
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>As developer you may need to use background images to make your email more attractive.
+As for <code>&lt;img&gt;</code> tags, the images have to be either served from a server that is
+available online (and referenced by an URL) or embedded with the email.</p>
+</div>
+<div class="paragraph">
+<p>Ogham provides automatic inlining of images included through CSS. It works for the
+following properties:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>background</code>, <code>background-image</code></p>
+</li>
+<li>
+<p><code>list-style</code>, <code>list-style-image</code></p>
+</li>
+<li>
+<p><code>cursor</code></p>
+</li>
+</ul>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+<div class="title">Email client support</div>
+<div class="paragraph">
+<p>Even if the properties <code>background</code>, <code>background-image</code>, <code>list-style</code>,
+<code>list-style-image</code> and <code>cursor</code> can be inlined by Ogham, it doesn&#8217;t mean that email
+clients support those properties.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="title">Use a background color as fallback</div>
+<div class="paragraph">
+<p>We recommend that you provide a background color in addition to a background image
+as fallback in case that the image is not displayed by the email client.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>As well as <code>&lt;img&gt;</code> inlining, Ogham provides the following strategies:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Either attached with the email and referenced in the HTML using a
+<a href="https://tools.ietf.org/html/rfc2392">Content-ID</a>.</p>
+</li>
+<li>
+<p>Or images are converted to a base64 string and embedded in the HTML using the
+<a href="https://tools.ietf.org/html/rfc2397">data URL scheme</a></p>
+</li>
+<li>
+<p>Or not inlined at all (if the image points to an external URL or it is explicitly
+skipped)</p>
+</li>
+</ul>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="title">Automatically skip external URLs</div>
+<div class="paragraph">
+<p>If the <code>url()</code> value references an external image (starting with <code>http://</code> or
+<code>https://</code>), the image is not inlined at all.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="title">Images referenced in the HTML</div>
+<div class="paragraph">
+<p>In addition to CSS rules defined in external CSS file, Ogham also supports inlining
+of images referenced either in <code>&lt;style&gt;</code> tags or directly on HTML tags using <code>style</code>
+attribute.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_attach_and_reference_images"><a class="anchor" href="#_attach_and_reference_images"></a>Attach and reference images</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>By default, if a CSS rule contains one of <code>background</code>, <code>background-image</code>,
+<code>list-style</code>, <code>list-style-image</code> or <code>cursor</code> properties with an <code>url()</code> that points
+to a local image, the image is automatically attached and referenced using a
+<a href="https://tools.ietf.org/html/rfc2392">Content-ID</a> that is automatically generated.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="title">Default choice explanation</div>
+<div class="paragraph">
+<p>Like <code>&lt;img&gt;</code> inlining, attach strategy is handled by more clients than base64
+strategy.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="title">Customize CID generation</div>
+<div class="paragraph">
+<p>Default Content-ID generation simply uses a incremental number. It is possible to
+use <a href="../../user-manual.html#custom-cid-generation">custom Content-ID generation</a>.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Instead of using default strategy, it is possible to explicitly indicate which
+inlining strategy to use for a particular image. This is done through
+<code>--inline-image</code> property.</p>
+</div>
+<div class="paragraph tab-container no-max-height">
+<p>Attach background images</p>
+</div>
+<div class="paragraph tab">
+<p><span class="image"><img src="../../images//icons/java-logo.png" alt="java logo" width="16" height="30"></span> Java</p>
+</div>
+<div class="listingblock collapse-lines:1-10,12-28,36-48 irrelevant-lines:1-10,12-19 highlight-lines:30-31">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">package fr.sii.ogham.sample.standard.email;
+
+import java.util.Properties;
+
+import fr.sii.ogham.core.builder.MessagingBuilder;
+import fr.sii.ogham.core.exception.MessagingException;
+import fr.sii.ogham.core.service.MessagingService;
+import fr.sii.ogham.email.message.Email;
+
+public class HtmlWithBackgroundImagesTemplateSample {
+  public static void main(String[] args) throws MessagingException {
+    // configure properties (could be stored in a properties file or defined
+    // in System properties)
+    Properties properties = new Properties();
+    properties.setProperty("mail.smtp.host", "&lt;your server host&gt;");
+    properties.setProperty("mail.smtp.port", "&lt;your server port&gt;");
+    properties.setProperty("ogham.email.from.default-value", "&lt;email address to display for the sender user&gt;");
+    // Instantiate the messaging service using default behavior and
+    // provided properties
+    MessagingService service = MessagingBuilder.standard()
+        .environment()
+          .properties(properties)
+          .and()
+        .build();
+    // send the email using fluent API
+    // Note that the extension of the template is not given. This version
+    // automatically takes the provided path and adds the '.html' extension
+    // for the HTML template and '.txt.ftl' for text template (if provided)
+    service.send(new Email()
+            .body().template("classpath:/template/thymeleaf/background-images",    <i class="conum" data-value="1"></i><b>(1)</b>
+                    new SimpleBean("foo", 42))                             <i class="conum" data-value="2"></i><b>(2)</b>
+            .to("ogham-test@yopmail.com"));
+  }
+
+  public static class SimpleBean {
+    private String name;
+    private int value;
+    public SimpleBean(String name, int value) {
+      super();
+      this.name = name;
+      this.value = value;
+    }
+    public String getName() {
+      return name;
+    }
+    public int getValue() {
+      return value;
+    }
+  }
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The path to the templates (<code>/template/thymeleaf/background-images.html</code> for the main body</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>The template context</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p><a href="https://github.com/groupe-sii/ogham/blob/master/sample-standard-usage/src/main/java/fr/sii/ogham/sample/standard/email/HtmlWithBackgroundImagesTemplateSample.java?ts=2">Source code of the sample</a></p>
+</div>
+<div class="paragraph tab">
+<p><span class="image"><img src="../../images//icons/thymeleaf-html.jpg" alt="thymeleaf html" width="30" height="30"></span> ThymeLeaf template</p>
+</div>
+<div class="listingblock highlight-lines:7,10">
+<div class="content">
+<pre class="highlight"><code class="language-html" data-lang="html">&lt;!DOCTYPE html&gt;
+&lt;html xmlns:th="http://www.thymeleaf.org"&gt;
+&lt;head&gt;
+&lt;meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /&gt;
+&lt;title&gt;Inline background images&lt;/title&gt;
+&lt;meta name="viewport" content="width=device-width, initial-scale=1.0"/&gt;
+&lt;link href="/resources/css/background-images.css" rel="stylesheet" /&gt;       <i class="conum" data-value="1"></i><b>(1)</b>
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;div class="header"&gt;                                                    <i class="conum" data-value="2"></i><b>(2)</b>
+    Hello [[${name}]] !
+  &lt;/div&gt;
+  &lt;div class="content"&gt;                                                   <i class="conum" data-value="3"></i><b>(3)</b>
+    content
+  &lt;/div&gt;
+  &lt;div class="footer"&gt;                                                    <i class="conum" data-value="4"></i><b>(4)</b>
+    footer
+  &lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Include CSS file that contains rules with <code>background</code> images</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>A node that is targeted by a CSS rule that uses a background image. The
+background image will be inlined (using <code>attach</code> strategy).</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>_</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>_</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p><a href="https://github.com/groupe-sii/ogham/blob/master/sample-standard-usage/src/main/resources/template/thymeleaf/background-images.html?ts=2">Source code of the HTML template</a></p>
+</div>
+<div class="paragraph tab">
+<p><span class="image"><img src="../../images//icons/css.png" alt="css" width="37" height="30"></span> CSS</p>
+</div>
+<div class="listingblock highlight-lines:2">
+<div class="content">
+<pre class="highlight"><code class="language-css" data-lang="css">.header {
+  background: #ccc url("../images/header.jpg") repeat-x;    /* <i class="conum" data-value="1"></i><b>(1)</b>
+  */
+  height: 200px;
+}
+
+.footer {
+  background: url("../images/footer.jpg") no-repeat;        /* <i class="conum" data-value="2"></i><b>(2)</b>
+  */
+  height: 200px;
+  --inline-image: base64;                                   /* <i class="conum" data-value="3"></i><b>(3)</b>
+  */
+}
+
+.content {
+  background: url("../images/h1.gif") no-repeat;            /* <i class="conum" data-value="4"></i><b>(4)</b>
+  */
+  --inline-image: skip;                                     /* <i class="conum" data-value="5"></i><b>(5)</b>
+  */
+  height: 400px;
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>A <code>background</code> property that references a local image using <code>url()</code>. As nothing
+is specified, the image will be inlined using <code>attach</code> strategy.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>_</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>_</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>_</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
+<td>_</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p><a href="https://github.com/groupe-sii/ogham/blob/master/sample-standard-usage/src/main/resources/resources/css/background-images.css?ts=2">Source code of the HTML template</a></p>
+</div>
+<div class="paragraph tab">
+<p><span class="image"><img src="../../images//icons/html.png" alt="html" width="37" height="30"></span> Generated HTML</p>
+</div>
+<div class="listingblock highlight-lines:7,10">
+<div class="content">
+<pre class="highlight"><code class="language-html" data-lang="html">&lt;!doctype html&gt;
+&lt;html&gt;
+ &lt;head&gt;
+  &lt;meta http-equiv="Content-Type" content="text/html; charset=UTF-8"&gt;
+  &lt;title&gt;Inline background images&lt;/title&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
+                                                                                                                                                             <i class="conum" data-value="1"></i><b>(1)</b>
+ &lt;/head&gt;
+ &lt;body&gt;
+  &lt;div class="header" style="background: #ccc url(&amp;quot;cid:0&amp;quot;) repeat-x;  height: 200px;"&gt;                                                             <i class="conum" data-value="2"></i><b>(2)</b>
+   Hello foo !
+  &lt;/div&gt;
+  &lt;div class="content" style="background: url(&amp;quot;classpath:/resources/images/h1.gif&amp;quot;) no-repeat;  height: 400px;  "&gt;                               <i class="conum" data-value="3"></i><b>(3)</b>
+   content
+  &lt;/div&gt;
+  &lt;div class="footer" style="background: url(&amp;quot;data:image/jpeg;base64,/9j/4QAYRXhpZgAASUkq[...]JpRFcBO8BIP/2Q==&amp;quot;) no-repeat; height: 200px;  "&gt;   <i class="conum" data-value="4"></i><b>(4)</b>
+   footer
+  &lt;/div&gt;
+ &lt;/body&gt;
+&lt;/html&gt;</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The CSS file is inlined (so the inclusion is removed)</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>The image is attached and the generated Content-ID is <code>0</code>.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>_</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>_</td>
+</tr>
+</table>
+</div>
+<div class="paragraph tab-container-end">
+<p>-</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_embed_using_data_url_scheme"><a class="anchor" href="#_embed_using_data_url_scheme"></a>Embed using data URL scheme</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Instead of attaching the image with the email, it is possible to inline images
+included through CSS rules directly as a base64 string. To enable it,
+you need to provide the <code>--inline-image</code> property with <code>base64</code> value.</p>
+</div>
+<div class="paragraph tab-container no-max-height">
+<p>Base64 background images</p>
+</div>
+<div class="paragraph tab">
+<p><span class="image"><img src="../../images//icons/java-logo.png" alt="java logo" width="16" height="30"></span> Java</p>
+</div>
+<div class="listingblock collapse-lines:1-10,12-28,36-48 irrelevant-lines:1-10,12-19 highlight-lines:30-31">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">package fr.sii.ogham.sample.standard.email;
+
+import java.util.Properties;
+
+import fr.sii.ogham.core.builder.MessagingBuilder;
+import fr.sii.ogham.core.exception.MessagingException;
+import fr.sii.ogham.core.service.MessagingService;
+import fr.sii.ogham.email.message.Email;
+
+public class HtmlWithBackgroundImagesTemplateSample {
+  public static void main(String[] args) throws MessagingException {
+    // configure properties (could be stored in a properties file or defined
+    // in System properties)
+    Properties properties = new Properties();
+    properties.setProperty("mail.smtp.host", "&lt;your server host&gt;");
+    properties.setProperty("mail.smtp.port", "&lt;your server port&gt;");
+    properties.setProperty("ogham.email.from.default-value", "&lt;email address to display for the sender user&gt;");
+    // Instantiate the messaging service using default behavior and
+    // provided properties
+    MessagingService service = MessagingBuilder.standard()
+        .environment()
+          .properties(properties)
+          .and()
+        .build();
+    // send the email using fluent API
+    // Note that the extension of the template is not given. This version
+    // automatically takes the provided path and adds the '.html' extension
+    // for the HTML template and '.txt.ftl' for text template (if provided)
+    service.send(new Email()
+            .body().template("classpath:/template/thymeleaf/background-images",    <i class="conum" data-value="1"></i><b>(1)</b>
+                    new SimpleBean("foo", 42))                             <i class="conum" data-value="2"></i><b>(2)</b>
+            .to("ogham-test@yopmail.com"));
+  }
+
+  public static class SimpleBean {
+    private String name;
+    private int value;
+    public SimpleBean(String name, int value) {
+      super();
+      this.name = name;
+      this.value = value;
+    }
+    public String getName() {
+      return name;
+    }
+    public int getValue() {
+      return value;
+    }
+  }
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The path to the templates (<code>/template/thymeleaf/background-images.html</code> for the main body</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>The template context</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p><a href="https://github.com/groupe-sii/ogham/blob/master/sample-standard-usage/src/main/java/fr/sii/ogham/sample/standard/email/HtmlWithBackgroundImagesTemplateSample.java?ts=2">Source code of the sample</a></p>
+</div>
+<div class="paragraph tab">
+<p><span class="image"><img src="../../images//icons/thymeleaf-html.jpg" alt="thymeleaf html" width="30" height="30"></span> ThymeLeaf template</p>
+</div>
+<div class="listingblock highlight-lines:7,16">
+<div class="content">
+<pre class="highlight"><code class="language-html" data-lang="html">&lt;!DOCTYPE html&gt;
+&lt;html xmlns:th="http://www.thymeleaf.org"&gt;
+&lt;head&gt;
+&lt;meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /&gt;
+&lt;title&gt;Inline background images&lt;/title&gt;
+&lt;meta name="viewport" content="width=device-width, initial-scale=1.0"/&gt;
+&lt;link href="/resources/css/background-images.css" rel="stylesheet" /&gt;       <i class="conum" data-value="1"></i><b>(1)</b>
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;div class="header"&gt;                                                    <i class="conum" data-value="2"></i><b>(2)</b>
+    Hello [[${name}]] !
+  &lt;/div&gt;
+  &lt;div class="content"&gt;                                                   <i class="conum" data-value="3"></i><b>(3)</b>
+    content
+  &lt;/div&gt;
+  &lt;div class="footer"&gt;                                                    <i class="conum" data-value="4"></i><b>(4)</b>
+    footer
+  &lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Include CSS file that contains rules with <code>background</code> images</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>_</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>_</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>A node that is targeted by a CSS rule that uses a background image. The
+background image will be inlined (using <code>base64</code> strategy).</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p><a href="https://github.com/groupe-sii/ogham/blob/master/sample-standard-usage/src/main/resources/template/thymeleaf/background-images.html?ts=2">Source code of the HTML template</a></p>
+</div>
+<div class="paragraph tab">
+<p><span class="image"><img src="../../images//icons/css.png" alt="css" width="37" height="30"></span> CSS</p>
+</div>
+<div class="listingblock highlight-lines:8,11">
+<div class="content">
+<pre class="highlight"><code class="language-css" data-lang="css">.header {
+  background: #ccc url("../images/header.jpg") repeat-x;    /* <i class="conum" data-value="1"></i><b>(1)</b>
+  */
+  height: 200px;
+}
+
+.footer {
+  background: url("../images/footer.jpg") no-repeat;        /* <i class="conum" data-value="2"></i><b>(2)</b>
+  */
+  height: 200px;
+  --inline-image: base64;                                   /* <i class="conum" data-value="3"></i><b>(3)</b>
+  */
+}
+
+.content {
+  background: url("../images/h1.gif") no-repeat;            /* <i class="conum" data-value="4"></i><b>(4)</b>
+  */
+  --inline-image: skip;                                     /* <i class="conum" data-value="5"></i><b>(5)</b>
+  */
+  height: 400px;
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>_</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>A <code>background</code> property that references a local image using <code>url()</code>. The inline
+strategy is specified using <code>--inline-image</code> property on the same CSS rule.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>Indicate the inlining strategy: use <code>base64</code> for all images contained in
+<code>.footer</code> rule.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>_</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
+<td>_</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p><a href="https://github.com/groupe-sii/ogham/blob/master/sample-standard-usage/src/main/resources/resources/css/background-images.css?ts=2">Source code of the HTML template</a></p>
+</div>
+<div class="paragraph tab">
+<p><span class="image"><img src="../../images//icons/html.png" alt="html" width="37" height="30"></span> Generated HTML</p>
+</div>
+<div class="listingblock highlight-lines:16">
+<div class="content">
+<pre class="highlight"><code class="language-html" data-lang="html">&lt;!doctype html&gt;
+&lt;html&gt;
+ &lt;head&gt;
+  &lt;meta http-equiv="Content-Type" content="text/html; charset=UTF-8"&gt;
+  &lt;title&gt;Inline background images&lt;/title&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
+                                                                                                                                                             <i class="conum" data-value="1"></i><b>(1)</b>
+ &lt;/head&gt;
+ &lt;body&gt;
+  &lt;div class="header" style="background: #ccc url(&amp;quot;cid:0&amp;quot;) repeat-x;  height: 200px;"&gt;                                                             <i class="conum" data-value="2"></i><b>(2)</b>
+   Hello foo !
+  &lt;/div&gt;
+  &lt;div class="content" style="background: url(&amp;quot;classpath:/resources/images/h1.gif&amp;quot;) no-repeat;  height: 400px;  "&gt;                               <i class="conum" data-value="3"></i><b>(3)</b>
+   content
+  &lt;/div&gt;
+  &lt;div class="footer" style="background: url(&amp;quot;data:image/jpeg;base64,/9j/4QAYRXhpZgAASUkq[...]JpRFcBO8BIP/2Q==&amp;quot;) no-repeat; height: 200px;  "&gt;   <i class="conum" data-value="4"></i><b>(4)</b>
+   footer
+  &lt;/div&gt;
+ &lt;/body&gt;
+&lt;/html&gt;</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>_</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>_</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>_</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>The <code>style</code> attribute contains the <code>background</code> property with the image
+content converted as a base64 string (the base64 string is partially shown here
+for readability).</td>
+</tr>
+</table>
+</div>
+<div class="paragraph tab-container-end">
+<p>-</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="title">Use different strategies for images defined in the same CSS rule</div>
+<div class="paragraph">
+<p>It is possible to reference several images (either <code>background</code> property with
+multiple background images or several properties) on the same CSS rule.
+<code>--inline-image</code> allows a more advanced syntax that allows to provide
+<a href="../../user-manual.html#background-image-specific-image-strategy">a strategy for a specific image</a>.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_skip_some_images"><a class="anchor" href="#_skip_some_images"></a>Skip some images</h2>
+<div class="sectionbody">
+<div class="paragraph tab-container no-max-height">
+<p>Skip background images</p>
+</div>
+<div class="paragraph tab">
+<p><span class="image"><img src="../../images//icons/java-logo.png" alt="java logo" width="16" height="30"></span> Java</p>
+</div>
+<div class="listingblock collapse-lines:1-10,12-28,36-48 irrelevant-lines:1-10,12-19 highlight-lines:30-31">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">package fr.sii.ogham.sample.standard.email;
+
+import java.util.Properties;
+
+import fr.sii.ogham.core.builder.MessagingBuilder;
+import fr.sii.ogham.core.exception.MessagingException;
+import fr.sii.ogham.core.service.MessagingService;
+import fr.sii.ogham.email.message.Email;
+
+public class HtmlWithBackgroundImagesTemplateSample {
+  public static void main(String[] args) throws MessagingException {
+    // configure properties (could be stored in a properties file or defined
+    // in System properties)
+    Properties properties = new Properties();
+    properties.setProperty("mail.smtp.host", "&lt;your server host&gt;");
+    properties.setProperty("mail.smtp.port", "&lt;your server port&gt;");
+    properties.setProperty("ogham.email.from.default-value", "&lt;email address to display for the sender user&gt;");
+    // Instantiate the messaging service using default behavior and
+    // provided properties
+    MessagingService service = MessagingBuilder.standard()
+        .environment()
+          .properties(properties)
+          .and()
+        .build();
+    // send the email using fluent API
+    // Note that the extension of the template is not given. This version
+    // automatically takes the provided path and adds the '.html' extension
+    // for the HTML template and '.txt.ftl' for text template (if provided)
+    service.send(new Email()
+            .body().template("classpath:/template/thymeleaf/background-images",    <i class="conum" data-value="1"></i><b>(1)</b>
+                    new SimpleBean("foo", 42))                             <i class="conum" data-value="2"></i><b>(2)</b>
+            .to("ogham-test@yopmail.com"));
+  }
+
+  public static class SimpleBean {
+    private String name;
+    private int value;
+    public SimpleBean(String name, int value) {
+      super();
+      this.name = name;
+      this.value = value;
+    }
+    public String getName() {
+      return name;
+    }
+    public int getValue() {
+      return value;
+    }
+  }
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The path to the templates (<code>/template/thymeleaf/background-images.html</code> for the main body</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>The template context</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p><a href="https://github.com/groupe-sii/ogham/blob/master/sample-standard-usage/src/main/java/fr/sii/ogham/sample/standard/email/HtmlWithBackgroundImagesTemplateSample.java?ts=2">Source code of the sample</a></p>
+</div>
+<div class="paragraph tab">
+<p><span class="image"><img src="../../images//icons/thymeleaf-html.jpg" alt="thymeleaf html" width="30" height="30"></span> ThymeLeaf template</p>
+</div>
+<div class="listingblock highlight-lines:7,13">
+<div class="content">
+<pre class="highlight"><code class="language-html" data-lang="html">&lt;!DOCTYPE html&gt;
+&lt;html xmlns:th="http://www.thymeleaf.org"&gt;
+&lt;head&gt;
+&lt;meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /&gt;
+&lt;title&gt;Inline background images&lt;/title&gt;
+&lt;meta name="viewport" content="width=device-width, initial-scale=1.0"/&gt;
+&lt;link href="/resources/css/background-images.css" rel="stylesheet" /&gt;       <i class="conum" data-value="1"></i><b>(1)</b>
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;div class="header"&gt;                                                    <i class="conum" data-value="2"></i><b>(2)</b>
+    Hello [[${name}]] !
+  &lt;/div&gt;
+  &lt;div class="content"&gt;                                                   <i class="conum" data-value="3"></i><b>(3)</b>
+    content
+  &lt;/div&gt;
+  &lt;div class="footer"&gt;                                                    <i class="conum" data-value="4"></i><b>(4)</b>
+    footer
+  &lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Include CSS file that contains rules with <code>background</code> images</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>_</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>A node that is targeted by a CSS rule that uses a background image. The
+background image will not be inlined.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>_</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p><a href="https://github.com/groupe-sii/ogham/blob/master/sample-standard-usage/src/main/resources/template/thymeleaf/background-images.html?ts=2">Source code of the HTML template</a></p>
+</div>
+<div class="paragraph tab">
+<p><span class="image"><img src="../../images//icons/css.png" alt="css" width="37" height="30"></span> CSS</p>
+</div>
+<div class="listingblock highlight-lines:16,18">
+<div class="content">
+<pre class="highlight"><code class="language-css" data-lang="css">.header {
+  background: #ccc url("../images/header.jpg") repeat-x;    /* <i class="conum" data-value="1"></i><b>(1)</b>
+  */
+  height: 200px;
+}
+
+.footer {
+  background: url("../images/footer.jpg") no-repeat;        /* <i class="conum" data-value="2"></i><b>(2)</b>
+  */
+  height: 200px;
+  --inline-image: base64;                                   /* <i class="conum" data-value="3"></i><b>(3)</b>
+  */
+}
+
+.content {
+  background: url("../images/h1.gif") no-repeat;            /* <i class="conum" data-value="4"></i><b>(4)</b>
+  */
+  --inline-image: skip;                                     /* <i class="conum" data-value="5"></i><b>(5)</b>
+  */
+  height: 400px;
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>_</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>_</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>_</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>A <code>background</code> property that references a local image using <code>url()</code>. The inline
+strategy is specified using <code>--inline-image</code> property on the same CSS rule.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
+<td>Indicate the inlining strategy (<code>skip</code>): do not inline any image contained in
+<code>.content</code> rule.</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p><a href="https://github.com/groupe-sii/ogham/blob/master/sample-standard-usage/src/main/resources/resources/css/background-images.css?ts=2">Source code of the HTML template</a></p>
+</div>
+<div class="paragraph tab">
+<p><span class="image"><img src="../../images//icons/html.png" alt="html" width="37" height="30"></span> Generated HTML</p>
+</div>
+<div class="listingblock highlight-lines:13">
+<div class="content">
+<pre class="highlight"><code class="language-html" data-lang="html">&lt;!doctype html&gt;
+&lt;html&gt;
+ &lt;head&gt;
+  &lt;meta http-equiv="Content-Type" content="text/html; charset=UTF-8"&gt;
+  &lt;title&gt;Inline background images&lt;/title&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
+                                                                                                                                                             <i class="conum" data-value="1"></i><b>(1)</b>
+ &lt;/head&gt;
+ &lt;body&gt;
+  &lt;div class="header" style="background: #ccc url(&amp;quot;cid:0&amp;quot;) repeat-x;  height: 200px;"&gt;                                                             <i class="conum" data-value="2"></i><b>(2)</b>
+   Hello foo !
+  &lt;/div&gt;
+  &lt;div class="content" style="background: url(&amp;quot;classpath:/resources/images/h1.gif&amp;quot;) no-repeat;  height: 400px;  "&gt;                               <i class="conum" data-value="3"></i><b>(3)</b>
+   content
+  &lt;/div&gt;
+  &lt;div class="footer" style="background: url(&amp;quot;data:image/jpeg;base64,/9j/4QAYRXhpZgAASUkq[...]JpRFcBO8BIP/2Q==&amp;quot;) no-repeat; height: 200px;  "&gt;   <i class="conum" data-value="4"></i><b>(4)</b>
+   footer
+  &lt;/div&gt;
+ &lt;/body&gt;
+&lt;/html&gt;</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>_</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>_</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>The <code>style</code> attribute contains the <code>background</code> property with unchanged
+url to the image (except for the path, see note below).</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>_</td>
+</tr>
+</table>
+</div>
+<div class="paragraph tab-container-end">
+<p>-</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="title">Relative resources</div>
+<div class="paragraph">
+<p>It is possible to reference images from CSS using relative path. When Ogham
+inlines the CSS rules in the HTML using <code>style</code> attribute, the path to local images
+relative to the CSS file are updated to the absolute path. This way, the path in the
+HTML points to the right file.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="background-image-specific-image-strategy"><a class="anchor" href="#background-image-specific-image-strategy"></a>Indicate a different strategy for specific images</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><code>background</code> and <code>background-image</code> properties allow to
+<a href="https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Backgrounds_and_Borders/Using_multiple_backgrounds">use multiple backgrounds</a>.
+Moreover, you could use several properties that reference different images on the same CSS rule.
+That&#8217;s why Ogham provides a more advanced syntax to be able to specify which strategy
+to use for which image.</p>
+</div>
+<div class="paragraph">
+<p>The possible syntaxes are:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>--inline-image: &lt;strategy&gt;;</code> to apply the same stategy to all images that need
+to be inlined.</p>
+</li>
+<li>
+<p><code>--inline-image: &lt;image1&gt;=&lt;strategy1&gt; &lt;image2&gt;=&lt;strategy2&gt; &#8230;&#8203; &lt;imageN&gt;=&lt;strategyN&gt;;</code>
+to apply <code>&lt;strategy1&gt;</code> on image that matches the path defined by
+<code>&lt;image1&gt;</code>, <code>&lt;strategy2&gt;</code> on image that matches the path defined by
+<code>&lt;image2&gt;</code>, and so on.</p>
+</li>
+<li>
+<p><code>--inline-image: &lt;image1&gt;=&lt;strategy1&gt; &lt;image2&gt;=&lt;strategy2&gt; &#8230;&#8203; &lt;imageN&gt;=&lt;strategyN&gt; &lt;default strategy&gt;;</code>:
+same as before but for all images that don&#8217;t match any path, it applies
+the <code>&lt;default strategy&gt;</code>.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph tab-container no-max-height">
+<div class="title">Same strategy for all images</div>
+<p>Same strategy for all images</p>
+</div>
+<div class="paragraph tab">
+<p><span class="image"><img src="../../images//icons/css.png" alt="css" width="37" height="30"></span> CSS</p>
+</div>
+<div class="listingblock highlight-lines:6">
+<div class="content">
+<pre class="highlight"><code class="language-css" data-lang="css">.same-strategy-for-all-images {
+  background-image:
+    no-repeat url('/static/images/h1.gif') top center,     <i class="conum" data-value="1"></i><b>(1)</b>
+    url('../images/right.gif');                            <i class="conum" data-value="2"></i><b>(2)</b>
+  list-style-image: url('../images/disc.png');               <i class="conum" data-value="3"></i><b>(3)</b>
+  --inline-image: base64;                                    <i class="conum" data-value="4"></i><b>(4)</b>
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>A first background that references the image <code>h1.gif</code> available in classpath
+subfolder <code>static/images</code>.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>A second background that references the local image <code>right.gif</code> that is
+relative to the CSS file.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>Use the local image <code>disc.png</code> to style the list bullets.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>Indicate the inlining strategy (<code>base64</code>) for the three images.</td>
+</tr>
+</table>
+</div>
+<div class="paragraph tab-container-end">
+<p>-</p>
+</div>
+<div class="paragraph tab-container no-max-height">
+<div class="title">Strategy per image</div>
+<p>Strategy per image</p>
+</div>
+<div class="paragraph tab">
+<p><span class="image"><img src="../../images//icons/css.png" alt="css" width="37" height="30"></span> CSS</p>
+</div>
+<div class="listingblock highlight-lines:6">
+<div class="content">
+<pre class="highlight"><code class="language-css" data-lang="css">.strategy-per-images {
+  background-image:
+    no-repeat url('/static/images/h1.gif') top center,              <i class="conum" data-value="1"></i><b>(1)</b>
+    url('../images/right.gif');                                     <i class="conum" data-value="2"></i><b>(2)</b>
+  list-style-image: url('../images/disc.png');                        <i class="conum" data-value="3"></i><b>(3)</b>
+  --inline-image: h1=base64 images/right.gif=attach disc.png=skip;    <i class="conum" data-value="4"></i><b>(4)</b>
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>A first background that references the image <code>h1.gif</code> available in classpath
+folder <code>static/images</code>.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>A second background that references the local image <code>right.gif</code> that is
+relative to the CSS file.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>Use the local image <code>disc.png</code> to style the list bullets.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>Indicate the inlining strategy per image:
+<div class="ulist">
+<ul>
+<li>
+<p>Use <code>base64</code> strategy for image <code>h1.gif</code></p>
+</li>
+<li>
+<p>Use <code>attach</code> strategy for image <code>right.gif</code></p>
+</li>
+<li>
+<p>Skip inlining for image <code>disc.png</code></p>
+</li>
+</ul>
+</div></td>
+</tr>
+</table>
+</div>
+<div class="paragraph tab-container-end">
+<p>-</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="title">Image matching</div>
+<div class="paragraph">
+<p>The image matching is simply a <code>contains</code> test. It means that if you write
+<code>--inline-image: gif=base64 png=attach;</code>, <code>base64</code> strategy is applied on <code>h1.gif</code>
+and <code>right.gif</code> while <code>attach</code> strategy is used for <code>disc.png</code> in the example above.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph tab-container no-max-height">
+<div class="title">Strategy per image with default</div>
+<p>Strategy per image with default</p>
+</div>
+<div class="paragraph tab">
+<p><span class="image"><img src="../../images//icons/css.png" alt="css" width="37" height="30"></span> CSS</p>
+</div>
+<div class="listingblock highlight-lines:6">
+<div class="content">
+<pre class="highlight"><code class="language-css" data-lang="css">.strategy-per-images-with-default {
+  background-image:
+    no-repeat url('/static/images/h1.gif') top center,              <i class="conum" data-value="1"></i><b>(1)</b>
+    url('../images/right.gif');                                     <i class="conum" data-value="2"></i><b>(2)</b>
+  list-style-image: url('../images/disc.png');                        <i class="conum" data-value="3"></i><b>(3)</b>
+  --inline-image: h1=base64 attach;                                   <i class="conum" data-value="4"></i><b>(4)</b>
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>A first background that references the image <code>h1.gif</code> available in classpath
+folder <code>static/images</code>.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>A second background that references the local image <code>right.gif</code> that is
+relative to the CSS file.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>Use the local image <code>disc.png</code> to style the list bullets.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>Indicate the inlining strategies:
+<div class="ulist">
+<ul>
+<li>
+<p>Use <code>base64</code> strategy for image <code>h1.gif</code></p>
+</li>
+<li>
+<p>Use <code>attach</code> strategy for all other images defined in the rule (<code>right.gif</code>
+and <code>disc.png</code>)</p>
+</li>
+</ul>
+</div></td>
+</tr>
+</table>
+</div>
+<div class="paragraph tab-container-end">
+<p>-</p>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2020-07-28 08:13:00 UTC
+</div>
+</div>
+</body>
+</html>

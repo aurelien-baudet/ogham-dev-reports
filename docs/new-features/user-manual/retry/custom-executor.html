@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.0.10">
+<title>Untitled</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
+<link rel="stylesheet" href="./asciidoctor.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script type="text/javascript" src="../..//javascripts/steps.js"></script>
+<script type="text/javascript" src="../..//javascripts/sourcecode/source-utils.js"></script>
+<script type="text/javascript" src="../..//javascripts/sourcecode/highlight-lines.js"></script>
+<script type="text/javascript" src="../..//javascripts/sourcecode/collapse-lines.js"></script>
+<script type="text/javascript" src="../..//javascripts/tabcontainer.js"></script>
+<script type="text/javascript" src="../..//javascripts/toc.js"></script>
+<link rel="stylesheet" type="text/css" href="../..//styles/custom-styles.css" />
+<link rel="stylesheet" type="text/css" href="../..//styles/tabcontainer.css" />
+<link rel="stylesheet" type="text/css" href="../..//styles/steps.css" />
+<link rel="stylesheet" type="text/css" href="../..//styles/toc.css" />
+<link rel="stylesheet" type="text/css" href="../..//styles/sourcecode/collapse-lines.css" />
+<link rel="stylesheet" type="text/css" href="../..//styles/sourcecode/highlight-lines.css" />
+</head>
+<body class="book">
+<div id="header">
+</div>
+<div id="content">
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph tab-container no-max-height">
+<div class="title">Use custom RetryExecutor</div>
+<p>Custom retry executor</p>
+</div>
+<div class="paragraph tab">
+<p><span class="image"><img src="../../images//icons/java-logo.png" alt="java logo" width="16" height="30"></span> Java</p>
+</div>
+<div class="listingblock collapse-lines:1-24 irrelevant-lines:1-24">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">package fr.sii.ogham.sample.standard.advanced;
+
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.Callable;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import fr.sii.ogham.core.async.Awaiter;
+import fr.sii.ogham.core.builder.MessagingBuilder;
+import fr.sii.ogham.core.exception.MessagingException;
+import fr.sii.ogham.core.exception.async.WaitException;
+import fr.sii.ogham.core.exception.retry.MaximumAttemptsReachedException;
+import fr.sii.ogham.core.exception.retry.RetryException;
+import fr.sii.ogham.core.exception.retry.RetryExecutionInterruptedException;
+import fr.sii.ogham.core.retry.RetryExecutor;
+import fr.sii.ogham.core.retry.RetryStrategy;
+import fr.sii.ogham.core.retry.RetryStrategyProvider;
+import fr.sii.ogham.core.service.MessagingService;
+import fr.sii.ogham.email.message.Email;
+import fr.sii.ogham.sms.message.Sms;
+
+public class CustomRetryExecutorSample {
+  private static final Logger LOG = LoggerFactory.getLogger(CustomRetryExecutorSample.class);
+
+  private static final int INVALID_PORT = 65000;
+
+  public static void main(String[] args) throws MessagingException {
+    // Instantiate the messaging service using default behavior and
+    // provided properties
+    MessagingService service = MessagingBuilder.standard()
+        .environment()
+          .properties()
+            .set("mail.smtp.host", "localhost")
+            .set("mail.smtp.port", INVALID_PORT)                                                              <i class="conum" data-value="1"></i><b>(1)</b>
+            .set("ogham.email.send-retry.max-attempts", 5)                                                    <i class="conum" data-value="2"></i><b>(2)</b>
+            .set("ogham.email.send-retry.delay-between-attempts", 500)                                        <i class="conum" data-value="3"></i><b>(3)</b>
+            .set("ogham.sms.smpp.host", "localhost")
+            .set("ogham.sms.smpp.port", INVALID_PORT)                                                         <i class="conum" data-value="4"></i><b>(4)</b>
+            .set("ogham.sms.send-retry.max-attempts", 5)                                                      <i class="conum" data-value="5"></i><b>(5)</b>
+            .set("ogham.sms.send-retry.exponential-initial-delay", 500)                                       <i class="conum" data-value="6"></i><b>(6)</b>
+            .and()
+          .and()
+        .email()
+          .autoRetry()
+            .executor(CustomRetryExecutor::new)                                                               <i class="conum" data-value="7"></i><b>(7)</b>
+            .and()
+          .and()
+        .sms()
+          .autoRetry()
+            .executor(CustomRetryExecutor::new)                                                               <i class="conum" data-value="8"></i><b>(8)</b>
+            .and()
+          .and()
+        .build();
+    try {
+      // send an email using fluent API
+      service.send(new Email()
+              .subject("BasicSample")
+              .body().string("email content")
+              .from("sender@yopmail.com")
+              .to("ogham-test@yopmail.com"));
+    } catch(MessagingException e) {
+      LOG.error("Failed to send email", e);
+    }
+    try {
+      // send a sms using fluent API
+      service.send(new Sms()
+              .message().string("SMS content")
+              .from("000000000")
+              .to("111111111"));
+    } catch(MessagingException e) {
+      LOG.error("Failed to send SMS", e);
+    }
+  }
+
+  /**
+   * Custom strategy implementation. For the sample, the executor reproduces
+   * the base behavior of SimpleRetryExecutor.
+   *
+   * @author Aurélien Baudet
+   *
+   */
+  public static class CustomRetryExecutor implements RetryExecutor {
+    private final RetryStrategyProvider retryStrategyProvider;
+    private final Awaiter awaiter;
+
+    public CustomRetryExecutor(RetryStrategyProvider retryStrategyProvider, Awaiter awaiter) {
+      super();
+      this.retryStrategyProvider = retryStrategyProvider;
+      this.awaiter = awaiter;
+    }
+
+    @Override
+    public &lt;V&gt; V execute(Callable&lt;V&gt; actionToRetry) throws RetryException {
+      try {
+        RetryStrategy retry = retryStrategyProvider.provide();                                                    <i class="conum" data-value="9"></i><b>(9)</b>
+        List&lt;Exception&gt; failures = new ArrayList&lt;&gt;();
+        do {
+          Instant executionStart = Instant.now();                                                               <i class="conum" data-value="10"></i><b>(10)</b>
+          try {
+            return actionToRetry.call();                                                                      <i class="conum" data-value="11"></i><b>(11)</b>
+          } catch (Exception e) {
+            failures.add(e);
+            Instant next = retry.nextDate(executionStart, Instant.now());                                     <i class="conum" data-value="12"></i><b>(12)</b>
+            LOG.warn("Failed to execute action. Cause: {}.\nRetrying at {}", e.getMessage(), next, e);
+            awaiter.waitUntil(next);                                                                          <i class="conum" data-value="13"></i><b>(13)</b>
+          }
+        } while (!retry.terminated());                                                                            <i class="conum" data-value="14"></i><b>(14)</b>
+        throw new MaximumAttemptsReachedException("Maximum attempts to execute action is reached", failures);     <i class="conum" data-value="15"></i><b>(15)</b>
+      } catch (WaitException e) {
+        throw new RetryExecutionInterruptedException(e);                                                          <i class="conum" data-value="16"></i><b>(16)</b>
+      }
+
+    }
+
+  }
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Use an invalid SMTP port in order to test retry</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Configure maximum attempts for email</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>Enable retry using a fixed delay between each attempts for email</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>Use an invalid SMPP port in order to test retry</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
+<td>Configure maximum attempts for SMS</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="6"></i><b>6</b></td>
+<td>Enable retry using a delay that is doubled between each attempts for SMS</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="7"></i><b>7</b></td>
+<td>Register custom <code>RetryExecutor</code> for email</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="8"></i><b>8</b></td>
+<td>Register custom <code>RetryExecutor</code> for SMS</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="9"></i><b>9</b></td>
+<td>Get the instance of the <code>RetryStrategy</code> that will compute the date of the next attempt</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="10"></i><b>10</b></td>
+<td>Date when the execution started</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="11"></i><b>11</b></td>
+<td>Execute the action (here it is sending an email or a SMS)</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="12"></i><b>12</b></td>
+<td>Ask <code>RetryStrategy</code> when should next attempt be executed</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="13"></i><b>13</b></td>
+<td>Ask <code>Awaiter</code> to wait until next date</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="14"></i><b>14</b></td>
+<td>Ask <code>RetryStrategy</code> if maximum attempts are reached or not</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="15"></i><b>15</b></td>
+<td>All executions have failed and maximum attempts are reached so throw <code>MaximumAttemptsReachedException</code></td>
+</tr>
+<tr>
+<td><i class="conum" data-value="16"></i><b>16</b></td>
+<td>If waiting has failed, wrap the exception</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p><a href="https://github.com/groupe-sii/ogham/blob/master/sample-standard-usage/src/main/java/fr/sii/ogham/sample/standard/advanced/CustomRetryExecutorSample.java?ts=2">Source code of the sample</a>.</p>
+</div>
+<div class="paragraph tab-container-end">
+<p>-</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>As Cloudhopper SMPP implementation (for sending SMS) also uses a <code>RetryStrategy</code> for connecting to
+SMPP server (10 maximum attempts spaced 5 seconds apart), you may notice in logs that connection
+is retried 50 times (5 times for sending multiplied by 10 connection attempts).</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2020-07-28 08:13:00 UTC
+</div>
+</div>
+</body>
+</html>

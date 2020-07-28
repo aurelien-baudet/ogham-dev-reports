@@ -1,0 +1,1065 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.0.10">
+<title>Quick and simple inclusion</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
+<link rel="stylesheet" href="./asciidoctor.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script type="text/javascript" src="..//javascripts/steps.js"></script>
+<script type="text/javascript" src="..//javascripts/sourcecode/source-utils.js"></script>
+<script type="text/javascript" src="..//javascripts/sourcecode/highlight-lines.js"></script>
+<script type="text/javascript" src="..//javascripts/sourcecode/collapse-lines.js"></script>
+<script type="text/javascript" src="..//javascripts/tabcontainer.js"></script>
+<script type="text/javascript" src="..//javascripts/toc.js"></script>
+<link rel="stylesheet" type="text/css" href="..//styles/custom-styles.css" />
+<link rel="stylesheet" type="text/css" href="..//styles/tabcontainer.css" />
+<link rel="stylesheet" type="text/css" href="..//styles/steps.css" />
+<link rel="stylesheet" type="text/css" href="..//styles/toc.css" />
+<link rel="stylesheet" type="text/css" href="..//styles/sourcecode/collapse-lines.css" />
+<link rel="stylesheet" type="text/css" href="..//styles/sourcecode/highlight-lines.css" />
+</head>
+<body class="book toc2 toc-left">
+<div id="header">
+<div id="toc" class="toc2">
+<div id="toctitle">Table of Contents</div>
+<ul class="sectlevel1">
+<li><a href="#install">Quick and simple inclusion</a>
+<ul class="sectlevel2">
+<li><a href="#install-standalone">Standalone</a></li>
+<li><a href="#install-spring-boot">With Spring Boot</a></li>
+</ul>
+</li>
+<li><a href="#_select_the_features_you_need">Select the features you need</a>
+<ul class="sectlevel2">
+<li><a href="#select-features-standalone">Standalone</a></li>
+<li><a href="#select-features-spring-boot">With Spring Boot</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div id="content">
+<div class="sect1">
+<h2 id="install"><a class="anchor" href="#install"></a>Quick and simple inclusion</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="install-standalone"><a class="anchor" href="#install-standalone"></a>Standalone</h3>
+<div class="paragraph tab-container no-max-height">
+<p>Include Ogham standalone dependency</p>
+</div>
+<div class="paragraph tab">
+<p><span class="image"><img src="../images//icons/maven-logo.png" alt="Maven" width="118" height="30"></span></p>
+</div>
+<div class="listingblock collapse-lines:1-14,20- highlight-lines:15-19">
+<div class="title">pom.xml</div>
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"&gt;
+  &lt;modelVersion&gt;4.0.0&lt;/modelVersion&gt;
+  &lt;groupId&gt;sample&lt;/groupId&gt;
+  &lt;artifactId&gt;all&lt;/artifactId&gt;
+  &lt;version&gt;0.0.1-SNAPSHOT&lt;/version&gt;
+  &lt;properties&gt;
+    &lt;project.reporting.outputEncoding&gt;UTF-8&lt;/project.reporting.outputEncoding&gt;
+    &lt;project.build.sourceEncoding&gt;UTF-8&lt;/project.build.sourceEncoding&gt;
+    &lt;maven.compiler.source&gt;1.8&lt;/maven.compiler.source&gt;
+    &lt;maven.compiler.target&gt;1.8&lt;/maven.compiler.target&gt;
+  &lt;/properties&gt;
+  &lt;dependencies&gt;
+    &lt;dependency&gt;
+      &lt;groupId&gt;fr.sii.ogham&lt;/groupId&gt;
+      &lt;artifactId&gt;ogham-all&lt;/artifactId&gt;
+      &lt;version&gt;3.0.0-SNAPSHOT&lt;/version&gt;
+    &lt;/dependency&gt;
+  &lt;/dependencies&gt;
+&lt;/project&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><a href="https://github.com/groupe-sii/ogham/blob/master/sample-standard-usage/pom.xml?ts=2">View code of an example pom.xml</a></p>
+</div>
+<div class="paragraph tab">
+<p><span class="image"><img src="../images//icons/gradlephant-logo.png" alt="Gradle" width="114" height="30"></span></p>
+</div>
+<div class="listingblock collapse-lines:1-9 highlight-lines:11">
+<div class="title">build.gradle</div>
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">plugins {
+    id 'java'
+}
+
+repositories {
+  mavenLocal()
+  mavenCentral()
+}
+
+dependencies {
+  implementation 'fr.sii.ogham:ogham-all:3.0.0-SNAPSHOT'
+}</code></pre>
+</div>
+</div>
+<div class="paragraph tab-container-end">
+<p>-</p>
+</div>
+<div class="paragraph">
+<p>This will include:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Sending email through SMTP server (using <a href="https://eclipse-ee4j.github.io/mail/">Jakarta Mail</a>, formely JavaMail)</p>
+</li>
+<li>
+<p>Sending email through <a href="https://sendgrid.com/">SendGrid</a></p>
+</li>
+<li>
+<p>Sending SMS through SMPP server (using <a href="https://github.com/fizzed/cloudhopper-smpp">Cloudhopper</a>)</p>
+</li>
+<li>
+<p>Sending SMS through <a href="https://www.ovhtelecom.fr/sms/api-sms.xml">OVH SMS API</a></p>
+</li>
+<li>
+<p><a href="http://freemarker.org/">FreeMarker</a> template engine available for building message contents</p>
+</li>
+<li>
+<p><a href="http://www.thymeleaf.org/">ThymeLeaf</a> template engine available for building message contents</p>
+</li>
+</ul>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="title">Java version compatibility</div>
+<div class="paragraph">
+<p>Ogham is compatible with Java 8 and up to Java 14 (included).</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="install-spring-boot"><a class="anchor" href="#install-spring-boot"></a>With Spring Boot</h3>
+<div class="paragraph tab-container no-max-height">
+<p>Include Ogham dependency for Spring Boot</p>
+</div>
+<div class="paragraph tab">
+<p><span class="image"><img src="../images//icons/maven-logo.png" alt="Maven" width="118" height="30"></span></p>
+</div>
+<div class="listingblock collapse-lines:1-21,28- highlight-lines:22-26">
+<div class="title">pom.xml</div>
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd"&gt;
+  &lt;modelVersion&gt;4.0.0&lt;/modelVersion&gt;
+  &lt;parent&gt;
+    &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-boot-starter-parent&lt;/artifactId&gt;
+    &lt;version&gt;2.3.1.RELEASE&lt;/version&gt;
+    &lt;relativePath/&gt; &lt;!-- lookup parent from repository --&gt;
+  &lt;/parent&gt;
+  &lt;groupId&gt;samples&lt;/groupId&gt;
+  &lt;artifactId&gt;ogham-and-spring-boot&lt;/artifactId&gt;
+  &lt;version&gt;0.0.1-SNAPSHOT&lt;/version&gt;
+  &lt;name&gt;ogham-and-spring-boot&lt;/name&gt;
+  &lt;description&gt;Demo project for Spring Boot&lt;/description&gt;
+
+  &lt;properties&gt;
+    &lt;java.version&gt;11&lt;/java.version&gt;
+  &lt;/properties&gt;
+
+  &lt;dependencies&gt;
+    &lt;dependency&gt;
+      &lt;groupId&gt;fr.sii.ogham&lt;/groupId&gt;
+      &lt;artifactId&gt;ogham-spring-boot-starter-all&lt;/artifactId&gt;
+      &lt;version&gt;3.0.0-SNAPSHOT&lt;/version&gt;
+    &lt;/dependency&gt;
+
+    &lt;dependency&gt;
+      &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+      &lt;artifactId&gt;spring-boot-starter-test&lt;/artifactId&gt;
+      &lt;scope&gt;test&lt;/scope&gt;
+      &lt;exclusions&gt;
+        &lt;exclusion&gt;
+          &lt;groupId&gt;org.junit.vintage&lt;/groupId&gt;
+          &lt;artifactId&gt;junit-vintage-engine&lt;/artifactId&gt;
+        &lt;/exclusion&gt;
+      &lt;/exclusions&gt;
+    &lt;/dependency&gt;
+  &lt;/dependencies&gt;
+
+  &lt;build&gt;
+    &lt;plugins&gt;
+      &lt;plugin&gt;
+        &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+        &lt;artifactId&gt;spring-boot-maven-plugin&lt;/artifactId&gt;
+      &lt;/plugin&gt;
+    &lt;/plugins&gt;
+  &lt;/build&gt;
+
+&lt;/project&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph tab">
+<p><span class="image"><img src="../images//icons/gradlephant-logo.png" alt="Gradle" width="114" height="30"></span></p>
+</div>
+<div class="listingblock collapse-lines:1-13,17-24 highlight-lines:16">
+<div class="title">build.gradle</div>
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">plugins {
+  id 'org.springframework.boot' version '2.3.1.RELEASE'
+  id 'io.spring.dependency-management' version '1.0.9.RELEASE'
+  id 'java'
+}
+
+group = 'samples'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '11'
+
+repositories {
+  mavenCentral()
+}
+
+dependencies {
+  implementation 'fr.sii.ogham:ogham-spring-boot-starter-all:3.0.0-SNAPSHOT'
+
+  testImplementation('org.springframework.boot:spring-boot-starter-test') {
+    exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+  }
+}
+
+test {
+  useJUnitPlatform()
+}</code></pre>
+</div>
+</div>
+<div class="paragraph tab-container-end">
+<p>-</p>
+</div>
+<div class="paragraph">
+<p>This will include:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Sending email through SMTP server (using <a href="https://javaee.github.io/javamail/">JavaMail</a>)</p>
+</li>
+<li>
+<p>Sending email through <a href="https://sendgrid.com/">SendGrid</a></p>
+</li>
+<li>
+<p>Sending SMS through SMPP server (using <a href="https://github.com/fizzed/cloudhopper-smpp">Cloudhopper</a>)</p>
+</li>
+<li>
+<p>Sending SMS through <a href="https://www.ovhtelecom.fr/sms/api-sms.xml">OVH SMS API</a></p>
+</li>
+<li>
+<p><a href="http://freemarker.org/">FreeMarker</a> template engine available for building message contents</p>
+</li>
+<li>
+<p><a href="http://www.thymeleaf.org/">ThymeLeaf</a> template engine available for building message contents</p>
+</li>
+<li>
+<p>Support of <a href="https://projects.spring.io/spring-boot/">Spring Boot</a> auto-detection mechanism and configuration properties</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>You can combine Ogham with existing Spring Boot dependencies:</p>
+</div>
+<div class="paragraph tab-container no-max-height">
+<div class="title">Ogham adapts itself to Spring Boot features</div>
+<p>Ogham with Spring Boot dependencies</p>
+</div>
+<div class="paragraph tab">
+<p><span class="image"><img src="../images//icons/maven-logo.png" alt="Maven" width="118" height="30"></span></p>
+</div>
+<div class="listingblock collapse-lines:1-21,40- highlight-lines:22-26">
+<div class="title">pom.xml</div>
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd"&gt;
+  &lt;modelVersion&gt;4.0.0&lt;/modelVersion&gt;
+  &lt;parent&gt;
+    &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-boot-starter-parent&lt;/artifactId&gt;
+    &lt;version&gt;2.3.1.RELEASE&lt;/version&gt;
+    &lt;relativePath/&gt; &lt;!-- lookup parent from repository --&gt;
+  &lt;/parent&gt;
+  &lt;groupId&gt;samples&lt;/groupId&gt;
+  &lt;artifactId&gt;ogham-and-spring-boot&lt;/artifactId&gt;
+  &lt;version&gt;0.0.1-SNAPSHOT&lt;/version&gt;
+  &lt;name&gt;ogham-and-spring-boot&lt;/name&gt;
+  &lt;description&gt;Demo project for Spring Boot&lt;/description&gt;
+
+  &lt;properties&gt;
+    &lt;java.version&gt;11&lt;/java.version&gt;
+  &lt;/properties&gt;
+
+  &lt;dependencies&gt;
+    &lt;dependency&gt;
+      &lt;groupId&gt;fr.sii.ogham&lt;/groupId&gt;
+      &lt;artifactId&gt;ogham-spring-boot-starter-all&lt;/artifactId&gt;    <i class="conum" data-value="1"></i><b>(1)</b>
+      &lt;version&gt;3.0.0-SNAPSHOT&lt;/version&gt;
+    &lt;/dependency&gt;
+
+    &lt;dependency&gt;
+      &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+      &lt;artifactId&gt;spring-boot-starter-freemarker&lt;/artifactId&gt;   <i class="conum" data-value="2"></i><b>(2)</b>
+    &lt;/dependency&gt;
+    &lt;dependency&gt;
+      &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+      &lt;artifactId&gt;spring-boot-starter-thymeleaf&lt;/artifactId&gt;    <i class="conum" data-value="3"></i><b>(3)</b>
+    &lt;/dependency&gt;
+    &lt;dependency&gt;
+      &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+      &lt;artifactId&gt;spring-boot-starter-mail&lt;/artifactId&gt;         <i class="conum" data-value="4"></i><b>(4)</b>
+    &lt;/dependency&gt;
+
+    &lt;dependency&gt;
+      &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+      &lt;artifactId&gt;spring-boot-starter-test&lt;/artifactId&gt;
+      &lt;scope&gt;test&lt;/scope&gt;
+      &lt;exclusions&gt;
+        &lt;exclusion&gt;
+          &lt;groupId&gt;org.junit.vintage&lt;/groupId&gt;
+          &lt;artifactId&gt;junit-vintage-engine&lt;/artifactId&gt;
+        &lt;/exclusion&gt;
+      &lt;/exclusions&gt;
+    &lt;/dependency&gt;
+  &lt;/dependencies&gt;
+
+  &lt;build&gt;
+    &lt;plugins&gt;
+      &lt;plugin&gt;
+        &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+        &lt;artifactId&gt;spring-boot-maven-plugin&lt;/artifactId&gt;
+      &lt;/plugin&gt;
+    &lt;/plugins&gt;
+  &lt;/build&gt;
+
+&lt;/project&gt;</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Add Ogham starter for Spring Boot to benefit for all Ogham features in
+your Spring Boot application.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Import FreeMarker starter as usual. Ogham will adapt to additional FreeMarker
+provided by Spring Boot.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>Import Thymeleaf starter as usual. Ogham will adapt to additional Thymeleaf
+provided by Spring Boot.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>Import Mail starter as usual. Ogham will adapt to use mail features provided
+by Spring Boot.</td>
+</tr>
+</table>
+</div>
+<div class="paragraph tab">
+<p><span class="image"><img src="../images//icons/gradlephant-logo.png" alt="Gradle" width="114" height="30"></span></p>
+</div>
+<div class="listingblock collapse-lines:1-13,21-27 highlight-lines:16">
+<div class="title">build.gradle</div>
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">plugins {
+  id 'org.springframework.boot' version '2.3.1.RELEASE'
+  id 'io.spring.dependency-management' version '1.0.9.RELEASE'
+  id 'java'
+}
+
+group = 'samples'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '11'
+
+repositories {
+  mavenCentral()
+}
+
+dependencies {
+  implementation 'fr.sii.ogham:ogham-spring-boot-starter-all:3.0.0-SNAPSHOT'   <i class="conum" data-value="1"></i><b>(1)</b>
+
+  implementation 'org.springframework.boot:spring-boot-starter-freemarker'      <i class="conum" data-value="2"></i><b>(2)</b>
+  implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'       <i class="conum" data-value="3"></i><b>(3)</b>
+  implementation 'org.springframework.boot:spring-boot-starter-mail'            <i class="conum" data-value="4"></i><b>(4)</b>
+  testImplementation('org.springframework.boot:spring-boot-starter-test') {
+    exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+  }
+}
+
+test {
+  useJUnitPlatform()
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Add Ogham starter for Spring Boot to benefit for all Ogham features in
+your Spring Boot application.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Import FreeMarker starter as usual. Ogham will adapt to additional FreeMarker
+provided by Spring Boot.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>Import Thymeleaf starter as usual. Ogham will adapt to additional Thymeleaf
+provided by Spring Boot.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>Import Mail starter as usual. Ogham will adapt to use mail features provided
+by Spring Boot.</td>
+</tr>
+</table>
+</div>
+<div class="paragraph tab-container-end">
+<p>-</p>
+</div>
+<div class="paragraph">
+<p>Ogham will auto-configure to use Spring Boot additions and support Spring Boot
+configuration properties like <code>spring.mail.host</code> for example.</p>
+</div>
+<div class="paragraph">
+<p>Ogham is compatible with following Spring Boot versions:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>1.4.x (currently automatically tested against 1.4.7.RELEASE, see note below)</p>
+</li>
+<li>
+<p>1.5.x (currently automatically tested against 1.5.22.RELEASE)</p>
+</li>
+<li>
+<p>2.1.x (currently automatically tested against 2.1.15.RELEASE)</p>
+</li>
+<li>
+<p>2.2.x (currently automatically tested against 2.2.8.RELEASE)</p>
+</li>
+<li>
+<p>2.3.x (currently automatically tested against 2.3.1.RELEASE)</p>
+</li>
+</ul>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="title">Java version compatibility</div>
+<div class="paragraph">
+<p>Ogham is compatible with Java 8 and up to Java 14 (included).</p>
+</div>
+<div class="paragraph">
+<p>However, Spring Boot may not be compatible with some Java versions (depending on
+Spring Boot version).</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+<div class="title">Java 7</div>
+<div class="paragraph">
+<p>Java 7 support has been dropped since Ogham 3.0.0. Therefore, Ogham is no more
+tested with Spring Boot 1.3.x</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+<div class="title">Spring Boot 1.4.x and WireMock</div>
+<div class="paragraph">
+<p>Latest WireMock versions are not compatible with Spring Boot 1.4.x. So if you
+are using Spring Boot 1.4.x, also using <code>ogham-test-utils</code> for writing tests and
+want to use WireMock in one of your test, you may experience <code>ClassNotFoundException</code>.
+This is due to different <code>org.apache.httpcomponents</code> versions.</p>
+</div>
+<div class="paragraph">
+<p>In this case, just use a different version of WireMock by manually adding the dependency
+<code>com.github.tomakehurst:wiremock-jre8:2.23.2:test</code>. This will force to use a
+previous WireMock version that is compatible with Spring Boot 1.4.x.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_select_the_features_you_need"><a class="anchor" href="#_select_the_features_you_need"></a>Select the features you need</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="select-features-standalone"><a class="anchor" href="#select-features-standalone"></a>Standalone</h3>
+<div class="paragraph">
+<p>Importing <code>ogham-all</code> dependency is easy but may import dependencies that you
+don&#8217;t need. For example, you may only need FreeMarker but not Thymeleaf. Or
+you may only need to send emails through SMTP but never use SendGrid.</p>
+</div>
+<div class="paragraph">
+<p>That&#8217;s why Ogham provides different modules so you can compose as you like:</p>
+</div>
+<div class="paragraph tab-container no-max-height">
+<div class="title">Jakarta Mail and FreeMarker only</div>
+<p>Select Ogham standalone dependencies</p>
+</div>
+<div class="paragraph tab">
+<p><span class="image"><img src="../images//icons/maven-logo.png" alt="Maven" width="118" height="30"></span></p>
+</div>
+<div class="listingblock collapse-lines:1-14,25-, highlight-lines:15-24">
+<div class="title">pom.xml</div>
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"&gt;
+  &lt;modelVersion&gt;4.0.0&lt;/modelVersion&gt;
+  &lt;groupId&gt;sample&lt;/groupId&gt;
+  &lt;artifactId&gt;javamail-and-freemarker&lt;/artifactId&gt;
+  &lt;version&gt;0.0.1-SNAPSHOT&lt;/version&gt;
+  &lt;properties&gt;
+    &lt;project.reporting.outputEncoding&gt;UTF-8&lt;/project.reporting.outputEncoding&gt;
+    &lt;project.build.sourceEncoding&gt;UTF-8&lt;/project.build.sourceEncoding&gt;
+    &lt;maven.compiler.source&gt;1.8&lt;/maven.compiler.source&gt;
+    &lt;maven.compiler.target&gt;1.8&lt;/maven.compiler.target&gt;
+  &lt;/properties&gt;
+  &lt;dependencies&gt;
+    &lt;dependency&gt;
+      &lt;groupId&gt;fr.sii.ogham&lt;/groupId&gt;
+      &lt;artifactId&gt;ogham-email-javamail&lt;/artifactId&gt;        <i class="conum" data-value="1"></i><b>(1)</b>
+      &lt;version&gt;3.0.0-SNAPSHOT&lt;/version&gt;
+    &lt;/dependency&gt;
+    &lt;dependency&gt;
+      &lt;groupId&gt;fr.sii.ogham&lt;/groupId&gt;
+      &lt;artifactId&gt;ogham-template-freemarker&lt;/artifactId&gt;   <i class="conum" data-value="2"></i><b>(2)</b>
+      &lt;version&gt;3.0.0-SNAPSHOT&lt;/version&gt;
+    &lt;/dependency&gt;
+  &lt;/dependencies&gt;
+&lt;/project&gt;</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Import only dependencies needed to send emails through SMTP (using Jakarta Mail).</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Import only dependencies needed to handle FreeMarker templates.</td>
+</tr>
+</table>
+</div>
+<div class="paragraph tab">
+<p><span class="image"><img src="../images//icons/gradlephant-logo.png" alt="Gradle" width="114" height="30"></span></p>
+</div>
+<div class="listingblock collapse-lines:1-9 highlight-lines:11-12">
+<div class="title">build.gradle</div>
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">plugins {
+    id 'java'
+}
+
+repositories {
+  mavenLocal()
+  mavenCentral()
+}
+
+dependencies {
+    implementation 'fr.sii.ogham:ogham-email-javamail:3.0.0-SNAPSHOT'        <i class="conum" data-value="1"></i><b>(1)</b>
+    implementation 'fr.sii.ogham:ogham-template-freemarker:3.0.0-SNAPSHOT'   <i class="conum" data-value="2"></i><b>(2)</b>
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Import only dependencies needed to send emails through SMTP (using Jakarta Mail).</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Import only dependencies needed to handle FreeMarker templates.</td>
+</tr>
+</table>
+</div>
+<div class="paragraph tab-container-end">
+<p>-</p>
+</div>
+<div class="paragraph">
+<p>Another example for sending SMS only:</p>
+</div>
+<div class="paragraph tab-container no-max-height">
+<div class="title">SMPP only without using templates</div>
+<p>Select Ogham standalone dependencies</p>
+</div>
+<div class="paragraph tab">
+<p><span class="image"><img src="../images//icons/maven-logo.png" alt="Maven" width="118" height="30"></span></p>
+</div>
+<div class="listingblock collapse-lines:1-14,20- highlight-lines:15-19">
+<div class="title">pom.xml</div>
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"&gt;
+  &lt;modelVersion&gt;4.0.0&lt;/modelVersion&gt;
+  &lt;groupId&gt;sample&lt;/groupId&gt;
+  &lt;artifactId&gt;sms-only&lt;/artifactId&gt;
+  &lt;version&gt;0.0.1-SNAPSHOT&lt;/version&gt;
+  &lt;properties&gt;
+    &lt;project.reporting.outputEncoding&gt;UTF-8&lt;/project.reporting.outputEncoding&gt;
+    &lt;project.build.sourceEncoding&gt;UTF-8&lt;/project.build.sourceEncoding&gt;
+    &lt;maven.compiler.source&gt;1.8&lt;/maven.compiler.source&gt;
+    &lt;maven.compiler.target&gt;1.8&lt;/maven.compiler.target&gt;
+  &lt;/properties&gt;
+  &lt;dependencies&gt;
+    &lt;dependency&gt;
+      &lt;groupId&gt;fr.sii.ogham&lt;/groupId&gt;
+      &lt;artifactId&gt;ogham-sms-cloudhopper&lt;/artifactId&gt;    <i class="conum" data-value="1"></i><b>(1)</b>
+      &lt;version&gt;3.0.0-SNAPSHOT&lt;/version&gt;
+    &lt;/dependency&gt;
+  &lt;/dependencies&gt;
+&lt;/project&gt;</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Import only dependencies needed to send SMS through SMPP (using Cloudhopper).</td>
+</tr>
+</table>
+</div>
+<div class="paragraph tab">
+<p><span class="image"><img src="../images//icons/gradlephant-logo.png" alt="Gradle" width="114" height="30"></span></p>
+</div>
+<div class="listingblock collapse-lines:1-9 highlight-lines:11">
+<div class="title">build.gradle</div>
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">plugins {
+    id 'java'
+}
+
+repositories {
+  mavenLocal()
+  mavenCentral()
+}
+
+dependencies {
+    implementation 'fr.sii.ogham:ogham-sms-cloudhopper:3.0.0-SNAPSHOT'    <i class="conum" data-value="1"></i><b>(1)</b>
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Import only dependencies needed to send SMS through SMPP (using Cloudhopper).</td>
+</tr>
+</table>
+</div>
+<div class="paragraph tab-container-end">
+<p>-</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="select-features-spring-boot"><a class="anchor" href="#select-features-spring-boot"></a>With Spring Boot</h3>
+<div class="paragraph">
+<p>Ogham provides starters like Spring Boot does. If you are just interested in
+sending emails, just include the <code>ogham-spring-boot-starter-email</code>.
+It includes everything to work with email in Ogham plus FreeMarker and Thymeleaf but
+it doesn&#8217;t import anything to deal with SMS.</p>
+</div>
+<div class="paragraph tab-container no-max-height">
+<div class="title">Email with all features</div>
+<p>Select Ogham features with Spring Boot dependencies</p>
+</div>
+<div class="paragraph tab">
+<p><span class="image"><img src="../images//icons/maven-logo.png" alt="Maven" width="118" height="30"></span></p>
+</div>
+<div class="listingblock collapse-lines:1-21,40- highlight-lines:22-26">
+<div class="title">pom.xml</div>
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd"&gt;
+  &lt;modelVersion&gt;4.0.0&lt;/modelVersion&gt;
+  &lt;parent&gt;
+    &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-boot-starter-parent&lt;/artifactId&gt;
+    &lt;version&gt;2.3.1.RELEASE&lt;/version&gt;
+    &lt;relativePath/&gt; &lt;!-- lookup parent from repository --&gt;
+  &lt;/parent&gt;
+  &lt;groupId&gt;samples&lt;/groupId&gt;
+  &lt;artifactId&gt;ogham-and-spring-boot&lt;/artifactId&gt;
+  &lt;version&gt;0.0.1-SNAPSHOT&lt;/version&gt;
+  &lt;name&gt;ogham-and-spring-boot-email-only&lt;/name&gt;
+  &lt;description&gt;Demo project for Spring Boot&lt;/description&gt;
+
+  &lt;properties&gt;
+    &lt;java.version&gt;11&lt;/java.version&gt;
+  &lt;/properties&gt;
+
+  &lt;dependencies&gt;
+    &lt;dependency&gt;
+      &lt;groupId&gt;fr.sii.ogham&lt;/groupId&gt;
+      &lt;artifactId&gt;ogham-spring-boot-starter-email&lt;/artifactId&gt;  <i class="conum" data-value="1"></i><b>(1)</b>
+      &lt;version&gt;3.0.0-SNAPSHOT&lt;/version&gt;
+    &lt;/dependency&gt;
+
+    &lt;dependency&gt;
+      &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+      &lt;artifactId&gt;spring-boot-starter-freemarker&lt;/artifactId&gt;   <i class="conum" data-value="2"></i><b>(2)</b>
+    &lt;/dependency&gt;
+    &lt;dependency&gt;
+      &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+      &lt;artifactId&gt;spring-boot-starter-thymeleaf&lt;/artifactId&gt;    <i class="conum" data-value="3"></i><b>(3)</b>
+    &lt;/dependency&gt;
+    &lt;dependency&gt;
+      &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+      &lt;artifactId&gt;spring-boot-starter-mail&lt;/artifactId&gt;         <i class="conum" data-value="4"></i><b>(4)</b>
+    &lt;/dependency&gt;
+
+    &lt;dependency&gt;
+      &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+      &lt;artifactId&gt;spring-boot-starter-test&lt;/artifactId&gt;
+      &lt;scope&gt;test&lt;/scope&gt;
+      &lt;exclusions&gt;
+        &lt;exclusion&gt;
+          &lt;groupId&gt;org.junit.vintage&lt;/groupId&gt;
+          &lt;artifactId&gt;junit-vintage-engine&lt;/artifactId&gt;
+        &lt;/exclusion&gt;
+      &lt;/exclusions&gt;
+    &lt;/dependency&gt;
+  &lt;/dependencies&gt;
+
+  &lt;build&gt;
+    &lt;plugins&gt;
+      &lt;plugin&gt;
+        &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+        &lt;artifactId&gt;spring-boot-maven-plugin&lt;/artifactId&gt;
+      &lt;/plugin&gt;
+    &lt;/plugins&gt;
+  &lt;/build&gt;
+
+&lt;/project&gt;</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Add Ogham starter for Spring Boot to benefit for Ogham email features in
+your Spring Boot application.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Import FreeMarker starter as usual. Ogham will adapt to additional FreeMarker
+provided by Spring Boot.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>Import Thymeleaf starter as usual. Ogham will adapt to additional Thymeleaf
+provided by Spring Boot.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>Import Mail starter as usual. Ogham will adapt to use mail features provided
+by Spring Boot.</td>
+</tr>
+</table>
+</div>
+<div class="paragraph tab">
+<p><span class="image"><img src="../images//icons/gradlephant-logo.png" alt="Gradle" width="114" height="30"></span></p>
+</div>
+<div class="listingblock collapse-lines:1-13,21-27 highlight-lines:16">
+<div class="title">build.gradle</div>
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">plugins {
+  id 'org.springframework.boot' version '2.3.1.RELEASE'
+  id 'io.spring.dependency-management' version '1.0.9.RELEASE'
+  id 'java'
+}
+
+group = 'samples'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '11'
+
+repositories {
+  mavenCentral()
+}
+
+dependencies {
+  implementation 'fr.sii.ogham:ogham-spring-boot-starter-email:3.0.0-SNAPSHOT'  <i class="conum" data-value="1"></i><b>(1)</b>
+
+  implementation 'org.springframework.boot:spring-boot-starter-freemarker'       <i class="conum" data-value="2"></i><b>(2)</b>
+  implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'        <i class="conum" data-value="3"></i><b>(3)</b>
+  implementation 'org.springframework.boot:spring-boot-starter-mail'             <i class="conum" data-value="4"></i><b>(4)</b>
+  testImplementation('org.springframework.boot:spring-boot-starter-test') {
+    exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+  }
+}
+
+test {
+  useJUnitPlatform()
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Add Ogham starter for Spring Boot to benefit for email Ogham features in
+your Spring Boot application.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Import FreeMarker starter as usual. Ogham will adapt to additional FreeMarker
+provided by Spring Boot.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>Import Thymeleaf starter as usual. Ogham will adapt to additional Thymeleaf
+provided by Spring Boot.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>Import Mail starter as usual. Ogham will adapt to use mail features provided
+by Spring Boot.</td>
+</tr>
+</table>
+</div>
+<div class="paragraph tab-container-end">
+<p>-</p>
+</div>
+<div class="paragraph">
+<p>If you want to be even more selective, you can manually select Ogham libraries.
+To benefit from Spring Boot auto-configuration, you just need to add
+<code>ogham-spring-boot-autoconfigure</code>.</p>
+</div>
+<div class="paragraph tab-container no-max-height">
+<div class="title">Email and FreeMarker only using Spring Boot features</div>
+<p>Select Ogham features with Spring Boot dependencies</p>
+</div>
+<div class="paragraph tab">
+<p><span class="image"><img src="../images//icons/maven-logo.png" alt="Maven" width="118" height="30"></span></p>
+</div>
+<div class="listingblock collapse-lines:1-21,47- highlight-lines:22-36">
+<div class="title">pom.xml</div>
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd"&gt;
+  &lt;modelVersion&gt;4.0.0&lt;/modelVersion&gt;
+  &lt;parent&gt;
+    &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-boot-starter-parent&lt;/artifactId&gt;
+    &lt;version&gt;2.3.1.RELEASE&lt;/version&gt;
+    &lt;relativePath/&gt; &lt;!-- lookup parent from repository --&gt;
+  &lt;/parent&gt;
+  &lt;groupId&gt;samples&lt;/groupId&gt;
+  &lt;artifactId&gt;ogham-and-spring-boot&lt;/artifactId&gt;
+  &lt;version&gt;0.0.1-SNAPSHOT&lt;/version&gt;
+  &lt;name&gt;ogham-and-spring-boot-email-only&lt;/name&gt;
+  &lt;description&gt;Demo project for Spring Boot&lt;/description&gt;
+
+  &lt;properties&gt;
+    &lt;java.version&gt;11&lt;/java.version&gt;
+  &lt;/properties&gt;
+
+  &lt;dependencies&gt;
+    &lt;dependency&gt;
+      &lt;groupId&gt;fr.sii.ogham&lt;/groupId&gt;
+      &lt;artifactId&gt;ogham-spring-boot-autoconfigure&lt;/artifactId&gt;    <i class="conum" data-value="1"></i><b>(1)</b>
+      &lt;version&gt;3.0.0-SNAPSHOT&lt;/version&gt;
+    &lt;/dependency&gt;
+    &lt;dependency&gt;
+      &lt;groupId&gt;fr.sii.ogham&lt;/groupId&gt;
+      &lt;artifactId&gt;ogham-email-javamail&lt;/artifactId&gt;               <i class="conum" data-value="2"></i><b>(2)</b>
+      &lt;version&gt;3.0.0-SNAPSHOT&lt;/version&gt;
+    &lt;/dependency&gt;
+    &lt;dependency&gt;
+      &lt;groupId&gt;fr.sii.ogham&lt;/groupId&gt;
+      &lt;artifactId&gt;ogham-template-freemarker&lt;/artifactId&gt;          <i class="conum" data-value="3"></i><b>(3)</b>
+      &lt;version&gt;3.0.0-SNAPSHOT&lt;/version&gt;
+    &lt;/dependency&gt;
+
+    &lt;dependency&gt;
+      &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+      &lt;artifactId&gt;spring-boot-starter-freemarker&lt;/artifactId&gt;     <i class="conum" data-value="4"></i><b>(4)</b>
+    &lt;/dependency&gt;
+    &lt;dependency&gt;
+      &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+      &lt;artifactId&gt;spring-boot-starter-mail&lt;/artifactId&gt;           <i class="conum" data-value="5"></i><b>(5)</b>
+    &lt;/dependency&gt;
+
+    &lt;dependency&gt;
+      &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+      &lt;artifactId&gt;spring-boot-starter-test&lt;/artifactId&gt;
+      &lt;scope&gt;test&lt;/scope&gt;
+      &lt;exclusions&gt;
+        &lt;exclusion&gt;
+          &lt;groupId&gt;org.junit.vintage&lt;/groupId&gt;
+          &lt;artifactId&gt;junit-vintage-engine&lt;/artifactId&gt;
+        &lt;/exclusion&gt;
+      &lt;/exclusions&gt;
+    &lt;/dependency&gt;
+  &lt;/dependencies&gt;
+
+  &lt;build&gt;
+    &lt;plugins&gt;
+      &lt;plugin&gt;
+        &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+        &lt;artifactId&gt;spring-boot-maven-plugin&lt;/artifactId&gt;
+      &lt;/plugin&gt;
+    &lt;/plugins&gt;
+  &lt;/build&gt;
+
+&lt;/project&gt;</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Provides auto-configuration to register Ogham beans in Spring Boot application.
+Also configures Ogham to use Spring Boot beans.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Provides Ogham features to send emails through SMTP (using Jakarta Mail).</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>Provides Ogham features to handle FreeMarker template engine.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>Import Spring Boot FreeMarker starter as usual. Ogham will automatically adapt
+itself to use Spring Boot features.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
+<td>Import Spring Boot Mail starter. Ogham will automatically adapt
+itself to use Spring Boot features.</td>
+</tr>
+</table>
+</div>
+<div class="paragraph tab">
+<p><span class="image"><img src="../images//icons/gradlephant-logo.png" alt="Gradle" width="114" height="30"></span></p>
+</div>
+<div class="listingblock collapse-lines:1-13,22-28 highlight-lines:16-18">
+<div class="title">build.gradle</div>
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">plugins {
+  id 'org.springframework.boot' version '2.3.1.RELEASE'
+  id 'io.spring.dependency-management' version '1.0.9.RELEASE'
+  id 'java'
+}
+
+group = 'samples'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '11'
+
+repositories {
+  mavenCentral()
+}
+
+dependencies {
+  implementation 'fr.sii.ogham:ogham-spring-boot-autoconfigure:3.0.0-SNAPSHOT'   <i class="conum" data-value="1"></i><b>(1)</b>
+  implementation 'fr.sii.ogham:ogham-email-javamail:3.0.0-SNAPSHOT'              <i class="conum" data-value="2"></i><b>(2)</b>
+  implementation 'fr.sii.ogham:ogham-template-freemarker:3.0.0-SNAPSHOT'         <i class="conum" data-value="3"></i><b>(3)</b>
+
+  implementation 'org.springframework.boot:spring-boot-starter-freemarker'        <i class="conum" data-value="4"></i><b>(4)</b>
+  implementation 'org.springframework.boot:spring-boot-starter-mail'              <i class="conum" data-value="5"></i><b>(5)</b>
+  testImplementation('org.springframework.boot:spring-boot-starter-test') {
+    exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+  }
+}
+
+test {
+  useJUnitPlatform()
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Provides auto-configuration to register Ogham beans in Spring Boot application.
+Also configures Ogham to use Spring Boot beans.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Provides Ogham features to send emails through SMTP (using Jakarta Mail).</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>Provides Ogham features to handle FreeMarker template engine.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>Import Spring Boot FreeMarker starter as usual. Ogham will automatically adapt
+itself to use Spring Boot features.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
+<td>Import Spring Boot Mail starter. Ogham will automatically adapt
+itself to use Spring Boot features.</td>
+</tr>
+</table>
+</div>
+<div class="paragraph tab-container-end">
+<p>-</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2020-07-28 08:13:00 UTC
+</div>
+</div>
+</body>
+</html>
