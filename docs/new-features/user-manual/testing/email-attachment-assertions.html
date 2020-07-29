@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.0.10">
+<title>Untitled</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
+<link rel="stylesheet" href="./asciidoctor.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script type="text/javascript" src="../..//javascripts/steps.js"></script>
+<script type="text/javascript" src="../..//javascripts/sourcecode/source-utils.js"></script>
+<script type="text/javascript" src="../..//javascripts/sourcecode/highlight-lines.js"></script>
+<script type="text/javascript" src="../..//javascripts/sourcecode/collapse-lines.js"></script>
+<script type="text/javascript" src="../..//javascripts/tabcontainer.js"></script>
+<script type="text/javascript" src="../..//javascripts/toc.js"></script>
+<link rel="stylesheet" type="text/css" href="../..//styles/custom-styles.css" />
+<link rel="stylesheet" type="text/css" href="../..//styles/tabcontainer.css" />
+<link rel="stylesheet" type="text/css" href="../..//styles/steps.css" />
+<link rel="stylesheet" type="text/css" href="../..//styles/toc.css" />
+<link rel="stylesheet" type="text/css" href="../..//styles/sourcecode/collapse-lines.css" />
+<link rel="stylesheet" type="text/css" href="../..//styles/sourcecode/highlight-lines.css" />
+</head>
+<body class="book">
+<div id="header">
+</div>
+<div id="content">
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>You can also test that attachments are sent correctly.</p>
+</div>
+<div class="paragraph tab-container no-max-height">
+<p>Sample</p>
+</div>
+<div class="paragraph tab">
+<p><span class="image"><img src="../../images//icons/java-logo.png" alt="java logo" width="16" height="30"></span> Java</p>
+</div>
+<div class="listingblock collapse-lines:1-25,27-44 irrelevant-lines:1-25 highlight-lines:63-68">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">package fr.sii.ogham.sample.test;
+
+import static com.icegreen.greenmail.util.ServerSetupTest.SMTP;
+import static fr.sii.ogham.testing.assertion.OghamAssertions.assertThat;
+import static fr.sii.ogham.testing.assertion.util.EmailUtils.ATTACHMENT_DISPOSITION;
+import static fr.sii.ogham.testing.util.ResourceUtils.resource;
+import static org.hamcrest.Matchers.hasItems;
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.nullValue;
+import static org.hamcrest.Matchers.startsWith;
+
+import java.io.IOException;
+
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
+
+import com.icegreen.greenmail.junit.GreenMailRule;
+
+import fr.sii.ogham.core.builder.MessagingBuilder;
+import fr.sii.ogham.core.exception.MessagingException;
+import fr.sii.ogham.core.service.MessagingService;
+import fr.sii.ogham.email.message.Email;
+
+public class EmailAttachmentTestSample {
+  private MessagingService oghamService;
+
+  @Rule
+  public final GreenMailRule greenMail = new GreenMailRule(SMTP);
+
+  @Before
+  public void setUp() throws IOException {
+    oghamService = MessagingBuilder.standard()
+        .environment()
+          .properties()
+            .set("ogham.email.from.default-value", "Sender Name &lt;test.sender@sii.fr&gt;")
+            .set("mail.smtp.host", SMTP.getBindAddress())
+            .set("mail.smtp.port", String.valueOf(SMTP.getPort()))
+            .and()
+          .and()
+        .build();
+  }
+
+  @Test
+  public void simple() throws MessagingException, javax.mail.MessagingException, IOException {
+    // @formatter:off
+    oghamService.send(new Email()
+                .subject("Test")
+                .body().string("body")
+                .to("recipient@sii.fr")
+                .attach().resource("/attachment/test.pdf"));
+    assertThat(greenMail).receivedMessages()
+      .count(is(1))
+      .message(0)
+        .subject(is("Test"))
+        .from().address(hasItems("test.sender@sii.fr")).and()
+        .to().address(hasItems("recipient@sii.fr")).and()
+        .body()
+          .contentAsString(is("body"))
+          .contentType(startsWith("text/plain")).and()
+        .alternative(nullValue())
+        .attachments(hasSize(1))                              <i class="conum" data-value="1"></i><b>(1)</b>
+        .attachment(0)                                        <i class="conum" data-value="2"></i><b>(2)</b>
+          .content(is(resource("/attachment/test.pdf")))    <i class="conum" data-value="3"></i><b>(3)</b>
+          .contentType(startsWith("application/pdf"))       <i class="conum" data-value="4"></i><b>(4)</b>
+          .filename(is("test.pdf"))                         <i class="conum" data-value="5"></i><b>(5)</b>
+          .disposition(is(ATTACHMENT_DISPOSITION));         <i class="conum" data-value="6"></i><b>(6)</b>
+    // @formatter:on
+  }
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Assert that exactly one attachment is attached to the received email</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Access the first attachment for defining assertions on it</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>Assert that the first received file is exactly the same as the sent one</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>Assert that the detected mimetype of the first attachment is correct</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
+<td>Assert that the name of the first attachment is the expected one</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="6"></i><b>6</b></td>
+<td>Assert that the attachment disposition is correct</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p><a href="https://github.com/groupe-sii/ogham/blob/master/sample-standard-usage/src/test/java/fr/sii/ogham/sample/test/EmailAttachmentTestSample.java?ts=2">Source code of the sample</a>.</p>
+</div>
+<div class="paragraph tab-container-end">
+<p>-</p>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2020-07-29 20:37:28 UTC
+</div>
+</div>
+</body>
+</html>

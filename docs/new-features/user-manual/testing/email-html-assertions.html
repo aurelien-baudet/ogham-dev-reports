@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.0.10">
+<title>Untitled</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
+<link rel="stylesheet" href="./asciidoctor.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script type="text/javascript" src="../..//javascripts/steps.js"></script>
+<script type="text/javascript" src="../..//javascripts/sourcecode/source-utils.js"></script>
+<script type="text/javascript" src="../..//javascripts/sourcecode/highlight-lines.js"></script>
+<script type="text/javascript" src="../..//javascripts/sourcecode/collapse-lines.js"></script>
+<script type="text/javascript" src="../..//javascripts/tabcontainer.js"></script>
+<script type="text/javascript" src="../..//javascripts/toc.js"></script>
+<link rel="stylesheet" type="text/css" href="../..//styles/custom-styles.css" />
+<link rel="stylesheet" type="text/css" href="../..//styles/tabcontainer.css" />
+<link rel="stylesheet" type="text/css" href="../..//styles/steps.css" />
+<link rel="stylesheet" type="text/css" href="../..//styles/toc.css" />
+<link rel="stylesheet" type="text/css" href="../..//styles/sourcecode/collapse-lines.css" />
+<link rel="stylesheet" type="text/css" href="../..//styles/sourcecode/highlight-lines.css" />
+</head>
+<body class="book">
+<div id="header">
+</div>
+<div id="content">
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>Comparing two HTML documents can be tricky. Indeed, the HTML attributes can be declared in a
+different order, number of spaces/tabs can be different, some attributes may be declared differently
+but corresponding to the same behavior (for example <code>disabled</code> attribute can be declared only
+<code>disabled</code> with no value, <code>disabled="true"</code> or <code>disabled="disabled"</code>).</p>
+</div>
+<div class="paragraph">
+<p>Ogham provides two distinct matchers to check if:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>HTML is identical (exactly the same nodes at same position and same attributes with same values)</p>
+</li>
+<li>
+<p>HTML is similar (nodes may be at different positions, same attributes with same values)</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>In addition to comparison helpers, Ogham provides helpers to load files from classpath in tests
+(<code>ResourceUtils.resource</code> and <code>ResourceUtils.resourceAsString</code>).
+This is useful to avoid writing expected HTML content as string in your code and also avoid writing
+the same utility function every time.</p>
+</div>
+<div class="paragraph tab-container no-max-height">
+<p>Sample</p>
+</div>
+<div class="paragraph tab">
+<p><span class="image"><img src="../../images//icons/java-logo.png" alt="java logo" width="16" height="30"></span> Java</p>
+</div>
+<div class="listingblock collapse-lines:1-26,27-44,71-83 irrelevant-lines:1-26 highlight-lines:63">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">package fr.sii.ogham.sample.test;
+
+import static com.icegreen.greenmail.util.ServerSetupTest.SMTP;
+import static fr.sii.ogham.testing.assertion.OghamAssertions.assertThat;
+import static fr.sii.ogham.testing.assertion.OghamMatchers.isIdenticalHtml;
+import static fr.sii.ogham.testing.util.ResourceUtils.resourceAsString;
+import static org.hamcrest.Matchers.emptyIterable;
+import static org.hamcrest.Matchers.hasItems;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.nullValue;
+import static org.hamcrest.Matchers.startsWith;
+
+import java.io.IOException;
+
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
+
+import com.icegreen.greenmail.junit.GreenMailRule;
+
+import fr.sii.ogham.core.builder.MessagingBuilder;
+import fr.sii.ogham.core.exception.MessagingException;
+import fr.sii.ogham.core.service.MessagingService;
+import fr.sii.ogham.email.message.Email;
+
+public class EmailHtmlTestSample {
+  private MessagingService oghamService;
+
+  @Rule
+  public final GreenMailRule greenMail = new GreenMailRule(SMTP);
+
+  @Before
+  public void setUp() throws IOException {
+    oghamService = MessagingBuilder.standard()
+        .environment()
+          .properties()
+            .set("ogham.email.from.default-value", "Sender Name &lt;test.sender@sii.fr&gt;")
+            .set("mail.smtp.host", SMTP.getBindAddress())
+            .set("mail.smtp.port", String.valueOf(SMTP.getPort()))
+            .and()
+          .and()
+        .build();
+  }
+
+  @Test
+  public void registerMessage() throws MessagingException, javax.mail.MessagingException, IOException {
+    // @formatter:off
+    oghamService.send(new Email()
+                .body().template("/template/register.html",                         <i class="conum" data-value="1"></i><b>(1)</b>
+                              new SimpleBean("foo", 42))              <i class="conum" data-value="2"></i><b>(2)</b>
+                .to("Recipient Name &lt;recipient@sii.fr&gt;"));
+    assertThat(greenMail).receivedMessages()
+      .count(is(1))
+      .message(0)
+        .subject(is("foo - Confirm your registration"))
+        .from()
+          .address(hasItems("test.sender@sii.fr"))
+          .personal(hasItems("Sender Name")).and()
+        .to()
+          .address(hasItems("recipient@sii.fr"))
+          .personal(hasItems("Recipient Name")).and()
+        .body()
+          .contentAsString(isIdenticalHtml(resourceAsString("/expected/register.html")))  <i class="conum" data-value="3"></i><b>(3)</b>
+          .contentType(startsWith("text/html")).and()
+        .alternative(nullValue())
+        .attachments(emptyIterable());
+    // @formatter:on
+  }
+
+  public static class SimpleBean {
+    private String name;
+    private int value;
+    public SimpleBean(String name, int value) {
+      super();
+      this.name = name;
+      this.value = value;
+    }
+    public String getName() {
+      return name;
+    }
+    public int getValue() {
+      return value;
+    }
+  }
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Use an HTML template</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Object used to evaluate variables in the template</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>Assert that HTML is similar as an expected HTML content</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p><a href="https://github.com/groupe-sii/ogham/blob/master/sample-standard-usage/src/test/java/fr/sii/ogham/sample/test/EmailHtmlTestSample.java?ts=2">Source code of the sample</a>.</p>
+</div>
+<div class="paragraph tab">
+<p><span class="image"><img src="../../images//icons/thymeleaf.jpg" alt="thymeleaf" width="30" height="30"></span> HTML template</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-html" data-lang="html">&lt;!DOCTYPE html&gt;
+&lt;html xmlns:th="http://www.thymeleaf.org"&gt;
+ &lt;head&gt;
+  &lt;title th:text="|${name} - Confirm your registration|"&gt;&lt;/title&gt;
+  &lt;meta charset="utf-8" /&gt;
+ &lt;/head&gt;
+ &lt;body&gt;
+  &lt;h1 title="foo" class="title" th:text="|Hello ${name}|"&gt;&lt;/h1&gt;
+
+  &lt;p class="text" th:text="${value}"&gt;
+  &lt;/p&gt;
+ &lt;/body&gt;
+&lt;/html&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><a href="https://github.com/groupe-sii/ogham/blob/master/sample-standard-usage/src/main/resources/template/register.html?ts=2">Source code of the template</a>.</p>
+</div>
+<div class="paragraph tab">
+<p><span class="image"><img src="../../images//icons/html.png" alt="html" width="37" height="30"></span> Expected HTML</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-html" data-lang="html">&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+  &lt;head&gt;
+    &lt;title&gt;foo - Confirm your registration&lt;/title&gt;
+    &lt;meta charset="utf-8"&gt;&lt;/meta&gt;
+  &lt;/head&gt;
+    &lt;body&gt;
+    &lt;h1 class="title" title="foo"&gt;Hello foo&lt;/h1&gt;
+    &lt;p class="text"&gt;42&lt;/p&gt;
+  &lt;/body&gt;
+&lt;/html&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><a href="https://github.com/groupe-sii/ogham/blob/master/sample-standard-usage/src/test/resources/expected/register.html?ts=2">Source code of the expected HTML</a>.</p>
+</div>
+<div class="paragraph tab-container-end">
+<p>-</p>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2020-07-29 20:37:28 UTC
+</div>
+</div>
+</body>
+</html>

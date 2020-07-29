@@ -30,7 +30,7 @@
 <ul class="sectlevel1">
 <li><a href="#testing-tools">Include test utilities</a>
 <ul class="sectlevel2">
-<li><a href="#_configure_static_method_imports_for_eclipse">Configure static method imports for Eclipse</a></li>
+<li><a href="#testing-tools-eclipse-static-imports">Configure static method imports for Eclipse</a></li>
 </ul>
 </li>
 <li><a href="#testing-email">Testing emails</a>
@@ -38,10 +38,11 @@
 <li><a href="#_first_test">First test</a></li>
 <li><a href="#_testing_html_message">Testing HTML message</a></li>
 <li><a href="#_help_in_eclipse_for_failing_tests">Help in Eclipse for failing tests</a></li>
-<li><a href="#_testing_email_with_an_html_body_and_text_alternative">Testing email with an HTML body and text alternative</a></li>
-<li><a href="#_testing_attachments">Testing attachments</a></li>
-<li><a href="#_testing_several_emails_at_once">Testing several emails at once</a></li>
-<li><a href="#_testing_with_smtp_authentication">Testing with SMTP authentication</a></li>
+<li><a href="#_testing_email_with_an_html_body_and_text_alternative_2">Testing email with an HTML body and text alternative</a></li>
+<li><a href="#_testing_attachments_2">Testing attachments</a></li>
+<li><a href="#_testing_several_emails_at_once_2">Testing several emails at once</a></li>
+<li><a href="#_testing_with_smtp_authentication_2">Testing with SMTP authentication</a></li>
+<li><a href="#_testing_with_sendgrid">Testing with SendGrid</a></li>
 </ul>
 </li>
 <li><a href="#testing-sms">Testing SMS</a>
@@ -130,7 +131,7 @@
 </ul>
 </div>
 <div class="sect2">
-<h3 id="_configure_static_method_imports_for_eclipse"><a class="anchor" href="#_configure_static_method_imports_for_eclipse"></a>Configure static method imports for Eclipse</h3>
+<h3 id="testing-tools-eclipse-static-imports"><a class="anchor" href="#testing-tools-eclipse-static-imports"></a>Configure static method imports for Eclipse</h3>
 <div class="paragraph">
 <p>Ogham uses Hamcrest, Mockito and also provides test utilities. Those utilities provide many static methods. Static methods are convenient for code readability. However, Eclipse needs some configuration to help you to import static methods with autocompletion.</p>
 </div>
@@ -159,7 +160,7 @@
 <div class="content">
 <img src="../images//eclipse/static-import-newtype-search.png" alt="static import newtype search">
 </div>
-<div class="title">Figure 3. Example for Ogham assersions</div>
+<div class="title">Figure 3. Example for Ogham assertions</div>
 </div>
 <div class="imageblock text-center">
 <div class="content">
@@ -251,7 +252,13 @@
 <i class="fa icon-tip" title="Tip"></i>
 </td>
 <td class="content">
-Eclipse can rewrite a call to a static method prefixed by class. For example in your code you have <code>OghamAssertions.assertThat</code>, pressing <span class="keyseq"><kbd>Ctrl</kbd>+<kbd>M</kbd></span> shortcut (cursor must be placed in the method name), Eclipse will add the static import and the code is just <code>assertThat</code>.
+<div class="title">Eclipse shortcut</div>
+<div class="paragraph">
+<p>Eclipse can rewrite a call to a static method prefixed by class.
+For example in your code you have <code>OghamAssertions.assertThat</code>,
+pressing <span class="keyseq"><kbd>Ctrl</kbd>+<kbd>M</kbd></span> shortcut (cursor must be placed in the method
+name), Eclipse will add the static import and the code is just <code>assertThat</code>.</p>
+</div>
 </td>
 </tr>
 </table>
@@ -609,6 +616,194 @@ public class EmailHtmlTestSample {
 <div class="sect2">
 <h3 id="_help_in_eclipse_for_failing_tests"><a class="anchor" href="#_help_in_eclipse_for_failing_tests"></a>Help in Eclipse for failing tests</h3>
 <div class="paragraph">
+<p>Comparing two HTML documents can be tricky. Indeed, the HTML attributes can be declared in a
+different order, number of spaces/tabs can be different, some attributes may be declared differently
+but corresponding to the same behavior (for example <code>disabled</code> attribute can be declared only
+<code>disabled</code> with no value, <code>disabled="true"</code> or <code>disabled="disabled"</code>).</p>
+</div>
+<div class="paragraph">
+<p>Ogham provides two distinct matchers to check if:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>HTML is identical (exactly the same nodes at same position and same attributes with same values)</p>
+</li>
+<li>
+<p>HTML is similar (nodes may be at different positions, same attributes with same values)</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>In addition to comparison helpers, Ogham provides helpers to load files from classpath in tests
+(<code>ResourceUtils.resource</code> and <code>ResourceUtils.resourceAsString</code>).
+This is useful to avoid writing expected HTML content as string in your code and also avoid writing
+the same utility function every time.</p>
+</div>
+<div class="paragraph tab-container no-max-height">
+<p>Sample</p>
+</div>
+<div class="paragraph tab">
+<p><span class="image"><img src="../images//icons/java-logo.png" alt="java logo" width="16" height="30"></span> Java</p>
+</div>
+<div class="listingblock collapse-lines:1-26,27-44,71-83 irrelevant-lines:1-26 highlight-lines:63">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">package fr.sii.ogham.sample.test;
+
+import static com.icegreen.greenmail.util.ServerSetupTest.SMTP;
+import static fr.sii.ogham.testing.assertion.OghamAssertions.assertThat;
+import static fr.sii.ogham.testing.assertion.OghamMatchers.isIdenticalHtml;
+import static fr.sii.ogham.testing.util.ResourceUtils.resourceAsString;
+import static org.hamcrest.Matchers.emptyIterable;
+import static org.hamcrest.Matchers.hasItems;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.nullValue;
+import static org.hamcrest.Matchers.startsWith;
+
+import java.io.IOException;
+
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
+
+import com.icegreen.greenmail.junit.GreenMailRule;
+
+import fr.sii.ogham.core.builder.MessagingBuilder;
+import fr.sii.ogham.core.exception.MessagingException;
+import fr.sii.ogham.core.service.MessagingService;
+import fr.sii.ogham.email.message.Email;
+
+public class EmailHtmlTestSample {
+  private MessagingService oghamService;
+
+  @Rule
+  public final GreenMailRule greenMail = new GreenMailRule(SMTP);
+
+  @Before
+  public void setUp() throws IOException {
+    oghamService = MessagingBuilder.standard()
+        .environment()
+          .properties()
+            .set("ogham.email.from.default-value", "Sender Name &lt;test.sender@sii.fr&gt;")
+            .set("mail.smtp.host", SMTP.getBindAddress())
+            .set("mail.smtp.port", String.valueOf(SMTP.getPort()))
+            .and()
+          .and()
+        .build();
+  }
+
+  @Test
+  public void registerMessage() throws MessagingException, javax.mail.MessagingException, IOException {
+    // @formatter:off
+    oghamService.send(new Email()
+                .body().template("/template/register.html",                         <i class="conum" data-value="1"></i><b>(1)</b>
+                              new SimpleBean("foo", 42))              <i class="conum" data-value="2"></i><b>(2)</b>
+                .to("Recipient Name &lt;recipient@sii.fr&gt;"));
+    assertThat(greenMail).receivedMessages()
+      .count(is(1))
+      .message(0)
+        .subject(is("foo - Confirm your registration"))
+        .from()
+          .address(hasItems("test.sender@sii.fr"))
+          .personal(hasItems("Sender Name")).and()
+        .to()
+          .address(hasItems("recipient@sii.fr"))
+          .personal(hasItems("Recipient Name")).and()
+        .body()
+          .contentAsString(isIdenticalHtml(resourceAsString("/expected/register.html")))  <i class="conum" data-value="3"></i><b>(3)</b>
+          .contentType(startsWith("text/html")).and()
+        .alternative(nullValue())
+        .attachments(emptyIterable());
+    // @formatter:on
+  }
+
+  public static class SimpleBean {
+    private String name;
+    private int value;
+    public SimpleBean(String name, int value) {
+      super();
+      this.name = name;
+      this.value = value;
+    }
+    public String getName() {
+      return name;
+    }
+    public int getValue() {
+      return value;
+    }
+  }
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Use an HTML template</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Object used to evaluate variables in the template</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>Assert that HTML is similar as an expected HTML content</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p><a href="https://github.com/groupe-sii/ogham/blob/master/sample-standard-usage/src/test/java/fr/sii/ogham/sample/test/EmailHtmlTestSample.java?ts=2">Source code of the sample</a>.</p>
+</div>
+<div class="paragraph tab">
+<p><span class="image"><img src="../images//icons/thymeleaf.jpg" alt="thymeleaf" width="30" height="30"></span> HTML template</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-html" data-lang="html">&lt;!DOCTYPE html&gt;
+&lt;html xmlns:th="http://www.thymeleaf.org"&gt;
+ &lt;head&gt;
+  &lt;title th:text="|${name} - Confirm your registration|"&gt;&lt;/title&gt;
+  &lt;meta charset="utf-8" /&gt;
+ &lt;/head&gt;
+ &lt;body&gt;
+  &lt;h1 title="foo" class="title" th:text="|Hello ${name}|"&gt;&lt;/h1&gt;
+
+  &lt;p class="text" th:text="${value}"&gt;
+  &lt;/p&gt;
+ &lt;/body&gt;
+&lt;/html&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><a href="https://github.com/groupe-sii/ogham/blob/master/sample-standard-usage/src/main/resources/template/register.html?ts=2">Source code of the template</a>.</p>
+</div>
+<div class="paragraph tab">
+<p><span class="image"><img src="../images//icons/html.png" alt="html" width="37" height="30"></span> Expected HTML</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-html" data-lang="html">&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+  &lt;head&gt;
+    &lt;title&gt;foo - Confirm your registration&lt;/title&gt;
+    &lt;meta charset="utf-8"&gt;&lt;/meta&gt;
+  &lt;/head&gt;
+    &lt;body&gt;
+    &lt;h1 class="title" title="foo"&gt;Hello foo&lt;/h1&gt;
+    &lt;p class="text"&gt;42&lt;/p&gt;
+  &lt;/body&gt;
+&lt;/html&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><a href="https://github.com/groupe-sii/ogham/blob/master/sample-standard-usage/src/test/resources/expected/register.html?ts=2">Source code of the expected HTML</a>.</p>
+</div>
+<div class="paragraph tab-container-end">
+<p>-</p>
+</div>
+<div class="sect3">
+<h4 id="_help_in_eclipse_for_failing_tests_2"><a class="anchor" href="#_help_in_eclipse_for_failing_tests_2"></a>Help in Eclipse for failing tests</h4>
+<div class="paragraph">
 <p>When your tests report errors due to HTML differences, Ogham helps with Eclipse integration. The following sample is voluntary in error due to differences between actual HTML and expected HTML (this is the expected HTML that is incorrect) in order to show how Ogham helps you.</p>
 </div>
 <div class="paragraph tab-container no-max-height">
@@ -828,8 +1023,732 @@ Spaces, tag closing and attributes order are reported by the comparison window p
 <div class="title">Figure 10. Useful part of the error summary</div>
 </div>
 </div>
+<div class="sect3">
+<h4 id="_testing_email_with_an_html_body_and_text_alternative"><a class="anchor" href="#_testing_email_with_an_html_body_and_text_alternative"></a>Testing email with an HTML body and text alternative</h4>
+<div class="paragraph">
+<p>Testing an email sent with two main parts (HTML and text fallback) is straightforward.</p>
+</div>
+<div class="paragraph tab-container no-max-height">
+<p>Sample</p>
+</div>
+<div class="paragraph tab">
+<p><span class="image"><img src="../images//icons/java-logo.png" alt="java logo" width="16" height="30"></span> Java</p>
+</div>
+<div class="listingblock collapse-lines:1-25,27-44,69-81 irrelevant-lines:1-25 highlight-lines:58-63">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">package fr.sii.ogham.sample.test;
+
+import static com.icegreen.greenmail.util.ServerSetupTest.SMTP;
+import static fr.sii.ogham.testing.assertion.OghamAssertions.assertThat;
+import static fr.sii.ogham.testing.assertion.OghamMatchers.isIdenticalHtml;
+import static fr.sii.ogham.testing.util.ResourceUtils.resourceAsString;
+import static org.hamcrest.Matchers.emptyIterable;
+import static org.hamcrest.Matchers.equalToCompressingWhiteSpace;
+import static org.hamcrest.Matchers.hasItems;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.startsWith;
+
+import java.io.IOException;
+
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
+
+import com.icegreen.greenmail.junit.GreenMailRule;
+
+import fr.sii.ogham.core.builder.MessagingBuilder;
+import fr.sii.ogham.core.exception.MessagingException;
+import fr.sii.ogham.core.service.MessagingService;
+import fr.sii.ogham.email.message.Email;
+
+public class EmailHtmlAndTextTestSample {
+  private MessagingService oghamService;
+
+  @Rule
+  public final GreenMailRule greenMail = new GreenMailRule(SMTP);
+
+  @Before
+  public void setUp() throws IOException {
+    oghamService = MessagingBuilder.standard()
+        .environment()
+          .properties()
+            .set("ogham.email.from.default-value", "Sender Name &lt;test.sender@sii.fr&gt;")
+            .set("mail.smtp.host", SMTP.getBindAddress())
+            .set("mail.smtp.port", String.valueOf(SMTP.getPort()))
+            .and()
+          .and()
+        .build();
+  }
+
+  @Test
+  public void multiTemplateContent() throws MessagingException, javax.mail.MessagingException, IOException {
+    // @formatter:off
+    oghamService.send(new Email()
+                .subject("Multi")
+                .body().template("template/mixed/simple", new SimpleBean("bar", 42))
+                .to("recipient@sii.fr"));
+    assertThat(greenMail).receivedMessages()
+      .count(is(1))
+      .message(0)
+        .subject(is("Multi"))
+        .from().address(hasItems("test.sender@sii.fr")).and()
+        .to().address(hasItems("recipient@sii.fr")).and()
+        .body()                                                                                              <i class="conum" data-value="1"></i><b>(1)</b>
+          .contentAsString(isIdenticalHtml(resourceAsString("/expected/simple_bar_42.html")))              <i class="conum" data-value="2"></i><b>(2)</b>
+          .contentType(startsWith("text/html")).and()                                                      <i class="conum" data-value="3"></i><b>(3)</b>
+        .alternative()                                                                                       <i class="conum" data-value="4"></i><b>(4)</b>
+          .contentAsString(equalToCompressingWhiteSpace(resourceAsString("/expected/simple_bar_42.txt")))  <i class="conum" data-value="5"></i><b>(5)</b>
+          .contentType(startsWith("text/plain")).and()                                                     <i class="conum" data-value="6"></i><b>(6)</b>
+        .attachments(emptyIterable());
+    // @formatter:on
+  }
+
+  public static class SimpleBean {
+    private String name;
+    private int value;
+    public SimpleBean(String name, int value) {
+      super();
+      this.name = name;
+      this.value = value;
+    }
+    public String getName() {
+      return name;
+    }
+    public int getValue() {
+      return value;
+    }
+  }
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Access to main body assertions</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Assert that main body message is HTML content and is similar as an expected HTML content loaded from classpath</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>Assert that main body message mimetype is <code>text/html</code></td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>Access to alternative assertions</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
+<td>Assert that alternative body message is text content and is exactly the expected text content loaded from classpath</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="6"></i><b>6</b></td>
+<td>Assert that alternative body message mimetype is <code>text/plain</code></td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p><a href="https://github.com/groupe-sii/ogham/blob/master/sample-standard-usage/src/test/java/fr/sii/ogham/sample/test/EmailHtmlAndTextTestSample.java?ts=2">Source code of the sample</a>.</p>
+</div>
+<div class="paragraph tab">
+<p><span class="image"><img src="../images//icons/thymeleaf.jpg" alt="thymeleaf" width="30" height="30"></span> HTML template</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-html" data-lang="html">&lt;!DOCTYPE html&gt;
+&lt;html xmlns:th="http://www.thymeleaf.org"&gt;
+    &lt;head&gt;
+        &lt;meta charset="utf-8" /&gt;
+    &lt;/head&gt;
+    &lt;body&gt;
+        &lt;h1 class="title" th:text="${name}"&gt;&lt;/h1&gt;
+        &lt;p class="text" th:text="${value}"&gt;&lt;/p&gt;
+    &lt;/body&gt;
+&lt;/html&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><a href="https://github.com/groupe-sii/ogham/blob/master/sample-standard-usage/src/main/resources/template/mixed/simple.html?ts=2">Source code of the template</a>.</p>
+</div>
+<div class="paragraph tab">
+<p><span class="image"><img src="../images//icons/freemarker-logo.png" alt="freemarker logo" width="60" height="24"></span> Text template</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-html" data-lang="html">${name} ${value}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><a href="https://github.com/groupe-sii/ogham/blob/master/sample-standard-usage/src/main/resources/template/mixed/simple.txt.ftl?ts=2">Source code of the template</a>.</p>
+</div>
+<div class="paragraph tab">
+<p><span class="image"><img src="../images//icons/html.png" alt="html" width="37" height="30"></span> Expected HTML</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-html" data-lang="html">&lt;!DOCTYPE html&gt;
+
+&lt;html&gt;
+    &lt;head&gt;
+        &lt;meta charset="utf-8" /&gt;
+    &lt;/head&gt;
+    &lt;body&gt;
+        &lt;h1 class="title"&gt;bar&lt;/h1&gt;
+        &lt;p class="text"&gt;42&lt;/p&gt;
+    &lt;/body&gt;
+&lt;/html&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><a href="https://github.com/groupe-sii/ogham/blob/master/sample-standard-usage/src/test/resources/expected/simple_bar_42.html?ts=2">Source code of the expected HTML</a>.</p>
+</div>
+<div class="paragraph tab">
+<p><span class="image"><img src="../images//icons/txt.png" alt="txt" width="30" height="30"></span> Expected text</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>bar 42</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><a href="https://github.com/groupe-sii/ogham/blob/master/sample-standard-usage/src/test/resources/expected/simple_bar_42.txt?ts=2">Source code of the expected text</a>.</p>
+</div>
+<div class="paragraph tab-container-end">
+<p>-</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_testing_attachments"><a class="anchor" href="#_testing_attachments"></a>Testing attachments</h4>
+<div class="paragraph">
+<p>You can also test that attachments are sent correctly.</p>
+</div>
+<div class="paragraph tab-container no-max-height">
+<p>Sample</p>
+</div>
+<div class="paragraph tab">
+<p><span class="image"><img src="../images//icons/java-logo.png" alt="java logo" width="16" height="30"></span> Java</p>
+</div>
+<div class="listingblock collapse-lines:1-25,27-44 irrelevant-lines:1-25 highlight-lines:63-68">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">package fr.sii.ogham.sample.test;
+
+import static com.icegreen.greenmail.util.ServerSetupTest.SMTP;
+import static fr.sii.ogham.testing.assertion.OghamAssertions.assertThat;
+import static fr.sii.ogham.testing.assertion.util.EmailUtils.ATTACHMENT_DISPOSITION;
+import static fr.sii.ogham.testing.util.ResourceUtils.resource;
+import static org.hamcrest.Matchers.hasItems;
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.nullValue;
+import static org.hamcrest.Matchers.startsWith;
+
+import java.io.IOException;
+
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
+
+import com.icegreen.greenmail.junit.GreenMailRule;
+
+import fr.sii.ogham.core.builder.MessagingBuilder;
+import fr.sii.ogham.core.exception.MessagingException;
+import fr.sii.ogham.core.service.MessagingService;
+import fr.sii.ogham.email.message.Email;
+
+public class EmailAttachmentTestSample {
+  private MessagingService oghamService;
+
+  @Rule
+  public final GreenMailRule greenMail = new GreenMailRule(SMTP);
+
+  @Before
+  public void setUp() throws IOException {
+    oghamService = MessagingBuilder.standard()
+        .environment()
+          .properties()
+            .set("ogham.email.from.default-value", "Sender Name &lt;test.sender@sii.fr&gt;")
+            .set("mail.smtp.host", SMTP.getBindAddress())
+            .set("mail.smtp.port", String.valueOf(SMTP.getPort()))
+            .and()
+          .and()
+        .build();
+  }
+
+  @Test
+  public void simple() throws MessagingException, javax.mail.MessagingException, IOException {
+    // @formatter:off
+    oghamService.send(new Email()
+                .subject("Test")
+                .body().string("body")
+                .to("recipient@sii.fr")
+                .attach().resource("/attachment/test.pdf"));
+    assertThat(greenMail).receivedMessages()
+      .count(is(1))
+      .message(0)
+        .subject(is("Test"))
+        .from().address(hasItems("test.sender@sii.fr")).and()
+        .to().address(hasItems("recipient@sii.fr")).and()
+        .body()
+          .contentAsString(is("body"))
+          .contentType(startsWith("text/plain")).and()
+        .alternative(nullValue())
+        .attachments(hasSize(1))                              <i class="conum" data-value="1"></i><b>(1)</b>
+        .attachment(0)                                        <i class="conum" data-value="2"></i><b>(2)</b>
+          .content(is(resource("/attachment/test.pdf")))    <i class="conum" data-value="3"></i><b>(3)</b>
+          .contentType(startsWith("application/pdf"))       <i class="conum" data-value="4"></i><b>(4)</b>
+          .filename(is("test.pdf"))                         <i class="conum" data-value="5"></i><b>(5)</b>
+          .disposition(is(ATTACHMENT_DISPOSITION));         <i class="conum" data-value="6"></i><b>(6)</b>
+    // @formatter:on
+  }
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Assert that exactly one attachment is attached to the received email</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Access the first attachment for defining assertions on it</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>Assert that the first received file is exactly the same as the sent one</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>Assert that the detected mimetype of the first attachment is correct</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
+<td>Assert that the name of the first attachment is the expected one</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="6"></i><b>6</b></td>
+<td>Assert that the attachment disposition is correct</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p><a href="https://github.com/groupe-sii/ogham/blob/master/sample-standard-usage/src/test/java/fr/sii/ogham/sample/test/EmailAttachmentTestSample.java?ts=2">Source code of the sample</a>.</p>
+</div>
+<div class="paragraph tab-container-end">
+<p>-</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_testing_several_emails_at_once"><a class="anchor" href="#_testing_several_emails_at_once"></a>Testing several emails at once</h4>
+<div class="paragraph">
+<p>When you send an email to several recipients, there is one message per recipient. So if you send an email to 6 recipients, you may need to ensure that the 6 messages are received correctly. Ogham provides the <code>every</code> method to apply defined assertions on all messages.</p>
+</div>
+<div class="paragraph tab-container no-max-height">
+<p>Sample</p>
+</div>
+<div class="paragraph tab">
+<p><span class="image"><img src="../images//icons/java-logo.png" alt="java logo" width="16" height="30"></span> Java</p>
+</div>
+<div class="listingblock collapse-lines:1-24,26-43 irrelevant-lines:1-24 highlight-lines:55">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">package fr.sii.ogham.sample.test;
+
+import static com.icegreen.greenmail.util.ServerSetupTest.SMTP;
+import static fr.sii.ogham.testing.assertion.OghamAssertions.assertThat;
+import static org.hamcrest.Matchers.containsInAnyOrder;
+import static org.hamcrest.Matchers.emptyIterable;
+import static org.hamcrest.Matchers.hasItems;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.nullValue;
+import static org.hamcrest.Matchers.startsWith;
+
+import java.io.IOException;
+
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
+
+import com.icegreen.greenmail.junit.GreenMailRule;
+
+import fr.sii.ogham.core.builder.MessagingBuilder;
+import fr.sii.ogham.core.exception.MessagingException;
+import fr.sii.ogham.core.service.MessagingService;
+import fr.sii.ogham.email.message.Email;
+
+public class SeveralRecipientsTestSample {
+  private MessagingService oghamService;
+
+  @Rule
+  public final GreenMailRule greenMail = new GreenMailRule(SMTP);
+
+  @Before
+  public void setUp() throws IOException {
+    oghamService = MessagingBuilder.standard()
+        .environment()
+          .properties()
+            .set("ogham.email.from.default-value", "Sender Name &lt;test.sender@sii.fr&gt;")
+            .set("mail.smtp.host", SMTP.getBindAddress())
+            .set("mail.smtp.port", String.valueOf(SMTP.getPort()))
+            .and()
+          .and()
+        .build();
+  }
+
+  @Test
+  public void severalRecipients() throws MessagingException, javax.mail.MessagingException {
+    // @formatter:off
+    oghamService.send(new Email()
+                .subject("Simple")
+                .body().string("string body")
+                .to("recipient1@sii.fr", "recipient2@sii.fr", "recipient3@sii.fr")
+                .cc("recipient4@sii.fr", "recipient5@sii.fr")
+                .bcc("recipient6@sii.fr"));
+    assertThat(greenMail).receivedMessages()
+      .count(is(6))                                                               <i class="conum" data-value="1"></i><b>(1)</b>
+      .every()                                                                    <i class="conum" data-value="2"></i><b>(2)</b>
+        .subject(is("Simple"))
+        .from()
+          .address(hasItems("test.sender@sii.fr"))
+          .personal(hasItems("Sender Name")).and()
+        .to()
+          .address(containsInAnyOrder("recipient1@sii.fr",                    <i class="conum" data-value="3"></i><b>(3)</b>
+                        "recipient2@sii.fr",
+                        "recipient3@sii.fr")).and()
+        .cc()
+          .address(containsInAnyOrder("recipient4@sii.fr",                    <i class="conum" data-value="4"></i><b>(4)</b>
+                        "recipient5@sii.fr")).and()
+        .body()
+          .contentAsString(is("string body"))
+          .contentType(startsWith("text/plain")).and()
+        .alternative(nullValue())
+        .attachments(emptyIterable());
+    // @formatter:on
+  }
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Assert that 6 distinct messages are received</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td><code>every</code> applies all later defined assertions to all messages (the 6 messages)</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>Assert that each received messages has exactly 3 <code>to</code> recipients</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>Assert that each received messages has exactly 2 <code>cc</code> recipients</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>The <code>bcc</code> recipient is not testable. Indeed, <code>bcc</code> recipients are hidden recipients that must not be visible. So the email is received (there are 6 received messages not 5). But <code>bcc</code> field of each email are empty because they are not present in the sent email. The <code>bcc</code> field is just used for routing.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p><a href="https://github.com/groupe-sii/ogham/blob/master/sample-standard-usage/src/test/java/fr/sii/ogham/sample/test/SeveralRecipientsTestSample.java?ts=2">Source code of the sample</a>.</p>
+</div>
+<div class="paragraph tab-container-end">
+<p>-</p>
+</div>
+<div class="paragraph">
+<p>Sometimes you also need to send several different emails. The emails may have some identical information (sender or subject for example). So you can mix <code>every</code> (define assertions all messages) with <code>message</code> (define assertion for one particular message).</p>
+</div>
+<div class="paragraph tab-container no-max-height">
+<p>Sample</p>
+</div>
+<div class="paragraph tab">
+<p><span class="image"><img src="../images//icons/java-logo.png" alt="java logo" width="16" height="30"></span> Java</p>
+</div>
+<div class="listingblock collapse-lines:1-23,25-42 irrelevant-lines:1-23 highlight-lines:60,70,78,86">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">package fr.sii.ogham.sample.test;
+
+import static com.icegreen.greenmail.util.ServerSetupTest.SMTP;
+import static fr.sii.ogham.testing.assertion.OghamAssertions.assertThat;
+import static org.hamcrest.Matchers.emptyIterable;
+import static org.hamcrest.Matchers.hasItems;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.nullValue;
+import static org.hamcrest.Matchers.startsWith;
+
+import java.io.IOException;
+
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
+
+import com.icegreen.greenmail.junit.GreenMailRule;
+
+import fr.sii.ogham.core.builder.MessagingBuilder;
+import fr.sii.ogham.core.exception.MessagingException;
+import fr.sii.ogham.core.service.MessagingService;
+import fr.sii.ogham.email.message.Email;
+
+public class SeveralEmailsTestSample {
+  private MessagingService oghamService;
+
+  @Rule
+  public final GreenMailRule greenMail = new GreenMailRule(SMTP);
+
+  @Before
+  public void setUp() throws IOException {
+    oghamService = MessagingBuilder.standard()
+        .environment()
+          .properties()
+            .set("ogham.email.from.default-value", "Sender Name &lt;test.sender@sii.fr&gt;")
+            .set("mail.smtp.host", SMTP.getBindAddress())
+            .set("mail.smtp.port", String.valueOf(SMTP.getPort()))
+            .and()
+          .and()
+        .build();
+  }
+
+  @Test
+  public void severalDisctinctMessages() throws MessagingException, javax.mail.MessagingException {
+    // @formatter:off
+    oghamService.send(new Email()
+                .subject("Simple")
+                .body().string("string body 1")
+                .to("recipient1@sii.fr"));
+    oghamService.send(new Email()
+                .subject("Simple")
+                .body().string("string body 2")
+                .to("recipient2@sii.fr"));
+    oghamService.send(new Email()
+                .subject("Simple")
+                .body().string("string body 3")
+                .to("recipient3@sii.fr"));
+    assertThat(greenMail).receivedMessages()
+      .count(is(3))
+      .every()                                                   <i class="conum" data-value="1"></i><b>(1)</b>
+        .subject(is("Simple"))
+        .from()
+          .address(hasItems("test.sender@sii.fr"))
+          .personal(hasItems("Sender Name")).and()
+        .body()
+          .contentType(startsWith("text/plain")).and()
+        .alternative(nullValue())
+        .attachments(emptyIterable())
+        .and()
+      .message(0)                                                <i class="conum" data-value="2"></i><b>(2)</b>
+        .body()
+          .contentAsString(is("string body 1"))
+          .and()
+        .to()
+          .address(hasItems("recipient1@sii.fr"))
+          .and()
+        .and()
+      .message(1)                                                <i class="conum" data-value="3"></i><b>(3)</b>
+        .body()
+          .contentAsString(is("string body 2"))
+          .and()
+        .to()
+          .address(hasItems("recipient2@sii.fr"))
+          .and()
+        .and()
+      .message(2)                                                <i class="conum" data-value="4"></i><b>(4)</b>
+        .body()
+          .contentAsString(is("string body 3"))
+          .and()
+        .to()
+          .address(hasItems("recipient3@sii.fr"));
+    // @formatter:on
+  }
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Shared assertions (subject, sender and body mimetype)</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Specific assertions for first sent message (recipient and message content)</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>Specific assertions for second sent message (recipient and message content)</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>Specific assertions for third sent message (recipient and message content)</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p><a href="https://github.com/groupe-sii/ogham/blob/master/sample-standard-usage/src/test/java/fr/sii/ogham/sample/test/SeveralEmailsTestSample.java?ts=2">Source code of the sample</a>.</p>
+</div>
+<div class="paragraph tab-container-end">
+<p>-</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_testing_with_smtp_authentication"><a class="anchor" href="#_testing_with_smtp_authentication"></a>Testing with SMTP authentication</h4>
+<div class="paragraph">
+<p>GreenMail allows to start the SMTP server with user and credentials.</p>
+</div>
+<div class="paragraph tab-container no-max-height">
+<p>Sample</p>
+</div>
+<div class="paragraph tab">
+<p><span class="image"><img src="../images//icons/java-logo.png" alt="java logo" width="16" height="30"></span> Java</p>
+</div>
+<div class="listingblock collapse-lines:1-25,27-34 irrelevant-lines:1-25,51-74 highlight-lines:36,43-45">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">package oghamall.it.email;
+
+import static fr.sii.ogham.testing.assertion.OghamAssertions.assertThat;
+import static org.hamcrest.Matchers.emptyIterable;
+import static org.hamcrest.Matchers.hasItems;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.nullValue;
+import static org.hamcrest.Matchers.startsWith;
+
+import java.io.IOException;
+
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
+
+import com.icegreen.greenmail.junit.GreenMailRule;
+
+import fr.sii.ogham.core.builder.MessagingBuilder;
+import fr.sii.ogham.core.exception.MessagingException;
+import fr.sii.ogham.core.service.MessagingService;
+import fr.sii.ogham.email.message.Email;
+import fr.sii.ogham.testing.extension.greenmail.RandomPortGreenMailRule;
+import fr.sii.ogham.testing.extension.junit.LoggingTestRule;
+
+public class EmailSMTPAuthenticationTest {
+  private MessagingService oghamService;
+
+  @Rule
+  public final LoggingTestRule loggingRule = new LoggingTestRule();
+
+  @Rule
+  public final GreenMailRule greenMail = new RandomPortGreenMailRule();
+
+  @Before
+  public void setUp() throws IOException {
+    greenMail.setUser("test.sender@sii.fr", "test.sender", "password");             <i class="conum" data-value="1"></i><b>(1)</b>
+    oghamService = MessagingBuilder.standard()
+        .environment()
+          .properties("/application.properties")
+          .properties()
+            .set("mail.smtp.host", greenMail.getSmtp().getBindTo())
+            .set("mail.smtp.port", greenMail.getSmtp().getPort())
+            .set("mail.smtp.auth", "true")                        <i class="conum" data-value="2"></i><b>(2)</b>
+            .set("ogham.email.javamail.authenticator.username", "test.sender")      <i class="conum" data-value="3"></i><b>(3)</b>
+            .set("ogham.email.javamail.authenticator.password", "password")       <i class="conum" data-value="4"></i><b>(4)</b>
+            .and()
+          .and()
+        .build();
+  }
+
+  @Test
+  public void authenticated() throws MessagingException, javax.mail.MessagingException {
+    // @formatter:off
+    oghamService.send(new Email()
+                .subject("Simple")
+                .content("string body")
+                .to("Recipient Name &lt;recipient@sii.fr&gt;"));
+    assertThat(greenMail).receivedMessages()
+      .count(is(1))
+      .message(0)
+        .subject(is("Simple"))
+        .from()
+          .address(hasItems("test.sender@sii.fr"))
+          .personal(hasItems("Sender Name")).and()
+        .to()
+          .address(hasItems("recipient@sii.fr"))
+          .personal(hasItems("Recipient Name")).and()
+        .body()
+          .contentAsString(is("string body"))
+          .contentType(startsWith("text/plain")).and()
+        .alternative(nullValue())
+        .attachments(emptyIterable());
+    // @formatter:on
+  }
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Configure GreenMail to register a user</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Configure JavaMail to enable authentication</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>Configure Ogham to provide the authentication username</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>Configure Ogham to provide the authentication password</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p><a href="https://github.com/groupe-sii/ogham/blob/master/ogham-all/src/test/java/oghamall/it/email/EmailSMTPAuthenticationTest.java?ts=2">Source code of the sample</a>.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Only the setup differs, the test is the same.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph tab-container-end">
+<p>-</p>
+</div>
+<div class="exampleblock TODO">
+<div class="content">
+<div class="ulist">
+<ul>
+<li>
+<p>Add sample to show how to test with sendgrid?</p>
+</li>
+<li>
+<p>Should use same assertion API (see <a href="https://github.com/groupe-sii/ogham/issues/96" class="bare">https://github.com/groupe-sii/ogham/issues/96</a>)</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+</div>
 <div class="sect2">
-<h3 id="_testing_email_with_an_html_body_and_text_alternative"><a class="anchor" href="#_testing_email_with_an_html_body_and_text_alternative"></a>Testing email with an HTML body and text alternative</h3>
+<h3 id="_testing_email_with_an_html_body_and_text_alternative_2"><a class="anchor" href="#_testing_email_with_an_html_body_and_text_alternative_2"></a>Testing email with an HTML body and text alternative</h3>
 <div class="paragraph">
 <p>Testing an email sent with two main parts (HTML and text fallback) is straightforward.</p>
 </div>
@@ -1025,7 +1944,7 @@ public class EmailHtmlAndTextTestSample {
 </div>
 </div>
 <div class="sect2">
-<h3 id="_testing_attachments"><a class="anchor" href="#_testing_attachments"></a>Testing attachments</h3>
+<h3 id="_testing_attachments_2"><a class="anchor" href="#_testing_attachments_2"></a>Testing attachments</h3>
 <div class="paragraph">
 <p>You can also test that attachments are sent correctly.</p>
 </div>
@@ -1146,7 +2065,7 @@ public class EmailAttachmentTestSample {
 </div>
 </div>
 <div class="sect2">
-<h3 id="_testing_several_emails_at_once"><a class="anchor" href="#_testing_several_emails_at_once"></a>Testing several emails at once</h3>
+<h3 id="_testing_several_emails_at_once_2"><a class="anchor" href="#_testing_several_emails_at_once_2"></a>Testing several emails at once</h3>
 <div class="paragraph">
 <p>When you send an email to several recipients, there is one message per recipient. So if you send an email to 6 recipients, you may need to ensure that the 6 messages are received correctly. Ogham provides the <code>every</code> method to apply defined assertions on all messages.</p>
 </div>
@@ -1409,7 +2328,7 @@ public class SeveralEmailsTestSample {
 </div>
 </div>
 <div class="sect2">
-<h3 id="_testing_with_smtp_authentication"><a class="anchor" href="#_testing_with_smtp_authentication"></a>Testing with SMTP authentication</h3>
+<h3 id="_testing_with_smtp_authentication_2"><a class="anchor" href="#_testing_with_smtp_authentication_2"></a>Testing with SMTP authentication</h3>
 <div class="paragraph">
 <p>GreenMail allows to start the SMTP server with user and credentials.</p>
 </div>
@@ -1536,6 +2455,9 @@ Only the setup differs, the test is the same.
 <div class="paragraph tab-container-end">
 <p>-</p>
 </div>
+</div>
+<div class="sect2">
+<h3 id="_testing_with_sendgrid"><a class="anchor" href="#_testing_with_sendgrid"></a>Testing with SendGrid</h3>
 <div class="exampleblock TODO">
 <div class="content">
 <div class="ulist">
@@ -2311,7 +3233,7 @@ random port.</td>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-07-28 13:24:59 UTC
+Last updated 2020-07-29 20:37:28 UTC
 </div>
 </div>
 </body>

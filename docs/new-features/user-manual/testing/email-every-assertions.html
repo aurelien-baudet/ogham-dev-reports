@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.0.10">
+<title>Untitled</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
+<link rel="stylesheet" href="./asciidoctor.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script type="text/javascript" src="../..//javascripts/steps.js"></script>
+<script type="text/javascript" src="../..//javascripts/sourcecode/source-utils.js"></script>
+<script type="text/javascript" src="../..//javascripts/sourcecode/highlight-lines.js"></script>
+<script type="text/javascript" src="../..//javascripts/sourcecode/collapse-lines.js"></script>
+<script type="text/javascript" src="../..//javascripts/tabcontainer.js"></script>
+<script type="text/javascript" src="../..//javascripts/toc.js"></script>
+<link rel="stylesheet" type="text/css" href="../..//styles/custom-styles.css" />
+<link rel="stylesheet" type="text/css" href="../..//styles/tabcontainer.css" />
+<link rel="stylesheet" type="text/css" href="../..//styles/steps.css" />
+<link rel="stylesheet" type="text/css" href="../..//styles/toc.css" />
+<link rel="stylesheet" type="text/css" href="../..//styles/sourcecode/collapse-lines.css" />
+<link rel="stylesheet" type="text/css" href="../..//styles/sourcecode/highlight-lines.css" />
+</head>
+<body class="book">
+<div id="header">
+</div>
+<div id="content">
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>When you send an email to several recipients, there is one message per recipient. So if you send an email to 6 recipients, you may need to ensure that the 6 messages are received correctly. Ogham provides the <code>every</code> method to apply defined assertions on all messages.</p>
+</div>
+<div class="paragraph tab-container no-max-height">
+<p>Sample</p>
+</div>
+<div class="paragraph tab">
+<p><span class="image"><img src="../../images//icons/java-logo.png" alt="java logo" width="16" height="30"></span> Java</p>
+</div>
+<div class="listingblock collapse-lines:1-24,26-43 irrelevant-lines:1-24 highlight-lines:55">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">package fr.sii.ogham.sample.test;
+
+import static com.icegreen.greenmail.util.ServerSetupTest.SMTP;
+import static fr.sii.ogham.testing.assertion.OghamAssertions.assertThat;
+import static org.hamcrest.Matchers.containsInAnyOrder;
+import static org.hamcrest.Matchers.emptyIterable;
+import static org.hamcrest.Matchers.hasItems;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.nullValue;
+import static org.hamcrest.Matchers.startsWith;
+
+import java.io.IOException;
+
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
+
+import com.icegreen.greenmail.junit.GreenMailRule;
+
+import fr.sii.ogham.core.builder.MessagingBuilder;
+import fr.sii.ogham.core.exception.MessagingException;
+import fr.sii.ogham.core.service.MessagingService;
+import fr.sii.ogham.email.message.Email;
+
+public class SeveralRecipientsTestSample {
+  private MessagingService oghamService;
+
+  @Rule
+  public final GreenMailRule greenMail = new GreenMailRule(SMTP);
+
+  @Before
+  public void setUp() throws IOException {
+    oghamService = MessagingBuilder.standard()
+        .environment()
+          .properties()
+            .set("ogham.email.from.default-value", "Sender Name &lt;test.sender@sii.fr&gt;")
+            .set("mail.smtp.host", SMTP.getBindAddress())
+            .set("mail.smtp.port", String.valueOf(SMTP.getPort()))
+            .and()
+          .and()
+        .build();
+  }
+
+  @Test
+  public void severalRecipients() throws MessagingException, javax.mail.MessagingException {
+    // @formatter:off
+    oghamService.send(new Email()
+                .subject("Simple")
+                .body().string("string body")
+                .to("recipient1@sii.fr", "recipient2@sii.fr", "recipient3@sii.fr")
+                .cc("recipient4@sii.fr", "recipient5@sii.fr")
+                .bcc("recipient6@sii.fr"));
+    assertThat(greenMail).receivedMessages()
+      .count(is(6))                                                               <i class="conum" data-value="1"></i><b>(1)</b>
+      .every()                                                                    <i class="conum" data-value="2"></i><b>(2)</b>
+        .subject(is("Simple"))
+        .from()
+          .address(hasItems("test.sender@sii.fr"))
+          .personal(hasItems("Sender Name")).and()
+        .to()
+          .address(containsInAnyOrder("recipient1@sii.fr",                    <i class="conum" data-value="3"></i><b>(3)</b>
+                        "recipient2@sii.fr",
+                        "recipient3@sii.fr")).and()
+        .cc()
+          .address(containsInAnyOrder("recipient4@sii.fr",                    <i class="conum" data-value="4"></i><b>(4)</b>
+                        "recipient5@sii.fr")).and()
+        .body()
+          .contentAsString(is("string body"))
+          .contentType(startsWith("text/plain")).and()
+        .alternative(nullValue())
+        .attachments(emptyIterable());
+    // @formatter:on
+  }
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Assert that 6 distinct messages are received</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td><code>every</code> applies all later defined assertions to all messages (the 6 messages)</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>Assert that each received messages has exactly 3 <code>to</code> recipients</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>Assert that each received messages has exactly 2 <code>cc</code> recipients</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>The <code>bcc</code> recipient is not testable. Indeed, <code>bcc</code> recipients are hidden recipients that must not be visible. So the email is received (there are 6 received messages not 5). But <code>bcc</code> field of each email are empty because they are not present in the sent email. The <code>bcc</code> field is just used for routing.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p><a href="https://github.com/groupe-sii/ogham/blob/master/sample-standard-usage/src/test/java/fr/sii/ogham/sample/test/SeveralRecipientsTestSample.java?ts=2">Source code of the sample</a>.</p>
+</div>
+<div class="paragraph tab-container-end">
+<p>-</p>
+</div>
+<div class="paragraph">
+<p>Sometimes you also need to send several different emails. The emails may have some identical information (sender or subject for example). So you can mix <code>every</code> (define assertions all messages) with <code>message</code> (define assertion for one particular message).</p>
+</div>
+<div class="paragraph tab-container no-max-height">
+<p>Sample</p>
+</div>
+<div class="paragraph tab">
+<p><span class="image"><img src="../../images//icons/java-logo.png" alt="java logo" width="16" height="30"></span> Java</p>
+</div>
+<div class="listingblock collapse-lines:1-23,25-42 irrelevant-lines:1-23 highlight-lines:60,70,78,86">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">package fr.sii.ogham.sample.test;
+
+import static com.icegreen.greenmail.util.ServerSetupTest.SMTP;
+import static fr.sii.ogham.testing.assertion.OghamAssertions.assertThat;
+import static org.hamcrest.Matchers.emptyIterable;
+import static org.hamcrest.Matchers.hasItems;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.nullValue;
+import static org.hamcrest.Matchers.startsWith;
+
+import java.io.IOException;
+
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
+
+import com.icegreen.greenmail.junit.GreenMailRule;
+
+import fr.sii.ogham.core.builder.MessagingBuilder;
+import fr.sii.ogham.core.exception.MessagingException;
+import fr.sii.ogham.core.service.MessagingService;
+import fr.sii.ogham.email.message.Email;
+
+public class SeveralEmailsTestSample {
+  private MessagingService oghamService;
+
+  @Rule
+  public final GreenMailRule greenMail = new GreenMailRule(SMTP);
+
+  @Before
+  public void setUp() throws IOException {
+    oghamService = MessagingBuilder.standard()
+        .environment()
+          .properties()
+            .set("ogham.email.from.default-value", "Sender Name &lt;test.sender@sii.fr&gt;")
+            .set("mail.smtp.host", SMTP.getBindAddress())
+            .set("mail.smtp.port", String.valueOf(SMTP.getPort()))
+            .and()
+          .and()
+        .build();
+  }
+
+  @Test
+  public void severalDisctinctMessages() throws MessagingException, javax.mail.MessagingException {
+    // @formatter:off
+    oghamService.send(new Email()
+                .subject("Simple")
+                .body().string("string body 1")
+                .to("recipient1@sii.fr"));
+    oghamService.send(new Email()
+                .subject("Simple")
+                .body().string("string body 2")
+                .to("recipient2@sii.fr"));
+    oghamService.send(new Email()
+                .subject("Simple")
+                .body().string("string body 3")
+                .to("recipient3@sii.fr"));
+    assertThat(greenMail).receivedMessages()
+      .count(is(3))
+      .every()                                                   <i class="conum" data-value="1"></i><b>(1)</b>
+        .subject(is("Simple"))
+        .from()
+          .address(hasItems("test.sender@sii.fr"))
+          .personal(hasItems("Sender Name")).and()
+        .body()
+          .contentType(startsWith("text/plain")).and()
+        .alternative(nullValue())
+        .attachments(emptyIterable())
+        .and()
+      .message(0)                                                <i class="conum" data-value="2"></i><b>(2)</b>
+        .body()
+          .contentAsString(is("string body 1"))
+          .and()
+        .to()
+          .address(hasItems("recipient1@sii.fr"))
+          .and()
+        .and()
+      .message(1)                                                <i class="conum" data-value="3"></i><b>(3)</b>
+        .body()
+          .contentAsString(is("string body 2"))
+          .and()
+        .to()
+          .address(hasItems("recipient2@sii.fr"))
+          .and()
+        .and()
+      .message(2)                                                <i class="conum" data-value="4"></i><b>(4)</b>
+        .body()
+          .contentAsString(is("string body 3"))
+          .and()
+        .to()
+          .address(hasItems("recipient3@sii.fr"));
+    // @formatter:on
+  }
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Shared assertions (subject, sender and body mimetype)</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Specific assertions for first sent message (recipient and message content)</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>Specific assertions for second sent message (recipient and message content)</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>Specific assertions for third sent message (recipient and message content)</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p><a href="https://github.com/groupe-sii/ogham/blob/master/sample-standard-usage/src/test/java/fr/sii/ogham/sample/test/SeveralEmailsTestSample.java?ts=2">Source code of the sample</a>.</p>
+</div>
+<div class="paragraph tab-container-end">
+<p>-</p>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2020-07-29 20:37:28 UTC
+</div>
+</div>
+</body>
+</html>
