@@ -41,52 +41,52 @@ with <code>Subject:</code> (spaces can be added after colon). Other lines are us
 </div>
 <div class="listingblock collapse-lines:1-9,35-47 irrelevant-lines:1-9,12-19">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">package fr.sii.ogham.sample.standard.email;
+<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">fr.sii.ogham.sample.standard.email</span>;
 
-import java.util.Properties;
+<span class="keyword">import</span> <span class="include">java.util.Properties</span>;
 
-import fr.sii.ogham.core.builder.MessagingBuilder;
-import fr.sii.ogham.core.exception.MessagingException;
-import fr.sii.ogham.core.service.MessagingService;
-import fr.sii.ogham.email.message.Email;
+<span class="keyword">import</span> <span class="include">fr.sii.ogham.core.builder.MessagingBuilder</span>;
+<span class="keyword">import</span> <span class="include">fr.sii.ogham.core.exception.MessagingException</span>;
+<span class="keyword">import</span> <span class="include">fr.sii.ogham.core.service.MessagingService</span>;
+<span class="keyword">import</span> <span class="include">fr.sii.ogham.email.message.Email</span>;
 
-public class TextTemplateWithSubjectSample {
-  public static void main(String[] args) throws MessagingException {
-    // configure properties (could be stored in a properties file or defined
-    // in System properties)
-    Properties properties = new Properties();
-    properties.setProperty("mail.smtp.host", "&lt;your server host&gt;");
-    properties.setProperty("mail.smtp.port", "&lt;your server port&gt;");
-    properties.setProperty("ogham.email.from.default-value", "&lt;email address to display for the sender user&gt;");
-    // Instantiate the messaging service using default behavior and
-    // provided properties
+<span class="directive">public</span> <span class="type">class</span> <span class="class">TextTemplateWithSubjectSample</span> {
+  <span class="directive">public</span> <span class="directive">static</span> <span class="type">void</span> main(<span class="predefined-type">String</span><span class="type">[]</span> args) <span class="directive">throws</span> MessagingException {
+    <span class="comment">// configure properties (could be stored in a properties file or defined</span>
+    <span class="comment">// in System properties)</span>
+    <span class="predefined-type">Properties</span> properties = <span class="keyword">new</span> <span class="predefined-type">Properties</span>();
+    properties.setProperty(<span class="string"><span class="delimiter">&quot;</span><span class="content">mail.smtp.host</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;your server host&gt;</span><span class="delimiter">&quot;</span></span>);
+    properties.setProperty(<span class="string"><span class="delimiter">&quot;</span><span class="content">mail.smtp.port</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;your server port&gt;</span><span class="delimiter">&quot;</span></span>);
+    properties.setProperty(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.email.from.default-value</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;email address to display for the sender user&gt;</span><span class="delimiter">&quot;</span></span>);
+    <span class="comment">// Instantiate the messaging service using default behavior and</span>
+    <span class="comment">// provided properties</span>
     MessagingService service = MessagingBuilder.standard()
         .environment()
           .properties(properties)
           .and()
         .build();
-    // send the email using fluent API (do not specify subject)
-    // subject is set to null to let automatic mechanism to read the title
-    // of the first line if prefixed by "Subject:" and use it as subject of your email
-    service.send(new Email()                                                                       <i class="conum" data-value="1"></i><b>(1)</b>
-            .body().template("classpath:/template/freemarker/simpleWithSubject.txt.ftl",
-                          new SimpleBean("foo", 42))
-            .to("ogham-test@yopmail.com"));
+    <span class="comment">// send the email using fluent API (do not specify subject)</span>
+    <span class="comment">// subject is set to null to let automatic mechanism to read the title</span>
+    <span class="comment">// of the first line if prefixed by &quot;Subject:&quot; and use it as subject of your email</span>
+    service.send(<span class="keyword">new</span> Email()                                                                       <i class="conum" data-value="1"></i><b>(1)</b>
+            .body().template(<span class="string"><span class="delimiter">&quot;</span><span class="content">classpath:/template/freemarker/simpleWithSubject.txt.ftl</span><span class="delimiter">&quot;</span></span>,
+                          <span class="keyword">new</span> SimpleBean(<span class="string"><span class="delimiter">&quot;</span><span class="content">foo</span><span class="delimiter">&quot;</span></span>, <span class="integer">42</span>))
+            .to(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham-test@yopmail.com</span><span class="delimiter">&quot;</span></span>));
   }
 
-  public static class SimpleBean {
-    private String name;
-    private int value;
-    public SimpleBean(String name, int value) {
-      super();
-      this.name = name;
-      this.value = value;
+  <span class="directive">public</span> <span class="directive">static</span> <span class="type">class</span> <span class="class">SimpleBean</span> {
+    <span class="directive">private</span> <span class="predefined-type">String</span> name;
+    <span class="directive">private</span> <span class="type">int</span> value;
+    <span class="directive">public</span> SimpleBean(<span class="predefined-type">String</span> name, <span class="type">int</span> value) {
+      <span class="local-variable">super</span>();
+      <span class="local-variable">this</span>.name = name;
+      <span class="local-variable">this</span>.value = value;
     }
-    public String getName() {
-      return name;
+    <span class="directive">public</span> <span class="predefined-type">String</span> getName() {
+      <span class="keyword">return</span> name;
     }
-    public int getValue() {
-      return value;
+    <span class="directive">public</span> <span class="type">int</span> getValue() {
+      <span class="keyword">return</span> value;
     }
   }
 }</code></pre>
@@ -108,7 +108,7 @@ public class TextTemplateWithSubjectSample {
 </div>
 <div class="listingblock highlight-lines:1">
 <div class="content">
-<pre class="highlight"><code class="language-text" data-lang="text">Subject: Welcome ${name} !
+<pre class="CodeRay highlight"><code data-lang="text">Subject: Welcome ${name} !
 Hello ${name},
 
 Foo bar ${value}</code></pre>
@@ -137,8 +137,9 @@ The subject of the email will be <code>Welcome foo !</code>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-07-31 20:28:38 UTC
+Last updated 2020-08-09 19:27:24 UTC
 </div>
 </div>
+<link rel="stylesheet" href="./coderay-asciidoctor.css">
 </body>
 </html>

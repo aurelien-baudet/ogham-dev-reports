@@ -48,60 +48,60 @@
 </div>
 <div class="listingblock collapse-lines:1-19 irrelevant-lines:1-19">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">package fr.sii.ogham.sample.test;
+<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">fr.sii.ogham.sample.test</span>;
 
-import static fr.sii.ogham.testing.assertion.OghamAssertions.assertThat;
-import static org.hamcrest.Matchers.is;
+<span class="keyword">import</span> <span class="include">static</span> <span class="include">fr.sii.ogham.testing.assertion.OghamAssertions.assertThat</span>;
+<span class="keyword">import</span> <span class="include">static</span> <span class="include">org.hamcrest.Matchers.is</span>;
 
-import java.io.IOException;
+<span class="keyword">import</span> <span class="include">java.io.IOException</span>;
 
-import org.jsmpp.bean.SubmitSm;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+<span class="keyword">import</span> <span class="include">org.jsmpp.bean.SubmitSm</span>;
+<span class="keyword">import</span> <span class="include">org.junit.Before</span>;
+<span class="keyword">import</span> <span class="include">org.junit.Rule</span>;
+<span class="keyword">import</span> <span class="include">org.junit.Test</span>;
 
-import fr.sii.ogham.core.builder.MessagingBuilder;
-import fr.sii.ogham.core.exception.MessagingException;
-import fr.sii.ogham.core.service.MessagingService;
-import fr.sii.ogham.sms.message.Sms;
-import fr.sii.ogham.testing.extension.junit.JsmppServerRule;
-import fr.sii.ogham.testing.extension.junit.SmppServerRule;
+<span class="keyword">import</span> <span class="include">fr.sii.ogham.core.builder.MessagingBuilder</span>;
+<span class="keyword">import</span> <span class="include">fr.sii.ogham.core.exception.MessagingException</span>;
+<span class="keyword">import</span> <span class="include">fr.sii.ogham.core.service.MessagingService</span>;
+<span class="keyword">import</span> <span class="include">fr.sii.ogham.sms.message.Sms</span>;
+<span class="keyword">import</span> <span class="include">fr.sii.ogham.testing.extension.junit.JsmppServerRule</span>;
+<span class="keyword">import</span> <span class="include">fr.sii.ogham.testing.extension.junit.SmppServerRule</span>;
 
-public class SmsTestSample {
-  private MessagingService oghamService;
+<span class="directive">public</span> <span class="type">class</span> <span class="class">SmsTestSample</span> {
+  <span class="directive">private</span> MessagingService oghamService;
 
-  @Rule
-  public final SmppServerRule&lt;SubmitSm&gt; smppServer = new JsmppServerRule();    <i class="conum" data-value="1"></i><b>(1)</b>
+  <span class="annotation">@Rule</span>
+  <span class="directive">public</span> <span class="directive">final</span> SmppServerRule&lt;SubmitSm&gt; smppServer = <span class="keyword">new</span> JsmppServerRule();    <i class="conum" data-value="1"></i><b>(1)</b>
 
-  @Before
-  public void setUp() throws IOException {
+  <span class="annotation">@Before</span>
+  <span class="directive">public</span> <span class="type">void</span> setUp() <span class="directive">throws</span> <span class="exception">IOException</span> {
     oghamService = MessagingBuilder.standard()
         .environment()
           .properties()
-            .set("ogham.sms.from.default-value", "+33603040506")
-            .set("ogham.sms.smpp.host", "localhost")                 <i class="conum" data-value="2"></i><b>(2)</b>
-            .set("ogham.sms.smpp.port", smppServer.getPort())        <i class="conum" data-value="3"></i><b>(3)</b>
+            .set(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.sms.from.default-value</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">+33603040506</span><span class="delimiter">&quot;</span></span>)
+            .set(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.sms.smpp.host</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">localhost</span><span class="delimiter">&quot;</span></span>)                 <i class="conum" data-value="2"></i><b>(2)</b>
+            .set(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.sms.smpp.port</span><span class="delimiter">&quot;</span></span>, smppServer.getPort())        <i class="conum" data-value="3"></i><b>(3)</b>
             .and()
           .and()
         .build();
   }
 
-  @Test
-  public void simple() throws MessagingException {
-    // @formatter:off
-    oghamService.send(new Sms()
-              .message().string("sms content")
-              .to("0601020304"));
+  <span class="annotation">@Test</span>
+  <span class="directive">public</span> <span class="type">void</span> simple() <span class="directive">throws</span> MessagingException {
+    <span class="comment">// @formatter:off</span>
+    oghamService.send(<span class="keyword">new</span> Sms()
+              .message().string(<span class="string"><span class="delimiter">&quot;</span><span class="content">sms content</span><span class="delimiter">&quot;</span></span>)
+              .to(<span class="string"><span class="delimiter">&quot;</span><span class="content">0601020304</span><span class="delimiter">&quot;</span></span>));
     assertThat(smppServer).receivedMessages()                                <i class="conum" data-value="4"></i><b>(4)</b>
-      .count(is(1))                                                        <i class="conum" data-value="5"></i><b>(5)</b>
-      .message(0)                                                          <i class="conum" data-value="6"></i><b>(6)</b>
-        .content(is("sms content"))                                      <i class="conum" data-value="7"></i><b>(7)</b>
+      .count(is(<span class="integer">1</span>))                                                        <i class="conum" data-value="5"></i><b>(5)</b>
+      .message(<span class="integer">0</span>)                                                          <i class="conum" data-value="6"></i><b>(6)</b>
+        .content(is(<span class="string"><span class="delimiter">&quot;</span><span class="content">sms content</span><span class="delimiter">&quot;</span></span>))                                      <i class="conum" data-value="7"></i><b>(7)</b>
         .from()
-          .number(is("+33603040506"))                                  <i class="conum" data-value="8"></i><b>(8)</b>
+          .number(is(<span class="string"><span class="delimiter">&quot;</span><span class="content">+33603040506</span><span class="delimiter">&quot;</span></span>))                                  <i class="conum" data-value="8"></i><b>(8)</b>
           .and()
         .to()
-          .number(is("0601020304"));                                   <i class="conum" data-value="9"></i><b>(9)</b>
-    // @formatter:on
+          .number(is(<span class="string"><span class="delimiter">&quot;</span><span class="content">0601020304</span><span class="delimiter">&quot;</span></span>));                                   <i class="conum" data-value="9"></i><b>(9)</b>
+    <span class="comment">// @formatter:on</span>
   }
 }</code></pre>
 </div>
@@ -171,68 +171,68 @@ public class SmsTestSample {
 </div>
 <div class="listingblock collapse-lines:1-19 irrelevant-lines:1-19,21-38 highlight-lines:56">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">package fr.sii.ogham.sample.test;
+<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">fr.sii.ogham.sample.test</span>;
 
-import static fr.sii.ogham.testing.assertion.OghamAssertions.assertThat;
-import static org.hamcrest.Matchers.is;
+<span class="keyword">import</span> <span class="include">static</span> <span class="include">fr.sii.ogham.testing.assertion.OghamAssertions.assertThat</span>;
+<span class="keyword">import</span> <span class="include">static</span> <span class="include">org.hamcrest.Matchers.is</span>;
 
-import java.io.IOException;
+<span class="keyword">import</span> <span class="include">java.io.IOException</span>;
 
-import org.jsmpp.bean.SubmitSm;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+<span class="keyword">import</span> <span class="include">org.jsmpp.bean.SubmitSm</span>;
+<span class="keyword">import</span> <span class="include">org.junit.Before</span>;
+<span class="keyword">import</span> <span class="include">org.junit.Rule</span>;
+<span class="keyword">import</span> <span class="include">org.junit.Test</span>;
 
-import fr.sii.ogham.core.builder.MessagingBuilder;
-import fr.sii.ogham.core.exception.MessagingException;
-import fr.sii.ogham.core.service.MessagingService;
-import fr.sii.ogham.sms.message.Sms;
-import fr.sii.ogham.testing.extension.junit.JsmppServerRule;
-import fr.sii.ogham.testing.extension.junit.SmppServerRule;
+<span class="keyword">import</span> <span class="include">fr.sii.ogham.core.builder.MessagingBuilder</span>;
+<span class="keyword">import</span> <span class="include">fr.sii.ogham.core.exception.MessagingException</span>;
+<span class="keyword">import</span> <span class="include">fr.sii.ogham.core.service.MessagingService</span>;
+<span class="keyword">import</span> <span class="include">fr.sii.ogham.sms.message.Sms</span>;
+<span class="keyword">import</span> <span class="include">fr.sii.ogham.testing.extension.junit.JsmppServerRule</span>;
+<span class="keyword">import</span> <span class="include">fr.sii.ogham.testing.extension.junit.SmppServerRule</span>;
 
-public class LongSmsTestSample {
-  private MessagingService oghamService;
+<span class="directive">public</span> <span class="type">class</span> <span class="class">LongSmsTestSample</span> {
+  <span class="directive">private</span> MessagingService oghamService;
 
-  @Rule
-  public final SmppServerRule&lt;SubmitSm&gt; smppServer = new JsmppServerRule();
+  <span class="annotation">@Rule</span>
+  <span class="directive">public</span> <span class="directive">final</span> SmppServerRule&lt;SubmitSm&gt; smppServer = <span class="keyword">new</span> JsmppServerRule();
 
-  @Before
-  public void setUp() throws IOException {
+  <span class="annotation">@Before</span>
+  <span class="directive">public</span> <span class="type">void</span> setUp() <span class="directive">throws</span> <span class="exception">IOException</span> {
     oghamService = MessagingBuilder.standard()
         .environment()
           .properties()
-            .set("ogham.sms.from.default-value", "+33603040506")
-            .set("ogham.sms.smpp.host", "localhost")
-            .set("ogham.sms.smpp.port", String.valueOf(smppServer.getPort()))
+            .set(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.sms.from.default-value</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">+33603040506</span><span class="delimiter">&quot;</span></span>)
+            .set(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.sms.smpp.host</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">localhost</span><span class="delimiter">&quot;</span></span>)
+            .set(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.sms.smpp.port</span><span class="delimiter">&quot;</span></span>, <span class="predefined-type">String</span>.valueOf(smppServer.getPort()))
             .and()
           .and()
         .build();
   }
 
-  @Test
-  public void longMessageUsingGsm8bit() throws MessagingException, IOException {
-    // @formatter:off
-    oghamService.send(new Sms()
-              .message().string("sms content with a very very very loooooooooo"
-                  + "oooooooooonnnnnnnnnnnnnnnnng message that is"
-                  + " over 140 characters in order to test the be"
-                  + "havior of the sender when message has to be split")
-              .to("0601020304"));
+  <span class="annotation">@Test</span>
+  <span class="directive">public</span> <span class="type">void</span> longMessageUsingGsm8bit() <span class="directive">throws</span> MessagingException, <span class="exception">IOException</span> {
+    <span class="comment">// @formatter:off</span>
+    oghamService.send(<span class="keyword">new</span> Sms()
+              .message().string(<span class="string"><span class="delimiter">&quot;</span><span class="content">sms content with a very very very loooooooooo</span><span class="delimiter">&quot;</span></span>
+                  + <span class="string"><span class="delimiter">&quot;</span><span class="content">oooooooooonnnnnnnnnnnnnnnnng message that is</span><span class="delimiter">&quot;</span></span>
+                  + <span class="string"><span class="delimiter">&quot;</span><span class="content"> over 140 characters in order to test the be</span><span class="delimiter">&quot;</span></span>
+                  + <span class="string"><span class="delimiter">&quot;</span><span class="content">havior of the sender when message has to be split</span><span class="delimiter">&quot;</span></span>)
+              .to(<span class="string"><span class="delimiter">&quot;</span><span class="content">0601020304</span><span class="delimiter">&quot;</span></span>));
     assertThat(smppServer).receivedMessages()
-      .count(is(2))                                                                   <i class="conum" data-value="1"></i><b>(1)</b>
-      .message(0)                                                                     <i class="conum" data-value="2"></i><b>(2)</b>
-        .content(is("sms content with a very very very looooooooooooooooooo"        <i class="conum" data-value="3"></i><b>(3)</b>
-            + "onnnnnnnnnnnnnnnnng message that is over 140 characters "
-            + "in order to test the beh")).and()
-      .message(1)                                                                     <i class="conum" data-value="4"></i><b>(4)</b>
-        .content(is("avior of the sender when message has to be split")).and()      <i class="conum" data-value="5"></i><b>(5)</b>
+      .count(is(<span class="integer">2</span>))                                                                   <i class="conum" data-value="1"></i><b>(1)</b>
+      .message(<span class="integer">0</span>)                                                                     <i class="conum" data-value="2"></i><b>(2)</b>
+        .content(is(<span class="string"><span class="delimiter">&quot;</span><span class="content">sms content with a very very very looooooooooooooooooo</span><span class="delimiter">&quot;</span></span>        <i class="conum" data-value="3"></i><b>(3)</b>
+            + <span class="string"><span class="delimiter">&quot;</span><span class="content">onnnnnnnnnnnnnnnnng message that is over 140 characters </span><span class="delimiter">&quot;</span></span>
+            + <span class="string"><span class="delimiter">&quot;</span><span class="content">in order to test the beh</span><span class="delimiter">&quot;</span></span>)).and()
+      .message(<span class="integer">1</span>)                                                                     <i class="conum" data-value="4"></i><b>(4)</b>
+        .content(is(<span class="string"><span class="delimiter">&quot;</span><span class="content">avior of the sender when message has to be split</span><span class="delimiter">&quot;</span></span>)).and()      <i class="conum" data-value="5"></i><b>(5)</b>
       .every()                                                                        <i class="conum" data-value="6"></i><b>(6)</b>
         .from()
-          .number(is("+33603040506"))                                             <i class="conum" data-value="7"></i><b>(7)</b>
+          .number(is(<span class="string"><span class="delimiter">&quot;</span><span class="content">+33603040506</span><span class="delimiter">&quot;</span></span>))                                             <i class="conum" data-value="7"></i><b>(7)</b>
           .and()
         .to()
-          .number(is("0601020304"));                                              <i class="conum" data-value="8"></i><b>(8)</b>
-    // @formatter:on
+          .number(is(<span class="string"><span class="delimiter">&quot;</span><span class="content">0601020304</span><span class="delimiter">&quot;</span></span>));                                              <i class="conum" data-value="8"></i><b>(8)</b>
+    <span class="comment">// @formatter:on</span>
   }
 }</code></pre>
 </div>
@@ -307,8 +307,9 @@ public class LongSmsTestSample {
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-07-31 20:28:39 UTC
+Last updated 2020-08-09 19:27:24 UTC
 </div>
 </div>
+<link rel="stylesheet" href="./coderay-asciidoctor.css">
 </body>
 </html>

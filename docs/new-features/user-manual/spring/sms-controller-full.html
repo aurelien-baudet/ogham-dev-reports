@@ -60,62 +60,62 @@ The following sample shows a Spring Web that exposes one simple endpoint for sen
 </div>
 <div class="listingblock collapse-lines:1-16,45-57 irrelevant-lines:1-16 highlight-lines:30,31,37-40">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">package fr.sii.ogham.sample.springboot.sms;
+<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">fr.sii.ogham.sample.springboot.sms</span>;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.PropertySource;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+<span class="keyword">import</span> <span class="include">org.springframework.beans.factory.annotation.Autowired</span>;
+<span class="keyword">import</span> <span class="include">org.springframework.boot.SpringApplication</span>;
+<span class="keyword">import</span> <span class="include">org.springframework.boot.autoconfigure.SpringBootApplication</span>;
+<span class="keyword">import</span> <span class="include">org.springframework.context.annotation.PropertySource</span>;
+<span class="keyword">import</span> <span class="include">org.springframework.http.HttpStatus</span>;
+<span class="keyword">import</span> <span class="include">org.springframework.web.bind.annotation.PostMapping</span>;
+<span class="keyword">import</span> <span class="include">org.springframework.web.bind.annotation.RequestParam</span>;
+<span class="keyword">import</span> <span class="include">org.springframework.web.bind.annotation.ResponseStatus</span>;
+<span class="keyword">import</span> <span class="include">org.springframework.web.bind.annotation.RestController</span>;
 
-import fr.sii.ogham.core.exception.MessagingException;
-import fr.sii.ogham.core.service.MessagingService;
-import fr.sii.ogham.sms.message.Sms;
+<span class="keyword">import</span> <span class="include">fr.sii.ogham.core.exception.MessagingException</span>;
+<span class="keyword">import</span> <span class="include">fr.sii.ogham.core.service.MessagingService</span>;
+<span class="keyword">import</span> <span class="include">fr.sii.ogham.sms.message.Sms</span>;
 
-@SpringBootApplication
-@PropertySource("application-sms-template.properties")  // just needed to be able to run the sample
-public class TemplateSample {
+<span class="annotation">@SpringBootApplication</span>
+<span class="annotation">@PropertySource</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">application-sms-template.properties</span><span class="delimiter">&quot;</span></span>)  <span class="comment">// just needed to be able to run the sample</span>
+<span class="directive">public</span> <span class="type">class</span> <span class="class">TemplateSample</span> {
 
-  public static void main(String[] args) throws MessagingException {
+  <span class="directive">public</span> <span class="directive">static</span> <span class="type">void</span> main(<span class="predefined-type">String</span><span class="type">[]</span> args) <span class="directive">throws</span> MessagingException {
     SpringApplication.run(TemplateSample.class, args);
   }
 
-  @RestController
-  public static class SmsController {
-    // Messaging service is automatically created using Spring Boot features
-    // The configuration can be set into application-sms-template.properties
-    // The configuration files are stored into src/main/resources
-    @Autowired
+  <span class="annotation">@RestController</span>
+  <span class="directive">public</span> <span class="directive">static</span> <span class="type">class</span> <span class="class">SmsController</span> {
+    <span class="comment">// Messaging service is automatically created using Spring Boot features</span>
+    <span class="comment">// The configuration can be set into application-sms-template.properties</span>
+    <span class="comment">// The configuration files are stored into src/main/resources</span>
+    <span class="annotation">@Autowired</span>
     MessagingService messagingService;                                              <i class="conum" data-value="1"></i><b>(1)</b>
 
-    @PostMapping(value="api/sms/template")
-    @ResponseStatus(HttpStatus.CREATED)
-    public void sendSms(@RequestParam("to") String to, @RequestParam("name") String name, @RequestParam("value") int value) throws MessagingException {
-      // send the SMS using fluent API
-      messagingService.send(new Sms()                                             <i class="conum" data-value="2"></i><b>(2)</b>
-                  .message().template("register",                     <i class="conum" data-value="3"></i><b>(3)</b>
-                            new SimpleBean(name, value))    <i class="conum" data-value="4"></i><b>(4)</b>
+    <span class="annotation">@PostMapping</span>(value=<span class="string"><span class="delimiter">&quot;</span><span class="content">api/sms/template</span><span class="delimiter">&quot;</span></span>)
+    <span class="annotation">@ResponseStatus</span>(HttpStatus.CREATED)
+    <span class="directive">public</span> <span class="type">void</span> sendSms(<span class="annotation">@RequestParam</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">to</span><span class="delimiter">&quot;</span></span>) <span class="predefined-type">String</span> to, <span class="annotation">@RequestParam</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">name</span><span class="delimiter">&quot;</span></span>) <span class="predefined-type">String</span> name, <span class="annotation">@RequestParam</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">value</span><span class="delimiter">&quot;</span></span>) <span class="type">int</span> value) <span class="directive">throws</span> MessagingException {
+      <span class="comment">// send the SMS using fluent API</span>
+      messagingService.send(<span class="keyword">new</span> Sms()                                             <i class="conum" data-value="2"></i><b>(2)</b>
+                  .message().template(<span class="string"><span class="delimiter">&quot;</span><span class="content">register</span><span class="delimiter">&quot;</span></span>,                     <i class="conum" data-value="3"></i><b>(3)</b>
+                            <span class="keyword">new</span> SimpleBean(name, value))    <i class="conum" data-value="4"></i><b>(4)</b>
                   .to(to));                                           <i class="conum" data-value="5"></i><b>(5)</b>
     }
   }
 
-  public static class SimpleBean {
-    private String name;
-    private int value;
-    public SimpleBean(String name, int value) {
-      super();
-      this.name = name;
-      this.value = value;
+  <span class="directive">public</span> <span class="directive">static</span> <span class="type">class</span> <span class="class">SimpleBean</span> {
+    <span class="directive">private</span> <span class="predefined-type">String</span> name;
+    <span class="directive">private</span> <span class="type">int</span> value;
+    <span class="directive">public</span> SimpleBean(<span class="predefined-type">String</span> name, <span class="type">int</span> value) {
+      <span class="local-variable">super</span>();
+      <span class="local-variable">this</span>.name = name;
+      <span class="local-variable">this</span>.value = value;
     }
-    public String getName() {
-      return name;
+    <span class="directive">public</span> <span class="predefined-type">String</span> getName() {
+      <span class="keyword">return</span> name;
     }
-    public int getValue() {
-      return value;
+    <span class="directive">public</span> <span class="type">int</span> getValue() {
+      <span class="keyword">return</span> value;
     }
   }
 }</code></pre>
@@ -153,7 +153,7 @@ public class TemplateSample {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>Hello ${name}, the confirmation code is ${value}</code></pre>
+<pre class="CodeRay highlight"><code>Hello ${name}, the confirmation code is ${value}</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -164,12 +164,12 @@ public class TemplateSample {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-python" data-lang="python"># ogham configuration for SMS
+<pre class="CodeRay highlight"><code data-lang="python"><span class="comment"># ogham configuration for SMS</span>
 ogham.sms.smpp.host=&lt;your server host&gt;                                  <i class="conum" data-value="1"></i><b>(1)</b>
 ogham.sms.smpp.port=&lt;your server port&gt;                                  <i class="conum" data-value="2"></i><b>(2)</b>
 ogham.sms.smpp.system-id=&lt;your server system ID&gt;                        <i class="conum" data-value="3"></i><b>(3)</b>
 ogham.sms.smpp.password=&lt;your server password&gt;                          <i class="conum" data-value="4"></i><b>(4)</b>
-ogham.sms.from.default-value=&lt;phone number to display for the sender&gt;   <i class="conum" data-value="5"></i><b>(5)</b>
+ogham.sms.from.default-value=&lt;phone number to display <span class="keyword">for</span> the sender&gt;   <i class="conum" data-value="5"></i><b>(5)</b>
 ogham.sms.template.path-prefix=/sms/                                    <i class="conum" data-value="6"></i><b>(6)</b>
 ogham.sms.template.path-suffix=.txt.ftl                                 <i class="conum" data-value="7"></i><b>(7)</b></code></pre>
 </div>
@@ -217,8 +217,9 @@ ogham.sms.template.path-suffix=.txt.ftl                                 <i class
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-07-31 20:28:38 UTC
+Last updated 2020-08-09 19:27:24 UTC
 </div>
 </div>
+<link rel="stylesheet" href="./coderay-asciidoctor.css">
 </body>
 </html>

@@ -201,53 +201,53 @@ inlining strategy to use for a particular image. This is done through
 </div>
 <div class="listingblock collapse-lines:1-10,12-28,36-48 irrelevant-lines:1-10,12-19 highlight-lines:30-31">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">package fr.sii.ogham.sample.standard.email;
+<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">fr.sii.ogham.sample.standard.email</span>;
 
-import java.util.Properties;
+<span class="keyword">import</span> <span class="include">java.util.Properties</span>;
 
-import fr.sii.ogham.core.builder.MessagingBuilder;
-import fr.sii.ogham.core.exception.MessagingException;
-import fr.sii.ogham.core.service.MessagingService;
-import fr.sii.ogham.email.message.Email;
+<span class="keyword">import</span> <span class="include">fr.sii.ogham.core.builder.MessagingBuilder</span>;
+<span class="keyword">import</span> <span class="include">fr.sii.ogham.core.exception.MessagingException</span>;
+<span class="keyword">import</span> <span class="include">fr.sii.ogham.core.service.MessagingService</span>;
+<span class="keyword">import</span> <span class="include">fr.sii.ogham.email.message.Email</span>;
 
-public class HtmlWithBackgroundImagesTemplateSample {
-  public static void main(String[] args) throws MessagingException {
-    // configure properties (could be stored in a properties file or defined
-    // in System properties)
-    Properties properties = new Properties();
-    properties.setProperty("mail.smtp.host", "&lt;your server host&gt;");
-    properties.setProperty("mail.smtp.port", "&lt;your server port&gt;");
-    properties.setProperty("ogham.email.from.default-value", "&lt;email address to display for the sender user&gt;");
-    // Instantiate the messaging service using default behavior and
-    // provided properties
+<span class="directive">public</span> <span class="type">class</span> <span class="class">HtmlWithBackgroundImagesTemplateSample</span> {
+  <span class="directive">public</span> <span class="directive">static</span> <span class="type">void</span> main(<span class="predefined-type">String</span><span class="type">[]</span> args) <span class="directive">throws</span> MessagingException {
+    <span class="comment">// configure properties (could be stored in a properties file or defined</span>
+    <span class="comment">// in System properties)</span>
+    <span class="predefined-type">Properties</span> properties = <span class="keyword">new</span> <span class="predefined-type">Properties</span>();
+    properties.setProperty(<span class="string"><span class="delimiter">&quot;</span><span class="content">mail.smtp.host</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;your server host&gt;</span><span class="delimiter">&quot;</span></span>);
+    properties.setProperty(<span class="string"><span class="delimiter">&quot;</span><span class="content">mail.smtp.port</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;your server port&gt;</span><span class="delimiter">&quot;</span></span>);
+    properties.setProperty(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.email.from.default-value</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;email address to display for the sender user&gt;</span><span class="delimiter">&quot;</span></span>);
+    <span class="comment">// Instantiate the messaging service using default behavior and</span>
+    <span class="comment">// provided properties</span>
     MessagingService service = MessagingBuilder.standard()
         .environment()
           .properties(properties)
           .and()
         .build();
-    // send the email using fluent API
-    // Note that the extension of the template is not given. This version
-    // automatically takes the provided path and adds the '.html' extension
-    // for the HTML template and '.txt.ftl' for text template (if provided)
-    service.send(new Email()
-            .body().template("classpath:/template/thymeleaf/background-images",    <i class="conum" data-value="1"></i><b>(1)</b>
-                    new SimpleBean("foo", 42))                             <i class="conum" data-value="2"></i><b>(2)</b>
-            .to("ogham-test@yopmail.com"));
+    <span class="comment">// send the email using fluent API</span>
+    <span class="comment">// Note that the extension of the template is not given. This version</span>
+    <span class="comment">// automatically takes the provided path and adds the '.html' extension</span>
+    <span class="comment">// for the HTML template and '.txt.ftl' for text template (if provided)</span>
+    service.send(<span class="keyword">new</span> Email()
+            .body().template(<span class="string"><span class="delimiter">&quot;</span><span class="content">classpath:/template/thymeleaf/background-images</span><span class="delimiter">&quot;</span></span>,    <i class="conum" data-value="1"></i><b>(1)</b>
+                    <span class="keyword">new</span> SimpleBean(<span class="string"><span class="delimiter">&quot;</span><span class="content">foo</span><span class="delimiter">&quot;</span></span>, <span class="integer">42</span>))                             <i class="conum" data-value="2"></i><b>(2)</b>
+            .to(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham-test@yopmail.com</span><span class="delimiter">&quot;</span></span>));
   }
 
-  public static class SimpleBean {
-    private String name;
-    private int value;
-    public SimpleBean(String name, int value) {
-      super();
-      this.name = name;
-      this.value = value;
+  <span class="directive">public</span> <span class="directive">static</span> <span class="type">class</span> <span class="class">SimpleBean</span> {
+    <span class="directive">private</span> <span class="predefined-type">String</span> name;
+    <span class="directive">private</span> <span class="type">int</span> value;
+    <span class="directive">public</span> SimpleBean(<span class="predefined-type">String</span> name, <span class="type">int</span> value) {
+      <span class="local-variable">super</span>();
+      <span class="local-variable">this</span>.name = name;
+      <span class="local-variable">this</span>.value = value;
     }
-    public String getName() {
-      return name;
+    <span class="directive">public</span> <span class="predefined-type">String</span> getName() {
+      <span class="keyword">return</span> name;
     }
-    public int getValue() {
-      return value;
+    <span class="directive">public</span> <span class="type">int</span> getValue() {
+      <span class="keyword">return</span> value;
     }
   }
 }</code></pre>
@@ -273,26 +273,26 @@ public class HtmlWithBackgroundImagesTemplateSample {
 </div>
 <div class="listingblock highlight-lines:7,10">
 <div class="content">
-<pre class="highlight"><code class="language-html" data-lang="html">&lt;!DOCTYPE html&gt;
-&lt;html xmlns:th="http://www.thymeleaf.org"&gt;
-&lt;head&gt;
-&lt;meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /&gt;
-&lt;title&gt;Inline background images&lt;/title&gt;
-&lt;meta name="viewport" content="width=device-width, initial-scale=1.0"/&gt;
-&lt;link href="/resources/css/background-images.css" rel="stylesheet" /&gt;       <i class="conum" data-value="1"></i><b>(1)</b>
-&lt;/head&gt;
-&lt;body&gt;
-  &lt;div class="header"&gt;                                                    <i class="conum" data-value="2"></i><b>(2)</b>
+<pre class="CodeRay highlight"><code data-lang="html"><span class="doctype">&lt;!DOCTYPE html&gt;</span>
+<span class="tag">&lt;html</span> <span class="attribute-name">xmlns:th</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">http://www.thymeleaf.org</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+<span class="tag">&lt;head&gt;</span>
+<span class="tag">&lt;meta</span> <span class="attribute-name">http-equiv</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">Content-Type</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">content</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">text/html; charset=UTF-8</span><span class="delimiter">&quot;</span></span> <span class="tag">/&gt;</span>
+<span class="tag">&lt;title&gt;</span>Inline background images<span class="tag">&lt;/title&gt;</span>
+<span class="tag">&lt;meta</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">viewport</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">content</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">width=device-width, initial-scale=1.0</span><span class="delimiter">&quot;</span></span><span class="tag">/&gt;</span>
+<span class="tag">&lt;link</span> <span class="attribute-name">href</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">/resources/css/background-images.css</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">rel</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">stylesheet</span><span class="delimiter">&quot;</span></span> <span class="tag">/&gt;</span>       <i class="conum" data-value="1"></i><b>(1)</b>
+<span class="tag">&lt;/head&gt;</span>
+<span class="tag">&lt;body&gt;</span>
+  <span class="tag">&lt;div</span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">header</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>                                                    <i class="conum" data-value="2"></i><b>(2)</b>
     Hello [[${name}]] !
-  &lt;/div&gt;
-  &lt;div class="content"&gt;                                                   <i class="conum" data-value="3"></i><b>(3)</b>
+  <span class="tag">&lt;/div&gt;</span>
+  <span class="tag">&lt;div</span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">content</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>                                                   <i class="conum" data-value="3"></i><b>(3)</b>
     content
-  &lt;/div&gt;
-  &lt;div class="footer"&gt;                                                    <i class="conum" data-value="4"></i><b>(4)</b>
+  <span class="tag">&lt;/div&gt;</span>
+  <span class="tag">&lt;div</span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">footer</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>                                                    <i class="conum" data-value="4"></i><b>(4)</b>
     footer
-  &lt;/div&gt;
-&lt;/body&gt;
-&lt;/html&gt;</code></pre>
+  <span class="tag">&lt;/div&gt;</span>
+<span class="tag">&lt;/body&gt;</span>
+<span class="tag">&lt;/html&gt;</span></code></pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -324,26 +324,26 @@ background image will be inlined (using <code>attach</code> strategy).</td>
 </div>
 <div class="listingblock highlight-lines:2">
 <div class="content">
-<pre class="highlight"><code class="language-css" data-lang="css">.header {
-  background: #ccc url("../images/header.jpg") repeat-x;    /* <i class="conum" data-value="1"></i><b>(1)</b>
-  */
-  height: 200px;
+<pre class="CodeRay highlight"><code data-lang="css"><span class="class">.header</span> {
+  <span class="key">background</span>: <span class="color">#ccc</span> <span class="function"><span class="delimiter">url(</span><span class="content">&quot;../images/header.jpg&quot;</span><span class="delimiter">)</span></span> <span class="value">repeat-x</span>;    <span class="comment">/* <i class="conum" data-value="1"></i><b>(1)</b>
+  */</span>
+  <span class="key">height</span>: <span class="float">200px</span>;
 }
 
-.footer {
-  background: url("../images/footer.jpg") no-repeat;        /* <i class="conum" data-value="2"></i><b>(2)</b>
-  */
-  height: 200px;
-  --inline-image: base64;                                   /* <i class="conum" data-value="3"></i><b>(3)</b>
-  */
+<span class="class">.footer</span> {
+  <span class="key">background</span>: <span class="function"><span class="delimiter">url(</span><span class="content">&quot;../images/footer.jpg&quot;</span><span class="delimiter">)</span></span> <span class="value">no-repeat</span>;        <span class="comment">/* <i class="conum" data-value="2"></i><b>(2)</b>
+  */</span>
+  <span class="key">height</span>: <span class="float">200px</span>;
+  <span class="error">-</span><span class="key">-inline-image</span>: <span class="value">base64</span>;                                   <span class="comment">/* <i class="conum" data-value="3"></i><b>(3)</b>
+  */</span>
 }
 
-.content {
-  background: url("../images/h1.gif") no-repeat;            /* <i class="conum" data-value="4"></i><b>(4)</b>
-  */
-  --inline-image: skip;                                     /* <i class="conum" data-value="5"></i><b>(5)</b>
-  */
-  height: 400px;
+<span class="class">.content</span> {
+  <span class="key">background</span>: <span class="function"><span class="delimiter">url(</span><span class="content">&quot;../images/h1.gif&quot;</span><span class="delimiter">)</span></span> <span class="value">no-repeat</span>;            <span class="comment">/* <i class="conum" data-value="4"></i><b>(4)</b>
+  */</span>
+  <span class="error">-</span><span class="key">-inline-image</span>: <span class="value">skip</span>;                                     <span class="comment">/* <i class="conum" data-value="5"></i><b>(5)</b>
+  */</span>
+  <span class="key">height</span>: <span class="float">400px</span>;
 }</code></pre>
 </div>
 </div>
@@ -380,26 +380,26 @@ is specified, the image will be inlined using <code>attach</code> strategy.</td>
 </div>
 <div class="listingblock highlight-lines:7,10">
 <div class="content">
-<pre class="highlight"><code class="language-html" data-lang="html">&lt;!doctype html&gt;
-&lt;html&gt;
- &lt;head&gt;
-  &lt;meta http-equiv="Content-Type" content="text/html; charset=UTF-8"&gt;
-  &lt;title&gt;Inline background images&lt;/title&gt;
-  &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
+<pre class="CodeRay highlight"><code data-lang="html"><span class="doctype">&lt;!doctype html&gt;</span>
+<span class="tag">&lt;html&gt;</span>
+ <span class="tag">&lt;head&gt;</span>
+  <span class="tag">&lt;meta</span> <span class="attribute-name">http-equiv</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">Content-Type</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">content</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">text/html; charset=UTF-8</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+  <span class="tag">&lt;title&gt;</span>Inline background images<span class="tag">&lt;/title&gt;</span>
+  <span class="tag">&lt;meta</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">viewport</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">content</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">width=device-width, initial-scale=1.0</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
                                                                                                                                                              <i class="conum" data-value="1"></i><b>(1)</b>
- &lt;/head&gt;
- &lt;body&gt;
-  &lt;div class="header" style="background: #ccc url(&amp;quot;cid:0&amp;quot;) repeat-x;  height: 200px;"&gt;                                                             <i class="conum" data-value="2"></i><b>(2)</b>
+ <span class="tag">&lt;/head&gt;</span>
+ <span class="tag">&lt;body&gt;</span>
+  <span class="tag">&lt;div</span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">header</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">style</span>=<span class="string"><span class="delimiter">&quot;</span><span class="key">background</span>: <span class="color">#ccc</span> <span class="function"><span class="delimiter">url(</span><span class="content">&amp;quot;cid:0&amp;quot;</span><span class="delimiter">)</span></span> <span class="value">repeat-x</span>;  <span class="key">height</span>: <span class="float">200px</span>;<span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>                                                             <i class="conum" data-value="2"></i><b>(2)</b>
    Hello foo !
-  &lt;/div&gt;
-  &lt;div class="content" style="background: url(&amp;quot;classpath:/resources/images/h1.gif&amp;quot;) no-repeat;  height: 400px;  "&gt;                               <i class="conum" data-value="3"></i><b>(3)</b>
+  <span class="tag">&lt;/div&gt;</span>
+  <span class="tag">&lt;div</span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">content</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">style</span>=<span class="string"><span class="delimiter">&quot;</span><span class="key">background</span>: <span class="function"><span class="delimiter">url(</span><span class="content">&amp;quot;classpath:/resources/images/h1.gif&amp;quot;</span><span class="delimiter">)</span></span> <span class="value">no-repeat</span>;  <span class="key">height</span>: <span class="float">400px</span>;  <span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>                               <i class="conum" data-value="3"></i><b>(3)</b>
    content
-  &lt;/div&gt;
-  &lt;div class="footer" style="background: url(&amp;quot;data:image/jpeg;base64,/9j/4QAYRXhpZgAASUkq[...]JpRFcBO8BIP/2Q==&amp;quot;) no-repeat; height: 200px;  "&gt;   <i class="conum" data-value="4"></i><b>(4)</b>
+  <span class="tag">&lt;/div&gt;</span>
+  <span class="tag">&lt;div</span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">footer</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">style</span>=<span class="string"><span class="delimiter">&quot;</span><span class="key">background</span>: <span class="function"><span class="delimiter">url(</span><span class="content">&amp;quot;data:image/jpeg;base64,/9j/4QAYRXhpZgAASUkq[...]JpRFcBO8BIP/2Q==&amp;quot;</span><span class="delimiter">)</span></span> <span class="value">no-repeat</span>; <span class="key">height</span>: <span class="float">200px</span>;  <span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>   <i class="conum" data-value="4"></i><b>(4)</b>
    footer
-  &lt;/div&gt;
- &lt;/body&gt;
-&lt;/html&gt;</code></pre>
+  <span class="tag">&lt;/div&gt;</span>
+ <span class="tag">&lt;/body&gt;</span>
+<span class="tag">&lt;/html&gt;</span></code></pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -443,53 +443,53 @@ you need to provide the <code>--inline-image</code> property with <code>base64</
 </div>
 <div class="listingblock collapse-lines:1-10,12-28,36-48 irrelevant-lines:1-10,12-19 highlight-lines:30-31">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">package fr.sii.ogham.sample.standard.email;
+<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">fr.sii.ogham.sample.standard.email</span>;
 
-import java.util.Properties;
+<span class="keyword">import</span> <span class="include">java.util.Properties</span>;
 
-import fr.sii.ogham.core.builder.MessagingBuilder;
-import fr.sii.ogham.core.exception.MessagingException;
-import fr.sii.ogham.core.service.MessagingService;
-import fr.sii.ogham.email.message.Email;
+<span class="keyword">import</span> <span class="include">fr.sii.ogham.core.builder.MessagingBuilder</span>;
+<span class="keyword">import</span> <span class="include">fr.sii.ogham.core.exception.MessagingException</span>;
+<span class="keyword">import</span> <span class="include">fr.sii.ogham.core.service.MessagingService</span>;
+<span class="keyword">import</span> <span class="include">fr.sii.ogham.email.message.Email</span>;
 
-public class HtmlWithBackgroundImagesTemplateSample {
-  public static void main(String[] args) throws MessagingException {
-    // configure properties (could be stored in a properties file or defined
-    // in System properties)
-    Properties properties = new Properties();
-    properties.setProperty("mail.smtp.host", "&lt;your server host&gt;");
-    properties.setProperty("mail.smtp.port", "&lt;your server port&gt;");
-    properties.setProperty("ogham.email.from.default-value", "&lt;email address to display for the sender user&gt;");
-    // Instantiate the messaging service using default behavior and
-    // provided properties
+<span class="directive">public</span> <span class="type">class</span> <span class="class">HtmlWithBackgroundImagesTemplateSample</span> {
+  <span class="directive">public</span> <span class="directive">static</span> <span class="type">void</span> main(<span class="predefined-type">String</span><span class="type">[]</span> args) <span class="directive">throws</span> MessagingException {
+    <span class="comment">// configure properties (could be stored in a properties file or defined</span>
+    <span class="comment">// in System properties)</span>
+    <span class="predefined-type">Properties</span> properties = <span class="keyword">new</span> <span class="predefined-type">Properties</span>();
+    properties.setProperty(<span class="string"><span class="delimiter">&quot;</span><span class="content">mail.smtp.host</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;your server host&gt;</span><span class="delimiter">&quot;</span></span>);
+    properties.setProperty(<span class="string"><span class="delimiter">&quot;</span><span class="content">mail.smtp.port</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;your server port&gt;</span><span class="delimiter">&quot;</span></span>);
+    properties.setProperty(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.email.from.default-value</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;email address to display for the sender user&gt;</span><span class="delimiter">&quot;</span></span>);
+    <span class="comment">// Instantiate the messaging service using default behavior and</span>
+    <span class="comment">// provided properties</span>
     MessagingService service = MessagingBuilder.standard()
         .environment()
           .properties(properties)
           .and()
         .build();
-    // send the email using fluent API
-    // Note that the extension of the template is not given. This version
-    // automatically takes the provided path and adds the '.html' extension
-    // for the HTML template and '.txt.ftl' for text template (if provided)
-    service.send(new Email()
-            .body().template("classpath:/template/thymeleaf/background-images",    <i class="conum" data-value="1"></i><b>(1)</b>
-                    new SimpleBean("foo", 42))                             <i class="conum" data-value="2"></i><b>(2)</b>
-            .to("ogham-test@yopmail.com"));
+    <span class="comment">// send the email using fluent API</span>
+    <span class="comment">// Note that the extension of the template is not given. This version</span>
+    <span class="comment">// automatically takes the provided path and adds the '.html' extension</span>
+    <span class="comment">// for the HTML template and '.txt.ftl' for text template (if provided)</span>
+    service.send(<span class="keyword">new</span> Email()
+            .body().template(<span class="string"><span class="delimiter">&quot;</span><span class="content">classpath:/template/thymeleaf/background-images</span><span class="delimiter">&quot;</span></span>,    <i class="conum" data-value="1"></i><b>(1)</b>
+                    <span class="keyword">new</span> SimpleBean(<span class="string"><span class="delimiter">&quot;</span><span class="content">foo</span><span class="delimiter">&quot;</span></span>, <span class="integer">42</span>))                             <i class="conum" data-value="2"></i><b>(2)</b>
+            .to(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham-test@yopmail.com</span><span class="delimiter">&quot;</span></span>));
   }
 
-  public static class SimpleBean {
-    private String name;
-    private int value;
-    public SimpleBean(String name, int value) {
-      super();
-      this.name = name;
-      this.value = value;
+  <span class="directive">public</span> <span class="directive">static</span> <span class="type">class</span> <span class="class">SimpleBean</span> {
+    <span class="directive">private</span> <span class="predefined-type">String</span> name;
+    <span class="directive">private</span> <span class="type">int</span> value;
+    <span class="directive">public</span> SimpleBean(<span class="predefined-type">String</span> name, <span class="type">int</span> value) {
+      <span class="local-variable">super</span>();
+      <span class="local-variable">this</span>.name = name;
+      <span class="local-variable">this</span>.value = value;
     }
-    public String getName() {
-      return name;
+    <span class="directive">public</span> <span class="predefined-type">String</span> getName() {
+      <span class="keyword">return</span> name;
     }
-    public int getValue() {
-      return value;
+    <span class="directive">public</span> <span class="type">int</span> getValue() {
+      <span class="keyword">return</span> value;
     }
   }
 }</code></pre>
@@ -515,26 +515,26 @@ public class HtmlWithBackgroundImagesTemplateSample {
 </div>
 <div class="listingblock highlight-lines:7,16">
 <div class="content">
-<pre class="highlight"><code class="language-html" data-lang="html">&lt;!DOCTYPE html&gt;
-&lt;html xmlns:th="http://www.thymeleaf.org"&gt;
-&lt;head&gt;
-&lt;meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /&gt;
-&lt;title&gt;Inline background images&lt;/title&gt;
-&lt;meta name="viewport" content="width=device-width, initial-scale=1.0"/&gt;
-&lt;link href="/resources/css/background-images.css" rel="stylesheet" /&gt;       <i class="conum" data-value="1"></i><b>(1)</b>
-&lt;/head&gt;
-&lt;body&gt;
-  &lt;div class="header"&gt;                                                    <i class="conum" data-value="2"></i><b>(2)</b>
+<pre class="CodeRay highlight"><code data-lang="html"><span class="doctype">&lt;!DOCTYPE html&gt;</span>
+<span class="tag">&lt;html</span> <span class="attribute-name">xmlns:th</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">http://www.thymeleaf.org</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+<span class="tag">&lt;head&gt;</span>
+<span class="tag">&lt;meta</span> <span class="attribute-name">http-equiv</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">Content-Type</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">content</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">text/html; charset=UTF-8</span><span class="delimiter">&quot;</span></span> <span class="tag">/&gt;</span>
+<span class="tag">&lt;title&gt;</span>Inline background images<span class="tag">&lt;/title&gt;</span>
+<span class="tag">&lt;meta</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">viewport</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">content</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">width=device-width, initial-scale=1.0</span><span class="delimiter">&quot;</span></span><span class="tag">/&gt;</span>
+<span class="tag">&lt;link</span> <span class="attribute-name">href</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">/resources/css/background-images.css</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">rel</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">stylesheet</span><span class="delimiter">&quot;</span></span> <span class="tag">/&gt;</span>       <i class="conum" data-value="1"></i><b>(1)</b>
+<span class="tag">&lt;/head&gt;</span>
+<span class="tag">&lt;body&gt;</span>
+  <span class="tag">&lt;div</span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">header</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>                                                    <i class="conum" data-value="2"></i><b>(2)</b>
     Hello [[${name}]] !
-  &lt;/div&gt;
-  &lt;div class="content"&gt;                                                   <i class="conum" data-value="3"></i><b>(3)</b>
+  <span class="tag">&lt;/div&gt;</span>
+  <span class="tag">&lt;div</span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">content</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>                                                   <i class="conum" data-value="3"></i><b>(3)</b>
     content
-  &lt;/div&gt;
-  &lt;div class="footer"&gt;                                                    <i class="conum" data-value="4"></i><b>(4)</b>
+  <span class="tag">&lt;/div&gt;</span>
+  <span class="tag">&lt;div</span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">footer</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>                                                    <i class="conum" data-value="4"></i><b>(4)</b>
     footer
-  &lt;/div&gt;
-&lt;/body&gt;
-&lt;/html&gt;</code></pre>
+  <span class="tag">&lt;/div&gt;</span>
+<span class="tag">&lt;/body&gt;</span>
+<span class="tag">&lt;/html&gt;</span></code></pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -566,26 +566,26 @@ background image will be inlined (using <code>base64</code> strategy).</td>
 </div>
 <div class="listingblock highlight-lines:8,11">
 <div class="content">
-<pre class="highlight"><code class="language-css" data-lang="css">.header {
-  background: #ccc url("../images/header.jpg") repeat-x;    /* <i class="conum" data-value="1"></i><b>(1)</b>
-  */
-  height: 200px;
+<pre class="CodeRay highlight"><code data-lang="css"><span class="class">.header</span> {
+  <span class="key">background</span>: <span class="color">#ccc</span> <span class="function"><span class="delimiter">url(</span><span class="content">&quot;../images/header.jpg&quot;</span><span class="delimiter">)</span></span> <span class="value">repeat-x</span>;    <span class="comment">/* <i class="conum" data-value="1"></i><b>(1)</b>
+  */</span>
+  <span class="key">height</span>: <span class="float">200px</span>;
 }
 
-.footer {
-  background: url("../images/footer.jpg") no-repeat;        /* <i class="conum" data-value="2"></i><b>(2)</b>
-  */
-  height: 200px;
-  --inline-image: base64;                                   /* <i class="conum" data-value="3"></i><b>(3)</b>
-  */
+<span class="class">.footer</span> {
+  <span class="key">background</span>: <span class="function"><span class="delimiter">url(</span><span class="content">&quot;../images/footer.jpg&quot;</span><span class="delimiter">)</span></span> <span class="value">no-repeat</span>;        <span class="comment">/* <i class="conum" data-value="2"></i><b>(2)</b>
+  */</span>
+  <span class="key">height</span>: <span class="float">200px</span>;
+  <span class="error">-</span><span class="key">-inline-image</span>: <span class="value">base64</span>;                                   <span class="comment">/* <i class="conum" data-value="3"></i><b>(3)</b>
+  */</span>
 }
 
-.content {
-  background: url("../images/h1.gif") no-repeat;            /* <i class="conum" data-value="4"></i><b>(4)</b>
-  */
-  --inline-image: skip;                                     /* <i class="conum" data-value="5"></i><b>(5)</b>
-  */
-  height: 400px;
+<span class="class">.content</span> {
+  <span class="key">background</span>: <span class="function"><span class="delimiter">url(</span><span class="content">&quot;../images/h1.gif&quot;</span><span class="delimiter">)</span></span> <span class="value">no-repeat</span>;            <span class="comment">/* <i class="conum" data-value="4"></i><b>(4)</b>
+  */</span>
+  <span class="error">-</span><span class="key">-inline-image</span>: <span class="value">skip</span>;                                     <span class="comment">/* <i class="conum" data-value="5"></i><b>(5)</b>
+  */</span>
+  <span class="key">height</span>: <span class="float">400px</span>;
 }</code></pre>
 </div>
 </div>
@@ -623,26 +623,26 @@ strategy is specified using <code>--inline-image</code> property on the same CSS
 </div>
 <div class="listingblock highlight-lines:16">
 <div class="content">
-<pre class="highlight"><code class="language-html" data-lang="html">&lt;!doctype html&gt;
-&lt;html&gt;
- &lt;head&gt;
-  &lt;meta http-equiv="Content-Type" content="text/html; charset=UTF-8"&gt;
-  &lt;title&gt;Inline background images&lt;/title&gt;
-  &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
+<pre class="CodeRay highlight"><code data-lang="html"><span class="doctype">&lt;!doctype html&gt;</span>
+<span class="tag">&lt;html&gt;</span>
+ <span class="tag">&lt;head&gt;</span>
+  <span class="tag">&lt;meta</span> <span class="attribute-name">http-equiv</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">Content-Type</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">content</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">text/html; charset=UTF-8</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+  <span class="tag">&lt;title&gt;</span>Inline background images<span class="tag">&lt;/title&gt;</span>
+  <span class="tag">&lt;meta</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">viewport</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">content</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">width=device-width, initial-scale=1.0</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
                                                                                                                                                              <i class="conum" data-value="1"></i><b>(1)</b>
- &lt;/head&gt;
- &lt;body&gt;
-  &lt;div class="header" style="background: #ccc url(&amp;quot;cid:0&amp;quot;) repeat-x;  height: 200px;"&gt;                                                             <i class="conum" data-value="2"></i><b>(2)</b>
+ <span class="tag">&lt;/head&gt;</span>
+ <span class="tag">&lt;body&gt;</span>
+  <span class="tag">&lt;div</span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">header</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">style</span>=<span class="string"><span class="delimiter">&quot;</span><span class="key">background</span>: <span class="color">#ccc</span> <span class="function"><span class="delimiter">url(</span><span class="content">&amp;quot;cid:0&amp;quot;</span><span class="delimiter">)</span></span> <span class="value">repeat-x</span>;  <span class="key">height</span>: <span class="float">200px</span>;<span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>                                                             <i class="conum" data-value="2"></i><b>(2)</b>
    Hello foo !
-  &lt;/div&gt;
-  &lt;div class="content" style="background: url(&amp;quot;classpath:/resources/images/h1.gif&amp;quot;) no-repeat;  height: 400px;  "&gt;                               <i class="conum" data-value="3"></i><b>(3)</b>
+  <span class="tag">&lt;/div&gt;</span>
+  <span class="tag">&lt;div</span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">content</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">style</span>=<span class="string"><span class="delimiter">&quot;</span><span class="key">background</span>: <span class="function"><span class="delimiter">url(</span><span class="content">&amp;quot;classpath:/resources/images/h1.gif&amp;quot;</span><span class="delimiter">)</span></span> <span class="value">no-repeat</span>;  <span class="key">height</span>: <span class="float">400px</span>;  <span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>                               <i class="conum" data-value="3"></i><b>(3)</b>
    content
-  &lt;/div&gt;
-  &lt;div class="footer" style="background: url(&amp;quot;data:image/jpeg;base64,/9j/4QAYRXhpZgAASUkq[...]JpRFcBO8BIP/2Q==&amp;quot;) no-repeat; height: 200px;  "&gt;   <i class="conum" data-value="4"></i><b>(4)</b>
+  <span class="tag">&lt;/div&gt;</span>
+  <span class="tag">&lt;div</span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">footer</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">style</span>=<span class="string"><span class="delimiter">&quot;</span><span class="key">background</span>: <span class="function"><span class="delimiter">url(</span><span class="content">&amp;quot;data:image/jpeg;base64,/9j/4QAYRXhpZgAASUkq[...]JpRFcBO8BIP/2Q==&amp;quot;</span><span class="delimiter">)</span></span> <span class="value">no-repeat</span>; <span class="key">height</span>: <span class="float">200px</span>;  <span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>   <i class="conum" data-value="4"></i><b>(4)</b>
    footer
-  &lt;/div&gt;
- &lt;/body&gt;
-&lt;/html&gt;</code></pre>
+  <span class="tag">&lt;/div&gt;</span>
+ <span class="tag">&lt;/body&gt;</span>
+<span class="tag">&lt;/html&gt;</span></code></pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -701,53 +701,53 @@ multiple background images or several properties) on the same CSS rule.
 </div>
 <div class="listingblock collapse-lines:1-10,12-28,36-48 irrelevant-lines:1-10,12-19 highlight-lines:30-31">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">package fr.sii.ogham.sample.standard.email;
+<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">fr.sii.ogham.sample.standard.email</span>;
 
-import java.util.Properties;
+<span class="keyword">import</span> <span class="include">java.util.Properties</span>;
 
-import fr.sii.ogham.core.builder.MessagingBuilder;
-import fr.sii.ogham.core.exception.MessagingException;
-import fr.sii.ogham.core.service.MessagingService;
-import fr.sii.ogham.email.message.Email;
+<span class="keyword">import</span> <span class="include">fr.sii.ogham.core.builder.MessagingBuilder</span>;
+<span class="keyword">import</span> <span class="include">fr.sii.ogham.core.exception.MessagingException</span>;
+<span class="keyword">import</span> <span class="include">fr.sii.ogham.core.service.MessagingService</span>;
+<span class="keyword">import</span> <span class="include">fr.sii.ogham.email.message.Email</span>;
 
-public class HtmlWithBackgroundImagesTemplateSample {
-  public static void main(String[] args) throws MessagingException {
-    // configure properties (could be stored in a properties file or defined
-    // in System properties)
-    Properties properties = new Properties();
-    properties.setProperty("mail.smtp.host", "&lt;your server host&gt;");
-    properties.setProperty("mail.smtp.port", "&lt;your server port&gt;");
-    properties.setProperty("ogham.email.from.default-value", "&lt;email address to display for the sender user&gt;");
-    // Instantiate the messaging service using default behavior and
-    // provided properties
+<span class="directive">public</span> <span class="type">class</span> <span class="class">HtmlWithBackgroundImagesTemplateSample</span> {
+  <span class="directive">public</span> <span class="directive">static</span> <span class="type">void</span> main(<span class="predefined-type">String</span><span class="type">[]</span> args) <span class="directive">throws</span> MessagingException {
+    <span class="comment">// configure properties (could be stored in a properties file or defined</span>
+    <span class="comment">// in System properties)</span>
+    <span class="predefined-type">Properties</span> properties = <span class="keyword">new</span> <span class="predefined-type">Properties</span>();
+    properties.setProperty(<span class="string"><span class="delimiter">&quot;</span><span class="content">mail.smtp.host</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;your server host&gt;</span><span class="delimiter">&quot;</span></span>);
+    properties.setProperty(<span class="string"><span class="delimiter">&quot;</span><span class="content">mail.smtp.port</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;your server port&gt;</span><span class="delimiter">&quot;</span></span>);
+    properties.setProperty(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.email.from.default-value</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;email address to display for the sender user&gt;</span><span class="delimiter">&quot;</span></span>);
+    <span class="comment">// Instantiate the messaging service using default behavior and</span>
+    <span class="comment">// provided properties</span>
     MessagingService service = MessagingBuilder.standard()
         .environment()
           .properties(properties)
           .and()
         .build();
-    // send the email using fluent API
-    // Note that the extension of the template is not given. This version
-    // automatically takes the provided path and adds the '.html' extension
-    // for the HTML template and '.txt.ftl' for text template (if provided)
-    service.send(new Email()
-            .body().template("classpath:/template/thymeleaf/background-images",    <i class="conum" data-value="1"></i><b>(1)</b>
-                    new SimpleBean("foo", 42))                             <i class="conum" data-value="2"></i><b>(2)</b>
-            .to("ogham-test@yopmail.com"));
+    <span class="comment">// send the email using fluent API</span>
+    <span class="comment">// Note that the extension of the template is not given. This version</span>
+    <span class="comment">// automatically takes the provided path and adds the '.html' extension</span>
+    <span class="comment">// for the HTML template and '.txt.ftl' for text template (if provided)</span>
+    service.send(<span class="keyword">new</span> Email()
+            .body().template(<span class="string"><span class="delimiter">&quot;</span><span class="content">classpath:/template/thymeleaf/background-images</span><span class="delimiter">&quot;</span></span>,    <i class="conum" data-value="1"></i><b>(1)</b>
+                    <span class="keyword">new</span> SimpleBean(<span class="string"><span class="delimiter">&quot;</span><span class="content">foo</span><span class="delimiter">&quot;</span></span>, <span class="integer">42</span>))                             <i class="conum" data-value="2"></i><b>(2)</b>
+            .to(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham-test@yopmail.com</span><span class="delimiter">&quot;</span></span>));
   }
 
-  public static class SimpleBean {
-    private String name;
-    private int value;
-    public SimpleBean(String name, int value) {
-      super();
-      this.name = name;
-      this.value = value;
+  <span class="directive">public</span> <span class="directive">static</span> <span class="type">class</span> <span class="class">SimpleBean</span> {
+    <span class="directive">private</span> <span class="predefined-type">String</span> name;
+    <span class="directive">private</span> <span class="type">int</span> value;
+    <span class="directive">public</span> SimpleBean(<span class="predefined-type">String</span> name, <span class="type">int</span> value) {
+      <span class="local-variable">super</span>();
+      <span class="local-variable">this</span>.name = name;
+      <span class="local-variable">this</span>.value = value;
     }
-    public String getName() {
-      return name;
+    <span class="directive">public</span> <span class="predefined-type">String</span> getName() {
+      <span class="keyword">return</span> name;
     }
-    public int getValue() {
-      return value;
+    <span class="directive">public</span> <span class="type">int</span> getValue() {
+      <span class="keyword">return</span> value;
     }
   }
 }</code></pre>
@@ -773,26 +773,26 @@ public class HtmlWithBackgroundImagesTemplateSample {
 </div>
 <div class="listingblock highlight-lines:7,13">
 <div class="content">
-<pre class="highlight"><code class="language-html" data-lang="html">&lt;!DOCTYPE html&gt;
-&lt;html xmlns:th="http://www.thymeleaf.org"&gt;
-&lt;head&gt;
-&lt;meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /&gt;
-&lt;title&gt;Inline background images&lt;/title&gt;
-&lt;meta name="viewport" content="width=device-width, initial-scale=1.0"/&gt;
-&lt;link href="/resources/css/background-images.css" rel="stylesheet" /&gt;       <i class="conum" data-value="1"></i><b>(1)</b>
-&lt;/head&gt;
-&lt;body&gt;
-  &lt;div class="header"&gt;                                                    <i class="conum" data-value="2"></i><b>(2)</b>
+<pre class="CodeRay highlight"><code data-lang="html"><span class="doctype">&lt;!DOCTYPE html&gt;</span>
+<span class="tag">&lt;html</span> <span class="attribute-name">xmlns:th</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">http://www.thymeleaf.org</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+<span class="tag">&lt;head&gt;</span>
+<span class="tag">&lt;meta</span> <span class="attribute-name">http-equiv</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">Content-Type</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">content</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">text/html; charset=UTF-8</span><span class="delimiter">&quot;</span></span> <span class="tag">/&gt;</span>
+<span class="tag">&lt;title&gt;</span>Inline background images<span class="tag">&lt;/title&gt;</span>
+<span class="tag">&lt;meta</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">viewport</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">content</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">width=device-width, initial-scale=1.0</span><span class="delimiter">&quot;</span></span><span class="tag">/&gt;</span>
+<span class="tag">&lt;link</span> <span class="attribute-name">href</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">/resources/css/background-images.css</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">rel</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">stylesheet</span><span class="delimiter">&quot;</span></span> <span class="tag">/&gt;</span>       <i class="conum" data-value="1"></i><b>(1)</b>
+<span class="tag">&lt;/head&gt;</span>
+<span class="tag">&lt;body&gt;</span>
+  <span class="tag">&lt;div</span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">header</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>                                                    <i class="conum" data-value="2"></i><b>(2)</b>
     Hello [[${name}]] !
-  &lt;/div&gt;
-  &lt;div class="content"&gt;                                                   <i class="conum" data-value="3"></i><b>(3)</b>
+  <span class="tag">&lt;/div&gt;</span>
+  <span class="tag">&lt;div</span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">content</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>                                                   <i class="conum" data-value="3"></i><b>(3)</b>
     content
-  &lt;/div&gt;
-  &lt;div class="footer"&gt;                                                    <i class="conum" data-value="4"></i><b>(4)</b>
+  <span class="tag">&lt;/div&gt;</span>
+  <span class="tag">&lt;div</span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">footer</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>                                                    <i class="conum" data-value="4"></i><b>(4)</b>
     footer
-  &lt;/div&gt;
-&lt;/body&gt;
-&lt;/html&gt;</code></pre>
+  <span class="tag">&lt;/div&gt;</span>
+<span class="tag">&lt;/body&gt;</span>
+<span class="tag">&lt;/html&gt;</span></code></pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -824,26 +824,26 @@ background image will not be inlined.</td>
 </div>
 <div class="listingblock highlight-lines:16,18">
 <div class="content">
-<pre class="highlight"><code class="language-css" data-lang="css">.header {
-  background: #ccc url("../images/header.jpg") repeat-x;    /* <i class="conum" data-value="1"></i><b>(1)</b>
-  */
-  height: 200px;
+<pre class="CodeRay highlight"><code data-lang="css"><span class="class">.header</span> {
+  <span class="key">background</span>: <span class="color">#ccc</span> <span class="function"><span class="delimiter">url(</span><span class="content">&quot;../images/header.jpg&quot;</span><span class="delimiter">)</span></span> <span class="value">repeat-x</span>;    <span class="comment">/* <i class="conum" data-value="1"></i><b>(1)</b>
+  */</span>
+  <span class="key">height</span>: <span class="float">200px</span>;
 }
 
-.footer {
-  background: url("../images/footer.jpg") no-repeat;        /* <i class="conum" data-value="2"></i><b>(2)</b>
-  */
-  height: 200px;
-  --inline-image: base64;                                   /* <i class="conum" data-value="3"></i><b>(3)</b>
-  */
+<span class="class">.footer</span> {
+  <span class="key">background</span>: <span class="function"><span class="delimiter">url(</span><span class="content">&quot;../images/footer.jpg&quot;</span><span class="delimiter">)</span></span> <span class="value">no-repeat</span>;        <span class="comment">/* <i class="conum" data-value="2"></i><b>(2)</b>
+  */</span>
+  <span class="key">height</span>: <span class="float">200px</span>;
+  <span class="error">-</span><span class="key">-inline-image</span>: <span class="value">base64</span>;                                   <span class="comment">/* <i class="conum" data-value="3"></i><b>(3)</b>
+  */</span>
 }
 
-.content {
-  background: url("../images/h1.gif") no-repeat;            /* <i class="conum" data-value="4"></i><b>(4)</b>
-  */
-  --inline-image: skip;                                     /* <i class="conum" data-value="5"></i><b>(5)</b>
-  */
-  height: 400px;
+<span class="class">.content</span> {
+  <span class="key">background</span>: <span class="function"><span class="delimiter">url(</span><span class="content">&quot;../images/h1.gif&quot;</span><span class="delimiter">)</span></span> <span class="value">no-repeat</span>;            <span class="comment">/* <i class="conum" data-value="4"></i><b>(4)</b>
+  */</span>
+  <span class="error">-</span><span class="key">-inline-image</span>: <span class="value">skip</span>;                                     <span class="comment">/* <i class="conum" data-value="5"></i><b>(5)</b>
+  */</span>
+  <span class="key">height</span>: <span class="float">400px</span>;
 }</code></pre>
 </div>
 </div>
@@ -881,26 +881,26 @@ strategy is specified using <code>--inline-image</code> property on the same CSS
 </div>
 <div class="listingblock highlight-lines:13">
 <div class="content">
-<pre class="highlight"><code class="language-html" data-lang="html">&lt;!doctype html&gt;
-&lt;html&gt;
- &lt;head&gt;
-  &lt;meta http-equiv="Content-Type" content="text/html; charset=UTF-8"&gt;
-  &lt;title&gt;Inline background images&lt;/title&gt;
-  &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
+<pre class="CodeRay highlight"><code data-lang="html"><span class="doctype">&lt;!doctype html&gt;</span>
+<span class="tag">&lt;html&gt;</span>
+ <span class="tag">&lt;head&gt;</span>
+  <span class="tag">&lt;meta</span> <span class="attribute-name">http-equiv</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">Content-Type</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">content</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">text/html; charset=UTF-8</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+  <span class="tag">&lt;title&gt;</span>Inline background images<span class="tag">&lt;/title&gt;</span>
+  <span class="tag">&lt;meta</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">viewport</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">content</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">width=device-width, initial-scale=1.0</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
                                                                                                                                                              <i class="conum" data-value="1"></i><b>(1)</b>
- &lt;/head&gt;
- &lt;body&gt;
-  &lt;div class="header" style="background: #ccc url(&amp;quot;cid:0&amp;quot;) repeat-x;  height: 200px;"&gt;                                                             <i class="conum" data-value="2"></i><b>(2)</b>
+ <span class="tag">&lt;/head&gt;</span>
+ <span class="tag">&lt;body&gt;</span>
+  <span class="tag">&lt;div</span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">header</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">style</span>=<span class="string"><span class="delimiter">&quot;</span><span class="key">background</span>: <span class="color">#ccc</span> <span class="function"><span class="delimiter">url(</span><span class="content">&amp;quot;cid:0&amp;quot;</span><span class="delimiter">)</span></span> <span class="value">repeat-x</span>;  <span class="key">height</span>: <span class="float">200px</span>;<span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>                                                             <i class="conum" data-value="2"></i><b>(2)</b>
    Hello foo !
-  &lt;/div&gt;
-  &lt;div class="content" style="background: url(&amp;quot;classpath:/resources/images/h1.gif&amp;quot;) no-repeat;  height: 400px;  "&gt;                               <i class="conum" data-value="3"></i><b>(3)</b>
+  <span class="tag">&lt;/div&gt;</span>
+  <span class="tag">&lt;div</span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">content</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">style</span>=<span class="string"><span class="delimiter">&quot;</span><span class="key">background</span>: <span class="function"><span class="delimiter">url(</span><span class="content">&amp;quot;classpath:/resources/images/h1.gif&amp;quot;</span><span class="delimiter">)</span></span> <span class="value">no-repeat</span>;  <span class="key">height</span>: <span class="float">400px</span>;  <span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>                               <i class="conum" data-value="3"></i><b>(3)</b>
    content
-  &lt;/div&gt;
-  &lt;div class="footer" style="background: url(&amp;quot;data:image/jpeg;base64,/9j/4QAYRXhpZgAASUkq[...]JpRFcBO8BIP/2Q==&amp;quot;) no-repeat; height: 200px;  "&gt;   <i class="conum" data-value="4"></i><b>(4)</b>
+  <span class="tag">&lt;/div&gt;</span>
+  <span class="tag">&lt;div</span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">footer</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">style</span>=<span class="string"><span class="delimiter">&quot;</span><span class="key">background</span>: <span class="function"><span class="delimiter">url(</span><span class="content">&amp;quot;data:image/jpeg;base64,/9j/4QAYRXhpZgAASUkq[...]JpRFcBO8BIP/2Q==&amp;quot;</span><span class="delimiter">)</span></span> <span class="value">no-repeat</span>; <span class="key">height</span>: <span class="float">200px</span>;  <span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>   <i class="conum" data-value="4"></i><b>(4)</b>
    footer
-  &lt;/div&gt;
- &lt;/body&gt;
-&lt;/html&gt;</code></pre>
+  <span class="tag">&lt;/div&gt;</span>
+ <span class="tag">&lt;/body&gt;</span>
+<span class="tag">&lt;/html&gt;</span></code></pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -988,12 +988,12 @@ the <code>&lt;default strategy&gt;</code>.</p>
 </div>
 <div class="listingblock highlight-lines:6">
 <div class="content">
-<pre class="highlight"><code class="language-css" data-lang="css">.same-strategy-for-all-images {
-  background-image:
-    no-repeat url('/static/images/h1.gif') top center,     <i class="conum" data-value="1"></i><b>(1)</b>
-    url('../images/right.gif');                            <i class="conum" data-value="2"></i><b>(2)</b>
-  list-style-image: url('../images/disc.png');               <i class="conum" data-value="3"></i><b>(3)</b>
-  --inline-image: base64;                                    <i class="conum" data-value="4"></i><b>(4)</b>
+<pre class="CodeRay highlight"><code data-lang="css"><span class="class">.same-strategy-for-all-images</span> {
+  <span class="key">background-image</span>:
+    <span class="value">no-repeat</span> <span class="function"><span class="delimiter">url(</span><span class="content">'/static/images/h1.gif'</span><span class="delimiter">)</span></span> <span class="value">top</span> <span class="value">center</span>,     <i class="conum" data-value="1"></i><b>(1)</b>
+    <span class="function"><span class="delimiter">url(</span><span class="content">'../images/right.gif'</span><span class="delimiter">)</span></span>;                            <i class="conum" data-value="2"></i><b>(2)</b>
+  <span class="key">list-style-image</span>: <span class="function"><span class="delimiter">url(</span><span class="content">'../images/disc.png'</span><span class="delimiter">)</span></span>;               <i class="conum" data-value="3"></i><b>(3)</b>
+  <span class="error">-</span><span class="key">-inline-image</span>: <span class="value">base64</span>;                                    <i class="conum" data-value="4"></i><b>(4)</b>
 }</code></pre>
 </div>
 </div>
@@ -1031,12 +1031,12 @@ relative to the CSS file.</td>
 </div>
 <div class="listingblock highlight-lines:6">
 <div class="content">
-<pre class="highlight"><code class="language-css" data-lang="css">.strategy-per-images {
-  background-image:
-    no-repeat url('/static/images/h1.gif') top center,              <i class="conum" data-value="1"></i><b>(1)</b>
-    url('../images/right.gif');                                     <i class="conum" data-value="2"></i><b>(2)</b>
-  list-style-image: url('../images/disc.png');                        <i class="conum" data-value="3"></i><b>(3)</b>
-  --inline-image: h1=base64 images/right.gif=attach disc.png=skip;    <i class="conum" data-value="4"></i><b>(4)</b>
+<pre class="CodeRay highlight"><code data-lang="css"><span class="class">.strategy-per-images</span> {
+  <span class="key">background-image</span>:
+    <span class="value">no-repeat</span> <span class="function"><span class="delimiter">url(</span><span class="content">'/static/images/h1.gif'</span><span class="delimiter">)</span></span> <span class="value">top</span> <span class="value">center</span>,              <i class="conum" data-value="1"></i><b>(1)</b>
+    <span class="function"><span class="delimiter">url(</span><span class="content">'../images/right.gif'</span><span class="delimiter">)</span></span>;                                     <i class="conum" data-value="2"></i><b>(2)</b>
+  <span class="key">list-style-image</span>: <span class="function"><span class="delimiter">url(</span><span class="content">'../images/disc.png'</span><span class="delimiter">)</span></span>;                        <i class="conum" data-value="3"></i><b>(3)</b>
+  <span class="error">-</span><span class="key">-inline-image</span>: <span class="value">h1</span>=<span class="value">base64</span> <span class="value">images</span>/<span class="value">right</span>.<span class="value">gif</span>=<span class="value">attach</span> <span class="value">disc</span>.<span class="value">png</span>=<span class="value">skip</span>;    <i class="conum" data-value="4"></i><b>(4)</b>
 }</code></pre>
 </div>
 </div>
@@ -1104,12 +1104,12 @@ and <code>right.gif</code> while <code>attach</code> strategy is used for <code>
 </div>
 <div class="listingblock highlight-lines:6">
 <div class="content">
-<pre class="highlight"><code class="language-css" data-lang="css">.strategy-per-images-with-default {
-  background-image:
-    no-repeat url('/static/images/h1.gif') top center,              <i class="conum" data-value="1"></i><b>(1)</b>
-    url('../images/right.gif');                                     <i class="conum" data-value="2"></i><b>(2)</b>
-  list-style-image: url('../images/disc.png');                        <i class="conum" data-value="3"></i><b>(3)</b>
-  --inline-image: h1=base64 attach;                                   <i class="conum" data-value="4"></i><b>(4)</b>
+<pre class="CodeRay highlight"><code data-lang="css"><span class="class">.strategy-per-images-with-default</span> {
+  <span class="key">background-image</span>:
+    <span class="value">no-repeat</span> <span class="function"><span class="delimiter">url(</span><span class="content">'/static/images/h1.gif'</span><span class="delimiter">)</span></span> <span class="value">top</span> <span class="value">center</span>,              <i class="conum" data-value="1"></i><b>(1)</b>
+    <span class="function"><span class="delimiter">url(</span><span class="content">'../images/right.gif'</span><span class="delimiter">)</span></span>;                                     <i class="conum" data-value="2"></i><b>(2)</b>
+  <span class="key">list-style-image</span>: <span class="function"><span class="delimiter">url(</span><span class="content">'../images/disc.png'</span><span class="delimiter">)</span></span>;                        <i class="conum" data-value="3"></i><b>(3)</b>
+  <span class="error">-</span><span class="key">-inline-image</span>: <span class="value">h1</span>=<span class="value">base64</span> <span class="value">attach</span>;                                   <i class="conum" data-value="4"></i><b>(4)</b>
 }</code></pre>
 </div>
 </div>
@@ -1154,8 +1154,9 @@ and <code>disc.png</code>)</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-07-31 20:28:39 UTC
+Last updated 2020-08-09 19:27:24 UTC
 </div>
 </div>
+<link rel="stylesheet" href="./coderay-asciidoctor.css">
 </body>
 </html>

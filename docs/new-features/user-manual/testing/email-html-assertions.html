@@ -62,88 +62,88 @@ the same utility function every time.</p>
 </div>
 <div class="listingblock collapse-lines:1-26,27-44,71-83 irrelevant-lines:1-26 highlight-lines:63">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">package fr.sii.ogham.sample.test;
+<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">fr.sii.ogham.sample.test</span>;
 
-import static com.icegreen.greenmail.util.ServerSetupTest.SMTP;
-import static fr.sii.ogham.testing.assertion.OghamAssertions.assertThat;
-import static fr.sii.ogham.testing.assertion.OghamMatchers.isIdenticalHtml;
-import static fr.sii.ogham.testing.util.ResourceUtils.resourceAsString;
-import static org.hamcrest.Matchers.emptyIterable;
-import static org.hamcrest.Matchers.hasItems;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.nullValue;
-import static org.hamcrest.Matchers.startsWith;
+<span class="keyword">import</span> <span class="include">static</span> <span class="include">com.icegreen.greenmail.util.ServerSetupTest.SMTP</span>;
+<span class="keyword">import</span> <span class="include">static</span> <span class="include">fr.sii.ogham.testing.assertion.OghamAssertions.assertThat</span>;
+<span class="keyword">import</span> <span class="include">static</span> <span class="include">fr.sii.ogham.testing.assertion.OghamMatchers.isIdenticalHtml</span>;
+<span class="keyword">import</span> <span class="include">static</span> <span class="include">fr.sii.ogham.testing.util.ResourceUtils.resourceAsString</span>;
+<span class="keyword">import</span> <span class="include">static</span> <span class="include">org.hamcrest.Matchers.emptyIterable</span>;
+<span class="keyword">import</span> <span class="include">static</span> <span class="include">org.hamcrest.Matchers.hasItems</span>;
+<span class="keyword">import</span> <span class="include">static</span> <span class="include">org.hamcrest.Matchers.is</span>;
+<span class="keyword">import</span> <span class="include">static</span> <span class="include">org.hamcrest.Matchers.nullValue</span>;
+<span class="keyword">import</span> <span class="include">static</span> <span class="include">org.hamcrest.Matchers.startsWith</span>;
 
-import java.io.IOException;
+<span class="keyword">import</span> <span class="include">java.io.IOException</span>;
 
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+<span class="keyword">import</span> <span class="include">org.junit.Before</span>;
+<span class="keyword">import</span> <span class="include">org.junit.Rule</span>;
+<span class="keyword">import</span> <span class="include">org.junit.Test</span>;
 
-import com.icegreen.greenmail.junit.GreenMailRule;
+<span class="keyword">import</span> <span class="include">com.icegreen.greenmail.junit.GreenMailRule</span>;
 
-import fr.sii.ogham.core.builder.MessagingBuilder;
-import fr.sii.ogham.core.exception.MessagingException;
-import fr.sii.ogham.core.service.MessagingService;
-import fr.sii.ogham.email.message.Email;
+<span class="keyword">import</span> <span class="include">fr.sii.ogham.core.builder.MessagingBuilder</span>;
+<span class="keyword">import</span> <span class="include">fr.sii.ogham.core.exception.MessagingException</span>;
+<span class="keyword">import</span> <span class="include">fr.sii.ogham.core.service.MessagingService</span>;
+<span class="keyword">import</span> <span class="include">fr.sii.ogham.email.message.Email</span>;
 
-public class EmailHtmlTestSample {
-  private MessagingService oghamService;
+<span class="directive">public</span> <span class="type">class</span> <span class="class">EmailHtmlTestSample</span> {
+  <span class="directive">private</span> MessagingService oghamService;
 
-  @Rule
-  public final GreenMailRule greenMail = new GreenMailRule(SMTP);
+  <span class="annotation">@Rule</span>
+  <span class="directive">public</span> <span class="directive">final</span> GreenMailRule greenMail = <span class="keyword">new</span> GreenMailRule(SMTP);
 
-  @Before
-  public void setUp() throws IOException {
+  <span class="annotation">@Before</span>
+  <span class="directive">public</span> <span class="type">void</span> setUp() <span class="directive">throws</span> <span class="exception">IOException</span> {
     oghamService = MessagingBuilder.standard()
         .environment()
           .properties()
-            .set("ogham.email.from.default-value", "Sender Name &lt;test.sender@sii.fr&gt;")
-            .set("mail.smtp.host", SMTP.getBindAddress())
-            .set("mail.smtp.port", String.valueOf(SMTP.getPort()))
+            .set(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.email.from.default-value</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">Sender Name &lt;test.sender@sii.fr&gt;</span><span class="delimiter">&quot;</span></span>)
+            .set(<span class="string"><span class="delimiter">&quot;</span><span class="content">mail.smtp.host</span><span class="delimiter">&quot;</span></span>, SMTP.getBindAddress())
+            .set(<span class="string"><span class="delimiter">&quot;</span><span class="content">mail.smtp.port</span><span class="delimiter">&quot;</span></span>, <span class="predefined-type">String</span>.valueOf(SMTP.getPort()))
             .and()
           .and()
         .build();
   }
 
-  @Test
-  public void registerMessage() throws MessagingException, javax.mail.MessagingException, IOException {
-    // @formatter:off
-    oghamService.send(new Email()
-                .body().template("/template/register.html",                         <i class="conum" data-value="1"></i><b>(1)</b>
-                              new SimpleBean("foo", 42))              <i class="conum" data-value="2"></i><b>(2)</b>
-                .to("Recipient Name &lt;recipient@sii.fr&gt;"));
+  <span class="annotation">@Test</span>
+  <span class="directive">public</span> <span class="type">void</span> registerMessage() <span class="directive">throws</span> MessagingException, javax.mail.MessagingException, <span class="exception">IOException</span> {
+    <span class="comment">// @formatter:off</span>
+    oghamService.send(<span class="keyword">new</span> Email()
+                .body().template(<span class="string"><span class="delimiter">&quot;</span><span class="content">/template/register.html</span><span class="delimiter">&quot;</span></span>,                         <i class="conum" data-value="1"></i><b>(1)</b>
+                              <span class="keyword">new</span> SimpleBean(<span class="string"><span class="delimiter">&quot;</span><span class="content">foo</span><span class="delimiter">&quot;</span></span>, <span class="integer">42</span>))              <i class="conum" data-value="2"></i><b>(2)</b>
+                .to(<span class="string"><span class="delimiter">&quot;</span><span class="content">Recipient Name &lt;recipient@sii.fr&gt;</span><span class="delimiter">&quot;</span></span>));
     assertThat(greenMail).receivedMessages()
-      .count(is(1))
-      .message(0)
-        .subject(is("foo - Confirm your registration"))
+      .count(is(<span class="integer">1</span>))
+      .message(<span class="integer">0</span>)
+        .subject(is(<span class="string"><span class="delimiter">&quot;</span><span class="content">foo - Confirm your registration</span><span class="delimiter">&quot;</span></span>))
         .from()
-          .address(hasItems("test.sender@sii.fr"))
-          .personal(hasItems("Sender Name")).and()
+          .address(hasItems(<span class="string"><span class="delimiter">&quot;</span><span class="content">test.sender@sii.fr</span><span class="delimiter">&quot;</span></span>))
+          .personal(hasItems(<span class="string"><span class="delimiter">&quot;</span><span class="content">Sender Name</span><span class="delimiter">&quot;</span></span>)).and()
         .to()
-          .address(hasItems("recipient@sii.fr"))
-          .personal(hasItems("Recipient Name")).and()
+          .address(hasItems(<span class="string"><span class="delimiter">&quot;</span><span class="content">recipient@sii.fr</span><span class="delimiter">&quot;</span></span>))
+          .personal(hasItems(<span class="string"><span class="delimiter">&quot;</span><span class="content">Recipient Name</span><span class="delimiter">&quot;</span></span>)).and()
         .body()
-          .contentAsString(isIdenticalHtml(resourceAsString("/expected/register.html")))  <i class="conum" data-value="3"></i><b>(3)</b>
-          .contentType(startsWith("text/html")).and()
+          .contentAsString(isIdenticalHtml(resourceAsString(<span class="string"><span class="delimiter">&quot;</span><span class="content">/expected/register.html</span><span class="delimiter">&quot;</span></span>)))  <i class="conum" data-value="3"></i><b>(3)</b>
+          .contentType(startsWith(<span class="string"><span class="delimiter">&quot;</span><span class="content">text/html</span><span class="delimiter">&quot;</span></span>)).and()
         .alternative(nullValue())
         .attachments(emptyIterable());
-    // @formatter:on
+    <span class="comment">// @formatter:on</span>
   }
 
-  public static class SimpleBean {
-    private String name;
-    private int value;
-    public SimpleBean(String name, int value) {
-      super();
-      this.name = name;
-      this.value = value;
+  <span class="directive">public</span> <span class="directive">static</span> <span class="type">class</span> <span class="class">SimpleBean</span> {
+    <span class="directive">private</span> <span class="predefined-type">String</span> name;
+    <span class="directive">private</span> <span class="type">int</span> value;
+    <span class="directive">public</span> SimpleBean(<span class="predefined-type">String</span> name, <span class="type">int</span> value) {
+      <span class="local-variable">super</span>();
+      <span class="local-variable">this</span>.name = name;
+      <span class="local-variable">this</span>.value = value;
     }
-    public String getName() {
-      return name;
+    <span class="directive">public</span> <span class="predefined-type">String</span> getName() {
+      <span class="keyword">return</span> name;
     }
-    public int getValue() {
-      return value;
+    <span class="directive">public</span> <span class="type">int</span> getValue() {
+      <span class="keyword">return</span> value;
     }
   }
 }</code></pre>
@@ -173,19 +173,19 @@ public class EmailHtmlTestSample {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-html" data-lang="html">&lt;!DOCTYPE html&gt;
-&lt;html xmlns:th="http://www.thymeleaf.org"&gt;
- &lt;head&gt;
-  &lt;title th:text="|${name} - Confirm your registration|"&gt;&lt;/title&gt;
-  &lt;meta charset="utf-8" /&gt;
- &lt;/head&gt;
- &lt;body&gt;
-  &lt;h1 title="foo" class="title" th:text="|Hello ${name}|"&gt;&lt;/h1&gt;
+<pre class="CodeRay highlight"><code data-lang="html"><span class="doctype">&lt;!DOCTYPE html&gt;</span>
+<span class="tag">&lt;html</span> <span class="attribute-name">xmlns:th</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">http://www.thymeleaf.org</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+ <span class="tag">&lt;head&gt;</span>
+  <span class="tag">&lt;title</span> <span class="attribute-name">th:text</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">|${name} - Confirm your registration|</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span><span class="tag">&lt;/title&gt;</span>
+  <span class="tag">&lt;meta</span> <span class="attribute-name">charset</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">utf-8</span><span class="delimiter">&quot;</span></span> <span class="tag">/&gt;</span>
+ <span class="tag">&lt;/head&gt;</span>
+ <span class="tag">&lt;body&gt;</span>
+  <span class="tag">&lt;h1</span> <span class="attribute-name">title</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">foo</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">title</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">th:text</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">|Hello ${name}|</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span><span class="tag">&lt;/h1&gt;</span>
 
-  &lt;p class="text" th:text="${value}"&gt;
-  &lt;/p&gt;
- &lt;/body&gt;
-&lt;/html&gt;</code></pre>
+  <span class="tag">&lt;p</span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">text</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">th:text</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">${value}</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+  <span class="tag">&lt;/p&gt;</span>
+ <span class="tag">&lt;/body&gt;</span>
+<span class="tag">&lt;/html&gt;</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -196,17 +196,17 @@ public class EmailHtmlTestSample {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-html" data-lang="html">&lt;!DOCTYPE html&gt;
-&lt;html&gt;
-  &lt;head&gt;
-    &lt;title&gt;foo - Confirm your registration&lt;/title&gt;
-    &lt;meta charset="utf-8"&gt;&lt;/meta&gt;
-  &lt;/head&gt;
-    &lt;body&gt;
-    &lt;h1 class="title" title="foo"&gt;Hello foo&lt;/h1&gt;
-    &lt;p class="text"&gt;42&lt;/p&gt;
-  &lt;/body&gt;
-&lt;/html&gt;</code></pre>
+<pre class="CodeRay highlight"><code data-lang="html"><span class="doctype">&lt;!DOCTYPE html&gt;</span>
+<span class="tag">&lt;html&gt;</span>
+  <span class="tag">&lt;head&gt;</span>
+    <span class="tag">&lt;title&gt;</span>foo - Confirm your registration<span class="tag">&lt;/title&gt;</span>
+    <span class="tag">&lt;meta</span> <span class="attribute-name">charset</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">utf-8</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span><span class="tag">&lt;/meta&gt;</span>
+  <span class="tag">&lt;/head&gt;</span>
+    <span class="tag">&lt;body&gt;</span>
+    <span class="tag">&lt;h1</span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">title</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">title</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">foo</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>Hello foo<span class="tag">&lt;/h1&gt;</span>
+    <span class="tag">&lt;p</span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">text</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>42<span class="tag">&lt;/p&gt;</span>
+  <span class="tag">&lt;/body&gt;</span>
+<span class="tag">&lt;/html&gt;</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -220,8 +220,9 @@ public class EmailHtmlTestSample {
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-07-31 20:28:39 UTC
+Last updated 2020-08-09 19:27:24 UTC
 </div>
 </div>
+<link rel="stylesheet" href="./coderay-asciidoctor.css">
 </body>
 </html>

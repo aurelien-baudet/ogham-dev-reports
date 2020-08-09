@@ -40,75 +40,75 @@
 </div>
 <div class="listingblock collapse-lines:1-25,27-44 irrelevant-lines:1-25 highlight-lines:63-68">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">package fr.sii.ogham.sample.test;
+<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">fr.sii.ogham.sample.test</span>;
 
-import static com.icegreen.greenmail.util.ServerSetupTest.SMTP;
-import static fr.sii.ogham.testing.assertion.OghamAssertions.assertThat;
-import static fr.sii.ogham.testing.assertion.util.EmailUtils.ATTACHMENT_DISPOSITION;
-import static fr.sii.ogham.testing.util.ResourceUtils.resource;
-import static org.hamcrest.Matchers.hasItems;
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.nullValue;
-import static org.hamcrest.Matchers.startsWith;
+<span class="keyword">import</span> <span class="include">static</span> <span class="include">com.icegreen.greenmail.util.ServerSetupTest.SMTP</span>;
+<span class="keyword">import</span> <span class="include">static</span> <span class="include">fr.sii.ogham.testing.assertion.OghamAssertions.assertThat</span>;
+<span class="keyword">import</span> <span class="include">static</span> <span class="include">fr.sii.ogham.testing.assertion.util.EmailUtils.ATTACHMENT_DISPOSITION</span>;
+<span class="keyword">import</span> <span class="include">static</span> <span class="include">fr.sii.ogham.testing.util.ResourceUtils.resource</span>;
+<span class="keyword">import</span> <span class="include">static</span> <span class="include">org.hamcrest.Matchers.hasItems</span>;
+<span class="keyword">import</span> <span class="include">static</span> <span class="include">org.hamcrest.Matchers.hasSize</span>;
+<span class="keyword">import</span> <span class="include">static</span> <span class="include">org.hamcrest.Matchers.is</span>;
+<span class="keyword">import</span> <span class="include">static</span> <span class="include">org.hamcrest.Matchers.nullValue</span>;
+<span class="keyword">import</span> <span class="include">static</span> <span class="include">org.hamcrest.Matchers.startsWith</span>;
 
-import java.io.IOException;
+<span class="keyword">import</span> <span class="include">java.io.IOException</span>;
 
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+<span class="keyword">import</span> <span class="include">org.junit.Before</span>;
+<span class="keyword">import</span> <span class="include">org.junit.Rule</span>;
+<span class="keyword">import</span> <span class="include">org.junit.Test</span>;
 
-import com.icegreen.greenmail.junit.GreenMailRule;
+<span class="keyword">import</span> <span class="include">com.icegreen.greenmail.junit.GreenMailRule</span>;
 
-import fr.sii.ogham.core.builder.MessagingBuilder;
-import fr.sii.ogham.core.exception.MessagingException;
-import fr.sii.ogham.core.service.MessagingService;
-import fr.sii.ogham.email.message.Email;
+<span class="keyword">import</span> <span class="include">fr.sii.ogham.core.builder.MessagingBuilder</span>;
+<span class="keyword">import</span> <span class="include">fr.sii.ogham.core.exception.MessagingException</span>;
+<span class="keyword">import</span> <span class="include">fr.sii.ogham.core.service.MessagingService</span>;
+<span class="keyword">import</span> <span class="include">fr.sii.ogham.email.message.Email</span>;
 
-public class EmailAttachmentTestSample {
-  private MessagingService oghamService;
+<span class="directive">public</span> <span class="type">class</span> <span class="class">EmailAttachmentTestSample</span> {
+  <span class="directive">private</span> MessagingService oghamService;
 
-  @Rule
-  public final GreenMailRule greenMail = new GreenMailRule(SMTP);
+  <span class="annotation">@Rule</span>
+  <span class="directive">public</span> <span class="directive">final</span> GreenMailRule greenMail = <span class="keyword">new</span> GreenMailRule(SMTP);
 
-  @Before
-  public void setUp() throws IOException {
+  <span class="annotation">@Before</span>
+  <span class="directive">public</span> <span class="type">void</span> setUp() <span class="directive">throws</span> <span class="exception">IOException</span> {
     oghamService = MessagingBuilder.standard()
         .environment()
           .properties()
-            .set("ogham.email.from.default-value", "Sender Name &lt;test.sender@sii.fr&gt;")
-            .set("mail.smtp.host", SMTP.getBindAddress())
-            .set("mail.smtp.port", String.valueOf(SMTP.getPort()))
+            .set(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.email.from.default-value</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">Sender Name &lt;test.sender@sii.fr&gt;</span><span class="delimiter">&quot;</span></span>)
+            .set(<span class="string"><span class="delimiter">&quot;</span><span class="content">mail.smtp.host</span><span class="delimiter">&quot;</span></span>, SMTP.getBindAddress())
+            .set(<span class="string"><span class="delimiter">&quot;</span><span class="content">mail.smtp.port</span><span class="delimiter">&quot;</span></span>, <span class="predefined-type">String</span>.valueOf(SMTP.getPort()))
             .and()
           .and()
         .build();
   }
 
-  @Test
-  public void simple() throws MessagingException, javax.mail.MessagingException, IOException {
-    // @formatter:off
-    oghamService.send(new Email()
-                .subject("Test")
-                .body().string("body")
-                .to("recipient@sii.fr")
-                .attach().resource("/attachment/test.pdf"));
+  <span class="annotation">@Test</span>
+  <span class="directive">public</span> <span class="type">void</span> simple() <span class="directive">throws</span> MessagingException, javax.mail.MessagingException, <span class="exception">IOException</span> {
+    <span class="comment">// @formatter:off</span>
+    oghamService.send(<span class="keyword">new</span> Email()
+                .subject(<span class="string"><span class="delimiter">&quot;</span><span class="content">Test</span><span class="delimiter">&quot;</span></span>)
+                .body().string(<span class="string"><span class="delimiter">&quot;</span><span class="content">body</span><span class="delimiter">&quot;</span></span>)
+                .to(<span class="string"><span class="delimiter">&quot;</span><span class="content">recipient@sii.fr</span><span class="delimiter">&quot;</span></span>)
+                .attach().resource(<span class="string"><span class="delimiter">&quot;</span><span class="content">/attachment/test.pdf</span><span class="delimiter">&quot;</span></span>));
     assertThat(greenMail).receivedMessages()
-      .count(is(1))
-      .message(0)
-        .subject(is("Test"))
-        .from().address(hasItems("test.sender@sii.fr")).and()
-        .to().address(hasItems("recipient@sii.fr")).and()
+      .count(is(<span class="integer">1</span>))
+      .message(<span class="integer">0</span>)
+        .subject(is(<span class="string"><span class="delimiter">&quot;</span><span class="content">Test</span><span class="delimiter">&quot;</span></span>))
+        .from().address(hasItems(<span class="string"><span class="delimiter">&quot;</span><span class="content">test.sender@sii.fr</span><span class="delimiter">&quot;</span></span>)).and()
+        .to().address(hasItems(<span class="string"><span class="delimiter">&quot;</span><span class="content">recipient@sii.fr</span><span class="delimiter">&quot;</span></span>)).and()
         .body()
-          .contentAsString(is("body"))
-          .contentType(startsWith("text/plain")).and()
+          .contentAsString(is(<span class="string"><span class="delimiter">&quot;</span><span class="content">body</span><span class="delimiter">&quot;</span></span>))
+          .contentType(startsWith(<span class="string"><span class="delimiter">&quot;</span><span class="content">text/plain</span><span class="delimiter">&quot;</span></span>)).and()
         .alternative(nullValue())
-        .attachments(hasSize(1))                              <i class="conum" data-value="1"></i><b>(1)</b>
-        .attachment(0)                                        <i class="conum" data-value="2"></i><b>(2)</b>
-          .content(is(resource("/attachment/test.pdf")))    <i class="conum" data-value="3"></i><b>(3)</b>
-          .contentType(startsWith("application/pdf"))       <i class="conum" data-value="4"></i><b>(4)</b>
-          .filename(is("test.pdf"))                         <i class="conum" data-value="5"></i><b>(5)</b>
+        .attachments(hasSize(<span class="integer">1</span>))                              <i class="conum" data-value="1"></i><b>(1)</b>
+        .attachment(<span class="integer">0</span>)                                        <i class="conum" data-value="2"></i><b>(2)</b>
+          .content(is(resource(<span class="string"><span class="delimiter">&quot;</span><span class="content">/attachment/test.pdf</span><span class="delimiter">&quot;</span></span>)))    <i class="conum" data-value="3"></i><b>(3)</b>
+          .contentType(startsWith(<span class="string"><span class="delimiter">&quot;</span><span class="content">application/pdf</span><span class="delimiter">&quot;</span></span>))       <i class="conum" data-value="4"></i><b>(4)</b>
+          .filename(is(<span class="string"><span class="delimiter">&quot;</span><span class="content">test.pdf</span><span class="delimiter">&quot;</span></span>))                         <i class="conum" data-value="5"></i><b>(5)</b>
           .disposition(is(ATTACHMENT_DISPOSITION));         <i class="conum" data-value="6"></i><b>(6)</b>
-    // @formatter:on
+    <span class="comment">// @formatter:on</span>
   }
 }</code></pre>
 </div>
@@ -152,8 +152,9 @@ public class EmailAttachmentTestSample {
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-07-31 20:28:39 UTC
+Last updated 2020-08-09 19:27:24 UTC
 </div>
 </div>
+<link rel="stylesheet" href="./coderay-asciidoctor.css">
 </body>
 </html>

@@ -60,63 +60,63 @@ The following sample shows a Spring Web that exposes one simple endpoint for sen
 </div>
 <div class="listingblock collapse-lines:1-16,46-58 irrelevant-lines:1-16 highlight-lines:31,32,38-41">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">package fr.sii.ogham.sample.springboot.email;
+<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">fr.sii.ogham.sample.springboot.email</span>;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.PropertySource;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+<span class="keyword">import</span> <span class="include">org.springframework.beans.factory.annotation.Autowired</span>;
+<span class="keyword">import</span> <span class="include">org.springframework.boot.SpringApplication</span>;
+<span class="keyword">import</span> <span class="include">org.springframework.boot.autoconfigure.SpringBootApplication</span>;
+<span class="keyword">import</span> <span class="include">org.springframework.context.annotation.PropertySource</span>;
+<span class="keyword">import</span> <span class="include">org.springframework.http.HttpStatus</span>;
+<span class="keyword">import</span> <span class="include">org.springframework.web.bind.annotation.PostMapping</span>;
+<span class="keyword">import</span> <span class="include">org.springframework.web.bind.annotation.RequestParam</span>;
+<span class="keyword">import</span> <span class="include">org.springframework.web.bind.annotation.ResponseStatus</span>;
+<span class="keyword">import</span> <span class="include">org.springframework.web.bind.annotation.RestController</span>;
 
-import fr.sii.ogham.core.exception.MessagingException;
-import fr.sii.ogham.core.service.MessagingService;
-import fr.sii.ogham.email.message.Email;
+<span class="keyword">import</span> <span class="include">fr.sii.ogham.core.exception.MessagingException</span>;
+<span class="keyword">import</span> <span class="include">fr.sii.ogham.core.service.MessagingService</span>;
+<span class="keyword">import</span> <span class="include">fr.sii.ogham.email.message.Email</span>;
 
-@SpringBootApplication
-@PropertySource("application-email-template.properties")  // just needed to be able to run the sample
-public class ThymeleafHtmlAndFreemarkerTextSample {
+<span class="annotation">@SpringBootApplication</span>
+<span class="annotation">@PropertySource</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">application-email-template.properties</span><span class="delimiter">&quot;</span></span>)  <span class="comment">// just needed to be able to run the sample</span>
+<span class="directive">public</span> <span class="type">class</span> <span class="class">ThymeleafHtmlAndFreemarkerTextSample</span> {
 
-  public static void main(String[] args) throws MessagingException {
+  <span class="directive">public</span> <span class="directive">static</span> <span class="type">void</span> main(<span class="predefined-type">String</span><span class="type">[]</span> args) <span class="directive">throws</span> MessagingException {
     SpringApplication.run(ThymeleafHtmlAndFreemarkerTextSample.class, args);
   }
 
-  @RestController
-  public static class EmailController {
-    // Messaging service is automatically created using Spring Boot features
-    // The configuration can be set into application-email-template.properties
-    // The configuration files are stored into src/main/resources
-    // The configuration file set the prefix for templates into email folder available in src/main/resources
-    @Autowired
+  <span class="annotation">@RestController</span>
+  <span class="directive">public</span> <span class="directive">static</span> <span class="type">class</span> <span class="class">EmailController</span> {
+    <span class="comment">// Messaging service is automatically created using Spring Boot features</span>
+    <span class="comment">// The configuration can be set into application-email-template.properties</span>
+    <span class="comment">// The configuration files are stored into src/main/resources</span>
+    <span class="comment">// The configuration file set the prefix for templates into email folder available in src/main/resources</span>
+    <span class="annotation">@Autowired</span>
     MessagingService messagingService;                                              <i class="conum" data-value="1"></i><b>(1)</b>
 
-    @PostMapping(value="api/email/multitemplate/mixed")
-    @ResponseStatus(HttpStatus.CREATED)
-    public void sendEmail(@RequestParam("to") String to, @RequestParam("name") String name, @RequestParam("value") int value) throws MessagingException {
-      // using fluent API
-      messagingService.send(new Email()                                           <i class="conum" data-value="2"></i><b>(2)</b>
-                  .body().template("mixed",                           <i class="conum" data-value="3"></i><b>(3)</b>
-                            new SimpleBean(name, value))    <i class="conum" data-value="4"></i><b>(4)</b>
+    <span class="annotation">@PostMapping</span>(value=<span class="string"><span class="delimiter">&quot;</span><span class="content">api/email/multitemplate/mixed</span><span class="delimiter">&quot;</span></span>)
+    <span class="annotation">@ResponseStatus</span>(HttpStatus.CREATED)
+    <span class="directive">public</span> <span class="type">void</span> sendEmail(<span class="annotation">@RequestParam</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">to</span><span class="delimiter">&quot;</span></span>) <span class="predefined-type">String</span> to, <span class="annotation">@RequestParam</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">name</span><span class="delimiter">&quot;</span></span>) <span class="predefined-type">String</span> name, <span class="annotation">@RequestParam</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">value</span><span class="delimiter">&quot;</span></span>) <span class="type">int</span> value) <span class="directive">throws</span> MessagingException {
+      <span class="comment">// using fluent API</span>
+      messagingService.send(<span class="keyword">new</span> Email()                                           <i class="conum" data-value="2"></i><b>(2)</b>
+                  .body().template(<span class="string"><span class="delimiter">&quot;</span><span class="content">mixed</span><span class="delimiter">&quot;</span></span>,                           <i class="conum" data-value="3"></i><b>(3)</b>
+                            <span class="keyword">new</span> SimpleBean(name, value))    <i class="conum" data-value="4"></i><b>(4)</b>
                   .to(to));                                           <i class="conum" data-value="5"></i><b>(5)</b>
     }
   }
 
-  public static class SimpleBean {
-    private String name;
-    private int value;
-    public SimpleBean(String name, int value) {
-      super();
-      this.name = name;
-      this.value = value;
+  <span class="directive">public</span> <span class="directive">static</span> <span class="type">class</span> <span class="class">SimpleBean</span> {
+    <span class="directive">private</span> <span class="predefined-type">String</span> name;
+    <span class="directive">private</span> <span class="type">int</span> value;
+    <span class="directive">public</span> SimpleBean(<span class="predefined-type">String</span> name, <span class="type">int</span> value) {
+      <span class="local-variable">super</span>();
+      <span class="local-variable">this</span>.name = name;
+      <span class="local-variable">this</span>.value = value;
     }
-    public String getName() {
-      return name;
+    <span class="directive">public</span> <span class="predefined-type">String</span> getName() {
+      <span class="keyword">return</span> name;
     }
-    public int getValue() {
-      return value;
+    <span class="directive">public</span> <span class="type">int</span> getValue() {
+      <span class="keyword">return</span> value;
     }
   }
 }</code></pre>
@@ -154,17 +154,17 @@ public class ThymeleafHtmlAndFreemarkerTextSample {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-html" data-lang="html">&lt;!DOCTYPE html&gt;
-&lt;html xmlns:th="http://www.thymeleaf.org"&gt;        <i class="conum" data-value="1"></i><b>(1)</b>
-    &lt;head&gt;
-        &lt;title&gt;Subject of the mail&lt;/title&gt;        <i class="conum" data-value="2"></i><b>(2)</b>
-        &lt;meta charset="utf-8" /&gt;
-    &lt;/head&gt;
-    &lt;body&gt;
-        &lt;h1 class="title" th:text="${name}"&gt;&lt;/h1&gt;   <i class="conum" data-value="3"></i><b>(3)</b>
-        &lt;p class="text" th:text="${value}"&gt;&lt;/p&gt;     <i class="conum" data-value="4"></i><b>(4)</b>
-    &lt;/body&gt;
-&lt;/html&gt;</code></pre>
+<pre class="CodeRay highlight"><code data-lang="html"><span class="doctype">&lt;!DOCTYPE html&gt;</span>
+<span class="tag">&lt;html</span> <span class="attribute-name">xmlns:th</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">http://www.thymeleaf.org</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>        <i class="conum" data-value="1"></i><b>(1)</b>
+    <span class="tag">&lt;head&gt;</span>
+        <span class="tag">&lt;title&gt;</span>Subject of the mail<span class="tag">&lt;/title&gt;</span>        <i class="conum" data-value="2"></i><b>(2)</b>
+        <span class="tag">&lt;meta</span> <span class="attribute-name">charset</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">utf-8</span><span class="delimiter">&quot;</span></span> <span class="tag">/&gt;</span>
+    <span class="tag">&lt;/head&gt;</span>
+    <span class="tag">&lt;body&gt;</span>
+        <span class="tag">&lt;h1</span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">title</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">th:text</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">${name}</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span><span class="tag">&lt;/h1&gt;</span>   <i class="conum" data-value="3"></i><b>(3)</b>
+        <span class="tag">&lt;p</span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">text</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">th:text</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">${value}</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span><span class="tag">&lt;/p&gt;</span>     <i class="conum" data-value="4"></i><b>(4)</b>
+    <span class="tag">&lt;/body&gt;</span>
+<span class="tag">&lt;/html&gt;</span></code></pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -195,7 +195,7 @@ public class ThymeleafHtmlAndFreemarkerTextSample {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-txt" data-lang="txt">${name} ${value}</code></pre>
+<pre class="CodeRay highlight"><code data-lang="txt">${name} ${value}</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -206,11 +206,11 @@ public class ThymeleafHtmlAndFreemarkerTextSample {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-python" data-lang="python"># configuration for email
+<pre class="CodeRay highlight"><code data-lang="python"><span class="comment"># configuration for email</span>
 spring.mail.host=&lt;your server host&gt;                   <i class="conum" data-value="1"></i><b>(1)</b>
 spring.mail.port=&lt;your server port&gt;                   <i class="conum" data-value="2"></i><b>(2)</b>
 ogham.email.from.default-value=&lt;your gmail address&gt;   <i class="conum" data-value="3"></i><b>(3)</b>
-# configuration for template engines
+<span class="comment"># configuration for template engines</span>
 spring.thymeleaf.prefix=/email/                       <i class="conum" data-value="4"></i><b>(4)</b>
 spring.freemarker.prefix=/email/                      <i class="conum" data-value="5"></i><b>(5)</b></code></pre>
 </div>
@@ -250,8 +250,9 @@ spring.freemarker.prefix=/email/                      <i class="conum" data-valu
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-07-31 20:28:38 UTC
+Last updated 2020-08-09 19:27:24 UTC
 </div>
 </div>
+<link rel="stylesheet" href="./coderay-asciidoctor.css">
 </body>
 </html>

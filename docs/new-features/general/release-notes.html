@@ -858,35 +858,35 @@ to provide the additional <code>clean()</code> method. It also implements
 <div class="listingblock">
 <div class="title">Manual cleanup</div>
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">// get Ogham instance
+<pre class="CodeRay highlight"><code data-lang="java"><span class="comment">// get Ogham instance</span>
 MessagingService service = builder.build();
-// use Ogham to send messages
-service.send(new Email());
-service.send(new Sms());
+<span class="comment">// use Ogham to send messages</span>
+service.send(<span class="keyword">new</span> Email());
+service.send(<span class="keyword">new</span> Sms());
 ...
-// cleanup
+<span class="comment">// cleanup</span>
 ((CleanableMessagingService) service).clean();</code></pre>
 </div>
 </div>
 <div class="listingblock">
 <div class="title">Auto-cleanup using try-with-resource</div>
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">try (CleanableMessagingService service = (CleanableMessagingService) builder.build()) {
-  service.send(new Email());
+<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">try</span> (CleanableMessagingService service = (CleanableMessagingService) builder.build()) {
+  service.send(<span class="keyword">new</span> Email());
 }</code></pre>
 </div>
 </div>
 <div class="listingblock">
 <div class="title">Auto-cleanup when unreferenced</div>
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">// get Ogham instance
+<pre class="CodeRay highlight"><code data-lang="java"><span class="comment">// get Ogham instance</span>
 MessagingService service = builder.build();
-// use Ogham to send messages
-service.send(new Email());
-service.send(new Sms());
+<span class="comment">// use Ogham to send messages</span>
+service.send(<span class="keyword">new</span> Email());
+service.send(<span class="keyword">new</span> Sms());
 ...
-// unreference service
-service = null;
+<span class="comment">// unreference service</span>
+service = <span class="predefined-constant">null</span>;
 ... after some time the JVM will call finalize() method to cleanup resources</code></pre>
 </div>
 </div>
@@ -946,7 +946,7 @@ end of a test:</p>
 <div class="listingblock highlight-lines:2-4,13-17 irrelevant-lines:5-12">
 <div class="title">Example of test output</div>
 <div class="content">
-<pre class="highlight"><code>11:37:20.443 [main] INFO   -
+<pre class="CodeRay highlight"><code>11:37:20.443 [main] INFO   -
 ╔══════════════════════════════════════════════════════════════════════════════════════════════════╗
 ║MultiContentTranslatorTest.textTemplateNotFoundShouldSkipTheErrorAndReturnOneParsedContent        ║
 ╚══════════════════════════════════════════════════════════════════════════════════════════════════╝
@@ -975,12 +975,12 @@ fr.sii.ogham.core.exception.handler.TemplateNotFoundException: null
 <div class="listingblock">
 <div class="title">Simulate slow SMPP bind response sent by the server</div>
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">  @Rule public final SmppServerRule&lt;SubmitSm&gt; smppServer = new JsmppServerRule();
+<pre class="CodeRay highlight"><code data-lang="java">  <span class="annotation">@Rule</span> <span class="directive">public</span> <span class="directive">final</span> SmppServerRule&lt;SubmitSm&gt; smppServer = <span class="keyword">new</span> JsmppServerRule();
 
-  @Test
-  @SmppServerConfig(slow = @Slow(sendBindRespDelay = 500L))       <i class="conum" data-value="1"></i><b>(1)</b>
-  public void connectionTimeout() throws MessagingException {
-    // send a SMS here
+  <span class="annotation">@Test</span>
+  <span class="annotation">@SmppServerConfig</span>(slow = <span class="annotation">@Slow</span>(sendBindRespDelay = <span class="integer">500L</span>))       <i class="conum" data-value="1"></i><b>(1)</b>
+  <span class="directive">public</span> <span class="type">void</span> connectionTimeout() <span class="directive">throws</span> MessagingException {
+    <span class="comment">// send a SMS here</span>
   }</code></pre>
 </div>
 </div>
@@ -1065,7 +1065,7 @@ example), the structure is now:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>[text/html] (root/body)</code></pre>
+<pre class="CodeRay highlight"><code>[text/html] (root/body)</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1074,7 +1074,7 @@ example), the structure is now:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>[multipart/related] (root/body)
+<pre class="CodeRay highlight"><code>[multipart/related] (root/body)
   [text/html]
   [image/png]       (embedded image 1)
   [image/gif]       (embedded image 2)</code></pre>
@@ -1085,7 +1085,7 @@ example), the structure is now:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>[multipart/mixed]              (root)
+<pre class="CodeRay highlight"><code>[multipart/mixed]              (root)
   [text/html]                  (body)
   [application/pdf]            (attached file 1)
   [application/octet-stream]   (attached file 2)</code></pre>
@@ -1097,7 +1097,7 @@ example), the structure is now:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>[multipart/mixed]              (root)
+<pre class="CodeRay highlight"><code>[multipart/mixed]              (root)
   [multipart/related]          (body)
     [text/html]
     [image/png]                (embedded image 1)
@@ -1112,7 +1112,7 @@ text/plain for example), the structure is:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>[multipart/alternative]  (root/body)
+<pre class="CodeRay highlight"><code>[multipart/alternative]  (root/body)
   [text/plain]           (alternative body)
   [text/html]            (main body)</code></pre>
 </div>
@@ -1124,7 +1124,7 @@ the structure is:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>[multipart/related]          (root/body)
+<pre class="CodeRay highlight"><code>[multipart/related]          (root/body)
   [multipart/alternative]
     [text/plain]             (alternative body)
     [text/html]              (main body)
@@ -1138,7 +1138,7 @@ text/plain for example) and attachments, the structure is:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>[multipart/mixed]              (root)
+<pre class="CodeRay highlight"><code>[multipart/mixed]              (root)
   [multipart/alternative]      (body)
     [text/plain]               (alternative body)
     [text/html]                (main body)
@@ -1153,7 +1153,7 @@ attachments, the structure is:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>[multipart/mixed]              (root)
+<pre class="CodeRay highlight"><code>[multipart/mixed]              (root)
   [multipart/related]          (body)
     [multipart/alternative]
       [text/plain]             (alternative body)
@@ -1409,8 +1409,9 @@ that Ogham is compatible with Java and Spring Boot versions:</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-07-31 20:28:38 UTC
+Last updated 2020-08-09 19:27:24 UTC
 </div>
 </div>
+<link rel="stylesheet" href="./coderay-asciidoctor.css">
 </body>
 </html>

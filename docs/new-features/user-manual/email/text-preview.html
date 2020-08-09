@@ -43,47 +43,47 @@ be unreadable.</p>
 </div>
 <div class="listingblock collapse-lines:1-9 irrelevant-lines:1-9,11-20,23-30 highlight-lines:39-40">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">package fr.sii.ogham.sample.standard.email;
+<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">fr.sii.ogham.sample.standard.email</span>;
 
-import java.util.Properties;
+<span class="keyword">import</span> <span class="include">java.util.Properties</span>;
 
-import fr.sii.ogham.core.builder.MessagingBuilder;
-import fr.sii.ogham.core.exception.MessagingException;
-import fr.sii.ogham.core.service.MessagingService;
-import fr.sii.ogham.email.message.Email;
+<span class="keyword">import</span> <span class="include">fr.sii.ogham.core.builder.MessagingBuilder</span>;
+<span class="keyword">import</span> <span class="include">fr.sii.ogham.core.exception.MessagingException</span>;
+<span class="keyword">import</span> <span class="include">fr.sii.ogham.core.service.MessagingService</span>;
+<span class="keyword">import</span> <span class="include">fr.sii.ogham.email.message.Email</span>;
 
-public class HtmlAndTextSample {
-  private static String html = "&lt;!DOCTYPE html&gt;"
-                + "&lt;html&gt;"
-                +   "&lt;head&gt;&lt;meta charset=\"utf-8\" /&gt;&lt;/head&gt;"
-                +   "&lt;body&gt;"
-                +     "&lt;h1 class=\"title\"&gt;Hello World&lt;/h1&gt;"
-                +     "&lt;p class=\"text\"&gt;Foo bar&lt;/p&gt;"
-                +   "&lt;/body&gt;"
-                + "&lt;/html&gt;";
-  private static String text = "Hello World !\r\n"
-                + "Foo bar";
+<span class="directive">public</span> <span class="type">class</span> <span class="class">HtmlAndTextSample</span> {
+  <span class="directive">private</span> <span class="directive">static</span> <span class="predefined-type">String</span> html = <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;!DOCTYPE html&gt;</span><span class="delimiter">&quot;</span></span>
+                + <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;html&gt;</span><span class="delimiter">&quot;</span></span>
+                +   <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;head&gt;&lt;meta charset=</span><span class="char">\&quot;</span><span class="content">utf-8</span><span class="char">\&quot;</span><span class="content"> /&gt;&lt;/head&gt;</span><span class="delimiter">&quot;</span></span>
+                +   <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;body&gt;</span><span class="delimiter">&quot;</span></span>
+                +     <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;h1 class=</span><span class="char">\&quot;</span><span class="content">title</span><span class="char">\&quot;</span><span class="content">&gt;Hello World&lt;/h1&gt;</span><span class="delimiter">&quot;</span></span>
+                +     <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;p class=</span><span class="char">\&quot;</span><span class="content">text</span><span class="char">\&quot;</span><span class="content">&gt;Foo bar&lt;/p&gt;</span><span class="delimiter">&quot;</span></span>
+                +   <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;/body&gt;</span><span class="delimiter">&quot;</span></span>
+                + <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;/html&gt;</span><span class="delimiter">&quot;</span></span>;
+  <span class="directive">private</span> <span class="directive">static</span> <span class="predefined-type">String</span> text = <span class="string"><span class="delimiter">&quot;</span><span class="content">Hello World !</span><span class="char">\r</span><span class="char">\n</span><span class="delimiter">&quot;</span></span>
+                + <span class="string"><span class="delimiter">&quot;</span><span class="content">Foo bar</span><span class="delimiter">&quot;</span></span>;
 
-  public static void main(String[] args) throws MessagingException {
-    // configure properties (could be stored in a properties file or defined
-    // in System properties)
-    Properties properties = new Properties();
-    properties.put("mail.smtp.host", "&lt;your server host&gt;");
-    properties.put("mail.smtp.port", "&lt;your server port&gt;");
-    properties.put("ogham.email.from.default-value", "&lt;email address to display for the sender user&gt;");
-    // Instantiate the messaging service using default behavior and
-    // provided properties
+  <span class="directive">public</span> <span class="directive">static</span> <span class="type">void</span> main(<span class="predefined-type">String</span><span class="type">[]</span> args) <span class="directive">throws</span> MessagingException {
+    <span class="comment">// configure properties (could be stored in a properties file or defined</span>
+    <span class="comment">// in System properties)</span>
+    <span class="predefined-type">Properties</span> properties = <span class="keyword">new</span> <span class="predefined-type">Properties</span>();
+    properties.put(<span class="string"><span class="delimiter">&quot;</span><span class="content">mail.smtp.host</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;your server host&gt;</span><span class="delimiter">&quot;</span></span>);
+    properties.put(<span class="string"><span class="delimiter">&quot;</span><span class="content">mail.smtp.port</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;your server port&gt;</span><span class="delimiter">&quot;</span></span>);
+    properties.put(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.email.from.default-value</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;email address to display for the sender user&gt;</span><span class="delimiter">&quot;</span></span>);
+    <span class="comment">// Instantiate the messaging service using default behavior and</span>
+    <span class="comment">// provided properties</span>
     MessagingService service = MessagingBuilder.standard()
         .environment()
           .properties(properties)
           .and()
         .build();
-    // send the email using the fluent API
-    service.send(new Email()
-            .subject("HtmlAndTextSample")
+    <span class="comment">// send the email using the fluent API</span>
+    service.send(<span class="keyword">new</span> Email()
+            .subject(<span class="string"><span class="delimiter">&quot;</span><span class="content">HtmlAndTextSample</span><span class="delimiter">&quot;</span></span>)
             .text().string(text)              <i class="conum" data-value="1"></i><b>(1)</b>
             .html().string(html)              <i class="conum" data-value="2"></i><b>(2)</b>
-            .to("ogham-test@yopmail.com"));
+            .to(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham-test@yopmail.com</span><span class="delimiter">&quot;</span></span>));
   }
 }</code></pre>
 </div>
@@ -148,54 +148,54 @@ and text template files).</p>
 </div>
 <div class="listingblock collapse-lines:1-9,37-49 irrelevant-lines:1-9,12-19 highlight-lines:31-32">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">package fr.sii.ogham.sample.standard.email;
+<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">fr.sii.ogham.sample.standard.email</span>;
 
-import java.util.Properties;
+<span class="keyword">import</span> <span class="include">java.util.Properties</span>;
 
-import fr.sii.ogham.core.builder.MessagingBuilder;
-import fr.sii.ogham.core.exception.MessagingException;
-import fr.sii.ogham.core.service.MessagingService;
-import fr.sii.ogham.email.message.Email;
+<span class="keyword">import</span> <span class="include">fr.sii.ogham.core.builder.MessagingBuilder</span>;
+<span class="keyword">import</span> <span class="include">fr.sii.ogham.core.exception.MessagingException</span>;
+<span class="keyword">import</span> <span class="include">fr.sii.ogham.core.service.MessagingService</span>;
+<span class="keyword">import</span> <span class="include">fr.sii.ogham.email.message.Email</span>;
 
-public class HtmlAndTextTemplateSample {
-  public static void main(String[] args) throws MessagingException {
-    // configure properties (could be stored in a properties file or defined
-    // in System properties)
-    Properties properties = new Properties();
-    properties.setProperty("mail.smtp.host", "&lt;your server host&gt;");
-    properties.setProperty("mail.smtp.port", "&lt;your server port&gt;");
-    properties.setProperty("ogham.email.from.default-value", "&lt;email address to display for the sender user&gt;");
-    // Instantiate the messaging service using default behavior and
-    // provided properties
+<span class="directive">public</span> <span class="type">class</span> <span class="class">HtmlAndTextTemplateSample</span> {
+  <span class="directive">public</span> <span class="directive">static</span> <span class="type">void</span> main(<span class="predefined-type">String</span><span class="type">[]</span> args) <span class="directive">throws</span> MessagingException {
+    <span class="comment">// configure properties (could be stored in a properties file or defined</span>
+    <span class="comment">// in System properties)</span>
+    <span class="predefined-type">Properties</span> properties = <span class="keyword">new</span> <span class="predefined-type">Properties</span>();
+    properties.setProperty(<span class="string"><span class="delimiter">&quot;</span><span class="content">mail.smtp.host</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;your server host&gt;</span><span class="delimiter">&quot;</span></span>);
+    properties.setProperty(<span class="string"><span class="delimiter">&quot;</span><span class="content">mail.smtp.port</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;your server port&gt;</span><span class="delimiter">&quot;</span></span>);
+    properties.setProperty(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.email.from.default-value</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;email address to display for the sender user&gt;</span><span class="delimiter">&quot;</span></span>);
+    <span class="comment">// Instantiate the messaging service using default behavior and</span>
+    <span class="comment">// provided properties</span>
     MessagingService service = MessagingBuilder.standard()
         .environment()
           .properties(properties)
           .and()
         .build();
-    // send the email using fluent API
-    // Note that the extension of the template is not given. This version
-    // automatically takes the provided path and adds the '.html' extension
-    // for the HTML template and '.txt' for text template
-    service.send(new Email()
-            .subject("HtmlAndTextTemplateSample")
-            .body().template("classpath:/template/thymeleaf/simple",          <i class="conum" data-value="1"></i><b>(1)</b>
-                              new SimpleBean("foo", 42))    <i class="conum" data-value="2"></i><b>(2)</b>
-            .to("ogham-test@yopmail.com"));
+    <span class="comment">// send the email using fluent API</span>
+    <span class="comment">// Note that the extension of the template is not given. This version</span>
+    <span class="comment">// automatically takes the provided path and adds the '.html' extension</span>
+    <span class="comment">// for the HTML template and '.txt' for text template</span>
+    service.send(<span class="keyword">new</span> Email()
+            .subject(<span class="string"><span class="delimiter">&quot;</span><span class="content">HtmlAndTextTemplateSample</span><span class="delimiter">&quot;</span></span>)
+            .body().template(<span class="string"><span class="delimiter">&quot;</span><span class="content">classpath:/template/thymeleaf/simple</span><span class="delimiter">&quot;</span></span>,          <i class="conum" data-value="1"></i><b>(1)</b>
+                              <span class="keyword">new</span> SimpleBean(<span class="string"><span class="delimiter">&quot;</span><span class="content">foo</span><span class="delimiter">&quot;</span></span>, <span class="integer">42</span>))    <i class="conum" data-value="2"></i><b>(2)</b>
+            .to(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham-test@yopmail.com</span><span class="delimiter">&quot;</span></span>));
   }
 
-  public static class SimpleBean {
-    private String name;
-    private int value;
-    public SimpleBean(String name, int value) {
-      super();
-      this.name = name;
-      this.value = value;
+  <span class="directive">public</span> <span class="directive">static</span> <span class="type">class</span> <span class="class">SimpleBean</span> {
+    <span class="directive">private</span> <span class="predefined-type">String</span> name;
+    <span class="directive">private</span> <span class="type">int</span> value;
+    <span class="directive">public</span> SimpleBean(<span class="predefined-type">String</span> name, <span class="type">int</span> value) {
+      <span class="local-variable">super</span>();
+      <span class="local-variable">this</span>.name = name;
+      <span class="local-variable">this</span>.value = value;
     }
-    public String getName() {
-      return name;
+    <span class="directive">public</span> <span class="predefined-type">String</span> getName() {
+      <span class="keyword">return</span> name;
     }
-    public int getValue() {
-      return value;
+    <span class="directive">public</span> <span class="type">int</span> getValue() {
+      <span class="keyword">return</span> value;
     }
   }
 }</code></pre>
@@ -239,7 +239,7 @@ extension).</td>
 <div class="listingblock">
 <div class="title">Text template located in <code>src/main/resources/template/thymeleaf/simple.txt</code></div>
 <div class="content">
-<pre class="highlight"><code class="language-txt" data-lang="txt">[[${name}]] [[${value}]]</code></pre>
+<pre class="CodeRay highlight"><code data-lang="txt">[[${name}]] [[${value}]]</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -251,16 +251,16 @@ extension).</td>
 <div class="listingblock">
 <div class="title">HTML template located at <code>src/main/resources/template/thymeleaf/simple.html</code></div>
 <div class="content">
-<pre class="highlight"><code class="language-html" data-lang="html">&lt;!DOCTYPE html&gt;
-&lt;html xmlns:th="http://www.thymeleaf.org"&gt;        <i class="conum" data-value="1"></i><b>(1)</b>
-    &lt;head&gt;
-        &lt;meta charset="utf-8" /&gt;
-    &lt;/head&gt;
-    &lt;body&gt;
-        &lt;h1 class="title" th:text="${name}"&gt;&lt;/h1&gt;   <i class="conum" data-value="2"></i><b>(2)</b>
-        &lt;p class="text" th:text="${value}"&gt;&lt;/p&gt;     <i class="conum" data-value="3"></i><b>(3)</b>
-    &lt;/body&gt;
-&lt;/html&gt;</code></pre>
+<pre class="CodeRay highlight"><code data-lang="html"><span class="doctype">&lt;!DOCTYPE html&gt;</span>
+<span class="tag">&lt;html</span> <span class="attribute-name">xmlns:th</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">http://www.thymeleaf.org</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>        <i class="conum" data-value="1"></i><b>(1)</b>
+    <span class="tag">&lt;head&gt;</span>
+        <span class="tag">&lt;meta</span> <span class="attribute-name">charset</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">utf-8</span><span class="delimiter">&quot;</span></span> <span class="tag">/&gt;</span>
+    <span class="tag">&lt;/head&gt;</span>
+    <span class="tag">&lt;body&gt;</span>
+        <span class="tag">&lt;h1</span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">title</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">th:text</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">${name}</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span><span class="tag">&lt;/h1&gt;</span>   <i class="conum" data-value="2"></i><b>(2)</b>
+        <span class="tag">&lt;p</span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">text</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">th:text</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">${value}</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span><span class="tag">&lt;/p&gt;</span>     <i class="conum" data-value="3"></i><b>(3)</b>
+    <span class="tag">&lt;/body&gt;</span>
+<span class="tag">&lt;/html&gt;</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -302,54 +302,54 @@ the same email. Just write your templates with the engine you want.</p>
 </div>
 <div class="listingblock collapse-lines:1-9,37-49 irrelevant-lines:1-9,12-19 highlight-lines:31-32">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">package fr.sii.ogham.sample.standard.email;
+<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">fr.sii.ogham.sample.standard.email</span>;
 
-import java.util.Properties;
+<span class="keyword">import</span> <span class="include">java.util.Properties</span>;
 
-import fr.sii.ogham.core.builder.MessagingBuilder;
-import fr.sii.ogham.core.exception.MessagingException;
-import fr.sii.ogham.core.service.MessagingService;
-import fr.sii.ogham.email.message.Email;
+<span class="keyword">import</span> <span class="include">fr.sii.ogham.core.builder.MessagingBuilder</span>;
+<span class="keyword">import</span> <span class="include">fr.sii.ogham.core.exception.MessagingException</span>;
+<span class="keyword">import</span> <span class="include">fr.sii.ogham.core.service.MessagingService</span>;
+<span class="keyword">import</span> <span class="include">fr.sii.ogham.email.message.Email</span>;
 
-public class HtmlAndTextMixedTemplateEnginesSample {
-  public static void main(String[] args) throws MessagingException {
-    // configure properties (could be stored in a properties file or defined
-    // in System properties)
-    Properties properties = new Properties();
-    properties.setProperty("mail.smtp.host", "&lt;your server host&gt;");
-    properties.setProperty("mail.smtp.port", "&lt;your server port&gt;");
-    properties.setProperty("ogham.email.from.default-value", "&lt;email address to display for the sender user&gt;");
-    // Instantiate the messaging service using default behavior and
-    // provided properties
+<span class="directive">public</span> <span class="type">class</span> <span class="class">HtmlAndTextMixedTemplateEnginesSample</span> {
+  <span class="directive">public</span> <span class="directive">static</span> <span class="type">void</span> main(<span class="predefined-type">String</span><span class="type">[]</span> args) <span class="directive">throws</span> MessagingException {
+    <span class="comment">// configure properties (could be stored in a properties file or defined</span>
+    <span class="comment">// in System properties)</span>
+    <span class="predefined-type">Properties</span> properties = <span class="keyword">new</span> <span class="predefined-type">Properties</span>();
+    properties.setProperty(<span class="string"><span class="delimiter">&quot;</span><span class="content">mail.smtp.host</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;your server host&gt;</span><span class="delimiter">&quot;</span></span>);
+    properties.setProperty(<span class="string"><span class="delimiter">&quot;</span><span class="content">mail.smtp.port</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;your server port&gt;</span><span class="delimiter">&quot;</span></span>);
+    properties.setProperty(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.email.from.default-value</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;email address to display for the sender user&gt;</span><span class="delimiter">&quot;</span></span>);
+    <span class="comment">// Instantiate the messaging service using default behavior and</span>
+    <span class="comment">// provided properties</span>
     MessagingService service = MessagingBuilder.standard()
         .environment()
           .properties(properties)
           .and()
         .build();
-    // send the email using fluent API
-    // Note that the extension of the template is not given. This version
-    // automatically takes the provided path and adds the '.html' extension
-    // for the HTML template and '.txt.ftl' for text template
-    service.send(new Email()
-            .subject("HtmlAndTextMixedTemplateEnginesSample")
-            .body().template("classpath:/template/mixed/simple",                <i class="conum" data-value="1"></i><b>(1)</b>
-                              new SimpleBean("foo", 42))      <i class="conum" data-value="2"></i><b>(2)</b>
-            .to("ogham-test@yopmail.com"));
+    <span class="comment">// send the email using fluent API</span>
+    <span class="comment">// Note that the extension of the template is not given. This version</span>
+    <span class="comment">// automatically takes the provided path and adds the '.html' extension</span>
+    <span class="comment">// for the HTML template and '.txt.ftl' for text template</span>
+    service.send(<span class="keyword">new</span> Email()
+            .subject(<span class="string"><span class="delimiter">&quot;</span><span class="content">HtmlAndTextMixedTemplateEnginesSample</span><span class="delimiter">&quot;</span></span>)
+            .body().template(<span class="string"><span class="delimiter">&quot;</span><span class="content">classpath:/template/mixed/simple</span><span class="delimiter">&quot;</span></span>,                <i class="conum" data-value="1"></i><b>(1)</b>
+                              <span class="keyword">new</span> SimpleBean(<span class="string"><span class="delimiter">&quot;</span><span class="content">foo</span><span class="delimiter">&quot;</span></span>, <span class="integer">42</span>))      <i class="conum" data-value="2"></i><b>(2)</b>
+            .to(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham-test@yopmail.com</span><span class="delimiter">&quot;</span></span>));
   }
 
-  public static class SimpleBean {
-    private String name;
-    private int value;
-    public SimpleBean(String name, int value) {
-      super();
-      this.name = name;
-      this.value = value;
+  <span class="directive">public</span> <span class="directive">static</span> <span class="type">class</span> <span class="class">SimpleBean</span> {
+    <span class="directive">private</span> <span class="predefined-type">String</span> name;
+    <span class="directive">private</span> <span class="type">int</span> value;
+    <span class="directive">public</span> SimpleBean(<span class="predefined-type">String</span> name, <span class="type">int</span> value) {
+      <span class="local-variable">super</span>();
+      <span class="local-variable">this</span>.name = name;
+      <span class="local-variable">this</span>.value = value;
     }
-    public String getName() {
-      return name;
+    <span class="directive">public</span> <span class="predefined-type">String</span> getName() {
+      <span class="keyword">return</span> name;
     }
-    public int getValue() {
-      return value;
+    <span class="directive">public</span> <span class="type">int</span> getValue() {
+      <span class="keyword">return</span> value;
     }
   }
 }</code></pre>
@@ -379,7 +379,7 @@ extension). The HTML template uses Thymeleaf while the text template uses FreeMa
 <div class="listingblock">
 <div class="title">Text template located in <code>src/main/resources/template/mixed/simple.txt.ftl</code></div>
 <div class="content">
-<pre class="highlight"><code class="language-txt" data-lang="txt">${name} ${value}</code></pre>
+<pre class="CodeRay highlight"><code data-lang="txt">${name} ${value}</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -391,16 +391,16 @@ extension). The HTML template uses Thymeleaf while the text template uses FreeMa
 <div class="listingblock">
 <div class="title">HTML template located at <code>src/main/resources/template/mixed/simple.html</code></div>
 <div class="content">
-<pre class="highlight"><code class="language-html" data-lang="html">&lt;!DOCTYPE html&gt;
-&lt;html xmlns:th="http://www.thymeleaf.org"&gt;
-    &lt;head&gt;
-        &lt;meta charset="utf-8" /&gt;
-    &lt;/head&gt;
-    &lt;body&gt;
-        &lt;h1 class="title" th:text="${name}"&gt;&lt;/h1&gt;
-        &lt;p class="text" th:text="${value}"&gt;&lt;/p&gt;
-    &lt;/body&gt;
-&lt;/html&gt;</code></pre>
+<pre class="CodeRay highlight"><code data-lang="html"><span class="doctype">&lt;!DOCTYPE html&gt;</span>
+<span class="tag">&lt;html</span> <span class="attribute-name">xmlns:th</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">http://www.thymeleaf.org</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+    <span class="tag">&lt;head&gt;</span>
+        <span class="tag">&lt;meta</span> <span class="attribute-name">charset</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">utf-8</span><span class="delimiter">&quot;</span></span> <span class="tag">/&gt;</span>
+    <span class="tag">&lt;/head&gt;</span>
+    <span class="tag">&lt;body&gt;</span>
+        <span class="tag">&lt;h1</span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">title</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">th:text</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">${name}</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span><span class="tag">&lt;/h1&gt;</span>
+        <span class="tag">&lt;p</span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">text</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">th:text</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">${value}</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span><span class="tag">&lt;/p&gt;</span>
+    <span class="tag">&lt;/body&gt;</span>
+<span class="tag">&lt;/html&gt;</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -418,8 +418,9 @@ to use the template engine that best suits your needs.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-07-31 20:28:38 UTC
+Last updated 2020-08-09 19:27:24 UTC
 </div>
 </div>
+<link rel="stylesheet" href="./coderay-asciidoctor.css">
 </body>
 </html>

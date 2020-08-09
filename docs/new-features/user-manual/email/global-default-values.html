@@ -56,43 +56,43 @@ address in the email constructor or using the setter, this value is used instead
 </div>
 <div class="listingblock collapse-lines:1-9 irrelevant-lines:1-9 highlight-lines:17,35">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">package fr.sii.ogham.sample.standard.email;
+<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">fr.sii.ogham.sample.standard.email</span>;
 
-import java.util.Properties;
+<span class="keyword">import</span> <span class="include">java.util.Properties</span>;
 
-import fr.sii.ogham.core.builder.MessagingBuilder;
-import fr.sii.ogham.core.exception.MessagingException;
-import fr.sii.ogham.core.service.MessagingService;
-import fr.sii.ogham.email.message.Email;
+<span class="keyword">import</span> <span class="include">fr.sii.ogham.core.builder.MessagingBuilder</span>;
+<span class="keyword">import</span> <span class="include">fr.sii.ogham.core.exception.MessagingException</span>;
+<span class="keyword">import</span> <span class="include">fr.sii.ogham.core.service.MessagingService</span>;
+<span class="keyword">import</span> <span class="include">fr.sii.ogham.email.message.Email</span>;
 
-public class OverrideDefaultSenderSample {
-  public static void main(String[] args) throws MessagingException {
-    // configure properties (could be stored in a properties file or defined
-    // in System properties)
-    Properties properties = new Properties();
-    properties.put("mail.smtp.host", "&lt;your server host&gt;");
-    properties.put("mail.smtp.port", "&lt;your server port&gt;");
-    properties.put("ogham.email.from.default-value", "foo.bar@test.com");  <i class="conum" data-value="1"></i><b>(1)</b>
-    // Instantiate the messaging service using default behavior and
-    // provided properties
+<span class="directive">public</span> <span class="type">class</span> <span class="class">OverrideDefaultSenderSample</span> {
+  <span class="directive">public</span> <span class="directive">static</span> <span class="type">void</span> main(<span class="predefined-type">String</span><span class="type">[]</span> args) <span class="directive">throws</span> MessagingException {
+    <span class="comment">// configure properties (could be stored in a properties file or defined</span>
+    <span class="comment">// in System properties)</span>
+    <span class="predefined-type">Properties</span> properties = <span class="keyword">new</span> <span class="predefined-type">Properties</span>();
+    properties.put(<span class="string"><span class="delimiter">&quot;</span><span class="content">mail.smtp.host</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;your server host&gt;</span><span class="delimiter">&quot;</span></span>);
+    properties.put(<span class="string"><span class="delimiter">&quot;</span><span class="content">mail.smtp.port</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;your server port&gt;</span><span class="delimiter">&quot;</span></span>);
+    properties.put(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.email.from.default-value</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">foo.bar@test.com</span><span class="delimiter">&quot;</span></span>);  <i class="conum" data-value="1"></i><b>(1)</b>
+    <span class="comment">// Instantiate the messaging service using default behavior and</span>
+    <span class="comment">// provided properties</span>
     MessagingService service = MessagingBuilder.standard()
         .environment()
           .properties(properties)
           .and()
         .build();
-    // send the email using fluent API
-    service.send(new Email()                                               <i class="conum" data-value="2"></i><b>(2)</b>
-            .subject("OverrideDefaultSenderSample")
-            .body().string("email content")
-            .to("ogham-test@yopmail.com"));
-    // =&gt; the sender address is foo.bar@test.com
+    <span class="comment">// send the email using fluent API</span>
+    service.send(<span class="keyword">new</span> Email()                                               <i class="conum" data-value="2"></i><b>(2)</b>
+            .subject(<span class="string"><span class="delimiter">&quot;</span><span class="content">OverrideDefaultSenderSample</span><span class="delimiter">&quot;</span></span>)
+            .body().string(<span class="string"><span class="delimiter">&quot;</span><span class="content">email content</span><span class="delimiter">&quot;</span></span>)
+            .to(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham-test@yopmail.com</span><span class="delimiter">&quot;</span></span>));
+    <span class="comment">// =&gt; the sender address is foo.bar@test.com</span>
 
-    service.send(new Email()
-        .subject("subject")
-        .body().string("email content")
-        .from("override@test.com")                                     <i class="conum" data-value="3"></i><b>(3)</b>
-        .to("ogham-test@yopmail.com"));
-    // =&gt; the sender address is now override@test.com
+    service.send(<span class="keyword">new</span> Email()
+        .subject(<span class="string"><span class="delimiter">&quot;</span><span class="content">subject</span><span class="delimiter">&quot;</span></span>)
+        .body().string(<span class="string"><span class="delimiter">&quot;</span><span class="content">email content</span><span class="delimiter">&quot;</span></span>)
+        .from(<span class="string"><span class="delimiter">&quot;</span><span class="content">override@test.com</span><span class="delimiter">&quot;</span></span>)                                     <i class="conum" data-value="3"></i><b>(3)</b>
+        .to(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham-test@yopmail.com</span><span class="delimiter">&quot;</span></span>));
+    <span class="comment">// =&gt; the sender address is now override@test.com</span>
   }
 }</code></pre>
 </div>
@@ -177,75 +177,75 @@ will never be seen in received emails).</p>
 </div>
 <div class="listingblock collapse-lines:1-24,26-34,51-70 irrelevant-lines:1-24 highlight-lines:41-43">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">package oghamall.it.email;
+<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">oghamall.it.email</span>;
 
-import static fr.sii.ogham.testing.assertion.OghamAssertions.assertThat;
-import static org.hamcrest.Matchers.contains;
-import static org.hamcrest.Matchers.containsInAnyOrder;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.startsWith;
+<span class="keyword">import</span> <span class="include">static</span> <span class="include">fr.sii.ogham.testing.assertion.OghamAssertions.assertThat</span>;
+<span class="keyword">import</span> <span class="include">static</span> <span class="include">org.hamcrest.Matchers.contains</span>;
+<span class="keyword">import</span> <span class="include">static</span> <span class="include">org.hamcrest.Matchers.containsInAnyOrder</span>;
+<span class="keyword">import</span> <span class="include">static</span> <span class="include">org.hamcrest.Matchers.is</span>;
+<span class="keyword">import</span> <span class="include">static</span> <span class="include">org.hamcrest.Matchers.startsWith</span>;
 
-import java.io.IOException;
-import java.util.Properties;
+<span class="keyword">import</span> <span class="include">java.io.IOException</span>;
+<span class="keyword">import</span> <span class="include">java.util.Properties</span>;
 
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+<span class="keyword">import</span> <span class="include">org.junit.Before</span>;
+<span class="keyword">import</span> <span class="include">org.junit.Rule</span>;
+<span class="keyword">import</span> <span class="include">org.junit.Test</span>;
 
-import com.icegreen.greenmail.junit.GreenMailRule;
+<span class="keyword">import</span> <span class="include">com.icegreen.greenmail.junit.GreenMailRule</span>;
 
-import fr.sii.ogham.core.builder.MessagingBuilder;
-import fr.sii.ogham.core.exception.MessagingException;
-import fr.sii.ogham.core.service.MessagingService;
-import fr.sii.ogham.email.message.Email;
-import fr.sii.ogham.testing.extension.greenmail.RandomPortGreenMailRule;
-import fr.sii.ogham.testing.extension.junit.LoggingTestRule;
+<span class="keyword">import</span> <span class="include">fr.sii.ogham.core.builder.MessagingBuilder</span>;
+<span class="keyword">import</span> <span class="include">fr.sii.ogham.core.exception.MessagingException</span>;
+<span class="keyword">import</span> <span class="include">fr.sii.ogham.core.service.MessagingService</span>;
+<span class="keyword">import</span> <span class="include">fr.sii.ogham.email.message.Email</span>;
+<span class="keyword">import</span> <span class="include">fr.sii.ogham.testing.extension.greenmail.RandomPortGreenMailRule</span>;
+<span class="keyword">import</span> <span class="include">fr.sii.ogham.testing.extension.junit.LoggingTestRule</span>;
 
-public class EmailPropertiesTest {
+<span class="directive">public</span> <span class="type">class</span> <span class="class">EmailPropertiesTest</span> {
 
-  private MessagingService oghamService;
+  <span class="directive">private</span> MessagingService oghamService;
 
-  @Rule
-  public final LoggingTestRule loggingRule = new LoggingTestRule();
+  <span class="annotation">@Rule</span>
+  <span class="directive">public</span> <span class="directive">final</span> LoggingTestRule loggingRule = <span class="keyword">new</span> LoggingTestRule();
 
-  @Rule
-  public final GreenMailRule greenMail = new RandomPortGreenMailRule();
+  <span class="annotation">@Rule</span>
+  <span class="directive">public</span> <span class="directive">final</span> GreenMailRule greenMail = <span class="keyword">new</span> RandomPortGreenMailRule();
 
-  @Before
-  public void setUp() throws IOException {
-    Properties additional = new Properties();
-    additional.setProperty("mail.smtp.host", greenMail.getSmtp().getBindTo());
-    additional.setProperty("mail.smtp.port", String.valueOf(greenMail.getSmtp().getPort()));
-    additional.setProperty("ogham.email.from.default-value", "test.sender@sii.fr");
-    additional.setProperty("ogham.email.to.default-value", "recipient.to1@sii.fr,  recipient.to2@sii.fr , recipient.to3@sii.fr");   <i class="conum" data-value="1"></i><b>(1)</b>
-    additional.setProperty("ogham.email.cc.default-value", "recipient.cc1@sii.fr,recipient.cc2@sii.fr");                            <i class="conum" data-value="2"></i><b>(2)</b>
-    additional.setProperty("ogham.email.bcc.default-value", "recipient.bcc@sii.fr");                                                <i class="conum" data-value="3"></i><b>(3)</b>
+  <span class="annotation">@Before</span>
+  <span class="directive">public</span> <span class="type">void</span> setUp() <span class="directive">throws</span> <span class="exception">IOException</span> {
+    <span class="predefined-type">Properties</span> additional = <span class="keyword">new</span> <span class="predefined-type">Properties</span>();
+    additional.setProperty(<span class="string"><span class="delimiter">&quot;</span><span class="content">mail.smtp.host</span><span class="delimiter">&quot;</span></span>, greenMail.getSmtp().getBindTo());
+    additional.setProperty(<span class="string"><span class="delimiter">&quot;</span><span class="content">mail.smtp.port</span><span class="delimiter">&quot;</span></span>, <span class="predefined-type">String</span>.valueOf(greenMail.getSmtp().getPort()));
+    additional.setProperty(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.email.from.default-value</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">test.sender@sii.fr</span><span class="delimiter">&quot;</span></span>);
+    additional.setProperty(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.email.to.default-value</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">recipient.to1@sii.fr,  recipient.to2@sii.fr , recipient.to3@sii.fr</span><span class="delimiter">&quot;</span></span>);   <i class="conum" data-value="1"></i><b>(1)</b>
+    additional.setProperty(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.email.cc.default-value</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">recipient.cc1@sii.fr,recipient.cc2@sii.fr</span><span class="delimiter">&quot;</span></span>);                            <i class="conum" data-value="2"></i><b>(2)</b>
+    additional.setProperty(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.email.bcc.default-value</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">recipient.bcc@sii.fr</span><span class="delimiter">&quot;</span></span>);                                                <i class="conum" data-value="3"></i><b>(3)</b>
     oghamService = MessagingBuilder.standard()
         .environment()
-          .properties("/application.properties")
+          .properties(<span class="string"><span class="delimiter">&quot;</span><span class="content">/application.properties</span><span class="delimiter">&quot;</span></span>)
           .properties(additional)
           .and()
         .build();
   }
 
-  @Test
-  public void simple() throws MessagingException, javax.mail.MessagingException {
-    oghamService.send(new Email()
-              .subject("Simple")
-              .content("string body"));
+  <span class="annotation">@Test</span>
+  <span class="directive">public</span> <span class="type">void</span> simple() <span class="directive">throws</span> MessagingException, javax.mail.MessagingException {
+    oghamService.send(<span class="keyword">new</span> Email()
+              .subject(<span class="string"><span class="delimiter">&quot;</span><span class="content">Simple</span><span class="delimiter">&quot;</span></span>)
+              .content(<span class="string"><span class="delimiter">&quot;</span><span class="content">string body</span><span class="delimiter">&quot;</span></span>));
     assertThat(greenMail).receivedMessages()
-        .count(is(6))
+        .count(is(<span class="integer">6</span>))
         .every()
-          .subject(is("Simple"))
+          .subject(is(<span class="string"><span class="delimiter">&quot;</span><span class="content">Simple</span><span class="delimiter">&quot;</span></span>))
           .body()
-            .contentAsString(is("string body"))
-            .contentType(startsWith("text/plain")).and()
+            .contentAsString(is(<span class="string"><span class="delimiter">&quot;</span><span class="content">string body</span><span class="delimiter">&quot;</span></span>))
+            .contentType(startsWith(<span class="string"><span class="delimiter">&quot;</span><span class="content">text/plain</span><span class="delimiter">&quot;</span></span>)).and()
           .from()
-            .address(contains("test.sender@sii.fr")).and()
+            .address(contains(<span class="string"><span class="delimiter">&quot;</span><span class="content">test.sender@sii.fr</span><span class="delimiter">&quot;</span></span>)).and()
           .to()
-            .address(containsInAnyOrder("recipient.to1@sii.fr", "recipient.to2@sii.fr", "recipient.to3@sii.fr")).and()
+            .address(containsInAnyOrder(<span class="string"><span class="delimiter">&quot;</span><span class="content">recipient.to1@sii.fr</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">recipient.to2@sii.fr</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">recipient.to3@sii.fr</span><span class="delimiter">&quot;</span></span>)).and()
           .cc()
-            .address(containsInAnyOrder("recipient.cc1@sii.fr", "recipient.cc2@sii.fr"));
+            .address(containsInAnyOrder(<span class="string"><span class="delimiter">&quot;</span><span class="content">recipient.cc1@sii.fr</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">recipient.cc2@sii.fr</span><span class="delimiter">&quot;</span></span>));
   }
 }</code></pre>
 </div>
@@ -284,7 +284,7 @@ public class EmailPropertiesTest {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">additional.setProperty("ogham.email.to.default-value", "  foo@example.com  ,    John Doe &lt;bar@example.com&gt;,   abc@example.com");</code></pre>
+<pre class="CodeRay highlight"><code data-lang="java">additional.setProperty(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.email.to.default-value</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">  foo@example.com  ,    John Doe &lt;bar@example.com&gt;,   abc@example.com</span><span class="delimiter">&quot;</span></span>);</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -312,8 +312,9 @@ public class EmailPropertiesTest {
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-07-31 20:28:38 UTC
+Last updated 2020-08-09 19:27:24 UTC
 </div>
 </div>
+<link rel="stylesheet" href="./coderay-asciidoctor.css">
 </body>
 </html>

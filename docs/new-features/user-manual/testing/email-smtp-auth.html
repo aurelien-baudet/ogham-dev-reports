@@ -40,79 +40,79 @@
 </div>
 <div class="listingblock collapse-lines:1-25,27-34 irrelevant-lines:1-25,51-74 highlight-lines:36,43-45">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">package oghamall.it.email;
+<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">oghamall.it.email</span>;
 
-import static fr.sii.ogham.testing.assertion.OghamAssertions.assertThat;
-import static org.hamcrest.Matchers.emptyIterable;
-import static org.hamcrest.Matchers.hasItems;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.nullValue;
-import static org.hamcrest.Matchers.startsWith;
+<span class="keyword">import</span> <span class="include">static</span> <span class="include">fr.sii.ogham.testing.assertion.OghamAssertions.assertThat</span>;
+<span class="keyword">import</span> <span class="include">static</span> <span class="include">org.hamcrest.Matchers.emptyIterable</span>;
+<span class="keyword">import</span> <span class="include">static</span> <span class="include">org.hamcrest.Matchers.hasItems</span>;
+<span class="keyword">import</span> <span class="include">static</span> <span class="include">org.hamcrest.Matchers.is</span>;
+<span class="keyword">import</span> <span class="include">static</span> <span class="include">org.hamcrest.Matchers.nullValue</span>;
+<span class="keyword">import</span> <span class="include">static</span> <span class="include">org.hamcrest.Matchers.startsWith</span>;
 
-import java.io.IOException;
+<span class="keyword">import</span> <span class="include">java.io.IOException</span>;
 
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+<span class="keyword">import</span> <span class="include">org.junit.Before</span>;
+<span class="keyword">import</span> <span class="include">org.junit.Rule</span>;
+<span class="keyword">import</span> <span class="include">org.junit.Test</span>;
 
-import com.icegreen.greenmail.junit.GreenMailRule;
+<span class="keyword">import</span> <span class="include">com.icegreen.greenmail.junit.GreenMailRule</span>;
 
-import fr.sii.ogham.core.builder.MessagingBuilder;
-import fr.sii.ogham.core.exception.MessagingException;
-import fr.sii.ogham.core.service.MessagingService;
-import fr.sii.ogham.email.message.Email;
-import fr.sii.ogham.testing.extension.greenmail.RandomPortGreenMailRule;
-import fr.sii.ogham.testing.extension.junit.LoggingTestRule;
+<span class="keyword">import</span> <span class="include">fr.sii.ogham.core.builder.MessagingBuilder</span>;
+<span class="keyword">import</span> <span class="include">fr.sii.ogham.core.exception.MessagingException</span>;
+<span class="keyword">import</span> <span class="include">fr.sii.ogham.core.service.MessagingService</span>;
+<span class="keyword">import</span> <span class="include">fr.sii.ogham.email.message.Email</span>;
+<span class="keyword">import</span> <span class="include">fr.sii.ogham.testing.extension.greenmail.RandomPortGreenMailRule</span>;
+<span class="keyword">import</span> <span class="include">fr.sii.ogham.testing.extension.junit.LoggingTestRule</span>;
 
-public class EmailSMTPAuthenticationTest {
-  private MessagingService oghamService;
+<span class="directive">public</span> <span class="type">class</span> <span class="class">EmailSMTPAuthenticationTest</span> {
+  <span class="directive">private</span> MessagingService oghamService;
 
-  @Rule
-  public final LoggingTestRule loggingRule = new LoggingTestRule();
+  <span class="annotation">@Rule</span>
+  <span class="directive">public</span> <span class="directive">final</span> LoggingTestRule loggingRule = <span class="keyword">new</span> LoggingTestRule();
 
-  @Rule
-  public final GreenMailRule greenMail = new RandomPortGreenMailRule();
+  <span class="annotation">@Rule</span>
+  <span class="directive">public</span> <span class="directive">final</span> GreenMailRule greenMail = <span class="keyword">new</span> RandomPortGreenMailRule();
 
-  @Before
-  public void setUp() throws IOException {
-    greenMail.setUser("test.sender@sii.fr", "test.sender", "password");             <i class="conum" data-value="1"></i><b>(1)</b>
+  <span class="annotation">@Before</span>
+  <span class="directive">public</span> <span class="type">void</span> setUp() <span class="directive">throws</span> <span class="exception">IOException</span> {
+    greenMail.setUser(<span class="string"><span class="delimiter">&quot;</span><span class="content">test.sender@sii.fr</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">test.sender</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">password</span><span class="delimiter">&quot;</span></span>);             <i class="conum" data-value="1"></i><b>(1)</b>
     oghamService = MessagingBuilder.standard()
         .environment()
-          .properties("/application.properties")
+          .properties(<span class="string"><span class="delimiter">&quot;</span><span class="content">/application.properties</span><span class="delimiter">&quot;</span></span>)
           .properties()
-            .set("mail.smtp.host", greenMail.getSmtp().getBindTo())
-            .set("mail.smtp.port", greenMail.getSmtp().getPort())
-            .set("mail.smtp.auth", "true")                        <i class="conum" data-value="2"></i><b>(2)</b>
-            .set("ogham.email.javamail.authenticator.username", "test.sender")      <i class="conum" data-value="3"></i><b>(3)</b>
-            .set("ogham.email.javamail.authenticator.password", "password")       <i class="conum" data-value="4"></i><b>(4)</b>
+            .set(<span class="string"><span class="delimiter">&quot;</span><span class="content">mail.smtp.host</span><span class="delimiter">&quot;</span></span>, greenMail.getSmtp().getBindTo())
+            .set(<span class="string"><span class="delimiter">&quot;</span><span class="content">mail.smtp.port</span><span class="delimiter">&quot;</span></span>, greenMail.getSmtp().getPort())
+            .set(<span class="string"><span class="delimiter">&quot;</span><span class="content">mail.smtp.auth</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">true</span><span class="delimiter">&quot;</span></span>)                        <i class="conum" data-value="2"></i><b>(2)</b>
+            .set(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.email.javamail.authenticator.username</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">test.sender</span><span class="delimiter">&quot;</span></span>)      <i class="conum" data-value="3"></i><b>(3)</b>
+            .set(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.email.javamail.authenticator.password</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">password</span><span class="delimiter">&quot;</span></span>)       <i class="conum" data-value="4"></i><b>(4)</b>
             .and()
           .and()
         .build();
   }
 
-  @Test
-  public void authenticated() throws MessagingException, javax.mail.MessagingException {
-    // @formatter:off
-    oghamService.send(new Email()
-                .subject("Simple")
-                .content("string body")
-                .to("Recipient Name &lt;recipient@sii.fr&gt;"));
+  <span class="annotation">@Test</span>
+  <span class="directive">public</span> <span class="type">void</span> authenticated() <span class="directive">throws</span> MessagingException, javax.mail.MessagingException {
+    <span class="comment">// @formatter:off</span>
+    oghamService.send(<span class="keyword">new</span> Email()
+                .subject(<span class="string"><span class="delimiter">&quot;</span><span class="content">Simple</span><span class="delimiter">&quot;</span></span>)
+                .content(<span class="string"><span class="delimiter">&quot;</span><span class="content">string body</span><span class="delimiter">&quot;</span></span>)
+                .to(<span class="string"><span class="delimiter">&quot;</span><span class="content">Recipient Name &lt;recipient@sii.fr&gt;</span><span class="delimiter">&quot;</span></span>));
     assertThat(greenMail).receivedMessages()
-      .count(is(1))
-      .message(0)
-        .subject(is("Simple"))
+      .count(is(<span class="integer">1</span>))
+      .message(<span class="integer">0</span>)
+        .subject(is(<span class="string"><span class="delimiter">&quot;</span><span class="content">Simple</span><span class="delimiter">&quot;</span></span>))
         .from()
-          .address(hasItems("test.sender@sii.fr"))
-          .personal(hasItems("Sender Name")).and()
+          .address(hasItems(<span class="string"><span class="delimiter">&quot;</span><span class="content">test.sender@sii.fr</span><span class="delimiter">&quot;</span></span>))
+          .personal(hasItems(<span class="string"><span class="delimiter">&quot;</span><span class="content">Sender Name</span><span class="delimiter">&quot;</span></span>)).and()
         .to()
-          .address(hasItems("recipient@sii.fr"))
-          .personal(hasItems("Recipient Name")).and()
+          .address(hasItems(<span class="string"><span class="delimiter">&quot;</span><span class="content">recipient@sii.fr</span><span class="delimiter">&quot;</span></span>))
+          .personal(hasItems(<span class="string"><span class="delimiter">&quot;</span><span class="content">Recipient Name</span><span class="delimiter">&quot;</span></span>)).and()
         .body()
-          .contentAsString(is("string body"))
-          .contentType(startsWith("text/plain")).and()
+          .contentAsString(is(<span class="string"><span class="delimiter">&quot;</span><span class="content">string body</span><span class="delimiter">&quot;</span></span>))
+          .contentType(startsWith(<span class="string"><span class="delimiter">&quot;</span><span class="content">text/plain</span><span class="delimiter">&quot;</span></span>)).and()
         .alternative(nullValue())
         .attachments(emptyIterable());
-    // @formatter:on
+    <span class="comment">// @formatter:on</span>
   }
 }</code></pre>
 </div>
@@ -160,8 +160,9 @@ Only the setup differs, the test is the same.
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-07-31 20:28:39 UTC
+Last updated 2020-08-09 19:27:24 UTC
 </div>
 </div>
+<link rel="stylesheet" href="./coderay-asciidoctor.css">
 </body>
 </html>
