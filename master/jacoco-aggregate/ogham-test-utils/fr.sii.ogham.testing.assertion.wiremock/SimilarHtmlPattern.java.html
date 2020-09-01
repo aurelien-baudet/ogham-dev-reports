@@ -3,6 +3,7 @@
 import org.custommonkey.xmlunit.DetailedDiff;
 import org.w3c.dom.Document;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.matching.MatchResult;
 import com.github.tomakehurst.wiremock.matching.StringValuePattern;
@@ -30,23 +31,23 @@ public class SimilarHtmlPattern extends StringValuePattern {
 	 * @param expectedValue
 	 *            the expected HTML
 	 */
-	public SimilarHtmlPattern(String expectedValue) {
-<span class="fc" id="L34">		super(expectedValue);</span>
-<span class="fc" id="L35">	}</span>
+	public SimilarHtmlPattern(@JsonProperty(&quot;similarHtml&quot;) String expectedValue) {
+<span class="fc" id="L35">		super(expectedValue);</span>
+<span class="fc" id="L36">	}</span>
 
 	@Override
 	public MatchResult match(String value) {
-<span class="fc" id="L39">		DetailedDiff diff = HtmlUtils.compare(expectedValue, value);</span>
-<span class="fc" id="L40">		return new MatchResult() {</span>
+<span class="fc" id="L40">		DetailedDiff diff = HtmlUtils.compare(expectedValue, value);</span>
+<span class="fc" id="L41">		return new MatchResult() {</span>
 
 			@Override
 			public boolean isExactMatch() {
-<span class="fc" id="L44">				return diff.similar();</span>
+<span class="fc" id="L45">				return diff.similar();</span>
 			}
 
 			@Override
 			public double getDistance() {
-<span class="nc" id="L49">				return diff.getAllDifferences().size();</span>
+<span class="nc" id="L50">				return diff.getAllDifferences().size();</span>
 			}
 		};
 	}

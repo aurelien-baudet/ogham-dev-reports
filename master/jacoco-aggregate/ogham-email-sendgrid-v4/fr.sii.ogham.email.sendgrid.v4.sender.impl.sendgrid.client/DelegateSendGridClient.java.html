@@ -14,10 +14,10 @@ import com.sendgrid.Request;
 import com.sendgrid.Response;
 import com.sendgrid.SendGrid;
 import com.sendgrid.SendGridAPI;
-import com.sendgrid.helpers.mail.Mail;
-import com.sendgrid.helpers.mail.objects.Email;
 
 import fr.sii.ogham.email.sendgrid.sender.exception.SendGridException;
+import fr.sii.ogham.email.sendgrid.v4.sender.impl.sendgrid.compat.EmailCompat;
+import fr.sii.ogham.email.sendgrid.v4.sender.impl.sendgrid.compat.MailCompat;
 
 /**
  * Facade wrapping the {@link SendGrid} object.
@@ -45,7 +45,7 @@ public final class DelegateSendGridClient implements SendGridClient {
 <span class="fc" id="L45">	}</span>
 
 	@Override
-	public void send(final Mail email) throws SendGridException {
+	public void send(final MailCompat email) throws SendGridException {
 <span class="fc bfc" id="L49" title="All 2 branches covered.">		if (email == null) {</span>
 <span class="fc" id="L50">			throw new IllegalArgumentException(&quot;[email] cannot be null&quot;);</span>
 		}
@@ -65,7 +65,7 @@ public final class DelegateSendGridClient implements SendGridClient {
 		}
 <span class="fc" id="L66">	}</span>
 
-	private Response callApi(final Mail email) throws SendGridException {
+	private Response callApi(final MailCompat email) throws SendGridException {
 		try {
 <span class="fc" id="L70">			Request request = prepareRequest(email);</span>
 <span class="fc" id="L71">			return delegate.api(request);</span>
@@ -74,7 +74,7 @@ public final class DelegateSendGridClient implements SendGridClient {
 		}
 	}
 
-	private static Request prepareRequest(final Mail email) throws SendGridException {
+	private static Request prepareRequest(final MailCompat email) throws SendGridException {
 <span class="fc" id="L78">		Request request = new Request();</span>
 <span class="fc" id="L79">		request.setMethod(Method.POST);</span>
 <span class="fc" id="L80">		request.setEndpoint(&quot;mail/send&quot;);</span>
@@ -90,7 +90,7 @@ public final class DelegateSendGridClient implements SendGridClient {
 <span class="pc bpc" id="L90" title="1 of 4 branches missed.">		return statusCode &gt;= 200 &amp;&amp; statusCode &lt; 300;</span>
 	}
 
-	private static String debug(Email address) {
+	private static String debug(EmailCompat address) {
 <span class="fc bfc" id="L94" title="All 2 branches covered.">		if (address == null) {</span>
 <span class="fc" id="L95">			return null;</span>
 		}
@@ -100,7 +100,7 @@ public final class DelegateSendGridClient implements SendGridClient {
 <span class="fc" id="L100">		return address.getEmail();</span>
 	}
 
-	private static List&lt;String&gt; debug(final Mail email) {
+	private static List&lt;String&gt; debug(final MailCompat email) {
 <span class="fc bfc" id="L104" title="All 2 branches covered.">		if (email.getPersonalization() == null) {</span>
 <span class="fc" id="L105">			return null; // NOSONAR</span>
 		}
