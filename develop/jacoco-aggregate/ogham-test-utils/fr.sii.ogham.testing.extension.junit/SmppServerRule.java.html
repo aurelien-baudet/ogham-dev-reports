@@ -40,14 +40,10 @@ public abstract class SmppServerRule&lt;M&gt; implements TestRule {
 <span class="fc" id="L40">	private static final Logger LOG = LoggerFactory.getLogger(SmppServerRule.class);</span>
 
 	/**
-	 * The default port used by the server if none is specified
+	 * Random port used by the server if none is specified
 	 */
-	public static final int DEFAULT_PORT = 8056;
+	public static final int DEFAULT_PORT = 0;
 
-	/**
-	 * The server port
-	 */
-	private int port;
 	/**
 	 * The configuration to control how server should behave
 	 */
@@ -58,24 +54,22 @@ public abstract class SmppServerRule&lt;M&gt; implements TestRule {
 	private SmppServerSimulator&lt;M&gt; server;
 
 	/**
-	 * Initializes with the port to use for the SMPP server
+	 * Initializes with the configuration to use for the SMPP server
 	 * 
-	 * @param port
-	 *            the port for server
 	 * @param builder
 	 *            the configuration for the server
 	 */
-	public SmppServerRule(int port, ServerConfig builder) {
-<span class="fc" id="L69">		super();</span>
-<span class="fc" id="L70">		this.port = port;</span>
-<span class="fc" id="L71">		this.builder = builder;</span>
-<span class="fc" id="L72">	}</span>
+	public SmppServerRule(ServerConfig builder) {
+<span class="fc" id="L63">		super();</span>
+<span class="fc" id="L64">		this.builder = builder;</span>
+<span class="fc" id="L65">	}</span>
 
 	@Override
 	public Statement apply(final Statement base, final Description description) {
-<span class="fc" id="L76">		SmppServerConfig config = description.getAnnotation(SmppServerConfig.class);</span>
-<span class="fc" id="L77">		this.server = initServer(builder.annotationConfig(config).build());</span>
-<span class="fc" id="L78">		return new StartServerStatement(base);</span>
+<span class="fc" id="L69">		SmppServerConfig config = description.getAnnotation(SmppServerConfig.class);</span>
+<span class="fc" id="L70">		SimulatorConfiguration serverConfig = builder.annotationConfig(config).build();</span>
+<span class="fc" id="L71">		server = initServer(serverConfig);</span>
+<span class="fc" id="L72">		return new StartServerStatement(base);</span>
 	}
 
 	/**
@@ -84,7 +78,7 @@ public abstract class SmppServerRule&lt;M&gt; implements TestRule {
 	 * @return the port used by the server
 	 */
 	public int getPort() {
-<span class="fc" id="L87">		return port;</span>
+<span class="fc" id="L81">		return server.getPort();</span>
 	}
 
 	/**
@@ -93,10 +87,10 @@ public abstract class SmppServerRule&lt;M&gt; implements TestRule {
 	 * @return the list of received messages
 	 */
 	public List&lt;M&gt; getRawMessages() {
-<span class="pc bpc" id="L96" title="1 of 2 branches missed.">		if (server == null) {</span>
-<span class="nc" id="L97">			return Collections.emptyList();</span>
+<span class="pc bpc" id="L90" title="1 of 2 branches missed.">		if (server == null) {</span>
+<span class="nc" id="L91">			return Collections.emptyList();</span>
 		}
-<span class="fc" id="L99">		return server.getReceivedMessages();</span>
+<span class="fc" id="L93">		return server.getReceivedMessages();</span>
 	}
 
 	/**
@@ -108,7 +102,7 @@ public abstract class SmppServerRule&lt;M&gt; implements TestRule {
 	 * @return the list of received messages
 	 */
 	public List&lt;SubmitSm&gt; getReceivedMessages() {
-<span class="fc" id="L111">		return getRawMessages().stream().map(this::convert).collect(toList());</span>
+<span class="fc" id="L105">		return getRawMessages().stream().map(this::convert).collect(toList());</span>
 	}
 
 	/**
@@ -125,24 +119,34 @@ public abstract class SmppServerRule&lt;M&gt; implements TestRule {
 	private final class StartServerStatement extends Statement {
 		private final Statement base;
 
-<span class="fc" id="L128">		private StartServerStatement(Statement base) {</span>
-<span class="fc" id="L129">			this.base = base;</span>
-<span class="fc" id="L130">		}</span>
+<span class="fc" id="L122">		private StartServerStatement(Statement base) {</span>
+<span class="fc" id="L123">			this.base = base;</span>
+<span class="fc" id="L124">		}</span>
 
 		@Override
 		public void evaluate() throws Throwable {
-<span class="fc" id="L134">			LOG.info(&quot;starting SMPP server on port {}...&quot;, getPort());</span>
-<span class="fc" id="L135">			server.start();</span>
-<span class="fc" id="L136">			LOG.info(&quot;SMPP server started on port {}&quot;, getPort());</span>
+<span class="fc" id="L128">			LOG.info(&quot;starting SMPP server on port {}...&quot;, getPort());</span>
+<span class="fc" id="L129">			before();</span>
+<span class="fc" id="L130">			server.start();</span>
+<span class="fc" id="L131">			LOG.info(&quot;SMPP server started on port {}&quot;, getPort());</span>
 			try {
-<span class="fc" id="L138">				base.evaluate();</span>
+<span class="fc" id="L133">				base.evaluate();</span>
 			} finally {
-<span class="fc" id="L140">				LOG.info(&quot;stopping SMPP server...&quot;);</span>
-<span class="fc" id="L141">				server.stop();</span>
-<span class="fc" id="L142">				LOG.info(&quot;SMPP server stopped&quot;);</span>
+<span class="fc" id="L135">				LOG.info(&quot;stopping SMPP server...&quot;);</span>
+<span class="fc" id="L136">				server.stop();</span>
+<span class="fc" id="L137">				after();</span>
+<span class="fc" id="L138">				LOG.info(&quot;SMPP server stopped&quot;);</span>
 			}
-<span class="fc" id="L144">		}</span>
+<span class="fc" id="L140">		}</span>
 	}
+
+	protected void before() {
+		// extension point
+<span class="fc" id="L145">	}</span>
+
+	protected void after() {
+		// extension point
+<span class="fc" id="L149">	}</span>
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

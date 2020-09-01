@@ -16,12 +16,9 @@
 <script type="text/javascript" src="..//javascripts/sourcecode/collapse-lines.js"></script>
 <script type="text/javascript" src="..//javascripts/tabcontainer.js"></script>
 <script type="text/javascript" src="..//javascripts/toc.js"></script>
-<link rel="stylesheet" type="text/css" href="..//styles/custom-styles.css" />
-<link rel="stylesheet" type="text/css" href="..//styles/tabcontainer.css" />
-<link rel="stylesheet" type="text/css" href="..//styles/steps.css" />
-<link rel="stylesheet" type="text/css" href="..//styles/toc.css" />
-<link rel="stylesheet" type="text/css" href="..//styles/sourcecode/collapse-lines.css" />
-<link rel="stylesheet" type="text/css" href="..//styles/sourcecode/highlight-lines.css" />
+<script type="text/javascript" src="..//javascripts/sticky-title-fix.js"></script>
+<script type="text/javascript" src="..//javascripts/image-viewer.js"></script>
+<link rel="stylesheet" type="text/css" href="..//styles/doc-styles.css" />
 </head>
 <body class="book toc2 toc-left">
 <div id="header">
@@ -41,6 +38,7 @@
 <li><a href="#_use_ssl">Use SSL</a></li>
 <li><a href="#gmail">Send email through GMail</a></li>
 <li><a href="#sendgrid">Sending email through SendGrid</a></li>
+<li><a href="#_internationalization">Internationalization</a></li>
 </ul>
 </li>
 <li><a href="#sms-usage">Send SMS</a>
@@ -53,10 +51,17 @@
 <li><a href="#_globally_configure_default_sender_phone_number">Globally configure default sender phone number</a></li>
 </ul>
 </li>
-<li><a href="#resource-resolution">Resource resolution</a></li>
+<li><a href="#resource-resolution">Resource handling</a>
+<ul class="sectlevel2">
+<li><a href="#_resource_resolution">Resource resolution</a></li>
+<li><a href="#_resources_referenced_in_templates">Resources referenced in templates</a></li>
+</ul>
+</li>
 <li><a href="#properties-handling">Properties handling</a>
 <ul class="sectlevel2">
 <li><a href="#_properties_priority">Properties priority</a></li>
+<li><a href="#_files_location">Files location</a></li>
+<li><a href="#_configuration_profiles">Configuration profiles</a></li>
 </ul>
 </li>
 <li><a href="#_templating">Templating</a>
@@ -85,7 +90,7 @@
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-All samples with templates are using ThymeLeaf as template engine. For FreeMarker samples, take a look at <a href="#freemarker">FreeMarker section</a>.
+All samples with templates are using ThymeLeaf as template engine. For FreeMarker samples, take a look at <a href="../user-manual.html#freemarker">FreeMarker section</a>.
 </td>
 </tr>
 </table>
@@ -99,7 +104,13 @@ All samples with templates are using ThymeLeaf as template engine. For FreeMarke
 <p>The samples are available in the <a href="https://github.com/groupe-sii/ogham/blob/master/sample-standard-usage">sample-standard-usage sub-project</a>.</p>
 </div>
 <div class="paragraph">
-<p>All samples shown bellow are using SMTP for sending email. See <a href="#sendgrid">Sending email through SendGrid</a> to know how to send email using SendGrid HTTP API.</p>
+<p>All samples shown bellow are using SMTP for sending email and are also
+valid for sending email using any other protocol/API. Only the configuration part
+differs.</p>
+</div>
+<div class="paragraph">
+<p>See <a href="../user-manual.html#sendgrid">Sending email through SendGrid</a> to know how
+to configure Ogham for sending email using SendGrid HTTP API.</p>
 </div>
 <div class="sect2">
 <h3 id="_first_email_using_an_existing_smtp_server"><a class="anchor" href="#_first_email_using_an_existing_smtp_server"></a>First email using an existing SMTP server</h3>
@@ -111,12 +122,11 @@ All samples with templates are using ThymeLeaf as template engine. For FreeMarke
 Then you must create the service. You can use the MessagingBuilder to help you to create the service.
 Finally, the last line sends the email. The specified email is really basic. It only contains the subject, the textual content and the receiver address. The sender address is automatically added to the email by the service based on configuration properties.</p>
 </div>
-<div class="paragraph tab-container no-max-height">
-<p>Basic sample</p>
-</div>
-<div class="paragraph tab">
-<p><span class="image"><img src="../images//icons/java-logo.png" alt="java logo" width="16" height="30"></span> Java</p>
-</div>
+<div class="exampleblock tab-container no-max-height">
+<div class="content">
+<div class="openblock tab">
+<div class="title"><span class="image"><img src="../images//icons/java-logo.png" alt="java logo" width="16" height="30"></span> Java</div>
+<div class="content">
 <div class="listingblock collapse-lines:1-9 irrelevant-lines:1-9">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">fr.sii.ogham.sample.standard.email</span>;
@@ -177,14 +187,34 @@ Finally, the last line sends the email. The specified email is really basic. It 
 <div class="paragraph">
 <p><a href="https://github.com/groupe-sii/ogham/blob/master/sample-standard-usage/src/main/java/fr/sii/ogham/sample/standard/email/BasicSample.java?ts=2">Source code of the sample</a>.</p>
 </div>
-<div class="paragraph tab-container-end">
-<p>-</p>
+</div>
+</div>
+</div>
 </div>
 <div class="paragraph">
 <p>The construction of the email is done using a fluent API in order to chain calls and to have a more readable code.</p>
 </div>
 <div class="paragraph">
-<p>Properties are directly provided in the code. You can instead <a href="#properties-handling">use a configuration file</a>.</p>
+<p>Properties are directly provided in the code. You can instead <a href="../user-manual.html#properties-handling">use a configuration file</a>.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="title">Email address format</div>
+<div class="paragraph">
+<p>Ogham supports the personal information in email address. The format is <code>personal &lt;address&gt;</code>.</p>
+</div>
+<div class="paragraph">
+<p>For example, the address with personal <code>Ogham Test &lt;<a href="mailto:ogham-test@yopmail.com">ogham-test@yopmail.com</a>&gt;</code> will result in
+<code>ogham-test@yopmail.com</code> as email address and <code>Ogham Test</code> as personal.</p>
+</div>
+</td>
+</tr>
+</table>
 </div>
 </div>
 <div class="sect2">
@@ -192,12 +222,11 @@ Finally, the last line sends the email. The specified email is really basic. It 
 <div class="paragraph">
 <p>This sample shows how to send an email with a content following a template engine language.</p>
 </div>
-<div class="paragraph tab-container no-max-height">
-<p>Sample with template</p>
-</div>
-<div class="paragraph tab">
-<p><span class="image"><img src="../images//icons/java-logo.png" alt="java logo" width="16" height="30"></span> Java</p>
-</div>
+<div class="exampleblock tab-container no-max-height">
+<div class="content">
+<div class="openblock tab">
+<div class="title"><span class="image"><img src="../images//icons/java-logo.png" alt="java logo" width="16" height="30"></span> Java</div>
+<div class="content">
 <div class="listingblock collapse-lines:1-9,34-46 irrelevant-lines:1-9,12-19 highlight-lines:28-29">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">fr.sii.ogham.sample.standard.email</span>;
@@ -281,9 +310,11 @@ Finally, the last line sends the email. The specified email is really basic. It 
 <div class="paragraph">
 <p><a href="https://github.com/groupe-sii/ogham/blob/master/sample-standard-usage/src/main/java/fr/sii/ogham/sample/standard/email/HtmlTemplateSample.java?ts=2">Source code of the sample</a>.</p>
 </div>
-<div class="paragraph tab">
-<p><span class="image"><img src="../images//icons/thymeleaf.jpg" alt="thymeleaf" width="30" height="30"></span> ThymeLeaf template</p>
 </div>
+</div>
+<div class="openblock tab">
+<div class="title"><span class="image"><img src="../images//icons/thymeleaf.jpg" alt="thymeleaf" width="30" height="30"></span> ThymeLeaf template</div>
+<div class="content">
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="html"><span class="doctype">&lt;!DOCTYPE html&gt;</span>
@@ -317,8 +348,9 @@ Finally, the last line sends the email. The specified email is really basic. It 
 <div class="paragraph">
 <p><a href="https://github.com/groupe-sii/ogham/blob/master/sample-standard-usage/src/main/resources/template/thymeleaf/simple.html?ts=2">Source code of the HTML template</a></p>
 </div>
-<div class="paragraph tab-container-end">
-<p>-</p>
+</div>
+</div>
+</div>
 </div>
 <div class="paragraph">
 <p>Using a template is straightforward. Instead of providing a string as body (using <code>body().string(&#8230;&#8203;)</code>),
@@ -339,7 +371,7 @@ The <code>template</code> method requires two pieces of information:</p>
 <p>The path to the template is a string that may contain a <strong>lookup</strong> prefix. The lookup prefix is used to indicate
 where to search the template (from file system, from classpath or anywhere else). Here we explicitly
 ask to load the template from classpath (using prefix <code>classpath:</code>). If no lookup is defined,
-classpath is used by default. See <a href="#resource-resolution">Resource resolution section</a> for more information.</p>
+classpath is used by default. See <a href="../user-manual.html#resource-resolution">Resource resolution section</a> for more information.</p>
 </div>
 <div class="paragraph">
 <p>The variables are any object you are using in your application. No need to convert your object to a
@@ -349,14 +381,17 @@ particular format. Directly use what you want.</p>
 <div class="sect2">
 <h3 id="html-title-subject"><a class="anchor" href="#html-title-subject"></a>Use HTML title as email subject</h3>
 <div class="paragraph">
-<p>This sample is a variant of the previous one. It allows you to directly use the HTML title as subject of your email. It may be useful to use variables in the subject too, to mutualize the code and to avoid to create a new file just for one line.</p>
+<p>This sample is a variant of the previous one. It allows you to
+directly use the HTML title as subject of your email. It may be
+useful to use variables in the subject too, to mutualize the code
+and to avoid to create a new file or to use
+a different evaluation syntax or context just for one line.</p>
 </div>
-<div class="paragraph tab-container no-max-height">
-<p>Sample with template</p>
-</div>
-<div class="paragraph tab">
-<p><span class="image"><img src="../images//icons/java-logo.png" alt="java logo" width="16" height="30"></span> Java</p>
-</div>
+<div class="exampleblock tab-container no-max-height">
+<div class="content">
+<div class="openblock tab">
+<div class="title"><span class="image"><img src="../images//icons/java-logo.png" alt="java logo" width="16" height="30"></span> Java</div>
+<div class="content">
 <div class="listingblock collapse-lines:1-10,35-47 irrelevant-lines:1-10,12-19">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">fr.sii.ogham.sample.standard.email</span>;
@@ -421,9 +456,11 @@ particular format. Directly use what you want.</p>
 <div class="paragraph">
 <p><a href="https://github.com/groupe-sii/ogham/blob/master/sample-standard-usage/src/main/java/fr/sii/ogham/sample/standard/email/HtmlTemplateWithSubjectSample.java?ts=2">Source code of the sample</a></p>
 </div>
-<div class="paragraph tab">
-<p><span class="image"><img src="../images//icons/thymeleaf.jpg" alt="thymeleaf" width="30" height="30"></span> ThymeLeaf template</p>
 </div>
+</div>
+<div class="openblock tab">
+<div class="title"><span class="image"><img src="../images//icons/thymeleaf.jpg" alt="thymeleaf" width="30" height="30"></span> ThymeLeaf template</div>
+<div class="content">
 <div class="listingblock highlight-lines:4">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="html"><span class="doctype">&lt;!DOCTYPE html&gt;</span>
@@ -462,19 +499,19 @@ The subject of the email will be <code>Subject of the email - Welcome foo !</cod
 <div class="paragraph">
 <p><a href="https://github.com/groupe-sii/ogham/blob/master/sample-standard-usage/src/main/resources/template/thymeleaf/simpleWithSubject.html?ts=2">Source code of the HTML template</a></p>
 </div>
-<div class="paragraph tab-container-end">
-<p>-</p>
+</div>
+</div>
+</div>
 </div>
 <div class="paragraph">
 <p>For text templates, the subject is automatically used (like for HTML title) if the first line starts
 with <code>Subject:</code> (spaces can be added after colon). Other lines are used as content of the email.</p>
 </div>
-<div class="paragraph tab-container no-max-height">
-<p>Sample with template</p>
-</div>
-<div class="paragraph tab">
-<p><span class="image"><img src="../images//icons/java-logo.png" alt="java logo" width="16" height="30"></span> Java</p>
-</div>
+<div class="exampleblock tab-container no-max-height">
+<div class="content">
+<div class="openblock tab">
+<div class="title"><span class="image"><img src="../images//icons/java-logo.png" alt="java logo" width="16" height="30"></span> Java</div>
+<div class="content">
 <div class="listingblock collapse-lines:1-9,35-47 irrelevant-lines:1-9,12-19">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">fr.sii.ogham.sample.standard.email</span>;
@@ -539,9 +576,11 @@ with <code>Subject:</code> (spaces can be added after colon). Other lines are us
 <div class="paragraph">
 <p><a href="https://github.com/groupe-sii/ogham/blob/master/sample-standard-usage/src/main/java/fr/sii/ogham/sample/standard/email/TextTemplateWithSubjectSample.java?ts=2">Source code of the sample</a></p>
 </div>
-<div class="paragraph tab">
-<p><span class="image"><img src="../images//icons/freemarker-logo.png" alt="freemarker logo" width="60" height="24"></span> Text template</p>
 </div>
+</div>
+<div class="openblock tab">
+<div class="title"><span class="image"><img src="../images//icons/freemarker-logo.png" alt="freemarker logo" width="60" height="24"></span> Text template</div>
+<div class="content">
 <div class="listingblock highlight-lines:1">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="text">Subject: Welcome ${name} !
@@ -565,8 +604,9 @@ The subject of the email will be <code>Welcome foo !</code>
 <div class="paragraph">
 <p><a href="https://github.com/groupe-sii/ogham/blob/master/sample-standard-usage/src/main/resources/template/freemarker/simpleWithSubject.txt.ftl?ts=2">Source code of the text template</a></p>
 </div>
-<div class="paragraph tab-container-end">
-<p>-</p>
+</div>
+</div>
+</div>
 </div>
 </div>
 <div class="sect2">
@@ -623,12 +663,11 @@ on several clients, you should follow these rules:</p>
 should be able to write its HTML and CSS like as usual in Web browsers. Ogham
 simplifies image and CSS integration and is able to partially rewrite the HTML.</p>
 </div>
-<div class="paragraph tab-container  no-max-height">
-<p>Sample with template</p>
-</div>
-<div class="paragraph tab">
-<p><span class="image"><img src="../images//icons/java-logo.png" alt="java logo" width="16" height="30"></span> Java</p>
-</div>
+<div class="exampleblock tab-container  no-max-height">
+<div class="content">
+<div class="openblock tab">
+<div class="title"><span class="image"><img src="../images//icons/java-logo.png" alt="java logo" width="16" height="30"></span> Java</div>
+<div class="content">
 <div class="listingblock collapse-lines:1-10,36-48 irrelevant-lines:1-10,12-19 highlight-lines:30-31">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">fr.sii.ogham.sample.standard.email</span>;
@@ -699,9 +738,11 @@ simplifies image and CSS integration and is able to partially rewrite the HTML.<
 <div class="paragraph">
 <p><a href="https://github.com/groupe-sii/ogham/blob/master/sample-standard-usage/src/main/java/fr/sii/ogham/sample/standard/email/HtmlWithImagesAndCssTemplateSample.java?ts=2">Source code of the sample</a></p>
 </div>
-<div class="paragraph tab">
-<p><span class="image"><img src="../images//icons/thymeleaf-html.jpg" alt="thymeleaf html" width="30" height="30"></span> ThymeLeaf template</p>
 </div>
+</div>
+<div class="openblock tab">
+<div class="title"><span class="image"><img src="../images//icons/thymeleaf-html.jpg" alt="thymeleaf html" width="30" height="30"></span> ThymeLeaf template</div>
+<div class="content">
 <div class="listingblock highlight-lines:7-8,12,18,27,39,42">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="html"><span class="doctype">&lt;!DOCTYPE html&gt;</span>
@@ -798,9 +839,11 @@ determined</td>
 <div class="paragraph">
 <p><a href="https://github.com/groupe-sii/ogham/blob/master/sample-standard-usage/src/main/resources/template/withImagesAndCss/resources.html?ts=2">Source code of the HTML template</a></p>
 </div>
-<div class="paragraph tab">
-<p><span class="image"><img src="../images//icons/css.png" alt="css" width="37" height="30"></span> CSS</p>
 </div>
+</div>
+<div class="openblock tab">
+<div class="title"><span class="image"><img src="../images//icons/css.png" alt="css" width="37" height="30"></span> CSS</div>
+<div class="content">
 <div class="listingblock">
 <div class="title">layout.css</div>
 <div class="content">
@@ -880,16 +923,25 @@ determined</td>
 }</code></pre>
 </div>
 </div>
-<div class="paragraph tab">
-<p><span class="image"><img src="../images//icons/html.png" alt="html" width="37" height="30"></span> Sent HTML</p>
 </div>
-<div class="listingblock">
+</div>
+<div class="openblock tab">
+<div class="title"><span class="image"><img src="../images//icons/html.png" alt="html" width="37" height="30"></span> Sent HTML</div>
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="html">TODO: code of the generated HTML with all transformations</code></pre>
+<div class="exampleblock TODO">
+<div class="content">
+<div class="ulist">
+<ul>
+<li>
+<p>Add code of the generated HTML with all transformations</p>
+</li>
+</ul>
 </div>
 </div>
-<div class="paragraph tab-container-end">
-<p>-</p>
+</div>
+</div>
+</div>
+</div>
 </div>
 <div class="paragraph">
 <p>Here is the list of supported transformations:</p>
@@ -936,6 +988,20 @@ determined</td>
 <p><i class="fa fa-square-o"></i> Images must have <code>alt</code> attribute</p>
 </li>
 </ul>
+</div>
+<div class="exampleblock TODO">
+<div class="content">
+<div class="ulist">
+<ul>
+<li>
+<p>List all other rules</p>
+</li>
+<li>
+<p>Indicate what will be supported and what won&#8217;t and why</p>
+</li>
+</ul>
+</div>
+</div>
 </div>
 <div class="sect3">
 <h4 id="_inline_images"><a class="anchor" href="#_inline_images"></a>Inline images</h4>
@@ -1032,7 +1098,7 @@ clients than base64 strategy.</p>
 <div class="title">Customize CID generation</div>
 <div class="paragraph">
 <p>Default Content-ID generation simply uses a incremental number. It is possible to
-use <a href="#custom-cid-generation">custom Content-ID generation</a>.</p>
+use <a href="../user-manual.html#custom-cid-generation">custom Content-ID generation</a>.</p>
 </div>
 </td>
 </tr>
@@ -1054,18 +1120,17 @@ the <code>"attach"</code> value directly on the <code>&lt;img&gt;</code> tag.</p
 <div class="title">Change default strategy</div>
 <div class="paragraph">
 <p>It is possible to configure Ogham to use a
-<a href="#custom-image-inlining-strategy">different inlining strategy by default</a>.</p>
+<a href="../user-manual.html#custom-image-inlining-strategy">different inlining strategy by default</a>.</p>
 </div>
 </td>
 </tr>
 </table>
 </div>
-<div class="paragraph tab-container  no-max-height">
-<p>Attach images</p>
-</div>
-<div class="paragraph tab">
-<p><span class="image"><img src="../images//icons/java-logo.png" alt="java logo" width="16" height="30"></span> Java</p>
-</div>
+<div class="exampleblock tab-container  no-max-height">
+<div class="content">
+<div class="openblock tab">
+<div class="title"><span class="image"><img src="../images//icons/java-logo.png" alt="java logo" width="16" height="30"></span> Java</div>
+<div class="content">
 <div class="listingblock collapse-lines:1-10,12-28,36-48 irrelevant-lines:1-10,12-19 highlight-lines:30-31">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">fr.sii.ogham.sample.standard.email</span>;
@@ -1136,10 +1201,12 @@ the <code>"attach"</code> value directly on the <code>&lt;img&gt;</code> tag.</p
 <div class="paragraph">
 <p><a href="https://github.com/groupe-sii/ogham/blob/master/sample-standard-usage/src/main/java/fr/sii/ogham/sample/standard/email/HtmlWithImagesAndCssTemplateSample.java?ts=2">Source code of the sample</a></p>
 </div>
-<div class="paragraph tab">
-<p><span class="image"><img src="../images//icons/thymeleaf-html.jpg" alt="thymeleaf html" width="30" height="30"></span> ThymeLeaf template</p>
 </div>
-<div class="listingblock collapse-lines:1-10,14-16,19-24,28-36,41-49 highlight-lines:12,27,39">
+</div>
+<div class="openblock tab">
+<div class="title"><span class="image"><img src="../images//icons/thymeleaf-html.jpg" alt="thymeleaf html" width="30" height="30"></span> ThymeLeaf template</div>
+<div class="content">
+<div class="listingblock collapse-lines:1-10,14-25,28-37,41- highlight-lines:12,27,39">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="html"><span class="doctype">&lt;!DOCTYPE html&gt;</span>
 <span class="tag">&lt;html</span> <span class="attribute-name">xmlns:th</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">http://www.thymeleaf.org</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
@@ -1226,10 +1293,12 @@ be inlined (using <code>attach</code> strategy)</td>
 <div class="paragraph">
 <p><a href="https://github.com/groupe-sii/ogham/blob/master/sample-standard-usage/src/main/resources/template/withImagesAndCss/resources.html?ts=2">Source code of the HTML template</a></p>
 </div>
-<div class="paragraph tab">
-<p><span class="image"><img src="../images//icons/html.png" alt="html" width="37" height="30"></span> Generated HTML</p>
 </div>
-<div class="listingblock collapse-lines:1-8,12-24,27-34,39-47 highlight-lines:10,26,37">
+</div>
+<div class="openblock tab">
+<div class="title"><span class="image"><img src="../images//icons/html.png" alt="html" width="37" height="30"></span> Generated HTML</div>
+<div class="content">
+<div class="listingblock collapse-lines:1-8,12-24,27-35,39- highlight-lines:10,26,37">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="html"><span class="doctype">&lt;!doctype html&gt;</span>
 <span class="tag">&lt;html&gt;</span>
@@ -1318,8 +1387,9 @@ be inlined (using <code>attach</code> strategy)</td>
 </tr>
 </table>
 </div>
-<div class="paragraph tab-container-end">
-<p>-</p>
+</div>
+</div>
+</div>
 </div>
 </div>
 <div class="sect4">
@@ -1339,18 +1409,17 @@ attribute with the <code>"base64"</code> value directly on the <code>&lt;img&gt;
 <div class="title">Mimetype detection</div>
 <div class="paragraph">
 <p>The data URL scheme needs the mediatype information. Ogham automatically provides
-this information for you thanks to <a href="#mimetype-detection">automatic mimetype detection</a>.</p>
+this information for you thanks to <a href="../user-manual.html#mimetype-detection">automatic mimetype detection</a>.</p>
 </div>
 </td>
 </tr>
 </table>
 </div>
-<div class="paragraph tab-container  no-max-height">
-<p>Embed images as base64</p>
-</div>
-<div class="paragraph tab">
-<p><span class="image"><img src="../images//icons/java-logo.png" alt="java logo" width="16" height="30"></span> Java</p>
-</div>
+<div class="exampleblock tab-container  no-max-height">
+<div class="content">
+<div class="openblock tab">
+<div class="title"><span class="image"><img src="../images//icons/java-logo.png" alt="java logo" width="16" height="30"></span> Java</div>
+<div class="content">
 <div class="listingblock collapse-lines:1-10,12-28,36-48 irrelevant-lines:1-10,12-19 highlight-lines:30-31">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">fr.sii.ogham.sample.standard.email</span>;
@@ -1421,10 +1490,12 @@ this information for you thanks to <a href="#mimetype-detection">automatic mimet
 <div class="paragraph">
 <p><a href="https://github.com/groupe-sii/ogham/blob/master/sample-standard-usage/src/main/java/fr/sii/ogham/sample/standard/email/HtmlWithImagesAndCssTemplateSample.java?ts=2">Source code of the sample</a></p>
 </div>
-<div class="paragraph tab">
-<p><span class="image"><img src="../images//icons/thymeleaf-html.jpg" alt="thymeleaf html" width="30" height="30"></span> ThymeLeaf template</p>
 </div>
-<div class="listingblock collapse-lines:1-16,19-24,26-49 highlight-lines:18">
+</div>
+<div class="openblock tab">
+<div class="title"><span class="image"><img src="../images//icons/thymeleaf-html.jpg" alt="thymeleaf html" width="30" height="30"></span> ThymeLeaf template</div>
+<div class="content">
+<div class="listingblock collapse-lines:1-16,19-24,26- highlight-lines:18">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="html"><span class="doctype">&lt;!DOCTYPE html&gt;</span>
 <span class="tag">&lt;html</span> <span class="attribute-name">xmlns:th</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">http://www.thymeleaf.org</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
@@ -1502,10 +1573,12 @@ this information for you thanks to <a href="#mimetype-detection">automatic mimet
 <div class="paragraph">
 <p><a href="https://github.com/groupe-sii/ogham/blob/master/sample-standard-usage/src/main/resources/template/withImagesAndCss/resources.html?ts=2">Source code of the HTML template</a></p>
 </div>
-<div class="paragraph tab">
-<p><span class="image"><img src="../images//icons/html.png" alt="html" width="37" height="30"></span> Generated HTML</p>
 </div>
-<div class="listingblock collapse-lines:1-14,19-23,25-47 highlight-lines:16-18">
+</div>
+<div class="openblock tab">
+<div class="title"><span class="image"><img src="../images//icons/html.png" alt="html" width="37" height="30"></span> Generated HTML</div>
+<div class="content">
+<div class="listingblock collapse-lines:1-14,19-23,25- highlight-lines:16-18">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="html"><span class="doctype">&lt;!doctype html&gt;</span>
 <span class="tag">&lt;html&gt;</span>
@@ -1584,8 +1657,9 @@ for readability).</td>
 </tr>
 </table>
 </div>
-<div class="paragraph tab-container-end">
-<p>-</p>
+</div>
+</div>
+</div>
 </div>
 </div>
 <div class="sect4">
@@ -1595,12 +1669,11 @@ for readability).</td>
 the image by placing the <code>data-inline-image</code> attribute with the <code>"skip"</code> value
 on the <code>&lt;img&gt;</code> tag.</p>
 </div>
-<div class="paragraph tab-container  no-max-height">
-<p>Skip embedding</p>
-</div>
-<div class="paragraph tab">
-<p><span class="image"><img src="../images//icons/java-logo.png" alt="java logo" width="16" height="30"></span> Java</p>
-</div>
+<div class="exampleblock tab-container  no-max-height">
+<div class="content">
+<div class="openblock tab">
+<div class="title"><span class="image"><img src="../images//icons/java-logo.png" alt="java logo" width="16" height="30"></span> Java</div>
+<div class="content">
 <div class="listingblock collapse-lines:1-10,12-28,36-48 irrelevant-lines:1-10,12-19 highlight-lines:30-31">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">fr.sii.ogham.sample.standard.email</span>;
@@ -1671,10 +1744,12 @@ on the <code>&lt;img&gt;</code> tag.</p>
 <div class="paragraph">
 <p><a href="https://github.com/groupe-sii/ogham/blob/master/sample-standard-usage/src/main/java/fr/sii/ogham/sample/standard/email/HtmlWithImagesAndCssTemplateSample.java?ts=2">Source code of the sample</a></p>
 </div>
-<div class="paragraph tab">
-<p><span class="image"><img src="../images//icons/thymeleaf-html.jpg" alt="thymeleaf html" width="30" height="30"></span> ThymeLeaf template</p>
 </div>
-<div class="listingblock collapse-lines:1-40,44-49 highlight-lines:42">
+</div>
+<div class="openblock tab">
+<div class="title"><span class="image"><img src="../images//icons/thymeleaf-html.jpg" alt="thymeleaf html" width="30" height="30"></span> ThymeLeaf template</div>
+<div class="content">
+<div class="listingblock collapse-lines:1-40,44- highlight-lines:42">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="html"><span class="doctype">&lt;!DOCTYPE html&gt;</span>
 <span class="tag">&lt;html</span> <span class="attribute-name">xmlns:th</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">http://www.thymeleaf.org</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
@@ -1764,10 +1839,12 @@ on the <code>&lt;img&gt;</code> tag.</p>
 <div class="paragraph">
 <p><a href="https://github.com/groupe-sii/ogham/blob/master/sample-standard-usage/src/main/resources/template/withImagesAndCss/resources.html?ts=2">Source code of the HTML template</a></p>
 </div>
-<div class="paragraph tab">
-<p><span class="image"><img src="../images//icons/html.png" alt="html" width="37" height="30"></span> Generated HTML</p>
 </div>
-<div class="listingblock collapse-lines:1-38,42-47 highlight-lines:40">
+</div>
+<div class="openblock tab">
+<div class="title"><span class="image"><img src="../images//icons/html.png" alt="html" width="37" height="30"></span> Generated HTML</div>
+<div class="content">
+<div class="listingblock collapse-lines:1-38,42- highlight-lines:40">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="html"><span class="doctype">&lt;!doctype html&gt;</span>
 <span class="tag">&lt;html&gt;</span>
@@ -1864,8 +1941,9 @@ on the <code>&lt;img&gt;</code> tag.</p>
 </tr>
 </table>
 </div>
-<div class="paragraph tab-container-end">
-<p>-</p>
+</div>
+</div>
+</div>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -1994,12 +2072,23 @@ in the HTML are also inlined using <code>style</code> attribute.</p>
 </tr>
 </table>
 </div>
-<div class="paragraph tab-container  no-max-height">
-<p>Inline CSS using style attribute</p>
+<div class="exampleblock TODO">
+<div class="content">
+<div class="ulist">
+<ul>
+<li>
+<p>When Ogham provides several CSS inlining modes, add information about how to change
+default strategy</p>
+</li>
+</ul>
 </div>
-<div class="paragraph tab">
-<p><span class="image"><img src="../images//icons/java-logo.png" alt="java logo" width="16" height="30"></span> Java</p>
 </div>
+</div>
+<div class="exampleblock tab-container  no-max-height">
+<div class="content">
+<div class="openblock tab">
+<div class="title"><span class="image"><img src="../images//icons/java-logo.png" alt="java logo" width="16" height="30"></span> Java</div>
+<div class="content">
 <div class="listingblock collapse-lines:1-10,12-28,36-48 irrelevant-lines:1-10,12-19 highlight-lines:30-31">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">fr.sii.ogham.sample.standard.email</span>;
@@ -2070,9 +2159,11 @@ in the HTML are also inlined using <code>style</code> attribute.</p>
 <div class="paragraph">
 <p><a href="https://github.com/groupe-sii/ogham/blob/master/sample-standard-usage/src/main/java/fr/sii/ogham/sample/standard/email/HtmlWithImagesAndCssTemplateSample.java?ts=2">Source code of the sample</a></p>
 </div>
-<div class="paragraph tab">
-<p><span class="image"><img src="../images//icons/thymeleaf-html.jpg" alt="thymeleaf html" width="30" height="30"></span> ThymeLeaf template</p>
 </div>
+</div>
+<div class="openblock tab">
+<div class="title"><span class="image"><img src="../images//icons/thymeleaf-html.jpg" alt="thymeleaf html" width="30" height="30"></span> ThymeLeaf template</div>
+<div class="content">
 <div class="listingblock highlight-lines:7-8">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="html"><span class="doctype">&lt;!DOCTYPE html&gt;</span>
@@ -2143,9 +2234,11 @@ in the HTML are also inlined using <code>style</code> attribute.</p>
 <div class="paragraph">
 <p><a href="https://github.com/groupe-sii/ogham/blob/master/sample-standard-usage/src/main/resources/template/withImagesAndCss/resources.html?ts=2">Source code of the HTML template</a></p>
 </div>
-<div class="paragraph tab">
-<p><span class="image"><img src="../images//icons/css.png" alt="css" width="37" height="30"></span> CSS files</p>
 </div>
+</div>
+<div class="openblock tab">
+<div class="title"><span class="image"><img src="../images//icons/css.png" alt="css" width="37" height="30"></span> CSS files</div>
+<div class="content">
 <div class="listingblock">
 <div class="title">layout.css</div>
 <div class="content">
@@ -2225,10 +2318,12 @@ in the HTML are also inlined using <code>style</code> attribute.</p>
 }</code></pre>
 </div>
 </div>
-<div class="paragraph tab">
-<p><span class="image"><img src="../images//icons/html.png" alt="html" width="37" height="30"></span> Generated HTML</p>
 </div>
-<div class="listingblock collapse-lines:16-72 highlight-lines:8,9,10,12,15,74,83,84,85,88,92">
+</div>
+<div class="openblock tab">
+<div class="title"><span class="image"><img src="../images//icons/html.png" alt="html" width="37" height="30"></span> Generated HTML</div>
+<div class="content">
+<div class="listingblock highlight-lines:8,9,10,12,15,25,34,35,36,39,43">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="html"><span class="doctype">&lt;!doctype html&gt;</span>
 <span class="tag">&lt;html&gt;</span>
@@ -2324,8 +2419,9 @@ from both files are merged.</td>
 </tr>
 </table>
 </div>
-<div class="paragraph tab-container-end">
-<p>-</p>
+</div>
+</div>
+</div>
 </div>
 </div>
 <div class="sect4">
@@ -2350,12 +2446,11 @@ nodes, the whole contained rules are not applied at all.</p>
 </tr>
 </table>
 </div>
-<div class="paragraph tab-container  no-max-height">
-<p>Skip CSS inlining on node</p>
-</div>
-<div class="paragraph tab">
-<p><span class="image"><img src="../images//icons/java-logo.png" alt="java logo" width="16" height="30"></span> Java</p>
-</div>
+<div class="exampleblock tab-container  no-max-height">
+<div class="content">
+<div class="openblock tab">
+<div class="title"><span class="image"><img src="../images//icons/java-logo.png" alt="java logo" width="16" height="30"></span> Java</div>
+<div class="content">
 <div class="listingblock collapse-lines:1-10,12-28,36-48 irrelevant-lines:1-10,12-19 highlight-lines:30-31">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">fr.sii.ogham.sample.standard.email</span>;
@@ -2426,10 +2521,12 @@ nodes, the whole contained rules are not applied at all.</p>
 <div class="paragraph">
 <p><a href="https://github.com/groupe-sii/ogham/blob/master/sample-standard-usage/src/main/java/fr/sii/ogham/sample/standard/email/HtmlWithImagesAndCssTemplateSample.java?ts=2">Source code of the sample</a></p>
 </div>
-<div class="paragraph tab">
-<p><span class="image"><img src="../images//icons/thymeleaf-html.jpg" alt="thymeleaf html" width="30" height="30"></span> ThymeLeaf template</p>
 </div>
-<div class="listingblock highlight-lines:47">
+</div>
+<div class="openblock tab">
+<div class="title"><span class="image"><img src="../images//icons/thymeleaf-html.jpg" alt="thymeleaf html" width="30" height="30"></span> ThymeLeaf template</div>
+<div class="content">
+<div class="listingblock collapse-lines:1-44 highlight-lines:47">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="html"><span class="doctype">&lt;!DOCTYPE html&gt;</span>
 <span class="tag">&lt;html</span> <span class="attribute-name">xmlns:th</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">http://www.thymeleaf.org</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
@@ -2523,9 +2620,11 @@ nodes, the whole contained rules are not applied at all.</p>
 <div class="paragraph">
 <p><a href="https://github.com/groupe-sii/ogham/blob/master/sample-standard-usage/src/main/resources/template/withImagesAndCss/resources.html?ts=2">Source code of the HTML template</a></p>
 </div>
-<div class="paragraph tab">
-<p><span class="image"><img src="../images//icons/css.png" alt="css" width="37" height="30"></span> CSS files</p>
 </div>
+</div>
+<div class="openblock tab">
+<div class="title"><span class="image"><img src="../images//icons/css.png" alt="css" width="37" height="30"></span> CSS files</div>
+<div class="content">
 <div class="listingblock">
 <div class="title">layout.css</div>
 <div class="content">
@@ -2605,10 +2704,12 @@ nodes, the whole contained rules are not applied at all.</p>
 }</code></pre>
 </div>
 </div>
-<div class="paragraph tab">
-<p><span class="image"><img src="../images//icons/html.png" alt="html" width="37" height="30"></span> Generated HTML</p>
 </div>
-<div class="listingblock collapse-lines:9-82,84-91 highlight-lines:94">
+</div>
+<div class="openblock tab">
+<div class="title"><span class="image"><img src="../images//icons/html.png" alt="html" width="37" height="30"></span> Generated HTML</div>
+<div class="content">
+<div class="listingblock collapse-lines:1-42 highlight-lines:45">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="html"><span class="doctype">&lt;!doctype html&gt;</span>
 <span class="tag">&lt;html&gt;</span>
@@ -2710,8 +2811,9 @@ notice that no <code>style</code> attribute has been added</td>
 </tr>
 </table>
 </div>
-<div class="paragraph tab-container-end">
-<p>-</p>
+</div>
+</div>
+</div>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -2755,11 +2857,11 @@ following properties:</p>
 </li>
 </ul>
 </div>
-<div class="admonitionblock warning">
+<div class="admonitionblock important">
 <table>
 <tr>
 <td class="icon">
-<i class="fa icon-warning" title="Warning"></i>
+<i class="fa icon-important" title="Important"></i>
 </td>
 <td class="content">
 <div class="title">Email client support</div>
@@ -2874,7 +2976,7 @@ strategy.</p>
 <div class="title">Customize CID generation</div>
 <div class="paragraph">
 <p>Default Content-ID generation simply uses a incremental number. It is possible to
-use <a href="#custom-cid-generation">custom Content-ID generation</a>.</p>
+use <a href="../user-manual.html#custom-cid-generation">custom Content-ID generation</a>.</p>
 </div>
 </td>
 </tr>
@@ -2885,12 +2987,11 @@ use <a href="#custom-cid-generation">custom Content-ID generation</a>.</p>
 inlining strategy to use for a particular image. This is done through
 <code>--inline-image</code> property.</p>
 </div>
-<div class="paragraph tab-container no-max-height">
-<p>Attach background images</p>
-</div>
-<div class="paragraph tab">
-<p><span class="image"><img src="../images//icons/java-logo.png" alt="java logo" width="16" height="30"></span> Java</p>
-</div>
+<div class="exampleblock tab-container no-max-height">
+<div class="content">
+<div class="openblock tab">
+<div class="title"><span class="image"><img src="../images//icons/java-logo.png" alt="java logo" width="16" height="30"></span> Java</div>
+<div class="content">
 <div class="listingblock collapse-lines:1-10,12-28,36-48 irrelevant-lines:1-10,12-19 highlight-lines:30-31">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">fr.sii.ogham.sample.standard.email</span>;
@@ -2960,9 +3061,11 @@ inlining strategy to use for a particular image. This is done through
 <div class="paragraph">
 <p><a href="https://github.com/groupe-sii/ogham/blob/master/sample-standard-usage/src/main/java/fr/sii/ogham/sample/standard/email/HtmlWithBackgroundImagesTemplateSample.java?ts=2">Source code of the sample</a></p>
 </div>
-<div class="paragraph tab">
-<p><span class="image"><img src="../images//icons/thymeleaf-html.jpg" alt="thymeleaf html" width="30" height="30"></span> ThymeLeaf template</p>
 </div>
+</div>
+<div class="openblock tab">
+<div class="title"><span class="image"><img src="../images//icons/thymeleaf-html.jpg" alt="thymeleaf html" width="30" height="30"></span> ThymeLeaf template</div>
+<div class="content">
 <div class="listingblock highlight-lines:7,10">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="html"><span class="doctype">&lt;!DOCTYPE html&gt;</span>
@@ -3011,9 +3114,11 @@ background image will be inlined (using <code>attach</code> strategy).</td>
 <div class="paragraph">
 <p><a href="https://github.com/groupe-sii/ogham/blob/master/sample-standard-usage/src/main/resources/template/thymeleaf/background-images.html?ts=2">Source code of the HTML template</a></p>
 </div>
-<div class="paragraph tab">
-<p><span class="image"><img src="../images//icons/css.png" alt="css" width="37" height="30"></span> CSS</p>
 </div>
+</div>
+<div class="openblock tab">
+<div class="title"><span class="image"><img src="../images//icons/css.png" alt="css" width="37" height="30"></span> CSS</div>
+<div class="content">
 <div class="listingblock highlight-lines:2">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="css"><span class="class">.header</span> {
@@ -3067,9 +3172,11 @@ is specified, the image will be inlined using <code>attach</code> strategy.</td>
 <div class="paragraph">
 <p><a href="https://github.com/groupe-sii/ogham/blob/master/sample-standard-usage/src/main/resources/resources/css/background-images.css?ts=2">Source code of the HTML template</a></p>
 </div>
-<div class="paragraph tab">
-<p><span class="image"><img src="../images//icons/html.png" alt="html" width="37" height="30"></span> Generated HTML</p>
 </div>
+</div>
+<div class="openblock tab">
+<div class="title"><span class="image"><img src="../images//icons/html.png" alt="html" width="37" height="30"></span> Generated HTML</div>
+<div class="content">
 <div class="listingblock highlight-lines:7,10">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="html"><span class="doctype">&lt;!doctype html&gt;</span>
@@ -3114,8 +3221,9 @@ is specified, the image will be inlined using <code>attach</code> strategy.</td>
 </tr>
 </table>
 </div>
-<div class="paragraph tab-container-end">
-<p>-</p>
+</div>
+</div>
+</div>
 </div>
 </div>
 <div class="sect4">
@@ -3125,12 +3233,11 @@ is specified, the image will be inlined using <code>attach</code> strategy.</td>
 included through CSS rules directly as a base64 string. To enable it,
 you need to provide the <code>--inline-image</code> property with <code>base64</code> value.</p>
 </div>
-<div class="paragraph tab-container no-max-height">
-<p>Base64 background images</p>
-</div>
-<div class="paragraph tab">
-<p><span class="image"><img src="../images//icons/java-logo.png" alt="java logo" width="16" height="30"></span> Java</p>
-</div>
+<div class="exampleblock tab-container no-max-height">
+<div class="content">
+<div class="openblock tab">
+<div class="title"><span class="image"><img src="../images//icons/java-logo.png" alt="java logo" width="16" height="30"></span> Java</div>
+<div class="content">
 <div class="listingblock collapse-lines:1-10,12-28,36-48 irrelevant-lines:1-10,12-19 highlight-lines:30-31">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">fr.sii.ogham.sample.standard.email</span>;
@@ -3200,9 +3307,11 @@ you need to provide the <code>--inline-image</code> property with <code>base64</
 <div class="paragraph">
 <p><a href="https://github.com/groupe-sii/ogham/blob/master/sample-standard-usage/src/main/java/fr/sii/ogham/sample/standard/email/HtmlWithBackgroundImagesTemplateSample.java?ts=2">Source code of the sample</a></p>
 </div>
-<div class="paragraph tab">
-<p><span class="image"><img src="../images//icons/thymeleaf-html.jpg" alt="thymeleaf html" width="30" height="30"></span> ThymeLeaf template</p>
 </div>
+</div>
+<div class="openblock tab">
+<div class="title"><span class="image"><img src="../images//icons/thymeleaf-html.jpg" alt="thymeleaf html" width="30" height="30"></span> ThymeLeaf template</div>
+<div class="content">
 <div class="listingblock highlight-lines:7,16">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="html"><span class="doctype">&lt;!DOCTYPE html&gt;</span>
@@ -3251,9 +3360,11 @@ background image will be inlined (using <code>base64</code> strategy).</td>
 <div class="paragraph">
 <p><a href="https://github.com/groupe-sii/ogham/blob/master/sample-standard-usage/src/main/resources/template/thymeleaf/background-images.html?ts=2">Source code of the HTML template</a></p>
 </div>
-<div class="paragraph tab">
-<p><span class="image"><img src="../images//icons/css.png" alt="css" width="37" height="30"></span> CSS</p>
 </div>
+</div>
+<div class="openblock tab">
+<div class="title"><span class="image"><img src="../images//icons/css.png" alt="css" width="37" height="30"></span> CSS</div>
+<div class="content">
 <div class="listingblock highlight-lines:8,11">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="css"><span class="class">.header</span> {
@@ -3308,9 +3419,11 @@ strategy is specified using <code>--inline-image</code> property on the same CSS
 <div class="paragraph">
 <p><a href="https://github.com/groupe-sii/ogham/blob/master/sample-standard-usage/src/main/resources/resources/css/background-images.css?ts=2">Source code of the HTML template</a></p>
 </div>
-<div class="paragraph tab">
-<p><span class="image"><img src="../images//icons/html.png" alt="html" width="37" height="30"></span> Generated HTML</p>
 </div>
+</div>
+<div class="openblock tab">
+<div class="title"><span class="image"><img src="../images//icons/html.png" alt="html" width="37" height="30"></span> Generated HTML</div>
+<div class="content">
 <div class="listingblock highlight-lines:16">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="html"><span class="doctype">&lt;!doctype html&gt;</span>
@@ -3357,8 +3470,9 @@ for readability).</td>
 </tr>
 </table>
 </div>
-<div class="paragraph tab-container-end">
-<p>-</p>
+</div>
+</div>
+</div>
 </div>
 <div class="admonitionblock tip">
 <table>
@@ -3381,12 +3495,11 @@ multiple background images or several properties) on the same CSS rule.
 </div>
 <div class="sect4">
 <h5 id="_skip_some_images_2"><a class="anchor" href="#_skip_some_images_2"></a>Skip some images</h5>
-<div class="paragraph tab-container no-max-height">
-<p>Skip background images</p>
-</div>
-<div class="paragraph tab">
-<p><span class="image"><img src="../images//icons/java-logo.png" alt="java logo" width="16" height="30"></span> Java</p>
-</div>
+<div class="exampleblock tab-container no-max-height">
+<div class="content">
+<div class="openblock tab">
+<div class="title"><span class="image"><img src="../images//icons/java-logo.png" alt="java logo" width="16" height="30"></span> Java</div>
+<div class="content">
 <div class="listingblock collapse-lines:1-10,12-28,36-48 irrelevant-lines:1-10,12-19 highlight-lines:30-31">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">fr.sii.ogham.sample.standard.email</span>;
@@ -3456,9 +3569,11 @@ multiple background images or several properties) on the same CSS rule.
 <div class="paragraph">
 <p><a href="https://github.com/groupe-sii/ogham/blob/master/sample-standard-usage/src/main/java/fr/sii/ogham/sample/standard/email/HtmlWithBackgroundImagesTemplateSample.java?ts=2">Source code of the sample</a></p>
 </div>
-<div class="paragraph tab">
-<p><span class="image"><img src="../images//icons/thymeleaf-html.jpg" alt="thymeleaf html" width="30" height="30"></span> ThymeLeaf template</p>
 </div>
+</div>
+<div class="openblock tab">
+<div class="title"><span class="image"><img src="../images//icons/thymeleaf-html.jpg" alt="thymeleaf html" width="30" height="30"></span> ThymeLeaf template</div>
+<div class="content">
 <div class="listingblock highlight-lines:7,13">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="html"><span class="doctype">&lt;!DOCTYPE html&gt;</span>
@@ -3507,9 +3622,11 @@ background image will not be inlined.</td>
 <div class="paragraph">
 <p><a href="https://github.com/groupe-sii/ogham/blob/master/sample-standard-usage/src/main/resources/template/thymeleaf/background-images.html?ts=2">Source code of the HTML template</a></p>
 </div>
-<div class="paragraph tab">
-<p><span class="image"><img src="../images//icons/css.png" alt="css" width="37" height="30"></span> CSS</p>
 </div>
+</div>
+<div class="openblock tab">
+<div class="title"><span class="image"><img src="../images//icons/css.png" alt="css" width="37" height="30"></span> CSS</div>
+<div class="content">
 <div class="listingblock highlight-lines:16,18">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="css"><span class="class">.header</span> {
@@ -3564,9 +3681,11 @@ strategy is specified using <code>--inline-image</code> property on the same CSS
 <div class="paragraph">
 <p><a href="https://github.com/groupe-sii/ogham/blob/master/sample-standard-usage/src/main/resources/resources/css/background-images.css?ts=2">Source code of the HTML template</a></p>
 </div>
-<div class="paragraph tab">
-<p><span class="image"><img src="../images//icons/html.png" alt="html" width="37" height="30"></span> Generated HTML</p>
 </div>
+</div>
+<div class="openblock tab">
+<div class="title"><span class="image"><img src="../images//icons/html.png" alt="html" width="37" height="30"></span> Generated HTML</div>
+<div class="content">
 <div class="listingblock highlight-lines:13">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="html"><span class="doctype">&lt;!doctype html&gt;</span>
@@ -3612,8 +3731,9 @@ url to the image (except for the path, see note below).</td>
 </tr>
 </table>
 </div>
-<div class="paragraph tab-container-end">
-<p>-</p>
+</div>
+</div>
+</div>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -3665,13 +3785,12 @@ the <code>&lt;default strategy&gt;</code>.</p>
 </li>
 </ul>
 </div>
-<div class="paragraph tab-container no-max-height">
-<div class="title">Same strategy for all images</div>
-<p>Same strategy for all images</p>
-</div>
-<div class="paragraph tab">
-<p><span class="image"><img src="../images//icons/css.png" alt="css" width="37" height="30"></span> CSS</p>
-</div>
+<div class="exampleblock tab-container no-max-height">
+<div class="title">Example 1. Same strategy for all images</div>
+<div class="content">
+<div class="openblock tab">
+<div class="title"><span class="image"><img src="../images//icons/css.png" alt="css" width="37" height="30"></span> CSS</div>
+<div class="content">
 <div class="listingblock highlight-lines:6">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="css"><span class="class">.same-strategy-for-all-images</span> {
@@ -3705,16 +3824,16 @@ relative to the CSS file.</td>
 </tr>
 </table>
 </div>
-<div class="paragraph tab-container-end">
-<p>-</p>
 </div>
-<div class="paragraph tab-container no-max-height">
-<div class="title">Strategy per image</div>
-<p>Strategy per image</p>
 </div>
-<div class="paragraph tab">
-<p><span class="image"><img src="../images//icons/css.png" alt="css" width="37" height="30"></span> CSS</p>
 </div>
+</div>
+<div class="exampleblock tab-container no-max-height">
+<div class="title">Example 2. Strategy per image</div>
+<div class="content">
+<div class="openblock tab">
+<div class="title"><span class="image"><img src="../images//icons/css.png" alt="css" width="37" height="30"></span> CSS</div>
+<div class="content">
 <div class="listingblock highlight-lines:6">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="css"><span class="class">.strategy-per-images</span> {
@@ -3761,8 +3880,9 @@ relative to the CSS file.</td>
 </tr>
 </table>
 </div>
-<div class="paragraph tab-container-end">
-<p>-</p>
+</div>
+</div>
+</div>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -3781,13 +3901,12 @@ and <code>right.gif</code> while <code>attach</code> strategy is used for <code>
 </tr>
 </table>
 </div>
-<div class="paragraph tab-container no-max-height">
-<div class="title">Strategy per image with default</div>
-<p>Strategy per image with default</p>
-</div>
-<div class="paragraph tab">
-<p><span class="image"><img src="../images//icons/css.png" alt="css" width="37" height="30"></span> CSS</p>
-</div>
+<div class="exampleblock tab-container no-max-height">
+<div class="title">Example 3. Strategy per image with default</div>
+<div class="content">
+<div class="openblock tab">
+<div class="title"><span class="image"><img src="../images//icons/css.png" alt="css" width="37" height="30"></span> CSS</div>
+<div class="content">
 <div class="listingblock highlight-lines:6">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="css"><span class="class">.strategy-per-images-with-default</span> {
@@ -3832,8 +3951,9 @@ and <code>disc.png</code>)</p>
 </tr>
 </table>
 </div>
-<div class="paragraph tab-container-end">
-<p>-</p>
+</div>
+</div>
+</div>
 </div>
 </div>
 </div>
@@ -3846,12 +3966,11 @@ smartphones. When a smartphone receives an email, it displays the sender, the su
 preview of the message, using the text alternative. If the message is only HTML, the preview might
 be unreadable.</p>
 </div>
-<div class="paragraph tab-container no-max-height">
-<p>Sample using HTML and text</p>
-</div>
-<div class="paragraph tab">
-<p><span class="image"><img src="../images//icons/java-logo.png" alt="java logo" width="16" height="30"></span> Java</p>
-</div>
+<div class="exampleblock tab-container no-max-height">
+<div class="content">
+<div class="openblock tab">
+<div class="title"><span class="image"><img src="../images//icons/java-logo.png" alt="java logo" width="16" height="30"></span> Java</div>
+<div class="content">
 <div class="listingblock collapse-lines:1-9 irrelevant-lines:1-9,11-20,23-30 highlight-lines:39-40">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">fr.sii.ogham.sample.standard.email</span>;
@@ -3943,20 +4062,20 @@ the email client doesn&#8217;t support HTML or as a preview of the email.</td>
 <div class="paragraph">
 <p><a href="https://github.com/groupe-sii/ogham/blob/master/sample-standard-usage/src/main/java/fr/sii/ogham/sample/standard/email/HtmlAndTextSample.java?ts=2">Source code of the sample</a></p>
 </div>
-<div class="paragraph tab-container-end">
-<p>-</p>
+</div>
+</div>
+</div>
 </div>
 <div class="paragraph">
 <p>Obviously, you can use templates too. Even better, the following sample shows the shorthand version
 that avoids specifying twice the path to the templates (a single path without extension for both HTML
 and text template files).</p>
 </div>
-<div class="paragraph tab-container no-max-height">
-<p>Sample using HTML and text templates</p>
-</div>
-<div class="paragraph tab">
-<p><span class="image"><img src="../images//icons/java-logo.png" alt="java logo" width="16" height="30"></span> Java</p>
-</div>
+<div class="exampleblock tab-container no-max-height">
+<div class="content">
+<div class="openblock tab">
+<div class="title"><span class="image"><img src="../images//icons/java-logo.png" alt="java logo" width="16" height="30"></span> Java</div>
+<div class="content">
 <div class="listingblock collapse-lines:1-9,37-49 irrelevant-lines:1-9,12-19 highlight-lines:31-32">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">fr.sii.ogham.sample.standard.email</span>;
@@ -4044,9 +4163,11 @@ extension).</td>
 <div class="paragraph">
 <p><a href="https://github.com/groupe-sii/ogham/blob/master/sample-standard-usage/src/main/java/fr/sii/ogham/sample/standard/email/HtmlAndTextTemplateSample.java?ts=2">Source code of the sample</a></p>
 </div>
-<div class="paragraph tab">
-<p><span class="image"><img src="../images//icons/thymeleaf-text.jpg" alt="thymeleaf text" width="30" height="30"></span> Text template</p>
 </div>
+</div>
+<div class="openblock tab">
+<div class="title"><span class="image"><img src="../images//icons/thymeleaf-text.jpg" alt="thymeleaf text" width="30" height="30"></span> Text template</div>
+<div class="content">
 <div class="listingblock">
 <div class="title">Text template located in <code>src/main/resources/template/thymeleaf/simple.txt</code></div>
 <div class="content">
@@ -4056,9 +4177,11 @@ extension).</td>
 <div class="paragraph">
 <p><a href="https://github.com/groupe-sii/ogham/blob/master/sample-standard-usage/src/main/resources/template/thymeleaf/simple.txt?ts=2">Source code of the text template</a></p>
 </div>
-<div class="paragraph tab">
-<p><span class="image"><img src="../images//icons/thymeleaf-html.jpg" alt="thymeleaf html" width="30" height="30"></span> HTML template</p>
 </div>
+</div>
+<div class="openblock tab">
+<div class="title"><span class="image"><img src="../images//icons/thymeleaf-html.jpg" alt="thymeleaf html" width="30" height="30"></span> HTML template</div>
+<div class="content">
 <div class="listingblock">
 <div class="title">HTML template located at <code>src/main/resources/template/thymeleaf/simple.html</code></div>
 <div class="content">
@@ -4077,8 +4200,9 @@ extension).</td>
 <div class="paragraph">
 <p><a href="https://github.com/groupe-sii/ogham/blob/master/sample-standard-usage/src/main/resources/template/thymeleaf/simple.html?ts=2">Source code of the HTML template</a></p>
 </div>
-<div class="paragraph tab-container-end">
-<p>-</p>
+</div>
+</div>
+</div>
 </div>
 <div class="paragraph">
 <p>Ogham will automatically determine file extensions to append according to the kind of message you
@@ -4105,12 +4229,11 @@ need it. That way, your Java code doesn&#8217;t require any change.</p>
 that is better suited for HTML like Thymeleaf and FreeMarker that is better for textual version for
 the same email. Just write your templates with the engine you want.</p>
 </div>
-<div class="paragraph tab-container no-max-height">
-<p>Sample using HTML with ThymeLeaf and text with FreeMarker</p>
-</div>
-<div class="paragraph tab">
-<p><span class="image"><img src="../images//icons/java-logo.png" alt="java logo" width="16" height="30"></span> Java</p>
-</div>
+<div class="exampleblock tab-container no-max-height">
+<div class="content">
+<div class="openblock tab">
+<div class="title"><span class="image"><img src="../images//icons/java-logo.png" alt="java logo" width="16" height="30"></span> Java</div>
+<div class="content">
 <div class="listingblock collapse-lines:1-9,37-49 irrelevant-lines:1-9,12-19 highlight-lines:31-32">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">fr.sii.ogham.sample.standard.email</span>;
@@ -4184,9 +4307,11 @@ extension). The HTML template uses Thymeleaf while the text template uses FreeMa
 <div class="paragraph">
 <p><a href="https://github.com/groupe-sii/ogham/blob/master/sample-standard-usage/src/main/java/fr/sii/ogham/sample/standard/email/HtmlAndTextMixedTemplateEnginesSample.java?ts=2">Source code of the sample</a></p>
 </div>
-<div class="paragraph tab">
-<p><span class="image"><img src="../images//icons/freemarker-logo.png" alt="freemarker logo" width="60" height="24"></span> Text template</p>
 </div>
+</div>
+<div class="openblock tab">
+<div class="title"><span class="image"><img src="../images//icons/freemarker-logo.png" alt="freemarker logo" width="60" height="24"></span> Text template</div>
+<div class="content">
 <div class="listingblock">
 <div class="title">Text template located in <code>src/main/resources/template/mixed/simple.txt.ftl</code></div>
 <div class="content">
@@ -4196,9 +4321,11 @@ extension). The HTML template uses Thymeleaf while the text template uses FreeMa
 <div class="paragraph">
 <p><a href="https://github.com/groupe-sii/ogham/blob/master/sample-standard-usage/src/main/resources/template/mixed/simple.txt.ftl?ts=2">Source code of the text template</a></p>
 </div>
-<div class="paragraph tab">
-<p><span class="image"><img src="../images//icons/thymeleaf.jpg" alt="thymeleaf" width="30" height="30"></span> HTML template</p>
 </div>
+</div>
+<div class="openblock tab">
+<div class="title"><span class="image"><img src="../images//icons/thymeleaf.jpg" alt="thymeleaf" width="30" height="30"></span> HTML template</div>
+<div class="content">
 <div class="listingblock">
 <div class="title">HTML template located at <code>src/main/resources/template/mixed/simple.html</code></div>
 <div class="content">
@@ -4217,8 +4344,9 @@ extension). The HTML template uses Thymeleaf while the text template uses FreeMa
 <div class="paragraph">
 <p><a href="https://github.com/groupe-sii/ogham/blob/master/sample-standard-usage/src/main/resources/template/mixed/simple.html?ts=2">Source code of the HTML template</a></p>
 </div>
-<div class="paragraph tab-container-end">
-<p>-</p>
+</div>
+</div>
+</div>
 </div>
 <div class="paragraph">
 <p>You can notice that the Java code has not changed at all (only the path for the sample). The aim is
@@ -4227,12 +4355,11 @@ to use the template engine that best suits your needs.</p>
 </div>
 <div class="sect2">
 <h3 id="_attach_files_to_the_email"><a class="anchor" href="#_attach_files_to_the_email"></a>Attach files to the email</h3>
-<div class="paragraph tab-container no-max-height">
-<p>Sample with attachment</p>
-</div>
-<div class="paragraph tab">
-<p><span class="image"><img src="../images//icons/java-logo.png" alt="java logo" width="16" height="30"></span> Java</p>
-</div>
+<div class="exampleblock tab-container no-max-height">
+<div class="content">
+<div class="openblock tab">
+<div class="title"><span class="image"><img src="../images//icons/java-logo.png" alt="java logo" width="16" height="30"></span> Java</div>
+<div class="content">
 <div class="listingblock collapse-lines:1-12 irrelevant-lines:1-12,14-21 highlight-lines:32-33">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">fr.sii.ogham.sample.standard.email</span>;
@@ -4291,13 +4418,14 @@ to use the template engine that best suits your needs.</p>
 <div class="paragraph">
 <p><a href="https://github.com/groupe-sii/ogham/blob/master/sample-standard-usage/src/main/java/fr/sii/ogham/sample/standard/email/WithAttachmentSample.java?ts=2">Source code of the sample</a></p>
 </div>
-<div class="paragraph tab-container-end">
-<p>-</p>
+</div>
+</div>
+</div>
 </div>
 <div class="paragraph">
 <p>Attaching a file to the email is quite simple. You just need to provide the path to the file.
 The file is loaded from classpath but could also be loaded from file system or anywhere else
-(see <a href="#resource-resolution">resource resolution section</a>). In case you are using a file,
+(see <a href="../user-manual.html#resource-resolution">resource resolution section</a>). In case you are using a file,
 the name of the attachment displayed in the email is automatically determined (<code>test.pdf</code> in the example).</p>
 </div>
 <div class="paragraph">
@@ -4370,12 +4498,11 @@ SMTP, through SendGrid, &#8230;&#8203;).</p>
 <p>This global address is used only if nothing is specified in the email. If you explicitly set the sender
 address in the email constructor or using the setter, this value is used instead of the global one.</p>
 </div>
-<div class="paragraph tab-container no-max-height">
-<p>Basic sample</p>
-</div>
-<div class="paragraph tab">
-<p><span class="image"><img src="../images//icons/java-logo.png" alt="java logo" width="16" height="30"></span> Java</p>
-</div>
+<div class="exampleblock tab-container no-max-height">
+<div class="content">
+<div class="openblock tab">
+<div class="title"><span class="image"><img src="../images//icons/java-logo.png" alt="java logo" width="16" height="30"></span> Java</div>
+<div class="content">
 <div class="listingblock collapse-lines:1-9 irrelevant-lines:1-9 highlight-lines:17,35">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">fr.sii.ogham.sample.standard.email</span>;
@@ -4438,8 +4565,9 @@ address in the email constructor or using the setter, this value is used instead
 <div class="paragraph">
 <p><a href="https://github.com/groupe-sii/ogham/blob/master/sample-standard-usage/src/main/java/fr/sii/ogham/sample/standard/email/OverrideDefaultSenderSample.java?ts=2">Source code of the sample</a>.</p>
 </div>
-<div class="paragraph tab-container-end">
-<p>-</p>
+</div>
+</div>
+</div>
 </div>
 <div class="admonitionblock tip">
 <table>
@@ -4487,12 +4615,11 @@ will never be seen in received emails).</p>
 <div class="paragraph">
 <p>To define several recipient addresses, you can provide a string separated by <code>,</code>.</p>
 </div>
-<div class="paragraph tab-container no-max-height">
-<p>Basic sample</p>
-</div>
-<div class="paragraph tab">
-<p><span class="image"><img src="../images//icons/java-logo.png" alt="java logo" width="16" height="30"></span> Java</p>
-</div>
+<div class="exampleblock tab-container no-max-height">
+<div class="content">
+<div class="openblock tab">
+<div class="title"><span class="image"><img src="../images//icons/java-logo.png" alt="java logo" width="16" height="30"></span> Java</div>
+<div class="content">
 <div class="listingblock collapse-lines:1-24,26-34,51-70 irrelevant-lines:1-24 highlight-lines:41-43">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">oghamall.it.email</span>;
@@ -4511,12 +4638,12 @@ will never be seen in received emails).</p>
 <span class="keyword">import</span> <span class="include">org.junit.Test</span>;
 
 <span class="keyword">import</span> <span class="include">com.icegreen.greenmail.junit.GreenMailRule</span>;
-<span class="keyword">import</span> <span class="include">com.icegreen.greenmail.util.ServerSetupTest</span>;
 
 <span class="keyword">import</span> <span class="include">fr.sii.ogham.core.builder.MessagingBuilder</span>;
 <span class="keyword">import</span> <span class="include">fr.sii.ogham.core.exception.MessagingException</span>;
 <span class="keyword">import</span> <span class="include">fr.sii.ogham.core.service.MessagingService</span>;
 <span class="keyword">import</span> <span class="include">fr.sii.ogham.email.message.Email</span>;
+<span class="keyword">import</span> <span class="include">fr.sii.ogham.testing.extension.greenmail.RandomPortGreenMailRule</span>;
 <span class="keyword">import</span> <span class="include">fr.sii.ogham.testing.extension.junit.LoggingTestRule</span>;
 
 <span class="directive">public</span> <span class="type">class</span> <span class="class">EmailPropertiesTest</span> {
@@ -4527,13 +4654,13 @@ will never be seen in received emails).</p>
   <span class="directive">public</span> <span class="directive">final</span> LoggingTestRule loggingRule = <span class="keyword">new</span> LoggingTestRule();
 
   <span class="annotation">@Rule</span>
-  <span class="directive">public</span> <span class="directive">final</span> GreenMailRule greenMail = <span class="keyword">new</span> GreenMailRule(ServerSetupTest.SMTP);
+  <span class="directive">public</span> <span class="directive">final</span> GreenMailRule greenMail = <span class="keyword">new</span> RandomPortGreenMailRule();
 
   <span class="annotation">@Before</span>
   <span class="directive">public</span> <span class="type">void</span> setUp() <span class="directive">throws</span> <span class="exception">IOException</span> {
     <span class="predefined-type">Properties</span> additional = <span class="keyword">new</span> <span class="predefined-type">Properties</span>();
-    additional.setProperty(<span class="string"><span class="delimiter">&quot;</span><span class="content">mail.smtp.host</span><span class="delimiter">&quot;</span></span>, ServerSetupTest.SMTP.getBindAddress());
-    additional.setProperty(<span class="string"><span class="delimiter">&quot;</span><span class="content">mail.smtp.port</span><span class="delimiter">&quot;</span></span>, <span class="predefined-type">String</span>.valueOf(ServerSetupTest.SMTP.getPort()));
+    additional.setProperty(<span class="string"><span class="delimiter">&quot;</span><span class="content">mail.smtp.host</span><span class="delimiter">&quot;</span></span>, greenMail.getSmtp().getBindTo());
+    additional.setProperty(<span class="string"><span class="delimiter">&quot;</span><span class="content">mail.smtp.port</span><span class="delimiter">&quot;</span></span>, <span class="predefined-type">String</span>.valueOf(greenMail.getSmtp().getPort()));
     additional.setProperty(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.email.from.default-value</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">test.sender@sii.fr</span><span class="delimiter">&quot;</span></span>);
     additional.setProperty(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.email.to.default-value</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">recipient.to1@sii.fr,  recipient.to2@sii.fr , recipient.to3@sii.fr</span><span class="delimiter">&quot;</span></span>);   <i class="conum" data-value="1"></i><b>(1)</b>
     additional.setProperty(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.email.cc.default-value</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">recipient.cc1@sii.fr,recipient.cc2@sii.fr</span><span class="delimiter">&quot;</span></span>);                            <i class="conum" data-value="2"></i><b>(2)</b>
@@ -4587,8 +4714,9 @@ will never be seen in received emails).</p>
 <div class="paragraph">
 <p><a href="https://github.com/groupe-sii/ogham/blob/master/ogham-all/src/test/java/oghamall/it/email/EmailPropertiesTest.java?ts=2">Source code of the sample</a>.</p>
 </div>
-<div class="paragraph tab-container-end">
-<p>-</p>
+</div>
+</div>
+</div>
 </div>
 <div class="admonitionblock tip">
 <table>
@@ -4656,24 +4784,43 @@ will never be seen in received emails).</p>
 </div>
 <div class="sect3">
 <h4 id="_custom_authenticator"><a class="anchor" href="#_custom_authenticator"></a>Custom Authenticator</h4>
-
+<div class="exampleblock TODO">
+<div class="content">
+<div class="ulist">
+<ul>
+<li>
+<p>Explain how to add a custom Authenticator implementation</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
 </div>
 </div>
 <div class="sect2">
 <h3 id="_use_ssl"><a class="anchor" href="#_use_ssl"></a>Use SSL</h3>
-
+<div class="exampleblock TODO">
+<div class="content">
+<div class="ulist">
+<ul>
+<li>
+<p>Add samples for ssl</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
 </div>
 <div class="sect2">
 <h3 id="gmail"><a class="anchor" href="#gmail"></a>Send email through GMail</h3>
 <div class="paragraph">
 <p>This sample shows how to send a basic email through GMail. Sending through GMail is simply using username/password authentication and enabling SSL.</p>
 </div>
-<div class="paragraph tab-container no-max-height">
-<p>GMail SSL sample</p>
-</div>
-<div class="paragraph tab">
-<p><span class="image"><img src="../images//icons/java-logo.png" alt="java logo" width="16" height="30"></span> Java</p>
-</div>
+<div class="exampleblock tab-container no-max-height">
+<div class="content">
+<div class="openblock tab">
+<div class="title"><span class="image"><img src="../images//icons/java-logo.png" alt="java logo" width="16" height="30"></span> Java</div>
+<div class="content">
 <div class="listingblock collapse-lines:-7 irrelevant-lines:-7 highlight-lines:16-22">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">fr.sii.ogham.sample.standard.email.gmail</span>;
@@ -4757,8 +4904,9 @@ will never be seen in received emails).</p>
 <div class="paragraph">
 <p><a href="https://github.com/groupe-sii/ogham/blob/master/sample-standard-usage/src/main/java/fr/sii/ogham/sample/standard/email/gmail/GmailSSLBasicSample.java?ts=2">Source code of the sample</a></p>
 </div>
-<div class="paragraph tab-container-end">
-<p>-</p>
+</div>
+</div>
+</div>
 </div>
 <div class="paragraph">
 <p>Using GMail server is quite easy. This samples shows several things:</p>
@@ -4779,6 +4927,24 @@ will never be seen in received emails).</p>
 </li>
 </ol>
 </div>
+<div class="exampleblock TODO">
+<div class="content">
+<div class="ulist">
+<ul>
+<li>
+<p>Explain that GMail now doesn&#8217;t allow to use account password. It requires an application
+password</p>
+</li>
+<li>
+<p>Show how to create application password (or just link to guide or documentation)</p>
+</li>
+<li>
+<p>Show sample with port 587</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
 </div>
 <div class="sect2">
 <h3 id="sendgrid"><a class="anchor" href="#sendgrid"></a>Sending email through SendGrid</h3>
@@ -4786,12 +4952,11 @@ will never be seen in received emails).</p>
 <p>Sending an email using SendGrid HTTP API is exactly the same in term of code. The only
 difference is the configuration of Ogham.</p>
 </div>
-<div class="paragraph tab-container no-max-height">
-<p>Sample using SendGrid</p>
-</div>
-<div class="paragraph tab">
-<p><span class="image"><img src="../images//icons/java-logo.png" alt="java logo" width="16" height="30"></span> Java (SendGrid)</p>
-</div>
+<div class="exampleblock tab-container no-max-height">
+<div class="content">
+<div class="openblock tab">
+<div class="title"><span class="image"><img src="../images//icons/java-logo.png" alt="java logo" width="16" height="30"></span> Java (SendGrid)</div>
+<div class="content">
 <div class="listingblock collapse-lines:1-40,60-72 irrelevant-lines:1-40">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">fr.sii.ogham.sample.standard.email.sendgrid</span>;
@@ -4885,9 +5050,11 @@ difference is the configuration of Ogham.</p>
 <div class="paragraph">
 <p><a href="https://github.com/groupe-sii/ogham/blob/master/sample-standard-usage/src/main/java/fr/sii/ogham/sample/standard/email/sendgrid/SendGridFullSample.java?ts=2">Source code of the sample</a></p>
 </div>
-<div class="paragraph tab">
-<p><span class="image"><img src="../images//icons/properties.png" alt="properties" width="37" height="30"></span> Properties (SendGrid)</p>
 </div>
+</div>
+<div class="openblock tab">
+<div class="title"><span class="image"><img src="../images//icons/properties.png" alt="properties" width="37" height="30"></span> Properties (SendGrid)</div>
+<div class="content">
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="python"><span class="comment"># ogham additional properties</span>
@@ -4916,9 +5083,11 @@ ogham.email.template.path-prefix=/template/thymeleaf/email/    <i class="conum" 
 <div class="paragraph">
 <p><a href="https://github.com/groupe-sii/ogham/blob/master/sample-standard-usage/src/main/resources/sendgrid-template.properties?ts=2">Source code of the configuration file</a></p>
 </div>
-<div class="paragraph tab">
-<p><span class="image"><img src="../images//icons/java-logo.png" alt="java logo" width="16" height="30"></span> Java (JavaMail)</p>
 </div>
+</div>
+<div class="openblock tab">
+<div class="title"><span class="image"><img src="../images//icons/java-logo.png" alt="java logo" width="16" height="30"></span> Java (JavaMail)</div>
+<div class="content">
 <div class="listingblock collapse-lines:1-40,60-72 irrelevant-lines:1-40">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">fr.sii.ogham.sample.standard.email</span>;
@@ -5012,9 +5181,11 @@ ogham.email.template.path-prefix=/template/thymeleaf/email/    <i class="conum" 
 <div class="paragraph">
 <p><a href="https://github.com/groupe-sii/ogham/blob/master/sample-standard-usage/src/main/java/fr/sii/ogham/sample/standard/email/FullSample.java?ts=2">Source code of the sample</a></p>
 </div>
-<div class="paragraph tab">
-<p><span class="image"><img src="../images//icons/properties.png" alt="properties" width="37" height="30"></span> Properties (JavaMail)</p>
 </div>
+</div>
+<div class="openblock tab">
+<div class="title"><span class="image"><img src="../images//icons/properties.png" alt="properties" width="37" height="30"></span> Properties (JavaMail)</div>
+<div class="content">
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="python"><span class="comment"># general SMTP server</span>
@@ -5059,8 +5230,26 @@ ogham.email.template.path-prefix=/template/thymeleaf/email/         <i class="co
 <div class="paragraph">
 <p><a href="https://github.com/groupe-sii/ogham/blob/master/sample-standard-usage/src/main/resources/email-template.properties?ts=2">Source code of the configuration file</a></p>
 </div>
-<div class="paragraph tab-container-end">
-<p>-</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_internationalization"><a class="anchor" href="#_internationalization"></a>Internationalization</h3>
+<div class="exampleblock TODO">
+<div class="content">
+<div class="ulist">
+<ul>
+<li>
+<p>Add sample to show how to use <code>LocaleContext</code></p>
+</li>
+<li>
+<p>Explain ideas and future work about locale manamement</p>
+</li>
+</ul>
+</div>
+</div>
 </div>
 </div>
 </div>
@@ -5072,22 +5261,42 @@ ogham.email.template.path-prefix=/template/thymeleaf/email/         <i class="co
 <p>The samples are available in the <a href="https://github.com/groupe-sii/ogham/blob/master/sample-standard-usage">sample-standard-usage sub-project</a>.</p>
 </div>
 <div class="paragraph">
-<p>All samples shown bellow are using SMPP for sending SMS. The <a href="https://en.wikipedia.org/wiki/Short_Message_Peer-to-Peer">SMPP</a> protocol is the standard way to send SMS. Only a subset of SMPP properties are used in following samples. The whole list of SMPP properties is available in <a href="../user-manual.html#advanced-smpp-configuration">advanced configuration</a>.</p>
+<p>All samples shown bellow are using SMPP for sending SMS and are also
+valid for send SMS using any other protocol/API. Only the configuration part
+differs.</p>
 </div>
 <div class="paragraph">
-<p>See <a href="#ovh">Sending SMS through OVH</a> to know how to send SMS using OVH HTTP API.</p>
+<p>See <a href="../user-manual.html#ovh">Sending SMS through OVH</a> to know how to
+configure Ogham for sending SMS using OVH HTTP API.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="title">SMPP protocol</div>
+<div class="paragraph">
+<p>The <a href="https://en.wikipedia.org/wiki/Short_Message_Peer-to-Peer">SMPP</a> protocol is
+the standard way to send SMS. Only a subset of SMPP properties are used in
+following samples. The whole list of SMPP properties is available
+in <a href="../user-manual.html#advanced-smpp-configuration">advanced configuration</a>.</p>
+</div>
+</td>
+</tr>
+</table>
 </div>
 <div class="sect2">
 <h3 id="_first_sms_using_an_existing_smpp_server"><a class="anchor" href="#_first_sms_using_an_existing_smpp_server"></a>First SMS using an existing SMPP server</h3>
 <div class="paragraph">
 <p>This sample defines two properties mandatory (system ID and password) by this protocol in order to use it.</p>
 </div>
-<div class="paragraph tab-container no-max-height">
-<p>Simple sample</p>
-</div>
-<div class="paragraph tab">
-<p><span class="image"><img src="../images//icons/java-logo.png" alt="java logo" width="16" height="30"></span> Java</p>
-</div>
+<div class="exampleblock tab-container no-max-height">
+<div class="content">
+<div class="openblock tab">
+<div class="title"><span class="image"><img src="../images//icons/java-logo.png" alt="java logo" width="16" height="30"></span> Java</div>
+<div class="content">
 <div class="listingblock collapse-lines:1-9 irrelevant-lines:1-9">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">fr.sii.ogham.sample.standard.sms</span>;
@@ -5169,15 +5378,16 @@ ogham.email.template.path-prefix=/template/thymeleaf/email/         <i class="co
 <div class="paragraph">
 <p><a href="https://github.com/groupe-sii/ogham/blob/master/sample-standard-usage/src/main/java/fr/sii/ogham/sample/standard/sms/BasicSample.java?ts=2">Source code of the sample</a>.</p>
 </div>
-<div class="paragraph tab-container-end">
-<p>-</p>
+</div>
+</div>
+</div>
 </div>
 <div class="paragraph">
 <p>The construction of the SMS is done using a fluent API in order to chain calls and to have a more
 readable code.</p>
 </div>
 <div class="paragraph">
-<p>Properties are directly provided in the code. You can instead <a href="#properties-handling">use a configuration file</a>.</p>
+<p>Properties are directly provided in the code. You can instead <a href="../user-manual.html#properties-handling">use a configuration file</a>.</p>
 </div>
 </div>
 <div class="sect2">
@@ -5185,12 +5395,11 @@ readable code.</p>
 <div class="paragraph">
 <p>This sample shows how to send a SMS with a content following a template engine language.</p>
 </div>
-<div class="paragraph tab-container no-max-height">
-<p>Sample with template</p>
-</div>
-<div class="paragraph tab">
-<p><span class="image"><img src="../images//icons/java-logo.png" alt="java logo" width="16" height="30"></span> Java</p>
-</div>
+<div class="exampleblock tab-container no-max-height">
+<div class="content">
+<div class="openblock tab">
+<div class="title"><span class="image"><img src="../images//icons/java-logo.png" alt="java logo" width="16" height="30"></span> Java</div>
+<div class="content">
 <div class="listingblock collapse-lines:1-9,35-47 irrelevant-lines:1-9,12-21 highlight-lines:29,30">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">fr.sii.ogham.sample.standard.sms</span>;
@@ -5276,9 +5485,11 @@ set using <code>ogham.sms.from.default-value</code> property</td>
 <div class="paragraph">
 <p><a href="https://github.com/groupe-sii/ogham/blob/master/sample-standard-usage/src/main/java/fr/sii/ogham/sample/standard/sms/TemplateSample.java?ts=2">Source code of the sample</a>.</p>
 </div>
-<div class="paragraph tab">
-<p><span class="image"><img src="../images//icons/thymeleaf.jpg" alt="thymeleaf" width="30" height="30"></span> ThymeLeaf template</p>
 </div>
+</div>
+<div class="openblock tab">
+<div class="title"><span class="image"><img src="../images//icons/thymeleaf.jpg" alt="thymeleaf" width="30" height="30"></span> ThymeLeaf template</div>
+<div class="content">
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="html">[[${name}]] [[${value}]]</code></pre>
@@ -5287,8 +5498,9 @@ set using <code>ogham.sms.from.default-value</code> property</td>
 <div class="paragraph">
 <p><a href="https://github.com/groupe-sii/ogham/blob/master/sample-standard-usage/src/main/resources/template/thymeleaf/simple.txt?ts=2">Source code of the template</a></p>
 </div>
-<div class="paragraph tab-container-end">
-<p>-</p>
+</div>
+</div>
+</div>
 </div>
 <div class="paragraph">
 <p>Using a template is straightforward. Instead of providing a string content (using <code>.message().string(&#8230;&#8203;)</code>),
@@ -5309,7 +5521,7 @@ The <code>template</code> method requires two pieces of information:</p>
 <p>The path to the template is a string with a <strong>lookup</strong> prefix. The lookup prefix is used to indicate
 where to search the template (from file system, from classpath or anywhere else). Here we explicitly
 ask to load the template from classpath (using prefix <code>classpath:</code>). If no lookup is defined,
-classpath is used by default. See <a href="#resource-resolution">Resource resolution section</a> for more information.</p>
+classpath is used by default. See <a href="../user-manual.html#resource-resolution">Resource resolution section</a> for more information.</p>
 </div>
 <div class="paragraph">
 <p>The variables are any object you are using in your application. No need to convert your object to
@@ -5325,12 +5537,11 @@ the limit to 140 characters and 70 characters for a 16-bit encoding. If needed, 
 split your messages into several parts the right way to be recomposed by clients later (according
 to the message encoding). Therefore, you don&#8217;t need to handle the split of messages in your code:</p>
 </div>
-<div class="paragraph tab-container no-max-height">
-<p>Long SMS Sample</p>
-</div>
-<div class="paragraph tab">
-<p><span class="image"><img src="../images//icons/java-logo.png" alt="java logo" width="16" height="30"></span> Java</p>
-</div>
+<div class="exampleblock tab-container no-max-height">
+<div class="content">
+<div class="openblock tab">
+<div class="title"><span class="image"><img src="../images//icons/java-logo.png" alt="java logo" width="16" height="30"></span> Java</div>
+<div class="content">
 <div class="listingblock collapse-lines:1-9 irrelevant-lines:1-9,12-21 highlight-lines:27-30">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">fr.sii.ogham.sample.standard.sms</span>;
@@ -5375,8 +5586,9 @@ to the message encoding). Therefore, you don&#8217;t need to handle the split of
 <div class="paragraph">
 <p><a href="https://github.com/groupe-sii/ogham/blob/master/sample-standard-usage/src/main/java/fr/sii/ogham/sample/standard/sms/LongMessageSample.java?ts=2">Source code of the sample</a>.</p>
 </div>
-<div class="paragraph tab-container-end">
-<p>-</p>
+</div>
+</div>
+</div>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -5385,6 +5597,7 @@ to the message encoding). Therefore, you don&#8217;t need to handle the split of
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
+<div class="title">Message length depends on encoding</div>
 <div class="paragraph">
 <p>Larger content (concatenated SMS, multipart or segmented SMS, or "long SMS") can be sent using
 multiple messages, in which case each message will start with a User Data Header (UDH) containing
@@ -5405,10 +5618,27 @@ messages are the practical maximum.</p>
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-By default, Ogham sends the SMS using 8-bit encoding.
+<div class="title">Default encoding</div>
+<div class="paragraph">
+<p>By default, Ogham sends the SMS using 8-bit encoding.</p>
+</div>
 </td>
 </tr>
 </table>
+</div>
+<div class="exampleblock TODO">
+<div class="content">
+<div class="ulist">
+<ul>
+<li>
+<p>explain how to use different encoding</p>
+</li>
+<li>
+<p>link to advanced configuration section</p>
+</li>
+</ul>
+</div>
+</div>
 </div>
 </div>
 <div class="sect2">
@@ -5416,12 +5646,11 @@ By default, Ogham sends the SMS using 8-bit encoding.
 <div class="paragraph">
 <p>You can send SMS using <a href="https://www.smsglobal.com/">SmsGlobal</a> SMPP server:</p>
 </div>
-<div class="paragraph tab-container no-max-height">
-<p>SmsGlobal sample</p>
-</div>
-<div class="paragraph tab">
-<p><span class="image"><img src="../images//icons/java-logo.png" alt="java logo" width="16" height="30"></span> Java</p>
-</div>
+<div class="exampleblock tab-container no-max-height">
+<div class="content">
+<div class="openblock tab">
+<div class="title"><span class="image"><img src="../images//icons/java-logo.png" alt="java logo" width="16" height="30"></span> Java</div>
+<div class="content">
 <div class="listingblock collapse-lines:1-9 highlight-lines:15-18">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">fr.sii.ogham.sample.standard.sms.smsglobal</span>;
@@ -5438,7 +5667,7 @@ By default, Ogham sends the SMS using 8-bit encoding.
     <span class="comment">// configure properties (could be stored in a properties file or defined</span>
     <span class="comment">// in System properties)</span>
     <span class="predefined-type">Properties</span> properties = <span class="keyword">new</span> <span class="predefined-type">Properties</span>();
-    properties.setProperty(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.sms.smpp.host</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">smsglobal.com</span><span class="delimiter">&quot;</span></span>);                                         <i class="conum" data-value="1"></i><b>(1)</b>
+    properties.setProperty(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.sms.smpp.host</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">smpp.smsglobal.com</span><span class="delimiter">&quot;</span></span>);                                    <i class="conum" data-value="1"></i><b>(1)</b>
     properties.setProperty(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.sms.smpp.system-id</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;your smsglobal username available in API keys&gt;</span><span class="delimiter">&quot;</span></span>);  <i class="conum" data-value="2"></i><b>(2)</b>
     properties.setProperty(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.sms.smpp.password</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;your smsglobal password available in API keys&gt;</span><span class="delimiter">&quot;</span></span>);   <i class="conum" data-value="3"></i><b>(3)</b>
     properties.setProperty(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.sms.from.default-value</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;phone number to display for the sender&gt;</span><span class="delimiter">&quot;</span></span>);     <i class="conum" data-value="4"></i><b>(4)</b>
@@ -5496,8 +5725,9 @@ By default, Ogham sends the SMS using 8-bit encoding.
 <div class="paragraph">
 <p><a href="https://github.com/groupe-sii/ogham/blob/master/sample-standard-usage/src/main/java/fr/sii/ogham/sample/standard/sms/smsglobal/BasicSmsglobalSmppSample.java?ts=2">Source code of the sample</a>.</p>
 </div>
-<div class="paragraph tab-container-end">
-<p>-</p>
+</div>
+</div>
+</div>
 </div>
 <div class="admonitionblock tip">
 <table>
@@ -5507,7 +5737,7 @@ By default, Ogham sends the SMS using 8-bit encoding.
 </td>
 <td class="content">
 <div class="paragraph">
-<p>You can notice that SMPP server port is not provided. This is because Ogham provides <a href="#service-providers">predefined configuration for well-known service providers</a> like <a href="https://www.smsglobal.com/">SmsGlobal</a>.</p>
+<p>You can notice that SMPP server port is not provided. This is because Ogham provides <a href="../user-manual.html#service-providers">predefined configuration for well-known service providers</a> like <a href="https://www.smsglobal.com/">SmsGlobal</a>.</p>
 </div>
 </td>
 </tr>
@@ -5519,6 +5749,20 @@ By default, Ogham sends the SMS using 8-bit encoding.
 <div class="paragraph">
 <p>You can send SMS using <a href="http://guides.ovh.com/Http2Sms">OVH</a> HTTP API:</p>
 </div>
+<div class="exampleblock TODO">
+<div class="content">
+<div class="ulist">
+<ul>
+<li>
+<p>Add a sample</p>
+</li>
+<li>
+<p>Split of long messages</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
 </div>
 <div class="sect2">
 <h3 id="_globally_configure_default_sender_phone_number"><a class="anchor" href="#_globally_configure_default_sender_phone_number"></a>Globally configure default sender phone number</h3>
@@ -5528,12 +5772,11 @@ By default, Ogham sends the SMS using 8-bit encoding.
 <div class="paragraph">
 <p>If you explicitly specify the sender phone number, this value is used instead of the global one:</p>
 </div>
-<div class="paragraph tab-container no-max-height">
-<p>Basic sample</p>
-</div>
-<div class="paragraph tab">
-<p><span class="image"><img src="../images//icons/java-logo.png" alt="java logo" width="16" height="30"></span> Java</p>
-</div>
+<div class="exampleblock tab-container no-max-height">
+<div class="content">
+<div class="openblock tab">
+<div class="title"><span class="image"><img src="../images//icons/java-logo.png" alt="java logo" width="16" height="30"></span> Java</div>
+<div class="content">
 <div class="listingblock collapse-lines:1-9 irrelevant-lines:1-9 highlight-lines:19,35">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">fr.sii.ogham.sample.standard.sms</span>;
@@ -5596,17 +5839,22 @@ By default, Ogham sends the SMS using 8-bit encoding.
 <div class="paragraph">
 <p><a href="https://github.com/groupe-sii/ogham/blob/master/sample-standard-usage/src/main/java/fr/sii/ogham/sample/standard/sms/OverrideDefaultSenderSample.java?ts=2">Source code of the sample</a>.</p>
 </div>
-<div class="paragraph tab-container-end">
-<p>-</p>
+</div>
+</div>
+</div>
 </div>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="resource-resolution"><a class="anchor" href="#resource-resolution"></a>Resource resolution</h2>
+<h2 id="resource-resolution"><a class="anchor" href="#resource-resolution"></a>Resource handling</h2>
 <div class="sectionbody">
+<div class="sect2">
+<h3 id="_resource_resolution"><a class="anchor" href="#_resource_resolution"></a>Resource resolution</h3>
 <div class="paragraph">
-<p>Resource resolution is used to locate files using a simple path. For example, the path of a file you want to use (template, image, CSS, attachment&#8230;&#8203;) could be <code>foo/bar/aaa.b</code>. But the file could be located:</p>
+<p>Resource resolution is used to locate files using a simple path. For example, the
+path of a file you want to use (template, image, CSS, attachment&#8230;&#8203;) could be
+<code>foo/bar/aaa.b</code>. But the file could be located:</p>
 </div>
 <div class="ulist">
 <ul>
@@ -5622,29 +5870,45 @@ By default, Ogham sends the SMS using 8-bit encoding.
 </ul>
 </div>
 <div class="paragraph">
-<p>Ogham provides resource resolution abstraction. Any path can contain an information used to indicate which resolver to use to find and read the file content. For example, if the previous path stands for a file that is in the classpath, the Ogham path is <code>classpath:foo/bar/aaa.b</code>. On the contrary, if the path represents a file that is on file system, the Ogham path is <code>file:foo/bar/aaa.b</code>. In both cases, the path is prefixed by a string named lookup prefix (respectively <code>classpath:</code> and <code>file:</code>).</p>
+<p>Ogham provides resource resolution abstraction. Any path can contain an information
+used to indicate which resolver to use to find and read the file content. For example,
+if the previous path stands for a file that is in the classpath, the Ogham path is
+<code>classpath:foo/bar/aaa.b</code>. On the contrary, if the path represents a file that is on
+file system, the Ogham path is <code>file:foo/bar/aaa.b</code>. In both cases, the path is
+prefixed by a string named lookup prefix (respectively <code>classpath:</code> and <code>file:</code>).</p>
 </div>
 <div class="paragraph">
-<p>Ogham configures by default (through <code>MessagingBuilder.standard()</code> or <code>MessagingBuilder.minimal()</code>) several resource resolvers:</p>
+<p>Ogham configures by default (through <code>MessagingBuilder.standard()</code> or
+<code>MessagingBuilder.minimal()</code>) several resource resolvers:</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p>A resolver that is able to locate and read files from the file system with lookup prefix <code>file:</code>.</p>
+<p>A resolver that is able to locate and read files from the file system with lookup
+prefix <code>file:</code>.</p>
 </li>
 <li>
-<p>A resolver that is able to locate and read files from the classpath with lookup prefix <code>classpath:</code>.</p>
+<p>A resolver that is able to locate and read files from the classpath with lookup
+prefix <code>classpath:</code>.</p>
 </li>
 <li>
-<p>A resolver that doesn&#8217;t load file from path but directly uses the string as content with lookups <code>string:</code> or <code>s:</code>.</p>
+<p>A resolver that doesn&#8217;t load file from path but directly uses the string as content
+with lookups <code>string:</code> or <code>s:</code>.</p>
 </li>
 <li>
-<p>A default resolver with no lookup that is able to locate and read files from the classpath.</p>
+<p>A default resolver with no lookup that is able to locate and read files from the
+classpath.</p>
 </li>
 </ul>
 </div>
 <div class="paragraph">
-<p>Each resolver that is able to handle a path may also handle a path prefix and a path suffix. This is useful in order to provide only a subset of the path (only the file name for example) to Ogham and let Ogham find the real path of the file. For example if you configure Ogham with the prefix <code>foo/bar</code> and <code>.b</code> suffix for both classpath and file resolvers, you can ask Ogham to find the file <code>foo/bar/aaa.b</code> using the path <code>classpath:aaa</code> or <code>file:aaa</code>. Prefix and suffix can be changed using configuration properties (when using <code>MessagingBuilder.standard()</code> or <code>MessagingBuilder.minimal()</code>). There exists one property by message type (email or SMS), by resolver type (classpath or file), by template engine (ThymeLeaf or FreeMarker). Ogham also provides shared configuration properties (configure once for all):</p>
+<p>Each resolver that is able to handle a path may also handle a path prefix and a path
+suffix. This is useful in order to provide only a subset of the path (only the file
+name for example) to Ogham and let Ogham find the real path of the file. For example
+if you configure Ogham with the prefix <code>foo/bar</code> and <code>.b</code> suffix for both classpath
+and file resolvers, you can ask Ogham to find the file <code>foo/bar/aaa.b</code> using the path
+<code>classpath:aaa</code> or <code>file:aaa</code>. Prefix and suffix can be changed using configuration
+properties (when using <code>MessagingBuilder.standard()</code> or <code>MessagingBuilder.minimal()</code>). There exists one property by message type (email or SMS), by resolver type (classpath or file), by template engine (ThymeLeaf or FreeMarker). Ogham also provides shared configuration properties (configure once for all):</p>
 </div>
 <div class="exampleblock prevent-overflow">
 <div class="content">
@@ -5861,7 +6125,48 @@ By default, Ogham sends the SMS using 8-bit encoding.
 </div>
 </div>
 <div class="paragraph">
-<p>You can also <a href="#custom-resource-resolver">define your own resource resolver</a>.</p>
+<p>You can also <a href="../user-manual.html#custom-resource-resolver">define your own resource resolver</a>.</p>
+</div>
+<div class="exampleblock TODO">
+<div class="content">
+<div class="ulist">
+<ul>
+<li>
+<p>Explain that path prefix/suffix can be useful to do something like aliases</p>
+</li>
+<li>
+<p>Explain that only configuration (not code) need to be updated</p>
+</li>
+<li>
+<p>Add code samples to show how to switch from classpath in tests to files in production</p>
+</li>
+<li>
+<p>Add dedicated section ?</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_resources_referenced_in_templates"><a class="anchor" href="#_resources_referenced_in_templates"></a>Resources referenced in templates</h3>
+<div class="exampleblock TODO">
+<div class="content">
+<div class="ulist">
+<ul>
+<li>
+<p>Explain that Ogham supports relative resources</p>
+</li>
+<li>
+<p>Explain that relative resources are relative to the lookup mode (file:, classpath:, &#8230;&#8203;)</p>
+</li>
+<li>
+<p>Add note for Thymeleaf fragments (extension needed for now)</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
 </div>
 </div>
 </div>
@@ -5871,12 +6176,11 @@ By default, Ogham sends the SMS using 8-bit encoding.
 <div class="paragraph">
 <p>Property configuration is a good way to separate code from configuration. Ogham allows you to configure values using builders. For example, you can configure the SMTP host and port like this:</p>
 </div>
-<div class="paragraph tab-container no-max-height">
-<p>Sample</p>
-</div>
-<div class="paragraph tab">
-<p><span class="image"><img src="../images//icons/java-logo.png" alt="java logo" width="16" height="30"></span> Java</p>
-</div>
+<div class="exampleblock tab-container no-max-height">
+<div class="content">
+<div class="openblock tab">
+<div class="title"><span class="image"><img src="../images//icons/java-logo.png" alt="java logo" width="16" height="30"></span> Java</div>
+<div class="content">
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="java">MessagingBuilder.standard()
@@ -5886,8 +6190,9 @@ By default, Ogham sends the SMS using 8-bit encoding.
       .port(<span class="integer">25</span>);</code></pre>
 </div>
 </div>
-<div class="paragraph tab-container-end">
-<p>-</p>
+</div>
+</div>
+</div>
 </div>
 <div class="paragraph">
 <p>However, when using a library, it is simpler that this library provides a way to configure some values without the need of writing code to configure it. The integration is easier. The configuration should also be done in several ways to let the developer choose what fits his needs.</p>
@@ -5914,12 +6219,11 @@ By default, Ogham sends the SMS using 8-bit encoding.
 </li>
 </ul>
 </div>
-<div class="paragraph tab-container no-max-height">
-<p>Sample</p>
-</div>
-<div class="paragraph tab">
-<p><span class="image"><img src="../images//icons/java-logo.png" alt="java logo" width="16" height="30"></span> Java</p>
-</div>
+<div class="exampleblock tab-container no-max-height">
+<div class="content">
+<div class="openblock tab">
+<div class="title"><span class="image"><img src="../images//icons/java-logo.png" alt="java logo" width="16" height="30"></span> Java</div>
+<div class="content">
 <div class="listingblock collapse-lines:1-9,25 irrelevant-lines:1-9,25">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">fr.sii.ogham.sample.standard</span>;
@@ -5978,8 +6282,9 @@ By default, Ogham sends the SMS using 8-bit encoding.
 <div class="paragraph">
 <p><a href="https://github.com/groupe-sii/ogham/blob/master/sample-standard-usage/src/main/java/fr/sii/ogham/sample/standard/email/fr/sii/ogham/sample/standard/PropertiesSample.java?ts=2">Source code of the sample</a>.</p>
 </div>
-<div class="paragraph tab-container-end">
-<p>-</p>
+</div>
+</div>
+</div>
 </div>
 <div class="paragraph">
 <p>This sample shows that configuration may come from several sources (code, shared properties, file inside the application, file outside the application and from system properties).</p>
@@ -6019,12 +6324,11 @@ By default, Ogham sends the SMS using 8-bit encoding.
 <div class="paragraph">
 <p>For configuration inside the application, code has higher priority than configuration defined in a classpath file. This is useful to define global configuration for the application using a configuration file and let the possibility to override explicitly some values in code. This is useful in tests for example.</p>
 </div>
-<div class="paragraph tab-container no-max-height">
-<p>Sample</p>
-</div>
-<div class="paragraph tab">
-<p><span class="image"><img src="../images//icons/java-logo.png" alt="java logo" width="16" height="30"></span> Java</p>
-</div>
+<div class="exampleblock tab-container no-max-height">
+<div class="content">
+<div class="openblock tab">
+<div class="title"><span class="image"><img src="../images//icons/java-logo.png" alt="java logo" width="16" height="30"></span> Java</div>
+<div class="content">
 <div class="listingblock collapse-lines:1-9,25 irrelevant-lines:1-9,25">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">fr.sii.ogham.sample.standard</span>;
@@ -6083,9 +6387,11 @@ By default, Ogham sends the SMS using 8-bit encoding.
 <div class="paragraph">
 <p><a href="https://github.com/groupe-sii/ogham/blob/master/sample-standard-usage/src/main/java/fr/sii/ogham/sample/standard/email/fr/sii/ogham/sample/standard/PropertiesSample.java?ts=2">Source code of the sample</a>.</p>
 </div>
-<div class="paragraph tab">
-<p><span class="image"><img src="../images//icons/properties.png" alt="properties" width="37" height="30"></span> classpath:email.properties</p>
 </div>
+</div>
+<div class="openblock tab">
+<div class="title"><span class="image"><img src="../images//icons/properties.png" alt="properties" width="37" height="30"></span> classpath:email.properties</div>
+<div class="content">
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="python">mail.smtp.host=localhost
@@ -6093,17 +6399,21 @@ mail.smtp.port=<span class="integer">25</span>
 ogham.email.from.default-value=foo<span class="decorator">@test.com</span></code></pre>
 </div>
 </div>
-<div class="paragraph tab">
-<p><span class="image"><img src="../images//icons/properties.png" alt="properties" width="37" height="30"></span> file:/etc/app/email.properties</p>
 </div>
+</div>
+<div class="openblock tab">
+<div class="title"><span class="image"><img src="../images//icons/properties.png" alt="properties" width="37" height="30"></span> file:/etc/app/email.properties</div>
+<div class="content">
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="python">mail.smtp.host=smtp.domain.com</code></pre>
 </div>
 </div>
-<div class="paragraph tab">
-<p>Result</p>
 </div>
+</div>
+<div class="openblock tab">
+<div class="title">Result</div>
+<div class="content">
 <div class="paragraph">
 <p>Running this sample with the following command line:</p>
 </div>
@@ -6141,8 +6451,9 @@ ogham.email.from.default-value=foo<span class="decorator">@test.com</span></code
 </tr>
 </tbody>
 </table>
-<div class="paragraph tab-container-end">
-<p>-</p>
+</div>
+</div>
+</div>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -6162,12 +6473,11 @@ See the <a href="https://github.com/groupe-sii/ogham/blob/master/ogham-all/src/t
 <div class="paragraph">
 <p>For example, if you use two configuration files defined in the classpath:</p>
 </div>
-<div class="paragraph tab-container no-max-height">
-<p>Sample</p>
-</div>
-<div class="paragraph tab">
-<p><span class="image"><img src="../images//icons/java-logo.png" alt="java logo" width="16" height="30"></span> Java</p>
-</div>
+<div class="exampleblock tab-container no-max-height">
+<div class="content">
+<div class="openblock tab">
+<div class="title"><span class="image"><img src="../images//icons/java-logo.png" alt="java logo" width="16" height="30"></span> Java</div>
+<div class="content">
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="java">  MessagingService service = MessagingBuilder.standard()
@@ -6178,26 +6488,32 @@ See the <a href="https://github.com/groupe-sii/ogham/blob/master/ogham-all/src/t
       .build();</code></pre>
 </div>
 </div>
-<div class="paragraph tab">
-<p><span class="image"><img src="../images//icons/properties.png" alt="properties" width="37" height="30"></span> common.properties</p>
 </div>
+</div>
+<div class="openblock tab">
+<div class="title"><span class="image"><img src="../images//icons/properties.png" alt="properties" width="37" height="30"></span> common.properties</div>
+<div class="content">
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="python">mail.smtp.host=localhost
 mail.smtp.port=<span class="integer">25</span></code></pre>
 </div>
 </div>
-<div class="paragraph tab">
-<p><span class="image"><img src="../images//icons/properties.png" alt="properties" width="37" height="30"></span> email.properties</p>
 </div>
+</div>
+<div class="openblock tab">
+<div class="title"><span class="image"><img src="../images//icons/properties.png" alt="properties" width="37" height="30"></span> email.properties</div>
+<div class="content">
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="python">mail.smtp.host=smtp.domain.com</code></pre>
 </div>
 </div>
-<div class="paragraph tab">
-<p>Result</p>
 </div>
+</div>
+<div class="openblock tab">
+<div class="title">Result</div>
+<div class="content">
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 50%;">
@@ -6220,8 +6536,9 @@ mail.smtp.port=<span class="integer">25</span></code></pre>
 </tr>
 </tbody>
 </table>
-<div class="paragraph tab-container-end">
-<p>-</p>
+</div>
+</div>
+</div>
 </div>
 <div class="paragraph">
 <p>For the same level of priority, this is the declaration order that prevails.</p>
@@ -6232,12 +6549,11 @@ mail.smtp.port=<span class="integer">25</span></code></pre>
 <div class="paragraph">
 <p>If you want to use a different priority order, you can explicitly register properties with a custom priority:</p>
 </div>
-<div class="paragraph tab-container no-max-height">
-<p>Sample</p>
-</div>
-<div class="paragraph tab">
-<p><span class="image"><img src="../images//icons/java-logo.png" alt="java logo" width="16" height="30"></span> Java</p>
-</div>
+<div class="exampleblock tab-container no-max-height">
+<div class="content">
+<div class="openblock tab">
+<div class="title"><span class="image"><img src="../images//icons/java-logo.png" alt="java logo" width="16" height="30"></span> Java</div>
+<div class="content">
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="java">  MessagingService service = MessagingBuilder.standard()
@@ -6248,26 +6564,32 @@ mail.smtp.port=<span class="integer">25</span></code></pre>
       .build();</code></pre>
 </div>
 </div>
-<div class="paragraph tab">
-<p><span class="image"><img src="../images//icons/properties.png" alt="properties" width="37" height="30"></span> common.properties</p>
 </div>
+</div>
+<div class="openblock tab">
+<div class="title"><span class="image"><img src="../images//icons/properties.png" alt="properties" width="37" height="30"></span> common.properties</div>
+<div class="content">
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="python">mail.smtp.host=localhost
 mail.smtp.port=<span class="integer">25</span></code></pre>
 </div>
 </div>
-<div class="paragraph tab">
-<p><span class="image"><img src="../images//icons/properties.png" alt="properties" width="37" height="30"></span> email.properties</p>
 </div>
+</div>
+<div class="openblock tab">
+<div class="title"><span class="image"><img src="../images//icons/properties.png" alt="properties" width="37" height="30"></span> email.properties</div>
+<div class="content">
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="python">mail.smtp.host=smtp.domain.com</code></pre>
 </div>
 </div>
-<div class="paragraph tab">
-<p>Result</p>
 </div>
+</div>
+<div class="openblock tab">
+<div class="title">Result</div>
+<div class="content">
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 50%;">
@@ -6290,8 +6612,9 @@ mail.smtp.port=<span class="integer">25</span></code></pre>
 </tr>
 </tbody>
 </table>
-<div class="paragraph tab-container-end">
-<p>-</p>
+</div>
+</div>
+</div>
 </div>
 <div class="paragraph">
 <p>You can notice that the result is now different than using default priorities.</p>
@@ -6331,6 +6654,327 @@ mail.smtp.port=<span class="integer">25</span></code></pre>
 </div>
 </div>
 </div>
+<div class="sect2">
+<h3 id="_files_location"><a class="anchor" href="#_files_location"></a>Files location</h3>
+<div class="paragraph">
+<p>By default, Ogham automatically loads configuration files placed in:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>config/ogham.properties</code> relative to current directory</p>
+</li>
+<li>
+<p><code>config/application.properties</code> relative to current directory</p>
+</li>
+<li>
+<p><code>config/ogham.properties</code> in the classpath</p>
+</li>
+<li>
+<p><code>config/application.properties</code> in the classpath</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>This way, developer don&#8217;t need to add code to explicitly load some configuration files:</p>
+</div>
+<div class="exampleblock tab-container no-max-height">
+<div class="content">
+<div class="openblock tab">
+<div class="title"><span class="image"><img src="../images//icons/java-logo.png" alt="java logo" width="16" height="30"></span> Use default files</div>
+<div class="content">
+<div class="listingblock collapse-lines:1-6 irrelevant-lines:1-6">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">fr.sii.ogham.sample.standard</span>;
+
+<span class="keyword">import</span> <span class="include">fr.sii.ogham.core.builder.MessagingBuilder</span>;
+<span class="keyword">import</span> <span class="include">fr.sii.ogham.core.exception.MessagingException</span>;
+<span class="keyword">import</span> <span class="include">fr.sii.ogham.core.service.MessagingService</span>;
+
+<span class="directive">public</span> <span class="type">class</span> <span class="class">DefaultPropertiesLocationSample</span> {
+  <span class="directive">public</span> <span class="directive">static</span> <span class="type">void</span> main(<span class="predefined-type">String</span><span class="type">[]</span> args) <span class="directive">throws</span> MessagingException {
+    <span class="comment">/**
+     * By default, Ogham loads files from:
+     * - config/ogham.properties and config/application.properties
+     *   from classpath if exists
+     * - config/ogham.properties and config/application.properties
+     *   external files from current directory if exists
+     */</span>
+    MessagingService service = MessagingBuilder.standard()
+        .build();
+    service.send(<span class="comment">/*your message here*/</span><span class="predefined-constant">null</span>);
+  }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><a href="https://github.com/groupe-sii/ogham/blob/master/sample-standard-usage/src/main/java/fr/sii/ogham/sample/standard/email/fr/sii/ogham/sample/standard/DefaultPropertiesLocationSample.java?ts=2">Source code of the sample</a>.</p>
+</div>
+</div>
+</div>
+<div class="openblock tab">
+<div class="title"><span class="image"><img src="../images//icons/java-logo.png" alt="java logo" width="16" height="30"></span> Manual equivalence</div>
+<div class="content">
+<div class="listingblock collapse-lines:1-9 irrelevant-lines:1-9 diff-remove-lines:13-18">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">fr.sii.ogham.sample.standard</span>;
+
+<span class="keyword">import</span> <span class="include">java.io.IOException</span>;
+<span class="keyword">import</span> <span class="include">java.util.Properties</span>;
+
+<span class="keyword">import</span> <span class="include">fr.sii.ogham.core.builder.MessagingBuilder</span>;
+<span class="keyword">import</span> <span class="include">fr.sii.ogham.core.exception.MessagingException</span>;
+<span class="keyword">import</span> <span class="include">fr.sii.ogham.core.service.MessagingService</span>;
+
+<span class="directive">public</span> <span class="type">class</span> <span class="class">PropertiesSample</span> {
+  <span class="directive">public</span> <span class="directive">static</span> <span class="type">void</span> main(<span class="predefined-type">String</span><span class="type">[]</span> args) <span class="directive">throws</span> MessagingException, <span class="exception">IOException</span> {
+    MessagingService service = MessagingBuilder.standard()
+        .environment()
+          .properties(<span class="string"><span class="delimiter">&quot;</span><span class="content">?file:config/ogham.properties</span><span class="delimiter">&quot;</span></span>)
+          .properties(<span class="string"><span class="delimiter">&quot;</span><span class="content">?file:config/application.properties</span><span class="delimiter">&quot;</span></span>)
+          .properties(<span class="string"><span class="delimiter">&quot;</span><span class="content">?classpath:config/ogham.properties</span><span class="delimiter">&quot;</span></span>)
+          .properties(<span class="string"><span class="delimiter">&quot;</span><span class="content">?classpath:config/application.properties</span><span class="delimiter">&quot;</span></span>)
+          .and()
+        .build();
+    service.send(<span class="comment">/*your message here*/</span><span class="predefined-constant">null</span>);
+  }
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="title">Optional location</div>
+<div class="paragraph">
+<p>Using <code>?</code> character in the path means that the configuration file is optional.
+It will not fail if the file doesn&#8217;t exist.</p>
+</div>
+<div class="paragraph">
+<p>Without <code>?</code>, if the file is missing, Ogham will fail at startup to indicate that
+some configuration is missing.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>In addition to default locations, you can specify a different location using
+<code>ogham.config.location</code> property:</p>
+</div>
+<div class="exampleblock tab-container no-max-height">
+<div class="content">
+<div class="openblock tab">
+<div class="title"><span class="image"><img src="../images//icons/java-logo.png" alt="java logo" width="16" height="30"></span> Custom location</div>
+<div class="content">
+<div class="listingblock collapse-lines:1-6 irrelevant-lines:1-6">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">fr.sii.ogham.sample.standard</span>;
+
+<span class="keyword">import</span> <span class="include">fr.sii.ogham.core.builder.MessagingBuilder</span>;
+<span class="keyword">import</span> <span class="include">fr.sii.ogham.core.exception.MessagingException</span>;
+<span class="keyword">import</span> <span class="include">fr.sii.ogham.core.service.MessagingService</span>;
+
+<span class="directive">public</span> <span class="type">class</span> <span class="class">DefaultPropertiesLocationSample</span> {
+  <span class="directive">public</span> <span class="directive">static</span> <span class="type">void</span> main(<span class="predefined-type">String</span><span class="type">[]</span> args) <span class="directive">throws</span> MessagingException {
+    <span class="comment">/**
+     * By default, Ogham loads files from:
+     * - config/ogham.properties and config/application.properties
+     *   from classpath if exists
+     * - config/ogham.properties and config/application.properties
+     *   external files from current directory if exists
+     */</span>
+    MessagingService service = MessagingBuilder.standard()
+        .build();
+    service.send(<span class="comment">/*your message here*/</span><span class="predefined-constant">null</span>);
+  }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Running the sample from command line:</p>
+</div>
+<div class="listingblock highlight-lines:3">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="shell">cd /var/run
+java \
+  -Dogham.config.location=file:/etc/your-app \
+  ... \
+  -jar ...</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Will load files from:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>/etc/your-app/config/ogham.properties</code> (explicit location)</p>
+</li>
+<li>
+<p><code>/etc/your-app/config/application.properties</code> (explicit location)</p>
+</li>
+<li>
+<p><code>/var/run/config/ogham.properties</code> (default location relative to current directory)</p>
+</li>
+<li>
+<p><code>/var/run/config/application.properties</code> (default location relative to current directory)</p>
+</li>
+<li>
+<p><code>config/ogham.properties</code> in the classpath</p>
+</li>
+<li>
+<p><code>config/application.properties</code> in the classpath</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="title">Several locations</div>
+<div class="paragraph">
+<p>You can set several locations at once by separating each path with a comma (<code>,</code>).</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_configuration_profiles"><a class="anchor" href="#_configuration_profiles"></a>Configuration profiles</h3>
+<div class="paragraph">
+<p>In order to have the exact same code but different configurations for different
+execution environments, Ogham also supports profiles for configuration files.</p>
+</div>
+<div class="paragraph">
+<p>The aim is to have for example:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>one configuration file for development (that configures Ogham to send emails using external SMTP server)</p>
+</li>
+<li>
+<p>one configuration file for tests (that configures Ogham to send emails using embedded SMTP server)</p>
+</li>
+<li>
+<p>one configuration file for production (that configures Ogham to send emails through SendGrid)</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>This can be done by simply appending a suffix to the configuration file name of your choice.
+For instance, you want three profiles named <code>dev</code>, <code>tests</code>, <code>prod</code>, then
+you can create the following files:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>config/ogham-dev.properties</code> and/or <code>config/application-dev.properties</code></p>
+</li>
+<li>
+<p><code>config/ogham-tests.properties</code> and/or <code>config/application-tests.properties</code></p>
+</li>
+<li>
+<p><code>config/ogham-prod.properties</code> and/or <code>config/application-prod.properties</code></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Each file can have its own configuration.</p>
+</div>
+<div class="paragraph">
+<p>The next step is to enable a profile. This can be done by setting <code>ogham.profiles.active</code> system property:</p>
+</div>
+<div class="listingblock highlight-lines:2">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="shell">java \
+  -Dogham.profiles.active=prod \
+  ... \
+  -jar ...</code></pre>
+</div>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="title">Enable several profiles</div>
+<div class="paragraph">
+<p>You can enable several profiles at once by separating each profile name with a comma (<code>,</code>).</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="title">Default configuration</div>
+<div class="paragraph">
+<p>The default configuration files are still loaded but with lower priority.</p>
+</div>
+<div class="paragraph">
+<p>For instance if:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>a property <code>foo</code> with a value <code>bar</code> is defined in default location (<code>config/ogham.properties</code> or
+<code>config/application.properties</code>)</p>
+</li>
+<li>
+<p>and the same property <code>foo</code> with the value <code>foobar</code> is defined in <code>dev</code> profile
+(<code>config/ogham-dev.properties</code> or <code>config/application-dev.properties</code>),</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>the value <code>foobar</code> will be used if <code>dev</code> profile is enabled.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="exampleblock TODO">
+<div class="content">
+<div class="ulist">
+<ul>
+<li>
+<p>Explain conversions from String to target type</p>
+</li>
+<li>
+<p>List already existing conversions</p>
+</li>
+<li>
+<p>Explain how to register custom converter &#8594; link to extend.adoc</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
 </div>
 </div>
 <div class="sect1">
@@ -6338,15 +6982,60 @@ mail.smtp.port=<span class="integer">25</span></code></pre>
 <div class="sectionbody">
 <div class="sect2">
 <h3 id="freemarker"><a class="anchor" href="#freemarker"></a>FreeMarker</h3>
-
+<div class="exampleblock TODO">
+<div class="content">
+<div class="ulist">
+<ul>
+<li>
+<p>Explain specific features supported by FreeMarker</p>
+</li>
+<li>
+<p>Show samples with static method calls</p>
+</li>
+<li>
+<p>Link to advanced configuration to custom FreeMarker configuration</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
 </div>
 <div class="sect2">
 <h3 id="thymeleaf"><a class="anchor" href="#thymeleaf"></a>ThymeLeaf</h3>
-
+<div class="exampleblock TODO">
+<div class="content">
+<div class="ulist">
+<ul>
+<li>
+<p>Explain specific features supported by Thymeleaf</p>
+</li>
+<li>
+<p>Show samples with static method calls</p>
+</li>
+<li>
+<p>Link to advanced configuration to custom Thymeleaf configuration</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
 </div>
 <div class="sect2">
 <h3 id="_mixed"><a class="anchor" href="#_mixed"></a>Mixed</h3>
-
+<div class="exampleblock TODO">
+<div class="content">
+<div class="ulist">
+<ul>
+<li>
+<p>Explain variants</p>
+</li>
+<li>
+<p>Explain how to register custom variants (advanced configuration ?)</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
 </div>
 </div>
 </div>
@@ -6354,7 +7043,7 @@ mail.smtp.port=<span class="integer">25</span></code></pre>
 <h2 id="spring-boot-usage"><a class="anchor" href="#spring-boot-usage"></a>Using Ogham in a Spring Boot application</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Ogham provides auto-configuration modules for Spring Boot (<a href="#install-spring-boot">see how to include auto-configuration modules</a>). To use Ogham in Spring, you can directly inject (autowire) <code>MessagingService</code> bean.</p>
+<p>Ogham provides auto-configuration modules for Spring Boot (<a href="../user-manual.html#install-spring-boot">see how to include auto-configuration modules</a>). To use Ogham in Spring, you can directly inject (autowire) <code>MessagingService</code> bean.</p>
 </div>
 <div class="paragraph">
 <p>In addition to standalone behaviors, Ogham also supports Spring Boot modules and auto-configuration:</p>
@@ -6570,12 +7259,11 @@ The following sample shows a Spring Web that exposes one simple endpoint for sen
 </li>
 </ul>
 </div>
-<div class="paragraph tab-container no-max-height">
-<p>Email sample with Spring Boot</p>
-</div>
-<div class="paragraph tab">
-<p><span class="image"><img src="../images//icons/java-logo.png" alt="java logo" width="16" height="30"></span> Java</p>
-</div>
+<div class="exampleblock tab-container no-max-height">
+<div class="content">
+<div class="openblock tab">
+<div class="title"><span class="image"><img src="../images//icons/java-logo.png" alt="java logo" width="16" height="30"></span> Java</div>
+<div class="content">
 <div class="listingblock collapse-lines:1-16,46-58 irrelevant-lines:1-16 highlight-lines:31,32,38-41">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">fr.sii.ogham.sample.springboot.email</span>;
@@ -6667,9 +7355,11 @@ The following sample shows a Spring Web that exposes one simple endpoint for sen
 <div class="paragraph">
 <p><a href="https://github.com/groupe-sii/ogham/blob/master/sample-spring-usage/src/main/java/fr/sii/ogham/sample/springboot/email/ThymeleafHtmlAndFreemarkerTextSample.java?ts=2">Source code of the sample</a>.</p>
 </div>
-<div class="paragraph tab">
-<p><span class="image"><img src="../images//icons/thymeleaf.jpg" alt="thymeleaf" width="30" height="30"></span> HTML template</p>
 </div>
+</div>
+<div class="openblock tab">
+<div class="title"><span class="image"><img src="../images//icons/thymeleaf.jpg" alt="thymeleaf" width="30" height="30"></span> HTML template</div>
+<div class="content">
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="html"><span class="doctype">&lt;!DOCTYPE html&gt;</span>
@@ -6708,9 +7398,11 @@ The following sample shows a Spring Web that exposes one simple endpoint for sen
 <div class="paragraph">
 <p><a href="https://github.com/groupe-sii/ogham/blob/master/sample-spring-usage/src/main/resources/email/mixed.html?ts=2">Source code of the HTML template</a></p>
 </div>
-<div class="paragraph tab">
-<p><span class="image"><img src="../images//icons/freemarker-logo.png" alt="freemarker logo" width="60" height="24"></span> Text template</p>
 </div>
+</div>
+<div class="openblock tab">
+<div class="title"><span class="image"><img src="../images//icons/freemarker-logo.png" alt="freemarker logo" width="60" height="24"></span> Text template</div>
+<div class="content">
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="txt">${name} ${value}</code></pre>
@@ -6719,9 +7411,11 @@ The following sample shows a Spring Web that exposes one simple endpoint for sen
 <div class="paragraph">
 <p><a href="https://github.com/groupe-sii/ogham/blob/master/sample-spring-usage/src/main/resources/email/mixed.txt.ftlh?ts=2">Source code of the text template</a></p>
 </div>
-<div class="paragraph tab">
-<p><span class="image"><img src="../images//icons/properties.png" alt="properties" width="37" height="30"></span> Spring properties</p>
 </div>
+</div>
+<div class="openblock tab">
+<div class="title"><span class="image"><img src="../images//icons/properties.png" alt="properties" width="37" height="30"></span> Spring properties</div>
+<div class="content">
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="python"><span class="comment"># configuration for email</span>
@@ -6760,8 +7454,9 @@ spring.freemarker.prefix=/email/                      <i class="conum" data-valu
 <div class="paragraph">
 <p><a href="https://github.com/groupe-sii/ogham/blob/master/sample-spring-usage/src/main/resources/application-email-template.properties?ts=2">Source code of the properties</a></p>
 </div>
-<div class="paragraph tab-container-end">
-<p>-</p>
+</div>
+</div>
+</div>
 </div>
 </div>
 <div class="sect2">
@@ -6789,12 +7484,11 @@ The following sample shows a Spring Web that exposes one simple endpoint for sen
 </li>
 </ul>
 </div>
-<div class="paragraph tab-container no-max-height">
-<p>SMS Sample with Spring Boot</p>
-</div>
-<div class="paragraph tab">
-<p><span class="image"><img src="../images//icons/java-logo.png" alt="java logo" width="16" height="30"></span> Java</p>
-</div>
+<div class="exampleblock tab-container no-max-height">
+<div class="content">
+<div class="openblock tab">
+<div class="title"><span class="image"><img src="../images//icons/java-logo.png" alt="java logo" width="16" height="30"></span> Java</div>
+<div class="content">
 <div class="listingblock collapse-lines:1-16,45-57 irrelevant-lines:1-16 highlight-lines:30,31,37-40">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">fr.sii.ogham.sample.springboot.sms</span>;
@@ -6885,9 +7579,11 @@ The following sample shows a Spring Web that exposes one simple endpoint for sen
 <div class="paragraph">
 <p><a href="https://github.com/groupe-sii/ogham/blob/master/sample-spring-usage/src/main/java/fr/sii/ogham/sample/springboot/sms/TemplateSample.java?ts=2">Source code of the sample</a>.</p>
 </div>
-<div class="paragraph tab">
-<p><span class="image"><img src="../images//icons/freemarker-logo.png" alt="freemarker logo" width="60" height="24"></span> Template</p>
 </div>
+</div>
+<div class="openblock tab">
+<div class="title"><span class="image"><img src="../images//icons/freemarker-logo.png" alt="freemarker logo" width="60" height="24"></span> Template</div>
+<div class="content">
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code>Hello ${name}, the confirmation code is ${value}</code></pre>
@@ -6896,9 +7592,11 @@ The following sample shows a Spring Web that exposes one simple endpoint for sen
 <div class="paragraph">
 <p><a href="https://github.com/groupe-sii/ogham/blob/master/sample-spring-usage/src/main/resources/sms/register.txt.ftl?ts=2">Source code of the template</a></p>
 </div>
-<div class="paragraph tab">
-<p><span class="image"><img src="../images//icons/properties.png" alt="properties" width="37" height="30"></span> Spring properties</p>
 </div>
+</div>
+<div class="openblock tab">
+<div class="title"><span class="image"><img src="../images//icons/properties.png" alt="properties" width="37" height="30"></span> Spring properties</div>
+<div class="content">
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="python"><span class="comment"># ogham configuration for SMS</span>
@@ -6946,8 +7644,9 @@ ogham.sms.template.path-suffix=.txt.ftl                                 <i class
 <div class="paragraph">
 <p><a href="https://github.com/groupe-sii/ogham/blob/master/sample-spring-usage/src/main/resources/application-sms-template.properties?ts=2">Source code of the properties</a></p>
 </div>
-<div class="paragraph tab-container-end">
-<p>-</p>
+</div>
+</div>
+</div>
 </div>
 </div>
 </div>
@@ -6955,7 +7654,7 @@ ogham.sms.template.path-suffix=.txt.ftl                                 <i class
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-06-30 09:44:48 UTC
+Last updated 2020-08-31 23:57:35 UTC
 </div>
 </div>
 <link rel="stylesheet" href="./coderay-asciidoctor.css">
