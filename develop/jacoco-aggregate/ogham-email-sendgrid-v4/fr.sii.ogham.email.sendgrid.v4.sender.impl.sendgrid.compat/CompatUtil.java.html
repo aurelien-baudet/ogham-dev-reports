@@ -16,7 +16,7 @@ import fr.sii.ogham.core.util.ClasspathUtils;
  * @author Aurélien Baudet
  *
  */
-<span class="nc" id="L19">public class CompatUtil {</span>
+public final class CompatUtil {
 	/**
 	 * {@code sendgrid-java} package version 4.3.0 declares some classes in
 	 * package {@code com.sendgrid.helpers.mail.objects} (according to source
@@ -37,8 +37,8 @@ import fr.sii.ogham.core.util.ClasspathUtils;
 	 * @return the factory that will provide instances of objects
 	 */
 	public static CompatFactory getDefaultCompatFactory() {
-<span class="pc bpc" id="L40" title="1 of 2 branches missed.">		if (ClasspathUtils.exists(&quot;com.sendgrid.Email&quot;)) {</span>
-<span class="nc" id="L41">			return createV430CompatFactoryInstance();</span>
+<span class="fc bfc" id="L40" title="All 2 branches covered.">		if (ClasspathUtils.exists(&quot;com.sendgrid.Email&quot;)) {</span>
+<span class="fc" id="L41">			return createV430CompatFactoryInstance();</span>
 		}
 <span class="pc bpc" id="L43" title="1 of 2 branches missed.">		if (ClasspathUtils.exists(&quot;com.sendgrid.helpers.mail.objects.Email&quot;)) {</span>
 <span class="fc" id="L44">			return new CorrectPackageNameCompatFactory();</span>
@@ -48,11 +48,15 @@ import fr.sii.ogham.core.util.ClasspathUtils;
 
 	private static CompatFactory createV430CompatFactoryInstance() {
 		try {
-<span class="nc" id="L51">			Class&lt;?&gt; klass = Class.forName(&quot;fr.sii.ogham.email.sendgrid.v4.sender.impl.sendgrid.compat.WrongPackageNameCompatFactory&quot;);</span>
-<span class="nc" id="L52">			return (CompatFactory) klass.newInstance();</span>
+<span class="fc" id="L51">			Class&lt;?&gt; klass = Class.forName(&quot;fr.sii.ogham.email.sendgrid.v4.sender.impl.sendgrid.compat.WrongPackageNameCompatFactory&quot;);</span>
+<span class="fc" id="L52">			return (CompatFactory) klass.newInstance();</span>
 <span class="nc" id="L53">		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {</span>
 <span class="nc" id="L54">			throw new IllegalStateException(&quot;Failed to create compatibility factory for sendgrid-java v4.3.0&quot;, e);</span>
 		}
+	}
+	
+	private CompatUtil() {
+		super();
 	}
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

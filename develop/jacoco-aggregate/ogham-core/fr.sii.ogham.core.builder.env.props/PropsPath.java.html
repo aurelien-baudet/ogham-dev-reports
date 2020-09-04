@@ -50,8 +50,8 @@ public class PropsPath extends AbstractProps {
 
 	private Properties loadFromExternalFile(String path) throws IOException {
 <span class="fc" id="L52">		Properties props = new Properties();</span>
-		try {
-<span class="fc" id="L54">			props.load(new FileInputStream(Paths.get(path).toFile()));</span>
+<span class="fc" id="L53">		try (FileInputStream fis = new FileInputStream(Paths.get(path).toFile())) {</span>
+<span class="fc" id="L54">			props.load(fis);</span>
 <span class="fc" id="L55">			return props;</span>
 <span class="fc" id="L56">		} catch (FileNotFoundException e) {</span>
 <span class="fc" id="L57">			return failOrSkip(e, props);</span>
@@ -74,10 +74,11 @@ public class PropsPath extends AbstractProps {
 
 	private Properties failOrSkip(FileNotFoundException e, Properties properties) {
 <span class="fc bfc" id="L76" title="All 2 branches covered.">		if (optional) {</span>
-<span class="fc" id="L77">			LOG.debug(&quot;Properties file {} is missing but marked as optional&quot;, path, e);</span>
-<span class="fc" id="L78">			return properties;</span>
+<span class="fc" id="L77">			LOG.debug(&quot;Properties file {} is missing but marked as optional&quot;, path);</span>
+<span class="fc" id="L78">			LOG.trace(&quot;Original exception&quot;, e);</span>
+<span class="fc" id="L79">			return properties;</span>
 		}
-<span class="fc" id="L80">		throw new BuildException(&quot;Properties file is required and missing: &quot; + path, e);</span>
+<span class="fc" id="L81">		throw new BuildException(&quot;Properties file is required and missing: &quot; + path, e);</span>
 	}
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>
