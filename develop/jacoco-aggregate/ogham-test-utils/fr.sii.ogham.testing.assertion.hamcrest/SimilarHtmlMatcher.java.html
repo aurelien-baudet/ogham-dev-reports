@@ -3,9 +3,6 @@
 import java.util.function.Consumer;
 
 import org.custommonkey.xmlunit.DetailedDiff;
-import org.custommonkey.xmlunit.Difference;
-import org.hamcrest.BaseMatcher;
-import org.hamcrest.Description;
 import org.junit.ComparisonFailure;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,58 +28,25 @@ import fr.sii.ogham.testing.assertion.util.HtmlUtils;
  * @author Aurélien Baudet
  *
  */
-public class SimilarHtmlMatcher extends BaseMatcher&lt;String&gt; implements ExpectedValueProvider&lt;String&gt;, ComparisonAwareMatcher {
-<span class="fc" id="L35">	private static final Logger LOG = LoggerFactory.getLogger(SimilarHtmlMatcher.class);</span>
-	
-	private final String expected;
-	private final Consumer&lt;String&gt; printer;
-	private DetailedDiff diff;
+public class SimilarHtmlMatcher extends AbstractHtmlDiffMatcher {
+<span class="fc" id="L32">	private static final Logger LOG = LoggerFactory.getLogger(SimilarHtmlMatcher.class);</span>
 
 	public SimilarHtmlMatcher(String expected) {
-<span class="fc" id="L42">		this(expected, LOG::warn);</span>
-<span class="fc" id="L43">	}</span>
+<span class="fc" id="L35">		this(expected, LOG::warn);</span>
+<span class="fc" id="L36">	}</span>
 
 	public SimilarHtmlMatcher(String expected, Consumer&lt;String&gt; printer) {
-<span class="fc" id="L46">		super();</span>
-<span class="fc" id="L47">		this.expected = expected;</span>
-<span class="fc" id="L48">		this.printer = printer;</span>
-<span class="fc" id="L49">	}</span>
+<span class="fc" id="L39">		super(expected, printer, &quot;similar&quot;);</span>
+<span class="fc" id="L40">	}</span>
 
 	@Override
-	public boolean matches(Object item) {
-<span class="fc" id="L53">		diff = HtmlUtils.compare(expected, (String) item);</span>
-<span class="fc" id="L54">		boolean similar = diff.similar();</span>
-<span class="fc bfc" id="L55" title="All 2 branches covered.">		if(!similar) {</span>
-<span class="fc" id="L56">			printer.accept(comparisonMessage());</span>
-		}
-<span class="fc" id="L58">		return similar;</span>
-	}
-
-	@Override
-	public void describeTo(Description description) {
-<span class="fc" id="L63">		description.appendValue(expected);</span>
-<span class="fc" id="L64">	}</span>
-
-	@Override
-	public String getExpectedValue() {
-<span class="nc" id="L68">		return expected;</span>
-	}
-
-	@Override
-	public String comparisonMessage() {
-<span class="fc" id="L73">		StringBuilder sb = new StringBuilder();</span>
-<span class="fc" id="L74">		sb.append(&quot;The two HTML documents are not similar.\n&quot;);</span>
-<span class="fc" id="L75">		sb.append(&quot;Here are the differences found:\n&quot;);</span>
-<span class="fc bfc" id="L76" title="All 2 branches covered.">		for(Difference d : diff.getAllDifferences()) {</span>
-<span class="fc" id="L77">			sb.append(&quot;  - &quot;).append(d.toString()).append(&quot;\n&quot;);</span>
-<span class="fc" id="L78">		}</span>
-<span class="fc" id="L79">		sb.append(&quot;\n&quot;);</span>
-<span class="fc" id="L80">		return sb.toString();</span>
+	protected boolean matches(DetailedDiff diff) {
+<span class="fc" id="L44">		return diff.similar();</span>
 	}
 
 	@Override
 	public String toString() {
-<span class="nc" id="L85">		return &quot;isSimilarHtml('&quot;+expected+&quot;')&quot;;</span>
+<span class="nc" id="L49">		return &quot;isSimilarHtml('&quot;+expected+&quot;')&quot;;</span>
 	}
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

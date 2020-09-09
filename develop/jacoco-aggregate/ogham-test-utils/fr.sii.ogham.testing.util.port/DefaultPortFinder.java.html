@@ -28,9 +28,10 @@ public class DefaultPortFinder implements PortFinder {
 	 *            Determine if the specified port for this {@code SocketType} is
 	 *            currently available on {@code localhost}.
 	 */
+	@SuppressWarnings(&quot;java:S2245&quot;)
 	public DefaultPortFinder(String protocol, IntPredicate isPortAvailable) {
-<span class="fc" id="L32">		this(protocol, isPortAvailable, new Random(System.nanoTime()));</span>
-<span class="fc" id="L33">	}</span>
+<span class="fc" id="L33">		this(protocol, isPortAvailable, new Random(System.nanoTime()));</span>
+<span class="fc" id="L34">	}</span>
 
 	/**
 	 * Initialize with a function to check if a port is available or not.
@@ -44,11 +45,11 @@ public class DefaultPortFinder implements PortFinder {
 	 *            the random implementation to use
 	 */
 	public DefaultPortFinder(String protocol, IntPredicate isPortAvailable, Random random) {
-<span class="fc" id="L47">		super();</span>
-<span class="fc" id="L48">		this.protocol = protocol;</span>
-<span class="fc" id="L49">		this.isPortAvailable = isPortAvailable;</span>
-<span class="fc" id="L50">		this.random = random;</span>
-<span class="fc" id="L51">	}</span>
+<span class="fc" id="L48">		super();</span>
+<span class="fc" id="L49">		this.protocol = protocol;</span>
+<span class="fc" id="L50">		this.isPortAvailable = isPortAvailable;</span>
+<span class="fc" id="L51">		this.random = random;</span>
+<span class="fc" id="L52">	}</span>
 
 	/**
 	 * Find an available port for this {@code SocketType}, randomly selected
@@ -63,22 +64,22 @@ public class DefaultPortFinder implements PortFinder {
 	 *             if no available port could be found
 	 */
 	public int findAvailablePort(int minPort, int maxPort) {
-<span class="fc bfc" id="L66" title="All 2 branches covered.">		assertIsTrue(minPort &gt; 0, &quot;'minPort' must be greater than 0&quot;);</span>
-<span class="fc bfc" id="L67" title="All 2 branches covered.">		assertIsTrue(maxPort &gt;= minPort, &quot;'maxPort' must be greater than or equal to 'minPort'&quot;);</span>
-<span class="fc bfc" id="L68" title="All 2 branches covered.">		assertIsTrue(maxPort &lt;= RandomPortUtils.PORT_RANGE_MAX, &quot;'maxPort' must be less than or equal to &quot; + RandomPortUtils.PORT_RANGE_MAX);</span>
+<span class="fc bfc" id="L67" title="All 2 branches covered.">		assertIsTrue(minPort &gt; 0, &quot;'minPort' must be greater than 0&quot;);</span>
+<span class="fc bfc" id="L68" title="All 2 branches covered.">		assertIsTrue(maxPort &gt;= minPort, &quot;'maxPort' must be greater than or equal to 'minPort'&quot;);</span>
+<span class="fc bfc" id="L69" title="All 2 branches covered.">		assertIsTrue(maxPort &lt;= RandomPortUtils.PORT_RANGE_MAX, &quot;'maxPort' must be less than or equal to &quot; + RandomPortUtils.PORT_RANGE_MAX);</span>
 
-<span class="fc" id="L70">		int portRange = maxPort - minPort;</span>
+<span class="fc" id="L71">		int portRange = maxPort - minPort;</span>
 		int candidatePort;
-<span class="fc" id="L72">		int searchCounter = 0;</span>
+<span class="fc" id="L73">		int searchCounter = 0;</span>
 		do {
-<span class="fc bfc" id="L74" title="All 2 branches covered.">			if (searchCounter &gt; portRange) {</span>
-<span class="fc" id="L75">				throw new IllegalStateException(String.format(&quot;Could not find an available %s port in the range [%d, %d] after %d attempts&quot;, protocol, minPort, maxPort, searchCounter));</span>
+<span class="fc bfc" id="L75" title="All 2 branches covered.">			if (searchCounter &gt; portRange) {</span>
+<span class="fc" id="L76">				throw new IllegalStateException(String.format(&quot;Could not find an available %s port in the range [%d, %d] after %d attempts&quot;, protocol, minPort, maxPort, searchCounter));</span>
 			}
-<span class="fc" id="L77">			candidatePort = findRandomPort(minPort, maxPort);</span>
-<span class="fc" id="L78">			searchCounter++;</span>
-<span class="fc bfc" id="L79" title="All 2 branches covered.">		} while (!isPortAvailable.test(candidatePort));</span>
+<span class="fc" id="L78">			candidatePort = findRandomPort(minPort, maxPort);</span>
+<span class="fc" id="L79">			searchCounter++;</span>
+<span class="fc bfc" id="L80" title="All 2 branches covered.">		} while (!isPortAvailable.test(candidatePort));</span>
 
-<span class="fc" id="L81">		return candidatePort;</span>
+<span class="fc" id="L82">		return candidatePort;</span>
 	}
 
 	/**
@@ -96,23 +97,23 @@ public class DefaultPortFinder implements PortFinder {
 	 *             if the requested number of available ports could not be found
 	 */
 	public SortedSet&lt;Integer&gt; findAvailablePorts(int numRequested, int minPort, int maxPort) {
-<span class="fc bfc" id="L99" title="All 2 branches covered.">		assertIsTrue(minPort &gt; 0, &quot;'minPort' must be greater than 0&quot;);</span>
-<span class="fc bfc" id="L100" title="All 2 branches covered.">		assertIsTrue(maxPort &gt; minPort, &quot;'maxPort' must be greater than 'minPort'&quot;);</span>
-<span class="fc bfc" id="L101" title="All 2 branches covered.">		assertIsTrue(maxPort &lt;= RandomPortUtils.PORT_RANGE_MAX, &quot;'maxPort' must be less than or equal to &quot; + RandomPortUtils.PORT_RANGE_MAX);</span>
-<span class="fc bfc" id="L102" title="All 2 branches covered.">		assertIsTrue(numRequested &gt; 0, &quot;'numRequested' must be greater than 0&quot;);</span>
-<span class="fc bfc" id="L103" title="All 2 branches covered.">		assertIsTrue((maxPort - minPort) &gt;= numRequested, &quot;'numRequested' must not be greater than 'maxPort' - 'minPort'&quot;);</span>
+<span class="fc bfc" id="L100" title="All 2 branches covered.">		assertIsTrue(minPort &gt; 0, &quot;'minPort' must be greater than 0&quot;);</span>
+<span class="fc bfc" id="L101" title="All 2 branches covered.">		assertIsTrue(maxPort &gt; minPort, &quot;'maxPort' must be greater than 'minPort'&quot;);</span>
+<span class="fc bfc" id="L102" title="All 2 branches covered.">		assertIsTrue(maxPort &lt;= RandomPortUtils.PORT_RANGE_MAX, &quot;'maxPort' must be less than or equal to &quot; + RandomPortUtils.PORT_RANGE_MAX);</span>
+<span class="fc bfc" id="L103" title="All 2 branches covered.">		assertIsTrue(numRequested &gt; 0, &quot;'numRequested' must be greater than 0&quot;);</span>
+<span class="fc bfc" id="L104" title="All 2 branches covered.">		assertIsTrue((maxPort - minPort) &gt;= numRequested, &quot;'numRequested' must not be greater than 'maxPort' - 'minPort'&quot;);</span>
 
-<span class="fc" id="L105">		SortedSet&lt;Integer&gt; availablePorts = new TreeSet&lt;&gt;();</span>
-<span class="fc" id="L106">		int attemptCount = 0;</span>
-<span class="pc bpc" id="L107" title="1 of 4 branches missed.">		while ((++attemptCount &lt;= numRequested + 100) &amp;&amp; availablePorts.size() &lt; numRequested) {</span>
-<span class="fc" id="L108">			availablePorts.add(findAvailablePort(minPort, maxPort));</span>
+<span class="fc" id="L106">		SortedSet&lt;Integer&gt; availablePorts = new TreeSet&lt;&gt;();</span>
+<span class="fc" id="L107">		int attemptCount = 0;</span>
+<span class="pc bpc" id="L108" title="1 of 4 branches missed.">		while ((++attemptCount &lt;= numRequested + 100) &amp;&amp; availablePorts.size() &lt; numRequested) {</span>
+<span class="fc" id="L109">			availablePorts.add(findAvailablePort(minPort, maxPort));</span>
 		}
 
-<span class="pc bpc" id="L111" title="1 of 2 branches missed.">		if (availablePorts.size() != numRequested) {</span>
-<span class="nc" id="L112">			throw new IllegalStateException(String.format(&quot;Could not find %d available %s ports in the range [%d, %d]&quot;, numRequested, protocol, minPort, maxPort));</span>
+<span class="pc bpc" id="L112" title="1 of 2 branches missed.">		if (availablePorts.size() != numRequested) {</span>
+<span class="nc" id="L113">			throw new IllegalStateException(String.format(&quot;Could not find %d available %s ports in the range [%d, %d]&quot;, numRequested, protocol, minPort, maxPort));</span>
 		}
 
-<span class="fc" id="L115">		return availablePorts;</span>
+<span class="fc" id="L116">		return availablePorts;</span>
 	}
 	
 	/**
@@ -126,14 +127,14 @@ public class DefaultPortFinder implements PortFinder {
 	 * @return a random port number within the specified range
 	 */
 	private int findRandomPort(int minPort, int maxPort) {
-<span class="fc" id="L129">		int portRange = maxPort - minPort;</span>
-<span class="fc" id="L130">		return minPort + random.nextInt(portRange + 1);</span>
+<span class="fc" id="L130">		int portRange = maxPort - minPort;</span>
+<span class="fc" id="L131">		return minPort + random.nextInt(portRange + 1);</span>
 	}
 
 	private static void assertIsTrue(boolean condition, String message) {
-<span class="fc bfc" id="L134" title="All 2 branches covered.">		if (!condition) {</span>
-<span class="fc" id="L135">			throw new IllegalArgumentException(message);</span>
+<span class="fc bfc" id="L135" title="All 2 branches covered.">		if (!condition) {</span>
+<span class="fc" id="L136">			throw new IllegalArgumentException(message);</span>
 		}
-<span class="fc" id="L137">	}</span>
+<span class="fc" id="L138">	}</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>
