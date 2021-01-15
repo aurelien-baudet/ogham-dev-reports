@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>FilterableClassLoader.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">reporting</a> &gt; <a href="../index.html" class="el_bundle">ogham-test-utils</a> &gt; <a href="index.source.html" class="el_package">fr.sii.ogham.testing.mock.classloader</a> &gt; <span class="el_source">FilterableClassLoader.java</span></div><h1>FilterableClassLoader.java</h1><pre class="source lang-java linenums">package fr.sii.ogham.testing.mock.classloader;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Enumeration;
+import java.util.List;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+/**
+ * {@link ClassLoader} decorator that can be used to mock some missing classes.
+ * It can be useful to test how some code behaves if a dependency is missing.
+ * 
+ * This is mostly useful for Ogham itself since it adatps to what is present in
+ * the classpath.
+ * 
+ * NOTE: On some Java versions (especially Eclipse OpenJ9), the
+ * {@link ClassLoader} initializes assertions directly in the constructor (see
+ * https://github.com/eclipse/openj9/blob/cef51dfd748a15b6f8ceb9be065d8a9eb8389a6b/jcl/src/java.base/share/classes/java/lang/ClassLoader.java#L438).
+ * So we need to register method calls to apply them once delegate has been set.
+ * 
+ * @author Aurélien Baudet
+ *
+ */
+public class FilterableClassLoader extends ClassLoader {
+<span class="fc" id="L32">	private static final Logger LOG = LoggerFactory.getLogger(FilterableClassLoader.class);</span>
+
+	private final ClassLoader delegate;
+	private final Predicate&lt;String&gt; predicate;
+<span class="fc" id="L36">	private final List&lt;Consumer&lt;ClassLoader&gt;&gt; lateCalls = new ArrayList&lt;&gt;();</span>
+
+	public FilterableClassLoader(ClassLoader delegate, Predicate&lt;String&gt; predicate) {
+<span class="fc" id="L39">		super();</span>
+<span class="fc" id="L40">		this.delegate = delegate;</span>
+<span class="fc" id="L41">		this.predicate = predicate;</span>
+<span class="fc" id="L42">	}</span>
+
+	@SuppressWarnings(&quot;squid:S2658&quot;)
+	@Override
+	public Class&lt;?&gt; loadClass(String name) throws ClassNotFoundException {
+<span class="fc bfc" id="L47" title="All 2 branches covered.">		if (predicate.test(name)) {</span>
+<span class="fc" id="L48">			return delegate.loadClass(name);</span>
+		} else {
+<span class="fc" id="L50">			LOG.info(&quot;Class {} not accepted&quot;, name);</span>
+<span class="fc" id="L51">			throw new ClassNotFoundException(&quot;Class &quot; + name + &quot; not accepted&quot;);</span>
+		}
+	}
+
+	@Override
+	public URL getResource(String name) {
+<span class="fc bfc" id="L57" title="All 2 branches covered.">		if (predicate.test(name)) {</span>
+<span class="fc" id="L58">			return delegate.getResource(name);</span>
+		} else {
+<span class="fc" id="L60">			LOG.info(&quot;Resource {} not accepted&quot;, name);</span>
+<span class="fc" id="L61">			return null;</span>
+		}
+	}
+
+	@Override
+	public Enumeration&lt;URL&gt; getResources(String name) throws IOException {
+<span class="fc bfc" id="L67" title="All 2 branches covered.">		if (predicate.test(name)) {</span>
+<span class="fc" id="L68">			return delegate.getResources(name);</span>
+		} else {
+<span class="fc" id="L70">			LOG.info(&quot;Resources {} not accepted&quot;, name);</span>
+<span class="fc" id="L71">			return Collections.emptyEnumeration();</span>
+		}
+	}
+
+	@Override
+	public InputStream getResourceAsStream(String name) {
+<span class="fc bfc" id="L77" title="All 2 branches covered.">		if (predicate.test(name)) {</span>
+<span class="fc" id="L78">			return delegate.getResourceAsStream(name);</span>
+		} else {
+<span class="fc" id="L80">			LOG.info(&quot;Resource {} not accepted&quot;, name);</span>
+<span class="fc" id="L81">			return null;</span>
+		}
+	}
+
+	@Override
+	public void setDefaultAssertionStatus(boolean enabled) {
+<span class="nc" id="L87">		super.setDefaultAssertionStatus(enabled);</span>
+//		if (delegate != null) {
+<span class="nc" id="L89">			delegate.setDefaultAssertionStatus(enabled);</span>
+//		} else {
+//			lateCalls.add(new SetDefaultAssertionStatusCall(enabled));
+//		}
+<span class="nc" id="L93">	}</span>
+
+	@Override
+	public void setPackageAssertionStatus(String packageName, boolean enabled) {
+<span class="nc" id="L97">		super.setPackageAssertionStatus(packageName, enabled);</span>
+//		if (delegate != null) {
+<span class="nc" id="L99">			delegate.setPackageAssertionStatus(packageName, enabled);</span>
+//		} else {
+//			lateCalls.add(new SetPackageAssertionStatusCall(packageName, enabled));
+//		}
+<span class="nc" id="L103">	}</span>
+
+	@Override
+	public void setClassAssertionStatus(String className, boolean enabled) {
+<span class="nc" id="L107">		super.setClassAssertionStatus(className, enabled);</span>
+//		if (delegate != null) {
+<span class="nc" id="L109">			delegate.setClassAssertionStatus(className, enabled);</span>
+//		} else {
+//			lateCalls.add(new SetClassAssertionStatusCall(className, enabled));
+//		}
+<span class="nc" id="L113">	}</span>
+
+	@Override
+	public void clearAssertionStatus() {
+<span class="nc" id="L117">		super.clearAssertionStatus();</span>
+//		if (delegate != null) {
+<span class="nc" id="L119">			delegate.clearAssertionStatus();</span>
+//		} else {
+//			lateCalls.add(new ClearAssertionStatusCall());
+//		}
+<span class="nc" id="L123">	}</span>
+
+	protected void applyLateCalls() {
+<span class="nc bnc" id="L126" title="All 2 branches missed.">		for (Consumer&lt;ClassLoader&gt; lateCall : lateCalls) {</span>
+<span class="nc" id="L127">			lateCall.accept(delegate);</span>
+<span class="nc" id="L128">		}</span>
+<span class="nc" id="L129">	}</span>
+
+	private static class SetDefaultAssertionStatusCall implements Consumer&lt;ClassLoader&gt; {
+		private final boolean enabled;
+
+		public SetDefaultAssertionStatusCall(boolean enabled) {
+<span class="nc" id="L135">			super();</span>
+<span class="nc" id="L136">			this.enabled = enabled;</span>
+<span class="nc" id="L137">		}</span>
+
+		@Override
+		public void accept(ClassLoader delegate) {
+<span class="nc" id="L141">			delegate.setDefaultAssertionStatus(enabled);</span>
+<span class="nc" id="L142">		}</span>
+	}
+
+	private static class SetPackageAssertionStatusCall implements Consumer&lt;ClassLoader&gt; {
+		private final String packageName;
+		private final boolean enabled;
+
+		public SetPackageAssertionStatusCall(String packageName, boolean enabled) {
+<span class="nc" id="L150">			super();</span>
+<span class="nc" id="L151">			this.packageName = packageName;</span>
+<span class="nc" id="L152">			this.enabled = enabled;</span>
+<span class="nc" id="L153">		}</span>
+
+		@Override
+		public void accept(ClassLoader delegate) {
+<span class="nc" id="L157">			delegate.setPackageAssertionStatus(packageName, enabled);</span>
+<span class="nc" id="L158">		}</span>
+	}
+
+	private static class SetClassAssertionStatusCall implements Consumer&lt;ClassLoader&gt; {
+		private final String className;
+		private final boolean enabled;
+
+		public SetClassAssertionStatusCall(String className, boolean enabled) {
+<span class="nc" id="L166">			super();</span>
+<span class="nc" id="L167">			this.className = className;</span>
+<span class="nc" id="L168">			this.enabled = enabled;</span>
+<span class="nc" id="L169">		}</span>
+
+		@Override
+		public void accept(ClassLoader delegate) {
+<span class="nc" id="L173">			delegate.setPackageAssertionStatus(className, enabled);</span>
+<span class="nc" id="L174">		}</span>
+	}
+
+	private static class ClearAssertionStatusCall implements Consumer&lt;ClassLoader&gt; {
+		@Override
+		public void accept(ClassLoader delegate) {
+<span class="nc" id="L180">			delegate.clearAssertionStatus();</span>
+<span class="nc" id="L181">		}</span>
+	}
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>
