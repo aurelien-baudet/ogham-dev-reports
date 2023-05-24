@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>JavaActivationMimeType.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">reporting</a> &gt; <a href="../index.html" class="el_bundle">ogham-core</a> &gt; <a href="index.source.html" class="el_package">fr.sii.ogham.core.mimetype</a> &gt; <span class="el_source">JavaActivationMimeType.java</span></div><h1>JavaActivationMimeType.java</h1><pre class="source lang-java linenums">package fr.sii.ogham.core.mimetype;
+
+import fr.sii.ogham.core.exception.mimetype.MimeTypeParseException;
+import jakarta.activation.MimeTypeParameterList;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.List;
+import java.util.Objects;
+
+/**
+ * Wraps Jakarta Activation MimeType.
+ */
+public class JavaActivationMimeType implements MimeType {
+<span class="fc" id="L17">    private static final Logger LOG = LoggerFactory.getLogger(JavaActivationMimeType.class);</span>
+
+    private final jakarta.activation.MimeType delegate;
+
+<span class="fc" id="L21">    public JavaActivationMimeType(jakarta.activation.MimeType delegate) {</span>
+<span class="fc" id="L22">        this.delegate = delegate;</span>
+<span class="fc" id="L23">    }</span>
+
+    public static JavaActivationMimeType fromString(String mimetype) throws MimeTypeParseException {
+        try {
+<span class="nc" id="L27">            return new JavaActivationMimeType(new jakarta.activation.MimeType(mimetype));</span>
+<span class="nc" id="L28">        } catch (jakarta.activation.MimeTypeParseException e) {</span>
+<span class="nc" id="L29">            throw new MimeTypeParseException(e, mimetype);</span>
+        }
+    }
+
+    @Override
+    public String getPrimaryType() {
+<span class="fc" id="L35">        return delegate.getPrimaryType();</span>
+    }
+
+    @Override
+    public String getSubType() {
+<span class="fc" id="L40">        return delegate.getSubType();</span>
+    }
+
+    @Override
+    public List&lt;MimeTypeParameter&gt; getParameters() {
+<span class="fc" id="L45">        List&lt;MimeTypeParameter&gt; params = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L46">        Enumeration&lt;String&gt; names = delegate.getParameters().getNames();</span>
+<span class="fc bfc" id="L47" title="All 2 branches covered.">        while (names.hasMoreElements()) {</span>
+<span class="fc" id="L48">            String name = names.nextElement();</span>
+<span class="fc" id="L49">            params.add(new JavaActivationMimeTypeParameter(delegate.getParameters(), name));</span>
+<span class="fc" id="L50">        }</span>
+<span class="fc" id="L51">        return params;</span>
+    }
+
+    @Override
+    public String getParameter(String name) {
+<span class="nc" id="L56">        return delegate.getParameter(name);</span>
+    }
+
+    @Override
+    public String getBaseType() {
+<span class="nc" id="L61">        return delegate.getBaseType();</span>
+    }
+
+    @Override
+    public boolean matches(MimeType other) {
+<span class="nc bnc" id="L66" title="All 2 branches missed.">        if (other instanceof JavaActivationMimeType) {</span>
+<span class="nc" id="L67">            return delegate.match(((JavaActivationMimeType) other).delegate);</span>
+        }
+        try {
+<span class="nc" id="L70">            return delegate.match(other.toString());</span>
+<span class="nc" id="L71">        } catch (jakarta.activation.MimeTypeParseException e) {</span>
+<span class="nc" id="L72">            LOG.warn(&quot;Can't compare mimetypes since given mimetype can't be parsed. &quot; +</span>
+                    &quot;This mimetype is valid because it could be parsed. The other one&quot; +
+                    &quot;is not so they can't match.&quot;, e);
+<span class="nc" id="L75">            return false;</span>
+        }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+<span class="nc bnc" id="L81" title="All 2 branches missed.">        if (this == o) return true;</span>
+<span class="nc bnc" id="L82" title="All 2 branches missed.">        if (!(o instanceof JavaActivationMimeType)) return false;</span>
+<span class="nc" id="L83">        JavaActivationMimeType that = (JavaActivationMimeType) o;</span>
+<span class="nc" id="L84">        return Objects.equals(delegate, that.delegate);</span>
+    }
+
+    @Override
+    public int hashCode() {
+<span class="nc" id="L89">        return Objects.hash(delegate);</span>
+    }
+
+    @Override
+    public String toString() {
+<span class="nc" id="L94">        return delegate.toString();</span>
+    }
+
+    private static class JavaActivationMimeTypeParameter implements MimeTypeParameter {
+        private final MimeTypeParameterList parameters;
+        private final String name;
+
+<span class="fc" id="L101">        private JavaActivationMimeTypeParameter(MimeTypeParameterList parameters, String name) {</span>
+<span class="fc" id="L102">            this.parameters = parameters;</span>
+<span class="fc" id="L103">            this.name = name;</span>
+<span class="fc" id="L104">        }</span>
+
+        @Override
+        public String getName() {
+<span class="fc" id="L108">            return name;</span>
+        }
+
+        @Override
+        public String getValue() {
+<span class="fc" id="L113">            return parameters.get(name);</span>
+        }
+
+        @Override
+        public boolean equals(Object o) {
+<span class="nc bnc" id="L118" title="All 2 branches missed.">            if (this == o) return true;</span>
+<span class="nc bnc" id="L119" title="All 2 branches missed.">            if (!(o instanceof JavaActivationMimeTypeParameter)) return false;</span>
+<span class="nc" id="L120">            JavaActivationMimeTypeParameter that = (JavaActivationMimeTypeParameter) o;</span>
+<span class="nc bnc" id="L121" title="All 4 branches missed.">            return Objects.equals(getName(), that.getName()) &amp;&amp; Objects.equals(getValue(), that.getValue());</span>
+        }
+
+        @Override
+        public int hashCode() {
+<span class="nc" id="L126">            return Objects.hash(getName(), getValue());</span>
+        }
+
+        @Override
+        public String toString() {
+<span class="nc" id="L131">            return getName() + &quot;=&quot; + MimeTypeParser.quoteParameterValue(getValue());</span>
+        }
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

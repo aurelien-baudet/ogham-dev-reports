@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>SmppServerExtension.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">reporting</a> &gt; <a href="../index.html" class="el_bundle">ogham-test-utils</a> &gt; <a href="index.source.html" class="el_package">fr.sii.ogham.testing.extension.junit.sms</a> &gt; <span class="el_source">SmppServerExtension.java</span></div><h1>SmppServerExtension.java</h1><pre class="source lang-java linenums">package fr.sii.ogham.testing.extension.junit.sms;
+
+import fr.sii.ogham.testing.extension.junit.sms.config.ServerConfig;
+import fr.sii.ogham.testing.extension.junit.sms.config.SmppServerConfig;
+import fr.sii.ogham.testing.sms.simulator.SmppServerException;
+import fr.sii.ogham.testing.sms.simulator.SmppServerSimulator;
+import fr.sii.ogham.testing.sms.simulator.SmppServerStartException;
+import fr.sii.ogham.testing.sms.simulator.config.SimulatorConfiguration;
+import ogham.testing.io.github.resilience4j.retry.Retry;
+import ogham.testing.io.github.resilience4j.retry.RetryConfig;
+import ogham.testing.io.github.resilience4j.retry.RetryRegistry;
+import org.junit.jupiter.api.extension.*;
+import org.junit.platform.commons.support.AnnotationSupport;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+/**
+ * JUnit {@link Extension} for starting a local SMPP server for integration
+ * tests.
+ * 
+ * &lt;p&gt;
+ * The extension starts the server before every test, execute the test and stops
+ * the server.
+ * &lt;/p&gt;
+ * &lt;p&gt;
+ * The server stores the received messages (raw messages). These messages are
+ * available in testing through {@link #getReceivedMessages()}.
+ * &lt;/p&gt;
+ * 
+ * @param &lt;M&gt;
+ *            The type of the received messages
+ * 
+ * @author Aurélien Baudet
+ *
+ */
+public abstract class SmppServerExtension&lt;M&gt; extends AbstractJUnitSmppServerExt&lt;M&gt; implements BeforeEachCallback, AfterEachCallback, ParameterResolver {
+<span class="fc" id="L37">	private static final Logger LOG = LoggerFactory.getLogger(SmppServerExtension.class);</span>
+
+	/**
+	 * Initializes with the default configuration to use for the SMPP server:
+	 * &lt;ul&gt;
+	 * &lt;li&gt;Starts on random port&lt;/li&gt;
+	 * &lt;li&gt;No delay&lt;/li&gt;
+	 * &lt;li&gt;No credentials&lt;/li&gt;
+	 * &lt;li&gt;Do not keep messages between tests&lt;/li&gt;
+	 * &lt;/ul&gt;
+	 */
+	public SmppServerExtension() {
+<span class="fc" id="L49">		super();</span>
+<span class="fc" id="L50">	}</span>
+
+	/**
+	 * Initializes with the configuration to use for the SMPP server
+	 * 
+	 * @param builder
+	 *            the configuration for the server
+	 */
+	public SmppServerExtension(ServerConfig builder) {
+<span class="fc" id="L59">		super(builder);</span>
+<span class="fc" id="L60">	}</span>
+
+	@Override
+	public void beforeEach(ExtensionContext context) throws Exception {
+<span class="fc" id="L64">		RetryConfig retryConfig = builder.build().getStartRetryConfig();</span>
+<span class="fc" id="L65">		Retry retry = RetryRegistry.of(retryConfig).retry(&quot;SmppServer.start()&quot;);</span>
+<span class="fc" id="L66">		retry.getEventPublisher().onRetry((event) -&gt; {</span>
+<span class="nc" id="L67">			LOG.info(&quot;SMPP server failed to start on port {}. Retrying...&quot;, getPort());</span>
+<span class="nc" id="L68">		});</span>
+		try {
+<span class="fc" id="L70">			retry.&lt;Void&gt;executeCheckedSupplier(() -&gt; {</span>
+<span class="fc" id="L71">				start(context);</span>
+<span class="fc" id="L72">				return null;</span>
+			});
+<span class="nc" id="L74">		} catch (Throwable e) {</span>
+<span class="nc" id="L75">			throw new SmppServerStartException(&quot;Failed to start SMPP server&quot;, e);</span>
+<span class="fc" id="L76">		}</span>
+<span class="fc" id="L77">	}</span>
+
+	private void start(ExtensionContext context) throws SmppServerException {
+<span class="fc" id="L80">		SmppServerConfig config = AnnotationSupport.findAnnotation(context.getElement(), SmppServerConfig.class).orElse(null);</span>
+<span class="fc" id="L81">		SimulatorConfiguration serverConfig = builder.annotationConfig(config).build();</span>
+<span class="fc" id="L82">		server = initServer(serverConfig);</span>
+<span class="fc" id="L83">		LOG.info(&quot;starting SMPP server on port {}...&quot;, getPort());</span>
+<span class="fc" id="L84">		server.start();</span>
+<span class="fc" id="L85">		LOG.info(&quot;SMPP server started on port {}&quot;, getPort());</span>
+<span class="fc" id="L86">	}</span>
+
+	@Override
+	public void afterEach(ExtensionContext context) throws Exception {
+<span class="fc" id="L90">		stop();</span>
+<span class="fc" id="L91">	}</span>
+
+	private void stop() throws SmppServerException {
+<span class="fc" id="L94">		LOG.info(&quot;stopping SMPP server...&quot;);</span>
+<span class="fc" id="L95">		server.stop();</span>
+<span class="fc" id="L96">		LOG.info(&quot;SMPP server stopped&quot;);</span>
+<span class="fc" id="L97">	}</span>
+
+	@Override
+	public boolean supportsParameter(ParameterContext parameterContext, ExtensionContext extensionContext) throws ParameterResolutionException {
+<span class="pc bpc" id="L101" title="1 of 4 branches missed.">		return isSmppServerSimulatorParam(parameterContext) || isSmppServerExtensionParam(parameterContext);</span>
+	}
+
+	@Override
+	public Object resolveParameter(ParameterContext parameterContext, ExtensionContext extensionContext) throws ParameterResolutionException {
+<span class="pc bpc" id="L106" title="1 of 2 branches missed.">		if (isSmppServerSimulatorParam(parameterContext)) {</span>
+<span class="fc" id="L107">			return server;</span>
+		}
+<span class="nc bnc" id="L109" title="All 2 branches missed.">		if (isSmppServerExtensionParam(parameterContext)) {</span>
+<span class="nc" id="L110">			return this;</span>
+		}
+<span class="nc" id="L112">		return null;</span>
+	}
+
+
+	private boolean isSmppServerSimulatorParam(ParameterContext parameterContext) {
+<span class="fc" id="L117">		return SmppServerSimulator.class.isAssignableFrom(parameterContext.getParameter().getType());</span>
+	}
+
+	private boolean isSmppServerExtensionParam(ParameterContext parameterContext) {
+<span class="fc" id="L121">		return SmppServerExtension.class.isAssignableFrom(parameterContext.getParameter().getType());</span>
+	}
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

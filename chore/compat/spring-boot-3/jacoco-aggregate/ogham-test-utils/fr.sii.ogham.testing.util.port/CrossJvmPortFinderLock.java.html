@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>CrossJvmPortFinderLock.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">reporting</a> &gt; <a href="../index.html" class="el_bundle">ogham-test-utils</a> &gt; <a href="index.source.html" class="el_package">fr.sii.ogham.testing.util.port</a> &gt; <span class="el_source">CrossJvmPortFinderLock.java</span></div><h1>CrossJvmPortFinderLock.java</h1><pre class="source lang-java linenums">package fr.sii.ogham.testing.util.port;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.channels.FileChannel;
+import java.nio.channels.FileLock;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
+import java.util.SortedSet;
+import java.util.function.Supplier;
+
+public class CrossJvmPortFinderLock implements PortFinder {
+    private final PortFinder delegate;
+    private final Path lockFile;
+
+<span class="nc" id="L18">    public CrossJvmPortFinderLock(PortFinder delegate) {</span>
+<span class="nc" id="L19">        this.delegate = delegate;</span>
+<span class="nc" id="L20">        lockFile = Paths.get(System.getProperty(&quot;java.io.tmpdir&quot;), &quot;ogham-port-finder.lock&quot;);</span>
+<span class="nc" id="L21">    }</span>
+
+    @Override
+    public int findAvailablePort(int minPort, int maxPort) {
+<span class="nc" id="L25">        return doWithLock(() -&gt; delegate.findAvailablePort(minPort, maxPort));</span>
+    }
+
+    @Override
+    public SortedSet&lt;Integer&gt; findAvailablePorts(int numRequested, int minPort, int maxPort) {
+<span class="nc" id="L30">        return doWithLock(() -&gt; delegate.findAvailablePorts(numRequested, minPort, maxPort));</span>
+    }
+
+    private &lt;T&gt; T doWithLock(Supplier&lt;T&gt; func) {
+<span class="nc" id="L34">        try (FileChannel channel = FileChannel.open(lockFile, StandardOpenOption.CREATE, StandardOpenOption.APPEND);</span>
+<span class="nc" id="L35">             FileLock lock = channel.lock()) {</span>
+<span class="nc" id="L36">            return func.get();</span>
+<span class="nc" id="L37">        } catch (IOException e) {</span>
+<span class="nc" id="L38">            throw new RuntimeException(e);</span>
+        }
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

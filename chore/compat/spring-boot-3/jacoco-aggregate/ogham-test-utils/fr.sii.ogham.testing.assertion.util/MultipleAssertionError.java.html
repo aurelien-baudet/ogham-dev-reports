@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>MultipleAssertionError.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">reporting</a> &gt; <a href="../index.html" class="el_bundle">ogham-test-utils</a> &gt; <a href="index.source.html" class="el_package">fr.sii.ogham.testing.assertion.util</a> &gt; <span class="el_source">MultipleAssertionError.java</span></div><h1>MultipleAssertionError.java</h1><pre class="source lang-java linenums">package fr.sii.ogham.testing.assertion.util;
+
+import static java.util.regex.Pattern.MULTILINE;
+
+import java.util.List;
+import java.util.StringJoiner;
+import java.util.function.Function;
+import java.util.regex.Pattern;
+
+import org.junit.jupiter.api.AssertionFailureBuilder;
+import org.opentest4j.AssertionFailedError;
+import org.opentest4j.ValueWrapper;
+
+public class MultipleAssertionError extends AssertionError {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private static final String FAILURE_SEPARATOR = &quot;\n\t______________________________\n&quot;;
+<span class="fc" id="L20">	private static final Pattern INDENT = Pattern.compile(&quot;^&quot;, MULTILINE);</span>
+
+	private final List&lt;Throwable&gt; failures;
+
+	public MultipleAssertionError(List&lt;Throwable&gt; failures) {
+<span class="fc" id="L25">		super(generateMessage(failures));</span>
+<span class="fc" id="L26">		this.failures = failures;</span>
+<span class="fc" id="L27">	}</span>
+
+	/**
+	 * Get the whole list of failures/failed assertions.
+	 * 
+	 * @return list of failures/failed assertions
+	 */
+	public List&lt;Throwable&gt; getFailures() {
+<span class="fc" id="L35">		return failures;</span>
+	}
+
+	/**
+	 * Eclipse can only handle {@link AssertionFailedError} instance (not
+	 * sub-classes...)
+	 * 
+	 * @return the same exception but converted to {@link AssertionFailedError}
+	 *         (list of failures is lost)
+	 */
+	public AssertionFailedError toAssertionFailedError() {
+<span class="nc" id="L46">		return AssertionFailureBuilder.assertionFailure()</span>
+<span class="nc" id="L47">				.message(generateMessage(failures))</span>
+<span class="nc" id="L48">				.expected(generateExpected(failures))</span>
+<span class="nc" id="L49">				.actual(generateActual(failures))</span>
+<span class="nc" id="L50">				.build();</span>
+	}
+
+	private static String generateMessage(List&lt;Throwable&gt; failures) {
+<span class="fc" id="L54">		StringJoiner joiner = new StringJoiner(FAILURE_SEPARATOR, &quot;Multiple assertions/failures (&quot; + failures.size() + &quot;):\n&quot;, FAILURE_SEPARATOR);</span>
+<span class="fc" id="L55">		int idx = 1;</span>
+<span class="fc bfc" id="L56" title="All 2 branches covered.">		for (Throwable f : failures) {</span>
+<span class="fc" id="L57">			joiner.add(indent(&quot;Failure &quot; + idx + &quot;:\n&quot; + getMessage(f)));</span>
+<span class="fc" id="L58">			idx++;</span>
+<span class="fc" id="L59">		}</span>
+<span class="fc" id="L60">		return joiner.toString();</span>
+	}
+
+	private static String generateExpected(List&lt;Throwable&gt; failures) {
+<span class="nc" id="L64">		return generateComparison(failures, &quot;Expected&quot;, AssertionFailedError::getExpected);</span>
+	}
+
+	private static String generateActual(List&lt;Throwable&gt; failures) {
+<span class="nc" id="L68">		return generateComparison(failures, &quot;Actual&quot;, AssertionFailedError::getActual);</span>
+	}
+
+	private static String generateComparison(List&lt;Throwable&gt; failures, String name, Function&lt;AssertionFailedError, ValueWrapper&gt; getter) {
+<span class="nc" id="L72">		StringJoiner joiner = new StringJoiner(FAILURE_SEPARATOR, name + &quot; (&quot; + failures.size() + &quot;):\n&quot;, FAILURE_SEPARATOR);</span>
+<span class="nc" id="L73">		int idx = 1;</span>
+<span class="nc bnc" id="L74" title="All 2 branches missed.">		for (Throwable f : failures) {</span>
+<span class="nc" id="L75">			String prefix = &quot;Failure &quot; + idx + &quot;: &quot; + getMessage(f) + &quot;\n\n&quot;;</span>
+<span class="nc bnc" id="L76" title="All 2 branches missed.">			if (f instanceof AssertionFailedError) {</span>
+<span class="nc" id="L77">				joiner.add(indent(prefix + getter.apply((AssertionFailedError) f)));</span>
+			} else {
+<span class="nc" id="L79">				joiner.add(indent(prefix + &quot;&lt;/!\\ no comparison available&gt;&quot;));</span>
+			}
+<span class="nc" id="L81">			idx++;</span>
+<span class="nc" id="L82">		}</span>
+<span class="nc" id="L83">		return joiner.toString();</span>
+	}
+
+	private static String indent(String message) {
+<span class="fc" id="L87">		return INDENT.matcher(message).replaceAll(&quot;    &quot;);</span>
+	}
+
+	private static String getMessage(Throwable failure) {
+<span class="fc" id="L91">		String message = failure.getMessage();</span>
+<span class="pc bpc" id="L92" title="1 of 2 branches missed.">		if (message == null) {</span>
+<span class="nc" id="L93">			message = &quot;&quot;;</span>
+		}
+<span class="fc" id="L95">		return failure.getClass().getName() + &quot;: &quot; + message;</span>
+	}
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

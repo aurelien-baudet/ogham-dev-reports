@@ -1,0 +1,247 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>ServerConfig.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">reporting</a> &gt; <a href="../index.html" class="el_bundle">ogham-test-utils</a> &gt; <a href="index.source.html" class="el_package">fr.sii.ogham.testing.extension.junit.sms.config</a> &gt; <span class="el_source">ServerConfig.java</span></div><h1>ServerConfig.java</h1><pre class="source lang-java linenums">package fr.sii.ogham.testing.extension.junit.sms.config;
+
+import fr.sii.ogham.testing.sms.simulator.config.Credentials;
+import fr.sii.ogham.testing.sms.simulator.config.*;
+import fr.sii.ogham.testing.util.RandomPortUtils;
+import ogham.testing.io.github.resilience4j.retry.RetryConfig;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import static fr.sii.ogham.testing.extension.junit.sms.config.SlowConfig.noWait;
+import static fr.sii.ogham.testing.extension.junit.sms.config.SlowConfig.waitFor;
+import static fr.sii.ogham.testing.util.RandomPortUtils.PORT_RANGE_MAX;
+import static fr.sii.ogham.testing.util.RandomPortUtils.PORT_RANGE_MIN;
+import static java.time.Duration.ofMillis;
+import static java.util.stream.Collectors.toList;
+import static ogham.testing.io.github.resilience4j.core.IntervalFunction.ofExponentialBackoff;
+
+/**
+ * Builder to generate a {@link SimulatorConfiguration}.
+ *
+ * &lt;p&gt;
+ * Default configuration:
+ * &lt;ul&gt;
+ * &lt;li&gt;Starts on random port&lt;/li&gt;
+ * &lt;li&gt;No delay&lt;/li&gt;
+ * &lt;li&gt;No credentials&lt;/li&gt;
+ * &lt;li&gt;Do not keep messages between tests&lt;/li&gt;
+ * &lt;/ul&gt;
+ *
+ * @author Aurélien Baudet
+ */
+<span class="fc" id="L34">public class ServerConfig {</span>
+    private PortConfig portConfig;
+<span class="fc" id="L36">    private final List&lt;Credentials&gt; credentials = new ArrayList&lt;&gt;();</span>
+    private SmppServerConfig annotationConfig;
+    private SlowConfig slowConfig;
+    private boolean keepMessages;
+    private RetryConfig startRetryConfig;
+
+    /**
+     * Start the server with a fixed port.
+     *
+     * @param port the port value
+     * @return this instance for fluent chaining
+     */
+    public ServerConfig port(int port) {
+<span class="fc" id="L49">        this.portConfig = new FixedPortConfig(port);</span>
+<span class="fc" id="L50">        return this;</span>
+    }
+
+    /**
+     * Start the server with a random port.
+     * &lt;p&gt;
+     * The port is contained in the range
+     * [{@link RandomPortUtils#PORT_RANGE_MIN},
+     * {@link RandomPortUtils#PORT_RANGE_MAX}].
+     *
+     * @return this instance for fluent chaining
+     */
+    public ServerConfig randomPort() {
+<span class="fc" id="L63">        return randomPort(PORT_RANGE_MAX);</span>
+    }
+
+    /**
+     * Start the server with a random port.
+     * &lt;p&gt;
+     * The port is contained in the range
+     * [{@link RandomPortUtils#PORT_RANGE_MIN}, {@code maxPort}].
+     *
+     * @param maxPort the maximum port value
+     * @return this instance for fluent chaining
+     */
+    public ServerConfig randomPort(int maxPort) {
+<span class="fc" id="L76">        return randomPort(PORT_RANGE_MIN, maxPort);</span>
+    }
+
+    /**
+     * Start the server with a random port.
+     * &lt;p&gt;
+     * The port is contained in the range [{@code minPort}, {@code maxPort}].
+     *
+     * @param minPort the minimum port value
+     * @param maxPort the maximum port value
+     * @return this instance for fluent chaining
+     */
+    public ServerConfig randomPort(int minPort, int maxPort) {
+<span class="fc" id="L89">        this.portConfig = new RandomPortConfig(minPort, maxPort);</span>
+<span class="fc" id="L90">        return this;</span>
+    }
+
+    /**
+     * Register allowed credentials.
+     *
+     * @param systemId the system_id
+     * @param password the password
+     * @return this instance for fluent chaining
+     */
+    public ServerConfig credentials(String systemId, String password) {
+<span class="fc" id="L101">        credentials.add(new Credentials(systemId, password));</span>
+<span class="fc" id="L102">        return this;</span>
+    }
+
+    /**
+     * Configure the simulator to behave like a slow server.
+     *
+     * @return the builder to control slow delays
+     */
+    public SlowConfig slow() {
+<span class="pc bpc" id="L111" title="1 of 2 branches missed.">        if (slowConfig == null) {</span>
+<span class="fc" id="L112">            slowConfig = new SlowConfig(this);</span>
+        }
+<span class="fc" id="L114">        return slowConfig;</span>
+    }
+
+    /**
+     * Merge with configuration provided by annotation.
+     * &lt;p&gt;
+     * The configuration provided by the annotation takes precedence over
+     * configuration using builder methods. The aim is to be able to provide
+     * common configuration for the test class using JUnit rules and be able to
+     * override some configuration for a particular test.
+     *
+     * @param annotationConfig the annotation configuration
+     * @return this instance for fluent chaining
+     */
+    public ServerConfig annotationConfig(SmppServerConfig annotationConfig) {
+<span class="fc" id="L129">        this.annotationConfig = annotationConfig;</span>
+<span class="fc" id="L130">        return this;</span>
+    }
+
+    /**
+     * If the server is restarted, it indicates if received messages in the
+     * previous session should be kept (true) or dropped (false).
+     *
+     * @param keep indicate if messages should be kept or not between sessions
+     * @return this instance for fluent chaining
+     */
+    public ServerConfig keepMessages(boolean keep) {
+<span class="nc" id="L141">        keepMessages = keep;</span>
+<span class="nc" id="L142">        return this;</span>
+    }
+
+    /**
+     * Server may not start correctly (because port was available but is not
+     * available anymore for example).
+     * &lt;p&gt;
+     * In such case, the server will be restarted until it starts successfully, or
+     * it fails due to maximum attempts reached.
+     *
+     * @param retryConfig the retry configuration
+     * @return this instance for fluent chaining
+     */
+    public ServerConfig startRetry(RetryConfig retryConfig) {
+<span class="nc" id="L156">        this.startRetryConfig = retryConfig;</span>
+<span class="nc" id="L157">        return this;</span>
+    }
+
+    /**
+     * Create the final {@link SimulatorConfiguration} that is used by the SMPP
+     * server.
+     *
+     * @return the simulator configuration
+     */
+    public SimulatorConfiguration build() {
+<span class="fc" id="L167">        SimulatorConfiguration config = new SimulatorConfiguration();</span>
+<span class="fc" id="L168">        config.setPort(buildPort());</span>
+<span class="fc" id="L169">        config.setCredentials(buildCredentials());</span>
+<span class="fc" id="L170">        config.setServerDelays(buildServerDelays());</span>
+<span class="fc" id="L171">        config.setKeepMessages(keepMessages);</span>
+<span class="fc" id="L172">        config.setStartRetryConfig(buildStartRetryConfig());</span>
+<span class="fc" id="L173">        return config;</span>
+    }
+
+    private ServerPortProvider buildPort() {
+<span class="fc bfc" id="L177" title="All 2 branches covered.">        if (portConfig == null) {</span>
+<span class="fc" id="L178">            return new RandomPortConfig(PORT_RANGE_MIN, PORT_RANGE_MAX).build();</span>
+        }
+<span class="fc" id="L180">        return portConfig.build();</span>
+    }
+
+    private List&lt;Credentials&gt; buildCredentials() {
+<span class="fc bfc" id="L184" title="All 2 branches covered.">        if (annotationConfig != null) {</span>
+<span class="pc" id="L185">            return Arrays.stream(annotationConfig.credentials()).map(c -&gt; new Credentials(c.systemId(), c.password())).collect(toList());</span>
+        }
+<span class="fc" id="L187">        return credentials;</span>
+    }
+
+    private ServerDelays buildServerDelays() {
+<span class="fc bfc" id="L191" title="All 2 branches covered.">        if (annotationConfig != null) {</span>
+<span class="fc" id="L192">            return buildServerDelays(annotationConfig.slow());</span>
+        }
+<span class="fc bfc" id="L194" title="All 2 branches covered.">        if (slowConfig != null) {</span>
+<span class="fc" id="L195">            return slowConfig.build();</span>
+        }
+<span class="fc" id="L197">        return null;</span>
+    }
+
+    private RetryConfig buildStartRetryConfig() {
+<span class="pc bpc" id="L201" title="1 of 2 branches missed.">        if (startRetryConfig != null) {</span>
+<span class="nc" id="L202">            return startRetryConfig;</span>
+        }
+<span class="fc" id="L204">        return RetryConfig.custom()</span>
+<span class="fc" id="L205">                .maxAttempts(5)</span>
+<span class="fc" id="L206">                .intervalFunction(ofExponentialBackoff(ofMillis(100)))</span>
+<span class="fc" id="L207">                .failAfterMaxAttempts(true)</span>
+<span class="fc" id="L208">                .build();</span>
+    }
+
+    private static ServerDelays buildServerDelays(Slow slow) {
+<span class="fc" id="L212">        ServerDelays delays = new ServerDelays();</span>
+<span class="fc" id="L213">        delays.setSendAlertNotificationWaiting(toAwaiter(slow.sendAlertNotificationDelay()));</span>
+<span class="fc" id="L214">        delays.setSendBindWaiting(toAwaiter(slow.sendBindDelay()));</span>
+<span class="fc" id="L215">        delays.setSendBindRespWaiting(toAwaiter(slow.sendBindRespDelay()));</span>
+<span class="fc" id="L216">        delays.setSendCancelSmWaiting(toAwaiter(slow.sendCancelSmDelay()));</span>
+<span class="fc" id="L217">        delays.setSendCancelSmRespWaiting(toAwaiter(slow.sendCancelSmRespDelay()));</span>
+<span class="fc" id="L218">        delays.setSendDataSmWaiting(toAwaiter(slow.sendDataSmDelay()));</span>
+<span class="fc" id="L219">        delays.setSendDataSmRespWaiting(toAwaiter(slow.sendDataSmRespDelay()));</span>
+<span class="fc" id="L220">        delays.setSendDeliverSmWaiting(toAwaiter(slow.sendDeliverSmDelay()));</span>
+<span class="fc" id="L221">        delays.setSendDeliverSmRespWaiting(toAwaiter(slow.sendDeliverSmRespDelay()));</span>
+<span class="fc" id="L222">        delays.setSendEnquireLinkWaiting(toAwaiter(slow.sendEnquireLinkDelay()));</span>
+<span class="fc" id="L223">        delays.setSendEnquireLinkRespWaiting(toAwaiter(slow.sendEnquireLinkRespDelay()));</span>
+<span class="fc" id="L224">        delays.setSendGenericNackWaiting(toAwaiter(slow.sendGenericNackDelay()));</span>
+<span class="fc" id="L225">        delays.setSendHeaderWaiting(toAwaiter(slow.sendHeaderDelay()));</span>
+<span class="fc" id="L226">        delays.setSendOutbindWaiting(toAwaiter(slow.sendOutbindDelay()));</span>
+<span class="fc" id="L227">        delays.setSendQuerySmWaiting(toAwaiter(slow.sendQuerySmDelay()));</span>
+<span class="fc" id="L228">        delays.setSendQuerySmRespWaiting(toAwaiter(slow.sendQuerySmRespDelay()));</span>
+<span class="fc" id="L229">        delays.setSendReplaceSmWaiting(toAwaiter(slow.sendReplaceSmDelay()));</span>
+<span class="fc" id="L230">        delays.setSendReplaceSmRespWaiting(toAwaiter(slow.sendReplaceSmRespDelay()));</span>
+<span class="fc" id="L231">        delays.setSendSubmitMultiWaiting(toAwaiter(slow.sendSubmitMultiDelay()));</span>
+<span class="fc" id="L232">        delays.setSendSubmitMultiRespWaiting(toAwaiter(slow.sendSubmitMultiRespDelay()));</span>
+<span class="fc" id="L233">        delays.setSendSubmitSmWaiting(toAwaiter(slow.sendSubmitSmDelay()));</span>
+<span class="fc" id="L234">        delays.setSendSubmitSmRespWaiting(toAwaiter(slow.sendSubmitSmRespDelay()));</span>
+<span class="fc" id="L235">        delays.setSendUnbindWaiting(toAwaiter(slow.sendUnbindDelay()));</span>
+<span class="fc" id="L236">        delays.setSendUnbindRespWaiting(toAwaiter(slow.sendUnbindRespDelay()));</span>
+<span class="fc" id="L237">        return delays;</span>
+    }
+
+    private static Awaiter toAwaiter(long delayMs) {
+<span class="fc bfc" id="L241" title="All 2 branches covered.">        if (delayMs == 0) {</span>
+<span class="fc" id="L242">            return noWait();</span>
+        }
+<span class="fc" id="L244">        return waitFor(delayMs);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

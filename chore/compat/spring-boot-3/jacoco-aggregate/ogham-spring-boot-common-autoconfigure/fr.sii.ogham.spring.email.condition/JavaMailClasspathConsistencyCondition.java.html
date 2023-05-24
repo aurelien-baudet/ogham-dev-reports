@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>JavaMailClasspathConsistencyCondition.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">reporting</a> &gt; <a href="../index.html" class="el_bundle">ogham-spring-boot-common-autoconfigure</a> &gt; <a href="index.source.html" class="el_package">fr.sii.ogham.spring.email.condition</a> &gt; <span class="el_source">JavaMailClasspathConsistencyCondition.java</span></div><h1>JavaMailClasspathConsistencyCondition.java</h1><pre class="source lang-java linenums">package fr.sii.ogham.spring.email.condition;
+
+import org.springframework.boot.autoconfigure.condition.*;
+import org.springframework.context.annotation.ConditionContext;
+import org.springframework.core.type.AnnotatedTypeMetadata;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static java.util.Arrays.asList;
+import static java.util.stream.Collectors.toList;
+import static org.springframework.boot.autoconfigure.condition.ConditionMessage.of;
+
+<span class="fc" id="L14">public class JavaMailClasspathConsistencyCondition extends SpringBootCondition {</span>
+
+    @Override
+    public ConditionOutcome getMatchOutcome(ConditionContext context, AnnotatedTypeMetadata metadata) {
+        // TODO: only if configuration properties are set ?
+<span class="fc" id="L19">        ConditionOutcome javaxOutcome = checkJavaxMailConsistency(context, metadata);</span>
+<span class="fc" id="L20">        ConditionOutcome jakartaOutcome = checkJakartaMailConsistency(context, metadata);</span>
+<span class="fc" id="L21">        return new ConditionOutcome(</span>
+<span class="pc bpc" id="L22" title="1 of 2 branches missed.">                !isClasspathConsistent(javaxOutcome, jakartaOutcome),</span>
+<span class="fc" id="L23">                of(asList(javaxOutcome.getConditionMessage(), jakartaOutcome.getConditionMessage())));</span>
+    }
+
+    private static boolean isClasspathConsistent(ConditionOutcome javaxOutcome, ConditionOutcome jakartaOutcome) {
+<span class="pc bpc" id="L27" title="2 of 4 branches missed.">        return javaxOutcome.isMatch() || jakartaOutcome.isMatch();</span>
+    }
+
+
+    private static ConditionOutcome checkJavaxMailConsistency(ConditionContext context, AnnotatedTypeMetadata metadata) {
+<span class="fc" id="L32">        ConditionInfoMerger merger = new ConditionInfoMerger();</span>
+<span class="fc" id="L33">        merger.addCondition(isJavaxMailApiPresent(context),</span>
+                &quot;javax.mail package is present in the classpath&quot;,
+                &quot;javax.mail is not present in the classpath =&gt; ignoring&quot;);
+<span class="pc bpc" id="L36" title="1 of 2 branches missed.">        if (isJavaxMailApiPresent(context)) {</span>
+            // possible version downgrade with Sprint Boot &lt;= 2
+            // =&gt; possible clash with Ogham
+            // =&gt; check classpath
+<span class="fc" id="L40">            merger.addCondition(isJavaxActivationApiPresent(context),</span>
+                    &quot;javax.activation.DataHandler is present in the classpath&quot;,
+                    &quot;javax.activation.DataHandler is not present in the classpath (dependency jakarta.activation:jakarta.activation-api &lt;= 1.2.2 may not be present in the classpath)&quot;);
+<span class="fc" id="L43">            merger.addCondition(isSunMailImplementationPresent(context),</span>
+                    &quot;com.sun.mail package is present in the classpath&quot;,
+                    &quot;com.sun.mail package is not present in the classpath (dependency com.sun.mail:javax.mail &lt;= 1.6.2 or com.sun.mail:jakarta.mail &lt;= 1.6.7 may not be present in the classpath)&quot;);
+<span class="fc" id="L46">            merger.addOutcome(new JavaxMailServiceProvidersAvailable().getMatchOutcome(context, metadata));</span>
+<span class="fc" id="L47">            merger.addOutcome(new JavaxActivationDataHandlersAvailable().getMatchOutcome(context, metadata));</span>
+        }
+<span class="fc" id="L49">        return merger.get();</span>
+    }
+
+
+    private static boolean isJavaxMailApiPresent(ConditionContext context) {
+<span class="fc" id="L54">        return exists(context, &quot;javax.mail.internet.MimeMessage&quot;);</span>
+    }
+
+    private static boolean isJavaxActivationApiPresent(ConditionContext context) {
+<span class="pc bpc" id="L58" title="1 of 2 branches missed.">        return exists(context, &quot;javax.activation.MimeType&quot;)</span>
+<span class="pc bpc" id="L59" title="1 of 2 branches missed.">                &amp;&amp; exists(context, &quot;javax.activation.DataHandler&quot;);</span>
+    }
+
+    private static boolean isSunMailImplementationPresent(ConditionContext context) {
+<span class="fc" id="L63">        return exists(context, &quot;com.sun.mail.util.MailLogger&quot;);</span>
+    }
+
+    private static ConditionOutcome checkJakartaMailConsistency(ConditionContext context, AnnotatedTypeMetadata metadata) {
+<span class="fc" id="L67">        ConditionInfoMerger merger = new ConditionInfoMerger();</span>
+<span class="fc" id="L68">        merger.addCondition(isAngusMailImplementationPresent(context),</span>
+                &quot;org.eclipse.angus:angus-mail is present in the classpath&quot;,
+                &quot;org.eclipse.angus:angus-mail is not present in the classpath =&gt; ignoring&quot;);
+<span class="pc bpc" id="L71" title="1 of 2 branches missed.">        if (isAngusMailImplementationPresent(context)) {</span>
+            // possible version downgrade with Sprint Boot &lt;= 2
+            // =&gt; possible clash with Ogham
+            // =&gt; check classpath
+<span class="fc" id="L75">            merger.addCondition(isJakartaMailApiPresent(context),</span>
+                    &quot;jakarta.mail package is present in the classpath&quot;,
+                    &quot;jakarta.mail package is not present in the classpath (dependency jakarta.mail:jakarta.mail-api &gt;= 2.0.0 is not present in the classpath)&quot;);
+<span class="fc" id="L78">            merger.addCondition(isJakartaActivationApiPresent(context),</span>
+                    &quot;jakarta.activation.DataHandler is present in the classpath&quot;,
+                    &quot;jakarta.activation.DataHandler is not present in the classpath (dependency jakarta.activation:jakarta.activation-api &gt;= 2.0.0 is not present in the classpath)&quot;);
+<span class="fc" id="L81">            merger.addOutcome(new JakartaMailServiceProvidersAvailable().getMatchOutcome(context, metadata));</span>
+<span class="fc" id="L82">            merger.addOutcome(new JakartaActivationDataHandlersAvailable().getMatchOutcome(context, metadata));</span>
+        }
+<span class="fc" id="L84">        return merger.get();</span>
+    }
+
+    private static boolean isAngusMailImplementationPresent(ConditionContext context) {
+<span class="fc" id="L88">        return exists(context, &quot;org.eclipse.angus.mail.imap.IMAPProvider&quot;);</span>
+    }
+
+    private static boolean isJakartaMailApiPresent(ConditionContext context) {
+<span class="fc" id="L92">        return exists(context, &quot;jakarta.mail.internet.MimeMessage&quot;);</span>
+    }
+
+    private static boolean isJakartaActivationApiPresent(ConditionContext context) {
+<span class="pc bpc" id="L96" title="1 of 2 branches missed.">        return exists(context, &quot;jakarta.activation.MimeType&quot;)</span>
+<span class="pc bpc" id="L97" title="1 of 2 branches missed.">                &amp;&amp; exists(context, &quot;jakarta.activation.DataHandler&quot;);</span>
+    }
+
+    private static boolean exists(ConditionContext context, String className) {
+        try {
+<span class="fc" id="L102">            Class.forName(className, false, context.getClassLoader());</span>
+<span class="fc" id="L103">            return true;</span>
+<span class="nc" id="L104">        } catch (ClassNotFoundException e) {</span>
+<span class="nc" id="L105">            return false;</span>
+<span class="nc" id="L106">        } catch (NoClassDefFoundError e) {</span>
+<span class="nc bnc" id="L107" title="All 2 branches missed.">            return !isForSameClass(className, e);</span>
+        }
+    }
+
+    private static boolean isForSameClass(String className, NoClassDefFoundError e) {
+<span class="nc" id="L112">        return className.equals(e.getMessage().replace(&quot;/&quot;, &quot;.&quot;));</span>
+    }
+
+
+<span class="fc" id="L116">    private static class ConditionInfoMerger {</span>
+<span class="fc" id="L117">        private final List&lt;ConditionOutcome&gt; outcomes = new ArrayList&lt;&gt;();</span>
+
+        public void addCondition(boolean condition, String messageIfTrue, String messageIfFalse) {
+<span class="pc bpc" id="L120" title="1 of 2 branches missed.">            addOutcome(new ConditionOutcome(condition, condition ? messageIfTrue : messageIfFalse));</span>
+<span class="fc" id="L121">        }</span>
+
+        public void addOutcome(ConditionOutcome outcome) {
+<span class="fc" id="L124">            outcomes.add(outcome);</span>
+<span class="fc" id="L125">        }</span>
+
+        public ConditionOutcome get() {
+<span class="fc" id="L128">            boolean matchAll = outcomes.stream().allMatch(ConditionOutcome::isMatch);</span>
+<span class="fc" id="L129">            List&lt;ConditionMessage&gt; messages = outcomes.stream().map(ConditionOutcome::getConditionMessage).collect(toList());</span>
+<span class="fc" id="L130">            return new ConditionOutcome(matchAll, ConditionMessage.of(messages));</span>
+        }
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

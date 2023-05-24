@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>DefaultSendGridV4Configurer.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">reporting</a> &gt; <a href="../index.html" class="el_bundle">ogham-email-sendgrid-v4</a> &gt; <a href="index.source.html" class="el_package">fr.sii.ogham.email.sendgrid.v4.builder.sendgrid</a> &gt; <span class="el_source">DefaultSendGridV4Configurer.java</span></div><h1>DefaultSendGridV4Configurer.java</h1><pre class="source lang-java linenums">package fr.sii.ogham.email.sendgrid.v4.builder.sendgrid;
+
+import fr.sii.ogham.core.builder.MessagingBuilder;
+import fr.sii.ogham.core.builder.configurer.ConfigurerFor;
+import fr.sii.ogham.core.builder.configurer.MessagingConfigurer;
+import fr.sii.ogham.core.builder.context.BuildContext;
+import fr.sii.ogham.core.builder.mimetype.MimetypeDetectionBuilder;
+import fr.sii.ogham.core.exception.configurer.ConfigureException;
+import fr.sii.ogham.core.exception.configurer.MissingImplementationException;
+import fr.sii.ogham.core.util.ClasspathUtils;
+
+import static fr.sii.ogham.email.sendgrid.SendGridConstants.DEFAULT_SENDGRID_CONFIGURER_PRIORITY;
+
+/**
+ * Default SendGrid configurer that is automatically applied every time a
+ * {@link MessagingBuilder} instance is created through
+ * {@link MessagingBuilder#standard()}.
+ * 
+ * &lt;p&gt;
+ * The configurer has a priority of 30000 in order to be applied after
+ * templating configurers and JavaMail configurer.
+ * &lt;/p&gt;
+ * 
+ * This configurer is applied only if {@code com.sendgrid.SendGrid} is present
+ * in the classpath. If not present, SendGrid implementation is not registered
+ * at all.
+ * 
+ * &lt;p&gt;
+ * This configurer inherits environment configuration (see
+ * {@link BuildContext}).
+ * &lt;/p&gt;
+ * &lt;p&gt;
+ * This configurer inherits mimetype configuration (see
+ * {@link MimetypeDetectionBuilder} and
+ * {@link SendGridV4Builder#mimetype(MimetypeDetectionBuilder)}).
+ * &lt;/p&gt;
+ * 
+ * &lt;p&gt;
+ * This configurer applies the following configuration:
+ * &lt;ul&gt;
+ * &lt;li&gt;Configures authentication by providing an &lt;a href=
+ * &quot;https://sendgrid.com/docs/Classroom/Send/How_Emails_Are_Sent/api_keys.html&quot;&gt;API
+ * key&lt;/a&gt;: using the property &quot;ogham.email.sendgrid.api-key&quot;.&lt;strong&gt;WARNING:
+ * SendGrid v4 doesn't allow username/password anymore. You must use API
+ * keys&lt;/strong&gt;&lt;/li&gt;
+ * &lt;li&gt;Configures unit testing mode using the property
+ * &quot;ogham.email.sendgrid.unit-testing&quot;.
+ * &lt;/ul&gt;
+ * 
+ * 
+ * 
+ * @author Aurélien Baudet
+ *
+ */
+public final class DefaultSendGridV4Configurer {
+	@ConfigurerFor(targetedBuilder = &quot;standard&quot;, priority = DEFAULT_SENDGRID_CONFIGURER_PRIORITY)
+<span class="fc" id="L57">	public static class SendGridV4Configurer implements MessagingConfigurer {</span>
+		@Override
+		public void configure(MessagingBuilder msgBuilder) throws ConfigureException {
+<span class="fc" id="L60">			checkCanUseSendGrid();</span>
+
+			// @formatter:off
+<span class="fc" id="L63">			SendGridV4Builder builder = msgBuilder.email().sender(SendGridV4Builder.class);</span>
+			// inherit mimetype configuration as parent builder
+<span class="fc" id="L65">			builder.mimetype(msgBuilder.mimetype());</span>
+<span class="fc" id="L66">			builder</span>
+<span class="fc" id="L67">				.apiKey().properties(&quot;${ogham.email.sendgrid.api-key}&quot;).and()</span>
+<span class="fc" id="L68">				.unitTesting().properties(&quot;${ogham.email.sendgrid.unit-testing}&quot;).and()</span>
+<span class="fc" id="L69">				.url().properties(&quot;${ogham.email.sendgrid.url}&quot;);</span>
+			// @formatter:on
+<span class="fc" id="L71">		}</span>
+
+
+		private static void checkCanUseSendGrid() throws ConfigureException {
+<span class="pc bpc" id="L75" title="1 of 2 branches missed.">			if (!isSendGridV4Present()) {</span>
+<span class="nc" id="L76">				throw new MissingImplementationException(&quot;Can't send Email using SendGrid v4 sender because SendGrid v4 implementation is not present in the classpath&quot;, &quot;com.sendgrid.SendGrid&quot;, &quot;com.sendgrid.SendGridAPI&quot;);</span>
+			}
+<span class="fc" id="L78">		}</span>
+
+		private static boolean isSendGridV4Present() {
+<span class="pc bpc" id="L81" title="2 of 4 branches missed.">			return ClasspathUtils.exists(&quot;com.sendgrid.SendGrid&quot;) &amp;&amp; ClasspathUtils.exists(&quot;com.sendgrid.SendGridAPI&quot;);</span>
+		}
+	}
+
+	private DefaultSendGridV4Configurer() {
+		super();
+	}
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>
