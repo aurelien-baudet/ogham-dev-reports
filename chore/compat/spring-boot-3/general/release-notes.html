@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 2.0.10">
-<title>3.0.0</title>
+<title>4.0.0</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <link rel="stylesheet" href="./asciidoctor.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -25,9 +25,18 @@
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
 <ul class="sectlevel1">
-<li><a href="#_3_0_0">3.0.0</a>
+<li><a href="#_4_0_0">4.0.0</a>
 <ul class="sectlevel2">
 <li><a href="#_updates">Updates</a></li>
+<li><a href="#_explanation">Explanation:</a></li>
+<li><a href="#_solutions">Solutions:</a></li>
+<li><a href="#_testing">Testing</a></li>
+<li><a href="#_compatibility_check">Compatibility check</a></li>
+</ul>
+</li>
+<li><a href="#_3_0_0">3.0.0</a>
+<ul class="sectlevel2">
+<li><a href="#_updates_2">Updates</a></li>
 <li><a href="#_api_changes">API changes</a></li>
 <li><a href="#_new_features">New features</a></li>
 <li><a href="#_internal_improvements">Internal improvements</a></li>
@@ -59,6 +68,479 @@
 </div>
 <div id="content">
 <div class="sect1">
+<h2 id="_4_0_0"><a class="anchor" href="#_4_0_0"></a>4.0.0</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>This is a major release that brings support for Spring Boot 3 (and Java 17+).
+Dependencies have been upgraded to be up-to-date with latest library, tools and Spring versions.</p>
+</div>
+<div class="paragraph">
+<p>Spring Boot 3 forces use of Java 17. However, Ogham can still be used with Java 8+
+either standalone or with Spring Boot 1 and Spring Boot 2.</p>
+</div>
+<div class="sect2">
+<h3 id="_updates"><a class="anchor" href="#_updates"></a>Updates</h3>
+<div class="sect3">
+<h4 id="_java_support"><a class="anchor" href="#_java_support"></a>Java support</h4>
+<div class="paragraph">
+<p>Ogham now supports all Java versions from 8 and up to 20.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="title">Newer Java versions</div>
+<div class="paragraph">
+<p>Ogham should support newer Java versions in the future without any changes.
+Currently, the latest tested version through compatibility checks is Java 20.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_spring_boot_support"><a class="anchor" href="#_spring_boot_support"></a>Spring Boot support</h4>
+<div class="paragraph">
+<p>Ogham 4.0.x is compatible with Spring Boot 1.4.x+ and up to 3.1.x.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="title">Newer versions of Spring Boot</div>
+<div class="paragraph">
+<p>New Spring Boot versions may be supported. As no tests are made, it is not
+possible to guarantee that you don&#8217;t experience a classpath issue due to
+upgrade of Spring Boot dependencies and code.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock caution">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-caution" title="Caution"></i>
+</td>
+<td class="content">
+<div class="title">Spring Boot 2.2.x - 2.7.x</div>
+<div class="paragraph">
+<p>/!\ You may experience classpath issues while sending emails with Ogham using Java Mail and Spring Boot &gt;= 2.2.x &lt; 3.0.x.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_explanation"><a class="anchor" href="#_explanation"></a>Explanation:</h3>
+<div class="paragraph">
+<p>There can be a mess in the classpath due to Spring Boot dependency management
+that forces versions:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Ogham uses the dependency <code>org.eclipse.angus:angus-mail &gt;= 2.0.1</code>, which imports:</p>
+<div class="ulist">
+<ul>
+<li>
+<p><code>jakarta.mail:jakarta.mail-api &gt;= 2.1.0</code></p>
+</li>
+<li>
+<p><code>jakarta.activation:jakarta.activation-api &gt;= 2.1.1</code></p>
+</li>
+<li>
+<p><code>org.eclipse.angus:angus-activation &gt;= 2.0.0</code></p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Spring Boot 2 dependency management forces these versions:</p>
+<div class="ulist">
+<ul>
+<li>
+<p><code>jakarta.mail:jakarta.mail-api &#8656; 1.6.7</code></p>
+</li>
+<li>
+<p><code>jakarta.activation:jakarta.activation-api &#8656; 1.2.2</code></p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>But, there is a mess in the packages. The dependency <code>jakarta.mail:jakarta.mail-api &#8656; 1.6.7</code>
+declares classes in package <code>javax.mail</code> while <code>jakarta.mail:jakarta.mail-api &gt; 1.6.7</code>
+declares classes in package <code>jakarta.mail</code>.
+So, when using Ogham with Spring Boot 2, Ogham tries to adapt to what is present in the classpath:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>either Ogham tries to use Jakarta mail using <code>org.eclipse.angus:angus-mail &gt;= 2.0.1</code> but it fails
+because it doesn&#8217;t find <code>jakarta.activation.DataHandler</code> (since in the classpath the
+<code>jakarta.activation:jakarta.activation-api</code> version is <code>&#8656; 1.2.2</code> which defines
+<code>javax.activation.DataHandler</code> instead).</p>
+</li>
+<li>
+<p>or Ogham tries to use Javax mail using <code>jakarta.mail:jakarta.mail-api &#8656; 1.6.7</code>, but it may fail
+because Ogham doesn&#8217;t bring Javax mail implementation dependencies to avoid classpath
+mess and issues at runtime. So when trying to send en email using Javax mail, there is no implementation
+available. But it is even worse than no implementation available. In the sources of
+<code>jakarta.mail:jakarta.mail-api &#8656; 1.6.7</code>, there is a direct link to the Sun implementation
+(at least <code>com.sun.mail.util.MailLogger</code>) which may not be present in the classpath.
+So, instead of indicating that there is no Javax mail implementation present, it
+fails with <code>java.lang.NoClassDefFoundError: com/sun/mail/util/MailLogger</code> which
+is not really developer friendly and hard to understand why it happens.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_solutions"><a class="anchor" href="#_solutions"></a>Solutions:</h3>
+<div class="sect3">
+<h4 id="_either_prefer_use_of_old_javax_mail"><a class="anchor" href="#_either_prefer_use_of_old_javax_mail"></a>Either prefer use of old Javax mail</h4>
+<div class="paragraph">
+<p>If you prefer using Javax mail in order to avoid possible classpath clashes by mixing both javax and jakarta, you can:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Either add <code>org.springframework.boot:spring-boot-starter-mail</code> dependency  BEFORE <code>fr.sii.ogham:ogham-email-javamail</code> dependency.</p>
+</li>
+<li>
+<p>Or add explicitly the dependency <code>com.sun.mail:jakarta.mail</code> BEFORE <code>fr.sii.ogham:ogham-email-javamail</code> dependency</p>
+</li>
+</ul>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Order is important in order to let Java pick the service configuration of the <code>com.sun.mail:jakarta-mail</code> dependency first.
+You can also exclude <code>org.eclipse.angus:angus-mail</code> from <code>fr.sii.ogham:ogham-email-javamail</code> (so that order doesn&#8217;t matter).</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_or_prefer_use_of_new_jakarta_mail"><a class="anchor" href="#_or_prefer_use_of_new_jakarta_mail"></a>Or prefer use of new Jakarta mail</h4>
+<div class="paragraph">
+<p>If you prefer using the new Jakarta mail, you can:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Either force Spring Boot dependency management to use newer versions by setting properties:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;properties&gt;</span>
+    ...
+    <span class="tag">&lt;jakarta-mail.version&gt;</span>2.1.1<span class="tag">&lt;/jakarta-mail.version&gt;</span>
+    <span class="tag">&lt;jakarta-activation.version&gt;</span>2.1.1<span class="tag">&lt;/jakarta-activation.version&gt;</span>
+    <span class="tag">&lt;sun-mail.version&gt;</span>2.0.1<span class="tag">&lt;/sun-mail.version&gt;</span>
+    <span class="tag">&lt;sun-activation.version&gt;</span>2.0.1<span class="tag">&lt;/sun-activation.version&gt;</span>
+    ...
+<span class="tag">&lt;/properties&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Spring Boot dependency management uses the same property <code>${jakarta-activation.version}</code>
+for both <code>jakarta.activation:jakarta.activation-api</code> and <code>com.sun.activation:jakarta.activation</code>.
+So you also have to override dependency management by adding:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependencyManagement&gt;</span>
+ <span class="tag">&lt;dependencies&gt;</span>
+   <span class="tag">&lt;dependency&gt;</span>
+     <span class="tag">&lt;groupId&gt;</span>com.sun.activation<span class="tag">&lt;/groupId&gt;</span>
+     <span class="tag">&lt;artifactId&gt;</span>jakarta.activation<span class="tag">&lt;/artifactId&gt;</span>
+     <span class="tag">&lt;version&gt;</span>${sun-activation.version}<span class="tag">&lt;/version&gt;</span>
+   <span class="tag">&lt;/dependency&gt;</span>
+ <span class="tag">&lt;/dependencies&gt;</span>
+<span class="tag">&lt;/dependencyManagement&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Therefore, the property <code>${sun-activation.version}</code> has effect.</p>
+</div>
+</li>
+<li>
+<p>Or explicitly add dependencies to override Spring Boot inherited dependency management:</p>
+<div class="ulist">
+<ul>
+<li>
+<p><code>jakarta.activation:jakarta.mail-api:2.1.1</code></p>
+</li>
+<li>
+<p><code>jakarta.activation:jakarta.activation-api:2.1.1</code></p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Be careful yet, other Spring Boot modules may require <code>javax.activation</code> packages.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>You can disable this message by setting the property <code>ogham.email.javamail.check-classpath-consistency=false</code></p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_testing"><a class="anchor" href="#_testing"></a>Testing</h3>
+<div class="sect3">
+<h4 id="_test_utilities_dependencies"><a class="anchor" href="#_test_utilities_dependencies"></a>Test utilities dependencies</h4>
+<div class="paragraph">
+<p>Ogham provides test utilities in order to simplify the code of your tests.
+Internally, it uses libraries for internal code and also to provide Email
+and SMS servers that can be started in your tests.</p>
+</div>
+<div class="paragraph">
+<p>Before <code>v4.0.0</code>, those libraries for internal purpose were available as transitive dependencies of <code>ogham-test-utils</code>.
+Now, those internal dependencies are not available as transitive dependencies anymore. Instead, the internal dependencies have been incorporated in Fat JAR with renaming of package names (prefixed by <code>ogham.testing</code>).</p>
+</div>
+<div class="paragraph">
+<p>The benefits of a Fat JAR are:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>When you use <code>ogham-test-utils</code> for testing your code, it doesn&#8217;t pollute your classpath anymore with many transitive dependencies</p>
+</li>
+<li>
+<p>It ensures that your runtime classpath is consistent which may not be the case with previous versions. For example, in previous versions, if you wrote a test with GreenMail server, it was bringing the <code>javax.mail</code> dependency so <code>javax.mail.internet.MimeMessage</code> was present in the test classpath. Therefore, your test could pass because <code>ogham-email-javamail</code> could use that class. But, at runtime, it was possible (if you explicitly exclude <code>javax.mail</code> dependencies) that your code couldn&#8217;t work because <code>ogham-email-javamail</code> could not find the required classes. Now, there is a clear separation of runtime classpath and test classpath thanks to renaming of internal test dependencies packages.</p>
+</li>
+<li>
+<p>Ogham can better control required transitive dependencies</p>
+</li>
+<li>
+<p>You can still use the same libraries on your own if you want, it won&#8217;t conflict. For example, Ogham internally uses <code>com.icegreen:greenmail:2.0.0</code> (but the package is renamed). But you may want to use another version of GreenMail. You can still add the dependency <code>com.icegreen:greenmail:&lt;version you want&gt;</code> and use GreenMail as you want.</p>
+</li>
+<li>
+<p>Ogham won&#8217;t fail due to classpath issue between <code>javax.mail</code> and <code>jakarta.mail</code> or between <code>javax.activation</code> and <code>jakarta.activation</code>. There was a package renaming from <code>javax.</code> to <code>jakarta.</code>. However, according to the version of the dependencies, the package was renamed or not&#8230;&#8203;</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The drawback of Fat JAR is that if you need to upgrade a test dependency due to a bug, you can&#8217;t without a new Ogham version.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_compatibility_check"><a class="anchor" href="#_compatibility_check"></a>Compatibility check</h3>
+<div class="paragraph">
+<p>CI automatically performs many compatibility checks to ensure
+that Ogham is compatible with Java and Spring Boot versions:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Include (or not) some Ogham features</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Sender implementations (Jakarta Mail, SendGrid, Cloudhopper, &#8230;&#8203;)</p>
+</li>
+<li>
+<p>Template engine integrations (Thymeleaf, FreeMarker, &#8230;&#8203;)</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Include (or not) some Spring Boot features</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Web application</p>
+</li>
+<li>
+<p>Template engine (Thymeleaf, FreeMarker, &#8230;&#8203;)</p>
+</li>
+<li>
+<p>Spring Mail (Jakarta Mail)</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Spring Boot versions (from 1.4.x to 3.1.x)</p>
+</li>
+<li>
+<p>Java versions (from 8 to 20)</p>
+</li>
+</ul>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 1. Ogham standalone compatibility matrix check</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Java distribution</th>
+<th class="tableblock halign-left valign-top">Tested Java versions</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Eclipse Temurin</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">8, 11, 16, 17, 18, 19, 20</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Azul Zulu OpenJDK</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">8, 11, 13, 15, 19, 20</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">AdoptOpenJDK Hotspot</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">8, 11, 17</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">AdoptOpenJDK OpenJ9</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">8, 11, 17</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Liberica JDK</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">8, 11, 17, 20</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Microsoft Build of OpenJDK</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">8, 11, 17</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Amazon Corretto Build of OpenJDK</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">8, 11, 17, 20</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">IBM Semeru Runtime Open Edition</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">8, 11, 16, 17, 18, 19</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Oracle JDK</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">8, 11, 17, 20</p></td>
+</tr>
+</tbody>
+</table>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 2. Spring Boot compatibility matrix check</caption>
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Supported Spring Boot version</th>
+<th class="tableblock halign-left valign-top">Tested Spring Boot version</th>
+<th class="tableblock halign-left valign-top">Tested Java versions</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1.4.x</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1.4.7.RELEASE</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">8 (Eclipse Temurin)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1.5.x</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1.5.22.RELEASE</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">8 (Eclipse Temurin)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2.1.x</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2.1.18.RELEASE</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">8, 11 (Eclipse Temurin)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2.2.x</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2.2.13.RELEASE</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">8, 11, 17 (Eclipse Temurin)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2.3.x</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2.3.12.RELEASE</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">8, 11, 17 (Eclipse Temurin)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2.4.x</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2.4.13</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">8, 11, 17 (Eclipse Temurin)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2.5.x</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2.5.15</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">8, 11, 17 (Eclipse Temurin)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2.6.x</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2.6.15</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">8, 11, 17 (Eclipse Temurin)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2.7.x</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2.7.12</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">8, 11, 17 (Eclipse Temurin)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">3.0.x</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">3.0.7</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">17 (Eclipse Temurin)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">3.1.x</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">3.1.0</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">17 (Eclipse Temurin)</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
 <h2 id="_3_0_0"><a class="anchor" href="#_3_0_0"></a>3.0.0</h2>
 <div class="sectionbody">
 <div class="paragraph">
@@ -73,9 +555,9 @@ to be up-to-date with latest library, tools and Spring versions.</p>
 See detailed migration guide to <a href="../migration-guide.html#v2.0.0-v3.0.0">upgrade from 2.0.0 to 3.0.0</a>.</p>
 </div>
 <div class="sect2">
-<h3 id="_updates"><a class="anchor" href="#_updates"></a>Updates</h3>
+<h3 id="_updates_2"><a class="anchor" href="#_updates_2"></a>Updates</h3>
 <div class="sect3">
-<h4 id="_java_support"><a class="anchor" href="#_java_support"></a>Java support</h4>
+<h4 id="_java_support_2"><a class="anchor" href="#_java_support_2"></a>Java support</h4>
 <div class="paragraph">
 <p>Upgrade minimum Java version to Java 8 i.e. drop support of Java 7.</p>
 </div>
@@ -100,7 +582,7 @@ Currently, the latest tested version through compatibility checks is Java 15.</p
 </div>
 </div>
 <div class="sect3">
-<h4 id="_spring_boot_support"><a class="anchor" href="#_spring_boot_support"></a>Spring Boot support</h4>
+<h4 id="_spring_boot_support_2"><a class="anchor" href="#_spring_boot_support_2"></a>Spring Boot support</h4>
 <div class="paragraph">
 <p>Ogham 3.0+ drops support of Spring Boot 1.3.x.</p>
 </div>
@@ -1412,7 +1894,7 @@ that Ogham is compatible with Java and Spring Boot versions:</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2023-05-24 16:19:38 UTC
+Last updated 2023-05-25 09:06:21 UTC
 </div>
 </div>
 <link rel="stylesheet" href="./coderay-asciidoctor.css">

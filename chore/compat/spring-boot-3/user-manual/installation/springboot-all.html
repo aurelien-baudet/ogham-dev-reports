@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 2.0.10">
-<title>Untitled</title>
+<title>Explanation:</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <link rel="stylesheet" href="./asciidoctor.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -20,8 +20,20 @@
 <script type="text/javascript" src="../..//javascripts/image-viewer.js"></script>
 <link rel="stylesheet" type="text/css" href="../..//styles/doc-styles.css" />
 </head>
-<body class="book">
+<body class="book toc2 toc-left">
 <div id="header">
+<div id="toc" class="toc2">
+<div id="toctitle">Table of Contents</div>
+<ul class="sectlevel1">
+<li><a href="#_explanation">Explanation:</a></li>
+<li><a href="#_solutions">Solutions:</a>
+<ul class="sectlevel2">
+<li><a href="#_either_prefer_use_of_old_javax_mail">Either prefer use of old Javax mail</a></li>
+<li><a href="#_or_prefer_use_of_new_jakarta_mail">Or prefer use of new Jakarta mail</a></li>
+</ul>
+</li>
+</ul>
+</div>
 </div>
 <div id="content">
 <div id="preamble">
@@ -339,13 +351,28 @@ configuration properties like <code>spring.mail.host</code> for example.</p>
 <p>2.1.x (currently automatically tested against 2.1.18.RELEASE)</p>
 </li>
 <li>
-<p>2.2.x (currently automatically tested against 2.2.12.RELEASE)</p>
+<p>2.2.x (currently automatically tested against 2.2.13.RELEASE)</p>
 </li>
 <li>
-<p>2.3.x (currently automatically tested against 2.3.7.RELEASE)</p>
+<p>2.3.x (currently automatically tested against 2.3.12.RELEASE)</p>
 </li>
 <li>
-<p>2.4.x (currently automatically tested against 2.4.1.RELEASE)</p>
+<p>2.4.x (currently automatically tested against 2.4.13)</p>
+</li>
+<li>
+<p>2.5.x (currently automatically tested against 2.5.15)</p>
+</li>
+<li>
+<p>2.6.x (currently automatically tested against 2.6.15)</p>
+</li>
+<li>
+<p>2.7.x (currently automatically tested against 2.7.12)</p>
+</li>
+<li>
+<p>3.0.x (currently automatically tested against 3.0.7)</p>
+</li>
+<li>
+<p>3.1.x (currently automatically tested against 3.1.0)</p>
 </li>
 </ul>
 </div>
@@ -358,7 +385,7 @@ configuration properties like <code>spring.mail.host</code> for example.</p>
 <td class="content">
 <div class="title">Java version compatibility</div>
 <div class="paragraph">
-<p>Ogham is compatible with Java 8 and up to Java 15 (included).</p>
+<p>Ogham is compatible with Java 8 and up to Java 20 (included).</p>
 </div>
 <div class="paragraph">
 <p>However, Spring Boot may not be compatible with some Java versions (depending on
@@ -368,51 +395,219 @@ Spring Boot version).</p>
 </tr>
 </table>
 </div>
-<div class="admonitionblock important">
+<div class="admonitionblock caution">
 <table>
 <tr>
 <td class="icon">
-<i class="fa icon-important" title="Important"></i>
+<i class="fa icon-caution" title="Caution"></i>
 </td>
 <td class="content">
-<div class="title">Java 7</div>
+<div class="title">Spring Boot 2.2.x - 2.7.x</div>
 <div class="paragraph">
-<p>Java 7 support has been dropped since Ogham 3.0.0. Therefore, Ogham is no more
-tested with Spring Boot 1.3.x</p>
+<p>/!\ You may experience classpath issues while sending emails with Ogham using Java Mail and Spring Boot &gt;= 2.2.x &lt; 3.0.x.</p>
 </div>
 </td>
 </tr>
 </table>
 </div>
-<div class="admonitionblock important">
+</div>
+</div>
+<div class="sect1">
+<h2 id="_explanation"><a class="anchor" href="#_explanation"></a>Explanation:</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>There can be a mess in the classpath due to Spring Boot dependency management
+that forces versions:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Ogham uses the dependency <code>org.eclipse.angus:angus-mail &gt;= 2.0.1</code>, which imports:</p>
+<div class="ulist">
+<ul>
+<li>
+<p><code>jakarta.mail:jakarta.mail-api &gt;= 2.1.0</code></p>
+</li>
+<li>
+<p><code>jakarta.activation:jakarta.activation-api &gt;= 2.1.1</code></p>
+</li>
+<li>
+<p><code>org.eclipse.angus:angus-activation &gt;= 2.0.0</code></p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Spring Boot 2 dependency management forces these versions:</p>
+<div class="ulist">
+<ul>
+<li>
+<p><code>jakarta.mail:jakarta.mail-api &#8656; 1.6.7</code></p>
+</li>
+<li>
+<p><code>jakarta.activation:jakarta.activation-api &#8656; 1.2.2</code></p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>But, there is a mess in the packages. The dependency <code>jakarta.mail:jakarta.mail-api &#8656; 1.6.7</code>
+declares classes in package <code>javax.mail</code> while <code>jakarta.mail:jakarta.mail-api &gt; 1.6.7</code>
+declares classes in package <code>jakarta.mail</code>.
+So, when using Ogham with Spring Boot 2, Ogham tries to adapt to what is present in the classpath:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>either Ogham tries to use Jakarta mail using <code>org.eclipse.angus:angus-mail &gt;= 2.0.1</code> but it fails
+because it doesn&#8217;t find <code>jakarta.activation.DataHandler</code> (since in the classpath the
+<code>jakarta.activation:jakarta.activation-api</code> version is <code>&#8656; 1.2.2</code> which defines
+<code>javax.activation.DataHandler</code> instead).</p>
+</li>
+<li>
+<p>or Ogham tries to use Javax mail using <code>jakarta.mail:jakarta.mail-api &#8656; 1.6.7</code>, but it may fail
+because Ogham doesn&#8217;t bring Javax mail implementation dependencies to avoid classpath
+mess and issues at runtime. So when trying to send en email using Javax mail, there is no implementation
+available. But it is even worse than no implementation available. In the sources of
+<code>jakarta.mail:jakarta.mail-api &#8656; 1.6.7</code>, there is a direct link to the Sun implementation
+(at least <code>com.sun.mail.util.MailLogger</code>) which may not be present in the classpath.
+So, instead of indicating that there is no Javax mail implementation present, it
+fails with <code>java.lang.NoClassDefFoundError: com/sun/mail/util/MailLogger</code> which
+is not really developer friendly and hard to understand why it happens.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_solutions"><a class="anchor" href="#_solutions"></a>Solutions:</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_either_prefer_use_of_old_javax_mail"><a class="anchor" href="#_either_prefer_use_of_old_javax_mail"></a>Either prefer use of old Javax mail</h3>
+<div class="paragraph">
+<p>If you prefer using Javax mail in order to avoid possible classpath clashes by mixing both javax and jakarta, you can:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Either add <code>org.springframework.boot:spring-boot-starter-mail</code> dependency  BEFORE <code>fr.sii.ogham:ogham-email-javamail</code> dependency.</p>
+</li>
+<li>
+<p>Or add explicitly the dependency <code>com.sun.mail:jakarta.mail</code> BEFORE <code>fr.sii.ogham:ogham-email-javamail</code> dependency</p>
+</li>
+</ul>
+</div>
+<div class="admonitionblock note">
 <table>
 <tr>
 <td class="icon">
-<i class="fa icon-important" title="Important"></i>
+<i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-<div class="title">Spring Boot 1.4.x and WireMock</div>
 <div class="paragraph">
-<p>Latest WireMock versions are not compatible with Spring Boot 1.4.x. So if you
-are using Spring Boot 1.4.x, also using <code>ogham-test-utils</code> for writing tests and
-want to use WireMock in one of your test, you may experience <code>ClassNotFoundException</code>.
-This is due to different <code>org.apache.httpcomponents</code> versions.</p>
-</div>
-<div class="paragraph">
-<p>In this case, just use a different version of WireMock by manually adding the dependency
-<code>com.github.tomakehurst:wiremock-jre8:2.23.2:test</code>. This will force to use a
-previous WireMock version that is compatible with Spring Boot 1.4.x.</p>
+<p>Order is important in order to let Java pick the service configuration of the <code>com.sun.mail:jakarta-mail</code> dependency first.
+You can also exclude <code>org.eclipse.angus:angus-mail</code> from <code>fr.sii.ogham:ogham-email-javamail</code> (so that order doesn&#8217;t matter).</p>
 </div>
 </td>
 </tr>
 </table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_or_prefer_use_of_new_jakarta_mail"><a class="anchor" href="#_or_prefer_use_of_new_jakarta_mail"></a>Or prefer use of new Jakarta mail</h3>
+<div class="paragraph">
+<p>If you prefer using the new Jakarta mail, you can:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Either force Spring Boot dependency management to use newer versions by setting properties:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;properties&gt;</span>
+    ...
+    <span class="tag">&lt;jakarta-mail.version&gt;</span>2.1.1<span class="tag">&lt;/jakarta-mail.version&gt;</span>
+    <span class="tag">&lt;jakarta-activation.version&gt;</span>2.1.1<span class="tag">&lt;/jakarta-activation.version&gt;</span>
+    <span class="tag">&lt;sun-mail.version&gt;</span>2.0.1<span class="tag">&lt;/sun-mail.version&gt;</span>
+    <span class="tag">&lt;sun-activation.version&gt;</span>2.0.1<span class="tag">&lt;/sun-activation.version&gt;</span>
+    ...
+<span class="tag">&lt;/properties&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Spring Boot dependency management uses the same property <code>${jakarta-activation.version}</code>
+for both <code>jakarta.activation:jakarta.activation-api</code> and <code>com.sun.activation:jakarta.activation</code>.
+So you also have to override dependency management by adding:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependencyManagement&gt;</span>
+ <span class="tag">&lt;dependencies&gt;</span>
+   <span class="tag">&lt;dependency&gt;</span>
+     <span class="tag">&lt;groupId&gt;</span>com.sun.activation<span class="tag">&lt;/groupId&gt;</span>
+     <span class="tag">&lt;artifactId&gt;</span>jakarta.activation<span class="tag">&lt;/artifactId&gt;</span>
+     <span class="tag">&lt;version&gt;</span>${sun-activation.version}<span class="tag">&lt;/version&gt;</span>
+   <span class="tag">&lt;/dependency&gt;</span>
+ <span class="tag">&lt;/dependencies&gt;</span>
+<span class="tag">&lt;/dependencyManagement&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Therefore, the property <code>${sun-activation.version}</code> has effect.</p>
+</div>
+</li>
+<li>
+<p>Or explicitly add dependencies to override Spring Boot inherited dependency management:</p>
+<div class="ulist">
+<ul>
+<li>
+<p><code>jakarta.activation:jakarta.mail-api:2.1.1</code></p>
+</li>
+<li>
+<p><code>jakarta.activation:jakarta.activation-api:2.1.1</code></p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Be careful yet, other Spring Boot modules may require <code>javax.activation</code> packages.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>You can disable this message by setting the property <code>ogham.email.javamail.check-classpath-consistency=false</code></p>
+</div>
+</td>
+</tr>
+</table>
+</div>
 </div>
 </div>
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2023-05-24 16:19:38 UTC
+Last updated 2023-05-25 09:06:21 UTC
 </div>
 </div>
 <link rel="stylesheet" href="./coderay-asciidoctor.css">

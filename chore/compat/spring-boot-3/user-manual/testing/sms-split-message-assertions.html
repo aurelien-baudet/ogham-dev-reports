@@ -37,37 +37,34 @@
 <div class="openblock tab">
 <div class="title"><span class="image"><img src="../../images//icons/java-logo.png" alt="java logo" width="16" height="30"></span> Java</div>
 <div class="content">
-<div class="listingblock collapse-lines:1-19 irrelevant-lines:1-19,21-38 highlight-lines:56">
+<div class="listingblock collapse-lines:1-20 irrelevant-lines:1-20,23-37 highlight-lines:55">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">fr.sii.ogham.sample.test</span>;
-
-<span class="keyword">import</span> <span class="include">static</span> <span class="include">fr.sii.ogham.testing.assertion.OghamAssertions.assertThat</span>;
-<span class="keyword">import</span> <span class="include">static</span> <span class="include">org.hamcrest.Matchers.is</span>;
-
-<span class="keyword">import</span> <span class="include">java.io.IOException</span>;
-
-<span class="keyword">import</span> <span class="include">fr.sii.ogham.testing.extension.junit.sms.JsmppServerExtension</span>;
-<span class="keyword">import</span> <span class="include">fr.sii.ogham.testing.extension.junit.sms.SmppServerExtension</span>;
-<span class="keyword">import</span> <span class="include">ogham.testing.org.jsmpp.bean.SubmitSm</span>;
-<span class="keyword">import</span> <span class="include">org.junit.Before</span>;
-<span class="keyword">import</span> <span class="include">org.junit.Rule</span>;
-<span class="keyword">import</span> <span class="include">org.junit.jupiter.api.BeforeEach</span>;
-<span class="keyword">import</span> <span class="include">org.junit.jupiter.api.Test</span>;
 
 <span class="keyword">import</span> <span class="include">fr.sii.ogham.core.builder.MessagingBuilder</span>;
 <span class="keyword">import</span> <span class="include">fr.sii.ogham.core.exception.MessagingException</span>;
 <span class="keyword">import</span> <span class="include">fr.sii.ogham.core.service.MessagingService</span>;
 <span class="keyword">import</span> <span class="include">fr.sii.ogham.sms.message.Sms</span>;
+<span class="keyword">import</span> <span class="include">fr.sii.ogham.testing.extension.junit.sms.JSmppServer</span>;
+<span class="keyword">import</span> <span class="include">fr.sii.ogham.testing.extension.junit.sms.JsmppServerExtension</span>;
+<span class="keyword">import</span> <span class="include">fr.sii.ogham.testing.extension.junit.sms.SmppServerExtension</span>;
+<span class="keyword">import</span> <span class="include">fr.sii.ogham.testing.sms.simulator.SmppServerSimulator</span>;
+<span class="keyword">import</span> <span class="include">ogham.testing.org.jsmpp.bean.SubmitSm</span>;
+<span class="keyword">import</span> <span class="include">org.junit.jupiter.api.BeforeEach</span>;
+<span class="keyword">import</span> <span class="include">org.junit.jupiter.api.Test</span>;
 <span class="keyword">import</span> <span class="include">org.junit.jupiter.api.extension.RegisterExtension</span>;
 
+<span class="keyword">import</span> <span class="include">java.io.IOException</span>;
+
+<span class="keyword">import</span> <span class="include">static</span> <span class="include">fr.sii.ogham.testing.assertion.OghamAssertions.assertThat</span>;
+<span class="keyword">import</span> <span class="include">static</span> <span class="include">org.hamcrest.Matchers.is</span>;
+
+<span class="annotation">@JSmppServer</span>
 <span class="directive">public</span> <span class="type">class</span> <span class="class">LongSmsTestSample</span> {
   <span class="directive">private</span> MessagingService oghamService;
 
-  <span class="annotation">@RegisterExtension</span>
-  <span class="directive">public</span> <span class="directive">final</span> SmppServerExtension&lt;SubmitSm&gt; smppServer = <span class="keyword">new</span> JsmppServerExtension();
-
   <span class="annotation">@BeforeEach</span>
-  <span class="directive">public</span> <span class="type">void</span> setUp() <span class="directive">throws</span> <span class="exception">IOException</span> {
+  <span class="directive">public</span> <span class="type">void</span> setUp(SmppServerSimulator&lt;SubmitSm&gt; smppServer) <span class="directive">throws</span> <span class="exception">IOException</span> {
     oghamService = MessagingBuilder.standard()
         .environment()
           .properties()
@@ -80,28 +77,28 @@
   }
 
   <span class="annotation">@Test</span>
-  <span class="directive">public</span> <span class="type">void</span> longMessageUsingGsm8bit() <span class="directive">throws</span> MessagingException, <span class="exception">IOException</span> {
+  <span class="directive">public</span> <span class="type">void</span> longMessageUsingGsm8bit(SmppServerSimulator&lt;SubmitSm&gt; smppServer) <span class="directive">throws</span> MessagingException {
     <span class="comment">// @formatter:off</span>
     oghamService.send(<span class="keyword">new</span> Sms()
-              .message().string(<span class="string"><span class="delimiter">&quot;</span><span class="content">sms content with a very very very loooooooooo</span><span class="delimiter">&quot;</span></span>
-                  + <span class="string"><span class="delimiter">&quot;</span><span class="content">oooooooooonnnnnnnnnnnnnnnnng message that is</span><span class="delimiter">&quot;</span></span>
-                  + <span class="string"><span class="delimiter">&quot;</span><span class="content"> over 140 characters in order to test the be</span><span class="delimiter">&quot;</span></span>
-                  + <span class="string"><span class="delimiter">&quot;</span><span class="content">havior of the sender when message has to be split</span><span class="delimiter">&quot;</span></span>)
-              .to(<span class="string"><span class="delimiter">&quot;</span><span class="content">0601020304</span><span class="delimiter">&quot;</span></span>));
+        .message().string(<span class="string"><span class="delimiter">&quot;</span><span class="content">sms content with a very very very loooooooooo</span><span class="delimiter">&quot;</span></span>
+            + <span class="string"><span class="delimiter">&quot;</span><span class="content">oooooooooonnnnnnnnnnnnnnnnng message that is</span><span class="delimiter">&quot;</span></span>
+            + <span class="string"><span class="delimiter">&quot;</span><span class="content"> over 140 characters in order to test the be</span><span class="delimiter">&quot;</span></span>
+            + <span class="string"><span class="delimiter">&quot;</span><span class="content">havior of the sender when message has to be split</span><span class="delimiter">&quot;</span></span>)
+        .to(<span class="string"><span class="delimiter">&quot;</span><span class="content">0601020304</span><span class="delimiter">&quot;</span></span>));
     assertThat(smppServer).receivedMessages()
-      .count(is(<span class="integer">2</span>))                                                                   <i class="conum" data-value="1"></i><b>(1)</b>
-      .message(<span class="integer">0</span>)                                                                     <i class="conum" data-value="2"></i><b>(2)</b>
+      .count(is(<span class="integer">2</span>))                                                                 <i class="conum" data-value="1"></i><b>(1)</b>
+      .message(<span class="integer">0</span>)                                                                   <i class="conum" data-value="2"></i><b>(2)</b>
         .content(is(<span class="string"><span class="delimiter">&quot;</span><span class="content">sms content with a very very very looooooooooooooooooo</span><span class="delimiter">&quot;</span></span>        <i class="conum" data-value="3"></i><b>(3)</b>
             + <span class="string"><span class="delimiter">&quot;</span><span class="content">onnnnnnnnnnnnnnnnng message that is over 140 characters </span><span class="delimiter">&quot;</span></span>
             + <span class="string"><span class="delimiter">&quot;</span><span class="content">in order to test the beh</span><span class="delimiter">&quot;</span></span>)).and()
-      .message(<span class="integer">1</span>)                                                                     <i class="conum" data-value="4"></i><b>(4)</b>
+      .message(<span class="integer">1</span>)                                                                   <i class="conum" data-value="4"></i><b>(4)</b>
         .content(is(<span class="string"><span class="delimiter">&quot;</span><span class="content">avior of the sender when message has to be split</span><span class="delimiter">&quot;</span></span>)).and()      <i class="conum" data-value="5"></i><b>(5)</b>
-      .every()                                                                        <i class="conum" data-value="6"></i><b>(6)</b>
+      .every()                                                                      <i class="conum" data-value="6"></i><b>(6)</b>
         .from()
-          .number(is(<span class="string"><span class="delimiter">&quot;</span><span class="content">+33603040506</span><span class="delimiter">&quot;</span></span>))                                             <i class="conum" data-value="7"></i><b>(7)</b>
+          .number(is(<span class="string"><span class="delimiter">&quot;</span><span class="content">+33603040506</span><span class="delimiter">&quot;</span></span>))                                               <i class="conum" data-value="7"></i><b>(7)</b>
           .and()
         .to()
-          .number(is(<span class="string"><span class="delimiter">&quot;</span><span class="content">0601020304</span><span class="delimiter">&quot;</span></span>));                                              <i class="conum" data-value="8"></i><b>(8)</b>
+          .number(is(<span class="string"><span class="delimiter">&quot;</span><span class="content">0601020304</span><span class="delimiter">&quot;</span></span>));                                                <i class="conum" data-value="8"></i><b>(8)</b>
     <span class="comment">// @formatter:on</span>
   }
 }</code></pre>
@@ -155,7 +152,7 @@
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2023-05-24 16:19:38 UTC
+Last updated 2023-05-25 09:06:21 UTC
 </div>
 </div>
 <link rel="stylesheet" href="./coderay-asciidoctor.css">

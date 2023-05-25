@@ -76,7 +76,7 @@ The following sample shows a Spring Web that exposes one simple endpoint for sen
 <span class="annotation">@PropertySource</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">application-sms-template.properties</span><span class="delimiter">&quot;</span></span>)  <span class="comment">// just needed to be able to run the sample</span>
 <span class="directive">public</span> <span class="type">class</span> <span class="class">TemplateSample</span> {
 
-  <span class="directive">public</span> <span class="directive">static</span> <span class="type">void</span> main(<span class="predefined-type">String</span><span class="type">[]</span> args) <span class="directive">throws</span> MessagingException {
+  <span class="directive">public</span> <span class="directive">static</span> <span class="type">void</span> main(<span class="predefined-type">String</span><span class="type">[]</span> args) {
     SpringApplication.run(TemplateSample.class, args);
   }
 
@@ -86,16 +86,16 @@ The following sample shows a Spring Web that exposes one simple endpoint for sen
     <span class="comment">// The configuration can be set into application-sms-template.properties</span>
     <span class="comment">// The configuration files are stored into src/main/resources</span>
     <span class="annotation">@Autowired</span>
-    MessagingService messagingService;                                              <i class="conum" data-value="1"></i><b>(1)</b>
+    MessagingService messagingService;                                         <i class="conum" data-value="1"></i><b>(1)</b>
 
     <span class="annotation">@PostMapping</span>(value=<span class="string"><span class="delimiter">&quot;</span><span class="content">api/sms/template</span><span class="delimiter">&quot;</span></span>)
     <span class="annotation">@ResponseStatus</span>(HttpStatus.CREATED)
     <span class="directive">public</span> <span class="type">void</span> sendSms(<span class="annotation">@RequestParam</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">to</span><span class="delimiter">&quot;</span></span>) <span class="predefined-type">String</span> to, <span class="annotation">@RequestParam</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">name</span><span class="delimiter">&quot;</span></span>) <span class="predefined-type">String</span> name, <span class="annotation">@RequestParam</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">value</span><span class="delimiter">&quot;</span></span>) <span class="type">int</span> value) <span class="directive">throws</span> MessagingException {
       <span class="comment">// send the SMS using fluent API</span>
-      messagingService.send(<span class="keyword">new</span> Sms()                                             <i class="conum" data-value="2"></i><b>(2)</b>
-                  .message().template(<span class="string"><span class="delimiter">&quot;</span><span class="content">register</span><span class="delimiter">&quot;</span></span>,                     <i class="conum" data-value="3"></i><b>(3)</b>
-                            <span class="keyword">new</span> SimpleBean(name, value))    <i class="conum" data-value="4"></i><b>(4)</b>
-                  .to(to));                                           <i class="conum" data-value="5"></i><b>(5)</b>
+      messagingService.send(<span class="keyword">new</span> Sms()                                          <i class="conum" data-value="2"></i><b>(2)</b>
+           .message().template(<span class="string"><span class="delimiter">&quot;</span><span class="content">register</span><span class="delimiter">&quot;</span></span>,                                     <i class="conum" data-value="3"></i><b>(3)</b>
+                               <span class="keyword">new</span> SimpleBean(name, value))                    <i class="conum" data-value="4"></i><b>(4)</b>
+           .to(to));                                                           <i class="conum" data-value="5"></i><b>(5)</b>
     }
   }
 
@@ -218,7 +218,7 @@ ogham.sms.template.path-suffix=.txt.ftl                                 <i class
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2023-05-24 16:19:38 UTC
+Last updated 2023-05-25 09:06:21 UTC
 </div>
 </div>
 <link rel="stylesheet" href="./coderay-asciidoctor.css">

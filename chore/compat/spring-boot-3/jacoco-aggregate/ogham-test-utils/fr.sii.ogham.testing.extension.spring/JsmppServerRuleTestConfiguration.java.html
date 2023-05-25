@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>JsmppServerRuleTestConfiguration.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">reporting</a> &gt; <a href="../index.html" class="el_bundle">ogham-test-utils</a> &gt; <a href="index.source.html" class="el_package">fr.sii.ogham.testing.extension.spring</a> &gt; <span class="el_source">JsmppServerRuleTestConfiguration.java</span></div><h1>JsmppServerRuleTestConfiguration.java</h1><pre class="source lang-java linenums">package fr.sii.ogham.testing.extension.spring;
+
+import fr.sii.ogham.testing.extension.junit.sms.JsmppServerExtension;
+import fr.sii.ogham.testing.extension.junit.sms.JsmppServerRule;
+import fr.sii.ogham.testing.extension.junit.sms.config.ServerConfig;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.context.annotation.Bean;
+
+/**
+ * Test configuration that registers:
+ * &lt;ul&gt;
+ * &lt;li&gt;{@link JsmppServerRule} bean for JUnit 4&lt;/li&gt;
+ * &lt;/ul&gt;
+ * 
+ * @author Aurélien Baudet
+ *
+ */
+@TestConfiguration
+@ConditionalOnClass(org.junit.rules.TestRule.class)
+<span class="nc" id="L25">public class JsmppServerRuleTestConfiguration {</span>
+	@Bean
+	@ConditionalOnMissingBean(JsmppServerRule.class)
+	@ConditionalOnProperty(&quot;jsmpp.server.port&quot;)
+	public JsmppServerRule randomJsmppPortRule(@Value(&quot;${jsmpp.server.port}&quot;) int port, @Autowired(required = false) ServerConfig config) {
+<span class="nc" id="L30">		return new JsmppServerRule(initConfig(port, config));</span>
+	}
+
+	private static ServerConfig initConfig(int port, ServerConfig config) {
+<span class="nc bnc" id="L34" title="All 2 branches missed.">		if (config == null) {</span>
+<span class="nc" id="L35">			config = new ServerConfig();</span>
+		}
+<span class="nc" id="L37">		config.port(port);</span>
+<span class="nc" id="L38">		return config;</span>
+	}
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

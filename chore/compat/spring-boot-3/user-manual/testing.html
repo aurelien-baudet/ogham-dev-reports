@@ -284,32 +284,26 @@ assertions on your email (right recipients, right sender, right body&#8230;&#820
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">fr.sii.ogham.sample.test</span>;
 
-<span class="keyword">import</span> <span class="include">static</span> <span class="include">com.icegreen.greenmail.util.ServerSetupTest.SMTP</span>;
-<span class="keyword">import</span> <span class="include">static</span> <span class="include">fr.sii.ogham.testing.assertion.OghamAssertions.assertThat</span>;
-<span class="keyword">import</span> <span class="include">static</span> <span class="include">org.hamcrest.Matchers.emptyIterable</span>;
-<span class="keyword">import</span> <span class="include">static</span> <span class="include">org.hamcrest.Matchers.hasItems</span>;
-<span class="keyword">import</span> <span class="include">static</span> <span class="include">org.hamcrest.Matchers.is</span>;
-<span class="keyword">import</span> <span class="include">static</span> <span class="include">org.hamcrest.Matchers.nullValue</span>;
-<span class="keyword">import</span> <span class="include">static</span> <span class="include">org.hamcrest.Matchers.startsWith</span>;
-
-<span class="keyword">import</span> <span class="include">java.io.IOException</span>;
-
-<span class="keyword">import</span> <span class="include">org.junit.Before</span>;
-<span class="keyword">import</span> <span class="include">org.junit.Rule</span>;
-<span class="keyword">import</span> <span class="include">org.junit.jupiter.api.Test</span>;
-
-<span class="keyword">import</span> <span class="include">com.icegreen.greenmail.junit4.GreenMailRule</span>;
-
 <span class="keyword">import</span> <span class="include">fr.sii.ogham.core.builder.MessagingBuilder</span>;
 <span class="keyword">import</span> <span class="include">fr.sii.ogham.core.exception.MessagingException</span>;
 <span class="keyword">import</span> <span class="include">fr.sii.ogham.core.service.MessagingService</span>;
 <span class="keyword">import</span> <span class="include">fr.sii.ogham.email.message.Email</span>;
+<span class="keyword">import</span> <span class="include">ogham.testing.com.icegreen.greenmail.junit5.GreenMailExtension</span>;
+<span class="keyword">import</span> <span class="include">org.junit.jupiter.api.BeforeEach</span>;
+<span class="keyword">import</span> <span class="include">org.junit.jupiter.api.Test</span>;
+<span class="keyword">import</span> <span class="include">org.junit.jupiter.api.extension.RegisterExtension</span>;
+
+<span class="keyword">import</span> <span class="include">java.io.IOException</span>;
+
+<span class="keyword">import</span> <span class="include">static</span> <span class="include">fr.sii.ogham.testing.assertion.OghamAssertions.assertThat</span>;
+<span class="keyword">import</span> <span class="include">static</span> <span class="include">ogham.testing.com.icegreen.greenmail.util.ServerSetupTest.SMTP</span>;
+<span class="keyword">import</span> <span class="include">static</span> <span class="include">org.hamcrest.Matchers</span>.*;
 
 <span class="directive">public</span> <span class="type">class</span> <span class="class">EmailTestSample</span> {
   <span class="directive">private</span> MessagingService oghamService;
 
-  <span class="annotation">@Rule</span>
-  <span class="directive">public</span> <span class="directive">final</span> GreenMailRule greenMail = <span class="keyword">new</span> GreenMailRule(SMTP);              <i class="conum" data-value="1"></i><b>(1)</b>
+  <span class="annotation">@RegisterExtension</span>
+  <span class="directive">public</span> <span class="directive">final</span> GreenMailExtension greenMail = <span class="keyword">new</span> GreenMailExtension(SMTP);    <i class="conum" data-value="1"></i><b>(1)</b>
 
   <span class="annotation">@BeforeEach</span>
   <span class="directive">public</span> <span class="type">void</span> setUp() <span class="directive">throws</span> <span class="exception">IOException</span> {
@@ -325,7 +319,7 @@ assertions on your email (right recipients, right sender, right body&#8230;&#820
   }
 
   <span class="annotation">@Test</span>
-  <span class="directive">public</span> <span class="type">void</span> simple() <span class="directive">throws</span> MessagingException, jakarta.mail.MessagingException {
+  <span class="directive">public</span> <span class="type">void</span> simple() <span class="directive">throws</span> MessagingException {
     <span class="comment">// @formatter:off</span>
     oghamService.send(<span class="keyword">new</span> Email()
                 .subject(<span class="string"><span class="delimiter">&quot;</span><span class="content">Simple</span><span class="delimiter">&quot;</span></span>)
@@ -459,34 +453,28 @@ the same utility function every time.</p>
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">fr.sii.ogham.sample.test</span>;
 
-<span class="keyword">import</span> <span class="include">static</span> <span class="include">com.icegreen.greenmail.util.ServerSetupTest.SMTP</span>;
-<span class="keyword">import</span> <span class="include">static</span> <span class="include">fr.sii.ogham.testing.assertion.OghamAssertions.assertThat</span>;
-<span class="keyword">import</span> <span class="include">static</span> <span class="include">fr.sii.ogham.testing.assertion.OghamMatchers.isIdenticalHtml</span>;
-<span class="keyword">import</span> <span class="include">static</span> <span class="include">fr.sii.ogham.testing.util.ResourceUtils.resourceAsString</span>;
-<span class="keyword">import</span> <span class="include">static</span> <span class="include">org.hamcrest.Matchers.emptyIterable</span>;
-<span class="keyword">import</span> <span class="include">static</span> <span class="include">org.hamcrest.Matchers.hasItems</span>;
-<span class="keyword">import</span> <span class="include">static</span> <span class="include">org.hamcrest.Matchers.is</span>;
-<span class="keyword">import</span> <span class="include">static</span> <span class="include">org.hamcrest.Matchers.nullValue</span>;
-<span class="keyword">import</span> <span class="include">static</span> <span class="include">org.hamcrest.Matchers.startsWith</span>;
-
-<span class="keyword">import</span> <span class="include">java.io.IOException</span>;
-
-<span class="keyword">import</span> <span class="include">org.junit.Before</span>;
-<span class="keyword">import</span> <span class="include">org.junit.Rule</span>;
-<span class="keyword">import</span> <span class="include">org.junit.jupiter.api.Test</span>;
-
-<span class="keyword">import</span> <span class="include">com.icegreen.greenmail.junit4.GreenMailRule</span>;
-
 <span class="keyword">import</span> <span class="include">fr.sii.ogham.core.builder.MessagingBuilder</span>;
 <span class="keyword">import</span> <span class="include">fr.sii.ogham.core.exception.MessagingException</span>;
 <span class="keyword">import</span> <span class="include">fr.sii.ogham.core.service.MessagingService</span>;
 <span class="keyword">import</span> <span class="include">fr.sii.ogham.email.message.Email</span>;
+<span class="keyword">import</span> <span class="include">ogham.testing.com.icegreen.greenmail.junit5.GreenMailExtension</span>;
+<span class="keyword">import</span> <span class="include">org.junit.jupiter.api.BeforeEach</span>;
+<span class="keyword">import</span> <span class="include">org.junit.jupiter.api.Test</span>;
+<span class="keyword">import</span> <span class="include">org.junit.jupiter.api.extension.RegisterExtension</span>;
+
+<span class="keyword">import</span> <span class="include">java.io.IOException</span>;
+
+<span class="keyword">import</span> <span class="include">static</span> <span class="include">fr.sii.ogham.testing.assertion.OghamAssertions.assertThat</span>;
+<span class="keyword">import</span> <span class="include">static</span> <span class="include">fr.sii.ogham.testing.assertion.OghamMatchers.isIdenticalHtml</span>;
+<span class="keyword">import</span> <span class="include">static</span> <span class="include">fr.sii.ogham.testing.util.ResourceUtils.resourceAsString</span>;
+<span class="keyword">import</span> <span class="include">static</span> <span class="include">ogham.testing.com.icegreen.greenmail.util.ServerSetupTest.SMTP</span>;
+<span class="keyword">import</span> <span class="include">static</span> <span class="include">org.hamcrest.Matchers</span>.*;
 
 <span class="directive">public</span> <span class="type">class</span> <span class="class">EmailHtmlTestSample</span> {
   <span class="directive">private</span> MessagingService oghamService;
 
-  <span class="annotation">@Rule</span>
-  <span class="directive">public</span> <span class="directive">final</span> GreenMailRule greenMail = <span class="keyword">new</span> GreenMailRule(SMTP);
+  <span class="annotation">@RegisterExtension</span>
+  <span class="directive">public</span> <span class="directive">final</span> GreenMailExtension greenMail = <span class="keyword">new</span> GreenMailExtension(SMTP);
 
   <span class="annotation">@BeforeEach</span>
   <span class="directive">public</span> <span class="type">void</span> setUp() <span class="directive">throws</span> <span class="exception">IOException</span> {
@@ -502,7 +490,7 @@ the same utility function every time.</p>
   }
 
   <span class="annotation">@Test</span>
-  <span class="directive">public</span> <span class="type">void</span> registerMessage() <span class="directive">throws</span> MessagingException, jakarta.mail.MessagingException, <span class="exception">IOException</span> {
+  <span class="directive">public</span> <span class="type">void</span> registerMessage() <span class="directive">throws</span> MessagingException, <span class="exception">IOException</span> {
     <span class="comment">// @formatter:off</span>
     oghamService.send(<span class="keyword">new</span> Email()
                 .body().template(<span class="string"><span class="delimiter">&quot;</span><span class="content">/template/register.html</span><span class="delimiter">&quot;</span></span>,                         <i class="conum" data-value="1"></i><b>(1)</b>
@@ -652,34 +640,28 @@ the same utility function every time.</p>
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">fr.sii.ogham.sample.test</span>;
 
-<span class="keyword">import</span> <span class="include">static</span> <span class="include">com.icegreen.greenmail.util.ServerSetupTest.SMTP</span>;
-<span class="keyword">import</span> <span class="include">static</span> <span class="include">fr.sii.ogham.testing.assertion.OghamAssertions.assertThat</span>;
-<span class="keyword">import</span> <span class="include">static</span> <span class="include">fr.sii.ogham.testing.assertion.OghamMatchers.isIdenticalHtml</span>;
-<span class="keyword">import</span> <span class="include">static</span> <span class="include">fr.sii.ogham.testing.util.ResourceUtils.resourceAsString</span>;
-<span class="keyword">import</span> <span class="include">static</span> <span class="include">org.hamcrest.Matchers.emptyIterable</span>;
-<span class="keyword">import</span> <span class="include">static</span> <span class="include">org.hamcrest.Matchers.hasItems</span>;
-<span class="keyword">import</span> <span class="include">static</span> <span class="include">org.hamcrest.Matchers.is</span>;
-<span class="keyword">import</span> <span class="include">static</span> <span class="include">org.hamcrest.Matchers.nullValue</span>;
-<span class="keyword">import</span> <span class="include">static</span> <span class="include">org.hamcrest.Matchers.startsWith</span>;
-
-<span class="keyword">import</span> <span class="include">java.io.IOException</span>;
-
-<span class="keyword">import</span> <span class="include">org.junit.Before</span>;
-<span class="keyword">import</span> <span class="include">org.junit.Rule</span>;
-<span class="keyword">import</span> <span class="include">org.junit.jupiter.api.Test</span>;
-
-<span class="keyword">import</span> <span class="include">com.icegreen.greenmail.junit4.GreenMailRule</span>;
-
 <span class="keyword">import</span> <span class="include">fr.sii.ogham.core.builder.MessagingBuilder</span>;
 <span class="keyword">import</span> <span class="include">fr.sii.ogham.core.exception.MessagingException</span>;
 <span class="keyword">import</span> <span class="include">fr.sii.ogham.core.service.MessagingService</span>;
 <span class="keyword">import</span> <span class="include">fr.sii.ogham.email.message.Email</span>;
+<span class="keyword">import</span> <span class="include">ogham.testing.com.icegreen.greenmail.junit5.GreenMailExtension</span>;
+<span class="keyword">import</span> <span class="include">org.junit.jupiter.api.BeforeEach</span>;
+<span class="keyword">import</span> <span class="include">org.junit.jupiter.api.Test</span>;
+<span class="keyword">import</span> <span class="include">org.junit.jupiter.api.extension.RegisterExtension</span>;
+
+<span class="keyword">import</span> <span class="include">java.io.IOException</span>;
+
+<span class="keyword">import</span> <span class="include">static</span> <span class="include">fr.sii.ogham.testing.assertion.OghamAssertions.assertThat</span>;
+<span class="keyword">import</span> <span class="include">static</span> <span class="include">fr.sii.ogham.testing.assertion.OghamMatchers.isIdenticalHtml</span>;
+<span class="keyword">import</span> <span class="include">static</span> <span class="include">fr.sii.ogham.testing.util.ResourceUtils.resourceAsString</span>;
+<span class="keyword">import</span> <span class="include">static</span> <span class="include">ogham.testing.com.icegreen.greenmail.util.ServerSetupTest.SMTP</span>;
+<span class="keyword">import</span> <span class="include">static</span> <span class="include">org.hamcrest.Matchers</span>.*;
 
 <span class="directive">public</span> <span class="type">class</span> <span class="class">EmailHtmlTestSample</span> {
   <span class="directive">private</span> MessagingService oghamService;
 
-  <span class="annotation">@Rule</span>
-  <span class="directive">public</span> <span class="directive">final</span> GreenMailRule greenMail = <span class="keyword">new</span> GreenMailRule(SMTP);
+  <span class="annotation">@RegisterExtension</span>
+  <span class="directive">public</span> <span class="directive">final</span> GreenMailExtension greenMail = <span class="keyword">new</span> GreenMailExtension(SMTP);
 
   <span class="annotation">@BeforeEach</span>
   <span class="directive">public</span> <span class="type">void</span> setUp() <span class="directive">throws</span> <span class="exception">IOException</span> {
@@ -695,7 +677,7 @@ the same utility function every time.</p>
   }
 
   <span class="annotation">@Test</span>
-  <span class="directive">public</span> <span class="type">void</span> registerMessage() <span class="directive">throws</span> MessagingException, jakarta.mail.MessagingException, <span class="exception">IOException</span> {
+  <span class="directive">public</span> <span class="type">void</span> registerMessage() <span class="directive">throws</span> MessagingException, <span class="exception">IOException</span> {
     <span class="comment">// @formatter:off</span>
     oghamService.send(<span class="keyword">new</span> Email()
                 .body().template(<span class="string"><span class="delimiter">&quot;</span><span class="content">/template/register.html</span><span class="delimiter">&quot;</span></span>,                         <i class="conum" data-value="1"></i><b>(1)</b>
@@ -822,34 +804,28 @@ the same utility function every time.</p>
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">fr.sii.ogham.sample.test</span>;
 
-<span class="keyword">import</span> <span class="include">static</span> <span class="include">com.icegreen.greenmail.util.ServerSetupTest.SMTP</span>;
-<span class="keyword">import</span> <span class="include">static</span> <span class="include">fr.sii.ogham.testing.assertion.OghamAssertions.assertThat</span>;
-<span class="keyword">import</span> <span class="include">static</span> <span class="include">fr.sii.ogham.testing.assertion.OghamMatchers.isIdenticalHtml</span>;
-<span class="keyword">import</span> <span class="include">static</span> <span class="include">fr.sii.ogham.testing.util.ResourceUtils.resourceAsString</span>;
-<span class="keyword">import</span> <span class="include">static</span> <span class="include">org.hamcrest.Matchers.emptyIterable</span>;
-<span class="keyword">import</span> <span class="include">static</span> <span class="include">org.hamcrest.Matchers.hasItems</span>;
-<span class="keyword">import</span> <span class="include">static</span> <span class="include">org.hamcrest.Matchers.is</span>;
-<span class="keyword">import</span> <span class="include">static</span> <span class="include">org.hamcrest.Matchers.nullValue</span>;
-<span class="keyword">import</span> <span class="include">static</span> <span class="include">org.hamcrest.Matchers.startsWith</span>;
-
-<span class="keyword">import</span> <span class="include">java.io.IOException</span>;
-
-<span class="keyword">import</span> <span class="include">org.junit.Before</span>;
-<span class="keyword">import</span> <span class="include">org.junit.Rule</span>;
-<span class="keyword">import</span> <span class="include">org.junit.jupiter.api.Test</span>;
-
-<span class="keyword">import</span> <span class="include">com.icegreen.greenmail.junit4.GreenMailRule</span>;
-
 <span class="keyword">import</span> <span class="include">fr.sii.ogham.core.builder.MessagingBuilder</span>;
 <span class="keyword">import</span> <span class="include">fr.sii.ogham.core.exception.MessagingException</span>;
 <span class="keyword">import</span> <span class="include">fr.sii.ogham.core.service.MessagingService</span>;
 <span class="keyword">import</span> <span class="include">fr.sii.ogham.email.message.Email</span>;
+<span class="keyword">import</span> <span class="include">ogham.testing.com.icegreen.greenmail.junit5.GreenMailExtension</span>;
+<span class="keyword">import</span> <span class="include">org.junit.jupiter.api.BeforeEach</span>;
+<span class="keyword">import</span> <span class="include">org.junit.jupiter.api.Test</span>;
+<span class="keyword">import</span> <span class="include">org.junit.jupiter.api.extension.RegisterExtension</span>;
+
+<span class="keyword">import</span> <span class="include">java.io.IOException</span>;
+
+<span class="keyword">import</span> <span class="include">static</span> <span class="include">fr.sii.ogham.testing.assertion.OghamAssertions.assertThat</span>;
+<span class="keyword">import</span> <span class="include">static</span> <span class="include">fr.sii.ogham.testing.assertion.OghamMatchers.isIdenticalHtml</span>;
+<span class="keyword">import</span> <span class="include">static</span> <span class="include">fr.sii.ogham.testing.util.ResourceUtils.resourceAsString</span>;
+<span class="keyword">import</span> <span class="include">static</span> <span class="include">ogham.testing.com.icegreen.greenmail.util.ServerSetupTest.SMTP</span>;
+<span class="keyword">import</span> <span class="include">static</span> <span class="include">org.hamcrest.Matchers</span>.*;
 
 <span class="directive">public</span> <span class="type">class</span> <span class="class">EmailHtmlTestSample</span> {
   <span class="directive">private</span> MessagingService oghamService;
 
-  <span class="annotation">@Rule</span>
-  <span class="directive">public</span> <span class="directive">final</span> GreenMailRule greenMail = <span class="keyword">new</span> GreenMailRule(SMTP);
+  <span class="annotation">@RegisterExtension</span>
+  <span class="directive">public</span> <span class="directive">final</span> GreenMailExtension greenMail = <span class="keyword">new</span> GreenMailExtension(SMTP);
 
   <span class="annotation">@BeforeEach</span>
   <span class="directive">public</span> <span class="type">void</span> setUp() <span class="directive">throws</span> <span class="exception">IOException</span> {
@@ -865,7 +841,7 @@ the same utility function every time.</p>
   }
 
   <span class="annotation">@Test</span>
-  <span class="directive">public</span> <span class="type">void</span> registerMessage() <span class="directive">throws</span> MessagingException, jakarta.mail.MessagingException, <span class="exception">IOException</span> {
+  <span class="directive">public</span> <span class="type">void</span> registerMessage() <span class="directive">throws</span> MessagingException, <span class="exception">IOException</span> {
     <span class="comment">// @formatter:off</span>
     oghamService.send(<span class="keyword">new</span> Email()
                 .body().template(<span class="string"><span class="delimiter">&quot;</span><span class="content">/template/register.html</span><span class="delimiter">&quot;</span></span>,                         <i class="conum" data-value="1"></i><b>(1)</b>
@@ -1048,34 +1024,28 @@ Spaces, tag closing and attributes order are reported by the comparison window p
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">fr.sii.ogham.sample.test</span>;
 
-<span class="keyword">import</span> <span class="include">static</span> <span class="include">com.icegreen.greenmail.util.ServerSetupTest.SMTP</span>;
-<span class="keyword">import</span> <span class="include">static</span> <span class="include">fr.sii.ogham.testing.assertion.OghamAssertions.assertThat</span>;
-<span class="keyword">import</span> <span class="include">static</span> <span class="include">fr.sii.ogham.testing.assertion.OghamMatchers.isIdenticalHtml</span>;
-<span class="keyword">import</span> <span class="include">static</span> <span class="include">fr.sii.ogham.testing.util.ResourceUtils.resourceAsString</span>;
-<span class="keyword">import</span> <span class="include">static</span> <span class="include">org.hamcrest.Matchers.emptyIterable</span>;
-<span class="keyword">import</span> <span class="include">static</span> <span class="include">org.hamcrest.Matchers.equalToCompressingWhiteSpace</span>;
-<span class="keyword">import</span> <span class="include">static</span> <span class="include">org.hamcrest.Matchers.hasItems</span>;
-<span class="keyword">import</span> <span class="include">static</span> <span class="include">org.hamcrest.Matchers.is</span>;
-<span class="keyword">import</span> <span class="include">static</span> <span class="include">org.hamcrest.Matchers.startsWith</span>;
-
-<span class="keyword">import</span> <span class="include">java.io.IOException</span>;
-
-<span class="keyword">import</span> <span class="include">org.junit.Before</span>;
-<span class="keyword">import</span> <span class="include">org.junit.Rule</span>;
-<span class="keyword">import</span> <span class="include">org.junit.jupiter.api.Test</span>;
-
-<span class="keyword">import</span> <span class="include">com.icegreen.greenmail.junit4.GreenMailRule</span>;
-
 <span class="keyword">import</span> <span class="include">fr.sii.ogham.core.builder.MessagingBuilder</span>;
 <span class="keyword">import</span> <span class="include">fr.sii.ogham.core.exception.MessagingException</span>;
 <span class="keyword">import</span> <span class="include">fr.sii.ogham.core.service.MessagingService</span>;
 <span class="keyword">import</span> <span class="include">fr.sii.ogham.email.message.Email</span>;
+<span class="keyword">import</span> <span class="include">ogham.testing.com.icegreen.greenmail.junit5.GreenMailExtension</span>;
+<span class="keyword">import</span> <span class="include">org.junit.jupiter.api.BeforeEach</span>;
+<span class="keyword">import</span> <span class="include">org.junit.jupiter.api.Test</span>;
+<span class="keyword">import</span> <span class="include">org.junit.jupiter.api.extension.RegisterExtension</span>;
+
+<span class="keyword">import</span> <span class="include">java.io.IOException</span>;
+
+<span class="keyword">import</span> <span class="include">static</span> <span class="include">fr.sii.ogham.testing.assertion.OghamAssertions.assertThat</span>;
+<span class="keyword">import</span> <span class="include">static</span> <span class="include">fr.sii.ogham.testing.assertion.OghamMatchers.isIdenticalHtml</span>;
+<span class="keyword">import</span> <span class="include">static</span> <span class="include">fr.sii.ogham.testing.util.ResourceUtils.resourceAsString</span>;
+<span class="keyword">import</span> <span class="include">static</span> <span class="include">ogham.testing.com.icegreen.greenmail.util.ServerSetupTest.SMTP</span>;
+<span class="keyword">import</span> <span class="include">static</span> <span class="include">org.hamcrest.Matchers</span>.*;
 
 <span class="directive">public</span> <span class="type">class</span> <span class="class">EmailHtmlAndTextTestSample</span> {
   <span class="directive">private</span> MessagingService oghamService;
 
-  <span class="annotation">@Rule</span>
-  <span class="directive">public</span> <span class="directive">final</span> GreenMailRule greenMail = <span class="keyword">new</span> GreenMailRule(SMTP);
+  <span class="annotation">@RegisterExtension</span>
+  <span class="directive">public</span> <span class="directive">final</span> GreenMailExtension greenMail = <span class="keyword">new</span> GreenMailExtension(SMTP);
 
   <span class="annotation">@BeforeEach</span>
   <span class="directive">public</span> <span class="type">void</span> setUp() <span class="directive">throws</span> <span class="exception">IOException</span> {
@@ -1091,7 +1061,7 @@ Spaces, tag closing and attributes order are reported by the comparison window p
   }
 
   <span class="annotation">@Test</span>
-  <span class="directive">public</span> <span class="type">void</span> multiTemplateContent() <span class="directive">throws</span> MessagingException, jakarta.mail.MessagingException, <span class="exception">IOException</span> {
+  <span class="directive">public</span> <span class="type">void</span> multiTemplateContent() <span class="directive">throws</span> MessagingException, <span class="exception">IOException</span> {
     <span class="comment">// @formatter:off</span>
     oghamService.send(<span class="keyword">new</span> Email()
                 .subject(<span class="string"><span class="delimiter">&quot;</span><span class="content">Multi</span><span class="delimiter">&quot;</span></span>)
@@ -1252,34 +1222,28 @@ Spaces, tag closing and attributes order are reported by the comparison window p
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">fr.sii.ogham.sample.test</span>;
 
-<span class="keyword">import</span> <span class="include">static</span> <span class="include">com.icegreen.greenmail.util.ServerSetupTest.SMTP</span>;
-<span class="keyword">import</span> <span class="include">static</span> <span class="include">fr.sii.ogham.testing.assertion.OghamAssertions.assertThat</span>;
-<span class="keyword">import</span> <span class="include">static</span> <span class="include">fr.sii.ogham.testing.assertion.util.EmailUtils.ATTACHMENT_DISPOSITION</span>;
-<span class="keyword">import</span> <span class="include">static</span> <span class="include">fr.sii.ogham.testing.util.ResourceUtils.resource</span>;
-<span class="keyword">import</span> <span class="include">static</span> <span class="include">org.hamcrest.Matchers.hasItems</span>;
-<span class="keyword">import</span> <span class="include">static</span> <span class="include">org.hamcrest.Matchers.hasSize</span>;
-<span class="keyword">import</span> <span class="include">static</span> <span class="include">org.hamcrest.Matchers.is</span>;
-<span class="keyword">import</span> <span class="include">static</span> <span class="include">org.hamcrest.Matchers.nullValue</span>;
-<span class="keyword">import</span> <span class="include">static</span> <span class="include">org.hamcrest.Matchers.startsWith</span>;
-
-<span class="keyword">import</span> <span class="include">java.io.IOException</span>;
-
-<span class="keyword">import</span> <span class="include">org.junit.Before</span>;
-<span class="keyword">import</span> <span class="include">org.junit.Rule</span>;
-<span class="keyword">import</span> <span class="include">org.junit.jupiter.api.Test</span>;
-
-<span class="keyword">import</span> <span class="include">com.icegreen.greenmail.junit4.GreenMailRule</span>;
-
 <span class="keyword">import</span> <span class="include">fr.sii.ogham.core.builder.MessagingBuilder</span>;
 <span class="keyword">import</span> <span class="include">fr.sii.ogham.core.exception.MessagingException</span>;
 <span class="keyword">import</span> <span class="include">fr.sii.ogham.core.service.MessagingService</span>;
 <span class="keyword">import</span> <span class="include">fr.sii.ogham.email.message.Email</span>;
+<span class="keyword">import</span> <span class="include">ogham.testing.com.icegreen.greenmail.junit5.GreenMailExtension</span>;
+<span class="keyword">import</span> <span class="include">org.junit.jupiter.api.BeforeEach</span>;
+<span class="keyword">import</span> <span class="include">org.junit.jupiter.api.Test</span>;
+<span class="keyword">import</span> <span class="include">org.junit.jupiter.api.extension.RegisterExtension</span>;
+
+<span class="keyword">import</span> <span class="include">java.io.IOException</span>;
+
+<span class="keyword">import</span> <span class="include">static</span> <span class="include">fr.sii.ogham.testing.assertion.OghamAssertions.assertThat</span>;
+<span class="keyword">import</span> <span class="include">static</span> <span class="include">fr.sii.ogham.testing.assertion.util.EmailUtils.ATTACHMENT_DISPOSITION</span>;
+<span class="keyword">import</span> <span class="include">static</span> <span class="include">fr.sii.ogham.testing.util.ResourceUtils.resource</span>;
+<span class="keyword">import</span> <span class="include">static</span> <span class="include">ogham.testing.com.icegreen.greenmail.util.ServerSetupTest.SMTP</span>;
+<span class="keyword">import</span> <span class="include">static</span> <span class="include">org.hamcrest.Matchers</span>.*;
 
 <span class="directive">public</span> <span class="type">class</span> <span class="class">EmailAttachmentTestSample</span> {
   <span class="directive">private</span> MessagingService oghamService;
 
-  <span class="annotation">@Rule</span>
-  <span class="directive">public</span> <span class="directive">final</span> GreenMailRule greenMail = <span class="keyword">new</span> GreenMailRule(SMTP);
+  <span class="annotation">@RegisterExtension</span>
+  <span class="directive">public</span> <span class="directive">final</span> GreenMailExtension greenMail = <span class="keyword">new</span> GreenMailExtension(SMTP);
 
   <span class="annotation">@BeforeEach</span>
   <span class="directive">public</span> <span class="type">void</span> setUp() <span class="directive">throws</span> <span class="exception">IOException</span> {
@@ -1295,7 +1259,7 @@ Spaces, tag closing and attributes order are reported by the comparison window p
   }
 
   <span class="annotation">@Test</span>
-  <span class="directive">public</span> <span class="type">void</span> simple() <span class="directive">throws</span> MessagingException, jakarta.mail.MessagingException, <span class="exception">IOException</span> {
+  <span class="directive">public</span> <span class="type">void</span> simple() <span class="directive">throws</span> MessagingException, <span class="exception">IOException</span> {
     <span class="comment">// @formatter:off</span>
     oghamService.send(<span class="keyword">new</span> Email()
                 .subject(<span class="string"><span class="delimiter">&quot;</span><span class="content">Test</span><span class="delimiter">&quot;</span></span>)
@@ -1373,33 +1337,26 @@ Spaces, tag closing and attributes order are reported by the comparison window p
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">fr.sii.ogham.sample.test</span>;
 
-<span class="keyword">import</span> <span class="include">static</span> <span class="include">com.icegreen.greenmail.util.ServerSetupTest.SMTP</span>;
-<span class="keyword">import</span> <span class="include">static</span> <span class="include">fr.sii.ogham.testing.assertion.OghamAssertions.assertThat</span>;
-<span class="keyword">import</span> <span class="include">static</span> <span class="include">org.hamcrest.Matchers.containsInAnyOrder</span>;
-<span class="keyword">import</span> <span class="include">static</span> <span class="include">org.hamcrest.Matchers.emptyIterable</span>;
-<span class="keyword">import</span> <span class="include">static</span> <span class="include">org.hamcrest.Matchers.hasItems</span>;
-<span class="keyword">import</span> <span class="include">static</span> <span class="include">org.hamcrest.Matchers.is</span>;
-<span class="keyword">import</span> <span class="include">static</span> <span class="include">org.hamcrest.Matchers.nullValue</span>;
-<span class="keyword">import</span> <span class="include">static</span> <span class="include">org.hamcrest.Matchers.startsWith</span>;
-
-<span class="keyword">import</span> <span class="include">java.io.IOException</span>;
-
-<span class="keyword">import</span> <span class="include">org.junit.Before</span>;
-<span class="keyword">import</span> <span class="include">org.junit.Rule</span>;
-<span class="keyword">import</span> <span class="include">org.junit.jupiter.api.Test</span>;
-
-<span class="keyword">import</span> <span class="include">com.icegreen.greenmail.junit4.GreenMailRule</span>;
-
 <span class="keyword">import</span> <span class="include">fr.sii.ogham.core.builder.MessagingBuilder</span>;
 <span class="keyword">import</span> <span class="include">fr.sii.ogham.core.exception.MessagingException</span>;
 <span class="keyword">import</span> <span class="include">fr.sii.ogham.core.service.MessagingService</span>;
 <span class="keyword">import</span> <span class="include">fr.sii.ogham.email.message.Email</span>;
+<span class="keyword">import</span> <span class="include">ogham.testing.com.icegreen.greenmail.junit5.GreenMailExtension</span>;
+<span class="keyword">import</span> <span class="include">org.junit.jupiter.api.BeforeEach</span>;
+<span class="keyword">import</span> <span class="include">org.junit.jupiter.api.Test</span>;
+<span class="keyword">import</span> <span class="include">org.junit.jupiter.api.extension.RegisterExtension</span>;
+
+<span class="keyword">import</span> <span class="include">java.io.IOException</span>;
+
+<span class="keyword">import</span> <span class="include">static</span> <span class="include">fr.sii.ogham.testing.assertion.OghamAssertions.assertThat</span>;
+<span class="keyword">import</span> <span class="include">static</span> <span class="include">ogham.testing.com.icegreen.greenmail.util.ServerSetupTest.SMTP</span>;
+<span class="keyword">import</span> <span class="include">static</span> <span class="include">org.hamcrest.Matchers</span>.*;
 
 <span class="directive">public</span> <span class="type">class</span> <span class="class">SeveralRecipientsTestSample</span> {
   <span class="directive">private</span> MessagingService oghamService;
 
-  <span class="annotation">@Rule</span>
-  <span class="directive">public</span> <span class="directive">final</span> GreenMailRule greenMail = <span class="keyword">new</span> GreenMailRule(SMTP);
+  <span class="annotation">@RegisterExtension</span>
+  <span class="directive">public</span> <span class="directive">final</span> GreenMailExtension greenMail = <span class="keyword">new</span> GreenMailExtension(SMTP);
 
   <span class="annotation">@BeforeEach</span>
   <span class="directive">public</span> <span class="type">void</span> setUp() <span class="directive">throws</span> <span class="exception">IOException</span> {
@@ -1415,7 +1372,7 @@ Spaces, tag closing and attributes order are reported by the comparison window p
   }
 
   <span class="annotation">@Test</span>
-  <span class="directive">public</span> <span class="type">void</span> severalRecipients() <span class="directive">throws</span> MessagingException, jakarta.mail.MessagingException {
+  <span class="directive">public</span> <span class="type">void</span> severalRecipients() <span class="directive">throws</span> MessagingException {
     <span class="comment">// @formatter:off</span>
     oghamService.send(<span class="keyword">new</span> Email()
                 .subject(<span class="string"><span class="delimiter">&quot;</span><span class="content">Simple</span><span class="delimiter">&quot;</span></span>)
@@ -1500,32 +1457,26 @@ Spaces, tag closing and attributes order are reported by the comparison window p
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">fr.sii.ogham.sample.test</span>;
 
-<span class="keyword">import</span> <span class="include">static</span> <span class="include">com.icegreen.greenmail.util.ServerSetupTest.SMTP</span>;
-<span class="keyword">import</span> <span class="include">static</span> <span class="include">fr.sii.ogham.testing.assertion.OghamAssertions.assertThat</span>;
-<span class="keyword">import</span> <span class="include">static</span> <span class="include">org.hamcrest.Matchers.emptyIterable</span>;
-<span class="keyword">import</span> <span class="include">static</span> <span class="include">org.hamcrest.Matchers.hasItems</span>;
-<span class="keyword">import</span> <span class="include">static</span> <span class="include">org.hamcrest.Matchers.is</span>;
-<span class="keyword">import</span> <span class="include">static</span> <span class="include">org.hamcrest.Matchers.nullValue</span>;
-<span class="keyword">import</span> <span class="include">static</span> <span class="include">org.hamcrest.Matchers.startsWith</span>;
-
-<span class="keyword">import</span> <span class="include">java.io.IOException</span>;
-
-<span class="keyword">import</span> <span class="include">org.junit.Before</span>;
-<span class="keyword">import</span> <span class="include">org.junit.Rule</span>;
-<span class="keyword">import</span> <span class="include">org.junit.jupiter.api.Test</span>;
-
-<span class="keyword">import</span> <span class="include">com.icegreen.greenmail.junit4.GreenMailRule</span>;
-
 <span class="keyword">import</span> <span class="include">fr.sii.ogham.core.builder.MessagingBuilder</span>;
 <span class="keyword">import</span> <span class="include">fr.sii.ogham.core.exception.MessagingException</span>;
 <span class="keyword">import</span> <span class="include">fr.sii.ogham.core.service.MessagingService</span>;
 <span class="keyword">import</span> <span class="include">fr.sii.ogham.email.message.Email</span>;
+<span class="keyword">import</span> <span class="include">ogham.testing.com.icegreen.greenmail.junit5.GreenMailExtension</span>;
+<span class="keyword">import</span> <span class="include">org.junit.jupiter.api.BeforeEach</span>;
+<span class="keyword">import</span> <span class="include">org.junit.jupiter.api.Test</span>;
+<span class="keyword">import</span> <span class="include">org.junit.jupiter.api.extension.RegisterExtension</span>;
+
+<span class="keyword">import</span> <span class="include">java.io.IOException</span>;
+
+<span class="keyword">import</span> <span class="include">static</span> <span class="include">fr.sii.ogham.testing.assertion.OghamAssertions.assertThat</span>;
+<span class="keyword">import</span> <span class="include">static</span> <span class="include">ogham.testing.com.icegreen.greenmail.util.ServerSetupTest.SMTP</span>;
+<span class="keyword">import</span> <span class="include">static</span> <span class="include">org.hamcrest.Matchers</span>.*;
 
 <span class="directive">public</span> <span class="type">class</span> <span class="class">SeveralEmailsTestSample</span> {
   <span class="directive">private</span> MessagingService oghamService;
 
-  <span class="annotation">@Rule</span>
-  <span class="directive">public</span> <span class="directive">final</span> GreenMailRule greenMail = <span class="keyword">new</span> GreenMailRule(SMTP);
+  <span class="annotation">@RegisterExtension</span>
+  <span class="directive">public</span> <span class="directive">final</span> GreenMailExtension greenMail = <span class="keyword">new</span> GreenMailExtension(SMTP);
 
   <span class="annotation">@BeforeEach</span>
   <span class="directive">public</span> <span class="type">void</span> setUp() <span class="directive">throws</span> <span class="exception">IOException</span> {
@@ -1541,7 +1492,7 @@ Spaces, tag closing and attributes order are reported by the comparison window p
   }
 
   <span class="annotation">@Test</span>
-  <span class="directive">public</span> <span class="type">void</span> severalDisctinctMessages() <span class="directive">throws</span> MessagingException, jakarta.mail.MessagingException {
+  <span class="directive">public</span> <span class="type">void</span> severalDisctinctMessages() <span class="directive">throws</span> MessagingException {
     <span class="comment">// @formatter:off</span>
     oghamService.send(<span class="keyword">new</span> Email()
                 .subject(<span class="string"><span class="delimiter">&quot;</span><span class="content">Simple</span><span class="delimiter">&quot;</span></span>)
@@ -1772,34 +1723,28 @@ Only the setup differs, the test is the same.
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">fr.sii.ogham.sample.test</span>;
 
-<span class="keyword">import</span> <span class="include">static</span> <span class="include">com.icegreen.greenmail.util.ServerSetupTest.SMTP</span>;
-<span class="keyword">import</span> <span class="include">static</span> <span class="include">fr.sii.ogham.testing.assertion.OghamAssertions.assertThat</span>;
-<span class="keyword">import</span> <span class="include">static</span> <span class="include">fr.sii.ogham.testing.assertion.OghamMatchers.isIdenticalHtml</span>;
-<span class="keyword">import</span> <span class="include">static</span> <span class="include">fr.sii.ogham.testing.util.ResourceUtils.resourceAsString</span>;
-<span class="keyword">import</span> <span class="include">static</span> <span class="include">org.hamcrest.Matchers.emptyIterable</span>;
-<span class="keyword">import</span> <span class="include">static</span> <span class="include">org.hamcrest.Matchers.equalToCompressingWhiteSpace</span>;
-<span class="keyword">import</span> <span class="include">static</span> <span class="include">org.hamcrest.Matchers.hasItems</span>;
-<span class="keyword">import</span> <span class="include">static</span> <span class="include">org.hamcrest.Matchers.is</span>;
-<span class="keyword">import</span> <span class="include">static</span> <span class="include">org.hamcrest.Matchers.startsWith</span>;
-
-<span class="keyword">import</span> <span class="include">java.io.IOException</span>;
-
-<span class="keyword">import</span> <span class="include">org.junit.Before</span>;
-<span class="keyword">import</span> <span class="include">org.junit.Rule</span>;
-<span class="keyword">import</span> <span class="include">org.junit.jupiter.api.Test</span>;
-
-<span class="keyword">import</span> <span class="include">com.icegreen.greenmail.junit4.GreenMailRule</span>;
-
 <span class="keyword">import</span> <span class="include">fr.sii.ogham.core.builder.MessagingBuilder</span>;
 <span class="keyword">import</span> <span class="include">fr.sii.ogham.core.exception.MessagingException</span>;
 <span class="keyword">import</span> <span class="include">fr.sii.ogham.core.service.MessagingService</span>;
 <span class="keyword">import</span> <span class="include">fr.sii.ogham.email.message.Email</span>;
+<span class="keyword">import</span> <span class="include">ogham.testing.com.icegreen.greenmail.junit5.GreenMailExtension</span>;
+<span class="keyword">import</span> <span class="include">org.junit.jupiter.api.BeforeEach</span>;
+<span class="keyword">import</span> <span class="include">org.junit.jupiter.api.Test</span>;
+<span class="keyword">import</span> <span class="include">org.junit.jupiter.api.extension.RegisterExtension</span>;
+
+<span class="keyword">import</span> <span class="include">java.io.IOException</span>;
+
+<span class="keyword">import</span> <span class="include">static</span> <span class="include">fr.sii.ogham.testing.assertion.OghamAssertions.assertThat</span>;
+<span class="keyword">import</span> <span class="include">static</span> <span class="include">fr.sii.ogham.testing.assertion.OghamMatchers.isIdenticalHtml</span>;
+<span class="keyword">import</span> <span class="include">static</span> <span class="include">fr.sii.ogham.testing.util.ResourceUtils.resourceAsString</span>;
+<span class="keyword">import</span> <span class="include">static</span> <span class="include">ogham.testing.com.icegreen.greenmail.util.ServerSetupTest.SMTP</span>;
+<span class="keyword">import</span> <span class="include">static</span> <span class="include">org.hamcrest.Matchers</span>.*;
 
 <span class="directive">public</span> <span class="type">class</span> <span class="class">EmailHtmlAndTextTestSample</span> {
   <span class="directive">private</span> MessagingService oghamService;
 
-  <span class="annotation">@Rule</span>
-  <span class="directive">public</span> <span class="directive">final</span> GreenMailRule greenMail = <span class="keyword">new</span> GreenMailRule(SMTP);
+  <span class="annotation">@RegisterExtension</span>
+  <span class="directive">public</span> <span class="directive">final</span> GreenMailExtension greenMail = <span class="keyword">new</span> GreenMailExtension(SMTP);
 
   <span class="annotation">@BeforeEach</span>
   <span class="directive">public</span> <span class="type">void</span> setUp() <span class="directive">throws</span> <span class="exception">IOException</span> {
@@ -1815,7 +1760,7 @@ Only the setup differs, the test is the same.
   }
 
   <span class="annotation">@Test</span>
-  <span class="directive">public</span> <span class="type">void</span> multiTemplateContent() <span class="directive">throws</span> MessagingException, jakarta.mail.MessagingException, <span class="exception">IOException</span> {
+  <span class="directive">public</span> <span class="type">void</span> multiTemplateContent() <span class="directive">throws</span> MessagingException, <span class="exception">IOException</span> {
     <span class="comment">// @formatter:off</span>
     oghamService.send(<span class="keyword">new</span> Email()
                 .subject(<span class="string"><span class="delimiter">&quot;</span><span class="content">Multi</span><span class="delimiter">&quot;</span></span>)
@@ -1976,34 +1921,28 @@ Only the setup differs, the test is the same.
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">fr.sii.ogham.sample.test</span>;
 
-<span class="keyword">import</span> <span class="include">static</span> <span class="include">com.icegreen.greenmail.util.ServerSetupTest.SMTP</span>;
-<span class="keyword">import</span> <span class="include">static</span> <span class="include">fr.sii.ogham.testing.assertion.OghamAssertions.assertThat</span>;
-<span class="keyword">import</span> <span class="include">static</span> <span class="include">fr.sii.ogham.testing.assertion.util.EmailUtils.ATTACHMENT_DISPOSITION</span>;
-<span class="keyword">import</span> <span class="include">static</span> <span class="include">fr.sii.ogham.testing.util.ResourceUtils.resource</span>;
-<span class="keyword">import</span> <span class="include">static</span> <span class="include">org.hamcrest.Matchers.hasItems</span>;
-<span class="keyword">import</span> <span class="include">static</span> <span class="include">org.hamcrest.Matchers.hasSize</span>;
-<span class="keyword">import</span> <span class="include">static</span> <span class="include">org.hamcrest.Matchers.is</span>;
-<span class="keyword">import</span> <span class="include">static</span> <span class="include">org.hamcrest.Matchers.nullValue</span>;
-<span class="keyword">import</span> <span class="include">static</span> <span class="include">org.hamcrest.Matchers.startsWith</span>;
-
-<span class="keyword">import</span> <span class="include">java.io.IOException</span>;
-
-<span class="keyword">import</span> <span class="include">org.junit.Before</span>;
-<span class="keyword">import</span> <span class="include">org.junit.Rule</span>;
-<span class="keyword">import</span> <span class="include">org.junit.jupiter.api.Test</span>;
-
-<span class="keyword">import</span> <span class="include">com.icegreen.greenmail.junit4.GreenMailRule</span>;
-
 <span class="keyword">import</span> <span class="include">fr.sii.ogham.core.builder.MessagingBuilder</span>;
 <span class="keyword">import</span> <span class="include">fr.sii.ogham.core.exception.MessagingException</span>;
 <span class="keyword">import</span> <span class="include">fr.sii.ogham.core.service.MessagingService</span>;
 <span class="keyword">import</span> <span class="include">fr.sii.ogham.email.message.Email</span>;
+<span class="keyword">import</span> <span class="include">ogham.testing.com.icegreen.greenmail.junit5.GreenMailExtension</span>;
+<span class="keyword">import</span> <span class="include">org.junit.jupiter.api.BeforeEach</span>;
+<span class="keyword">import</span> <span class="include">org.junit.jupiter.api.Test</span>;
+<span class="keyword">import</span> <span class="include">org.junit.jupiter.api.extension.RegisterExtension</span>;
+
+<span class="keyword">import</span> <span class="include">java.io.IOException</span>;
+
+<span class="keyword">import</span> <span class="include">static</span> <span class="include">fr.sii.ogham.testing.assertion.OghamAssertions.assertThat</span>;
+<span class="keyword">import</span> <span class="include">static</span> <span class="include">fr.sii.ogham.testing.assertion.util.EmailUtils.ATTACHMENT_DISPOSITION</span>;
+<span class="keyword">import</span> <span class="include">static</span> <span class="include">fr.sii.ogham.testing.util.ResourceUtils.resource</span>;
+<span class="keyword">import</span> <span class="include">static</span> <span class="include">ogham.testing.com.icegreen.greenmail.util.ServerSetupTest.SMTP</span>;
+<span class="keyword">import</span> <span class="include">static</span> <span class="include">org.hamcrest.Matchers</span>.*;
 
 <span class="directive">public</span> <span class="type">class</span> <span class="class">EmailAttachmentTestSample</span> {
   <span class="directive">private</span> MessagingService oghamService;
 
-  <span class="annotation">@Rule</span>
-  <span class="directive">public</span> <span class="directive">final</span> GreenMailRule greenMail = <span class="keyword">new</span> GreenMailRule(SMTP);
+  <span class="annotation">@RegisterExtension</span>
+  <span class="directive">public</span> <span class="directive">final</span> GreenMailExtension greenMail = <span class="keyword">new</span> GreenMailExtension(SMTP);
 
   <span class="annotation">@BeforeEach</span>
   <span class="directive">public</span> <span class="type">void</span> setUp() <span class="directive">throws</span> <span class="exception">IOException</span> {
@@ -2019,7 +1958,7 @@ Only the setup differs, the test is the same.
   }
 
   <span class="annotation">@Test</span>
-  <span class="directive">public</span> <span class="type">void</span> simple() <span class="directive">throws</span> MessagingException, jakarta.mail.MessagingException, <span class="exception">IOException</span> {
+  <span class="directive">public</span> <span class="type">void</span> simple() <span class="directive">throws</span> MessagingException, <span class="exception">IOException</span> {
     <span class="comment">// @formatter:off</span>
     oghamService.send(<span class="keyword">new</span> Email()
                 .subject(<span class="string"><span class="delimiter">&quot;</span><span class="content">Test</span><span class="delimiter">&quot;</span></span>)
@@ -2097,33 +2036,26 @@ Only the setup differs, the test is the same.
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">fr.sii.ogham.sample.test</span>;
 
-<span class="keyword">import</span> <span class="include">static</span> <span class="include">com.icegreen.greenmail.util.ServerSetupTest.SMTP</span>;
-<span class="keyword">import</span> <span class="include">static</span> <span class="include">fr.sii.ogham.testing.assertion.OghamAssertions.assertThat</span>;
-<span class="keyword">import</span> <span class="include">static</span> <span class="include">org.hamcrest.Matchers.containsInAnyOrder</span>;
-<span class="keyword">import</span> <span class="include">static</span> <span class="include">org.hamcrest.Matchers.emptyIterable</span>;
-<span class="keyword">import</span> <span class="include">static</span> <span class="include">org.hamcrest.Matchers.hasItems</span>;
-<span class="keyword">import</span> <span class="include">static</span> <span class="include">org.hamcrest.Matchers.is</span>;
-<span class="keyword">import</span> <span class="include">static</span> <span class="include">org.hamcrest.Matchers.nullValue</span>;
-<span class="keyword">import</span> <span class="include">static</span> <span class="include">org.hamcrest.Matchers.startsWith</span>;
-
-<span class="keyword">import</span> <span class="include">java.io.IOException</span>;
-
-<span class="keyword">import</span> <span class="include">org.junit.Before</span>;
-<span class="keyword">import</span> <span class="include">org.junit.Rule</span>;
-<span class="keyword">import</span> <span class="include">org.junit.jupiter.api.Test</span>;
-
-<span class="keyword">import</span> <span class="include">com.icegreen.greenmail.junit4.GreenMailRule</span>;
-
 <span class="keyword">import</span> <span class="include">fr.sii.ogham.core.builder.MessagingBuilder</span>;
 <span class="keyword">import</span> <span class="include">fr.sii.ogham.core.exception.MessagingException</span>;
 <span class="keyword">import</span> <span class="include">fr.sii.ogham.core.service.MessagingService</span>;
 <span class="keyword">import</span> <span class="include">fr.sii.ogham.email.message.Email</span>;
+<span class="keyword">import</span> <span class="include">ogham.testing.com.icegreen.greenmail.junit5.GreenMailExtension</span>;
+<span class="keyword">import</span> <span class="include">org.junit.jupiter.api.BeforeEach</span>;
+<span class="keyword">import</span> <span class="include">org.junit.jupiter.api.Test</span>;
+<span class="keyword">import</span> <span class="include">org.junit.jupiter.api.extension.RegisterExtension</span>;
+
+<span class="keyword">import</span> <span class="include">java.io.IOException</span>;
+
+<span class="keyword">import</span> <span class="include">static</span> <span class="include">fr.sii.ogham.testing.assertion.OghamAssertions.assertThat</span>;
+<span class="keyword">import</span> <span class="include">static</span> <span class="include">ogham.testing.com.icegreen.greenmail.util.ServerSetupTest.SMTP</span>;
+<span class="keyword">import</span> <span class="include">static</span> <span class="include">org.hamcrest.Matchers</span>.*;
 
 <span class="directive">public</span> <span class="type">class</span> <span class="class">SeveralRecipientsTestSample</span> {
   <span class="directive">private</span> MessagingService oghamService;
 
-  <span class="annotation">@Rule</span>
-  <span class="directive">public</span> <span class="directive">final</span> GreenMailRule greenMail = <span class="keyword">new</span> GreenMailRule(SMTP);
+  <span class="annotation">@RegisterExtension</span>
+  <span class="directive">public</span> <span class="directive">final</span> GreenMailExtension greenMail = <span class="keyword">new</span> GreenMailExtension(SMTP);
 
   <span class="annotation">@BeforeEach</span>
   <span class="directive">public</span> <span class="type">void</span> setUp() <span class="directive">throws</span> <span class="exception">IOException</span> {
@@ -2139,7 +2071,7 @@ Only the setup differs, the test is the same.
   }
 
   <span class="annotation">@Test</span>
-  <span class="directive">public</span> <span class="type">void</span> severalRecipients() <span class="directive">throws</span> MessagingException, jakarta.mail.MessagingException {
+  <span class="directive">public</span> <span class="type">void</span> severalRecipients() <span class="directive">throws</span> MessagingException {
     <span class="comment">// @formatter:off</span>
     oghamService.send(<span class="keyword">new</span> Email()
                 .subject(<span class="string"><span class="delimiter">&quot;</span><span class="content">Simple</span><span class="delimiter">&quot;</span></span>)
@@ -2224,32 +2156,26 @@ Only the setup differs, the test is the same.
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">fr.sii.ogham.sample.test</span>;
 
-<span class="keyword">import</span> <span class="include">static</span> <span class="include">com.icegreen.greenmail.util.ServerSetupTest.SMTP</span>;
-<span class="keyword">import</span> <span class="include">static</span> <span class="include">fr.sii.ogham.testing.assertion.OghamAssertions.assertThat</span>;
-<span class="keyword">import</span> <span class="include">static</span> <span class="include">org.hamcrest.Matchers.emptyIterable</span>;
-<span class="keyword">import</span> <span class="include">static</span> <span class="include">org.hamcrest.Matchers.hasItems</span>;
-<span class="keyword">import</span> <span class="include">static</span> <span class="include">org.hamcrest.Matchers.is</span>;
-<span class="keyword">import</span> <span class="include">static</span> <span class="include">org.hamcrest.Matchers.nullValue</span>;
-<span class="keyword">import</span> <span class="include">static</span> <span class="include">org.hamcrest.Matchers.startsWith</span>;
-
-<span class="keyword">import</span> <span class="include">java.io.IOException</span>;
-
-<span class="keyword">import</span> <span class="include">org.junit.Before</span>;
-<span class="keyword">import</span> <span class="include">org.junit.Rule</span>;
-<span class="keyword">import</span> <span class="include">org.junit.jupiter.api.Test</span>;
-
-<span class="keyword">import</span> <span class="include">com.icegreen.greenmail.junit4.GreenMailRule</span>;
-
 <span class="keyword">import</span> <span class="include">fr.sii.ogham.core.builder.MessagingBuilder</span>;
 <span class="keyword">import</span> <span class="include">fr.sii.ogham.core.exception.MessagingException</span>;
 <span class="keyword">import</span> <span class="include">fr.sii.ogham.core.service.MessagingService</span>;
 <span class="keyword">import</span> <span class="include">fr.sii.ogham.email.message.Email</span>;
+<span class="keyword">import</span> <span class="include">ogham.testing.com.icegreen.greenmail.junit5.GreenMailExtension</span>;
+<span class="keyword">import</span> <span class="include">org.junit.jupiter.api.BeforeEach</span>;
+<span class="keyword">import</span> <span class="include">org.junit.jupiter.api.Test</span>;
+<span class="keyword">import</span> <span class="include">org.junit.jupiter.api.extension.RegisterExtension</span>;
+
+<span class="keyword">import</span> <span class="include">java.io.IOException</span>;
+
+<span class="keyword">import</span> <span class="include">static</span> <span class="include">fr.sii.ogham.testing.assertion.OghamAssertions.assertThat</span>;
+<span class="keyword">import</span> <span class="include">static</span> <span class="include">ogham.testing.com.icegreen.greenmail.util.ServerSetupTest.SMTP</span>;
+<span class="keyword">import</span> <span class="include">static</span> <span class="include">org.hamcrest.Matchers</span>.*;
 
 <span class="directive">public</span> <span class="type">class</span> <span class="class">SeveralEmailsTestSample</span> {
   <span class="directive">private</span> MessagingService oghamService;
 
-  <span class="annotation">@Rule</span>
-  <span class="directive">public</span> <span class="directive">final</span> GreenMailRule greenMail = <span class="keyword">new</span> GreenMailRule(SMTP);
+  <span class="annotation">@RegisterExtension</span>
+  <span class="directive">public</span> <span class="directive">final</span> GreenMailExtension greenMail = <span class="keyword">new</span> GreenMailExtension(SMTP);
 
   <span class="annotation">@BeforeEach</span>
   <span class="directive">public</span> <span class="type">void</span> setUp() <span class="directive">throws</span> <span class="exception">IOException</span> {
@@ -2265,7 +2191,7 @@ Only the setup differs, the test is the same.
   }
 
   <span class="annotation">@Test</span>
-  <span class="directive">public</span> <span class="type">void</span> severalDisctinctMessages() <span class="directive">throws</span> MessagingException, jakarta.mail.MessagingException {
+  <span class="directive">public</span> <span class="type">void</span> severalDisctinctMessages() <span class="directive">throws</span> MessagingException {
     <span class="comment">// @formatter:off</span>
     oghamService.send(<span class="keyword">new</span> Email()
                 .subject(<span class="string"><span class="delimiter">&quot;</span><span class="content">Simple</span><span class="delimiter">&quot;</span></span>)
@@ -2499,59 +2425,60 @@ Only the setup differs, the test is the same.
 <div class="openblock tab">
 <div class="title"><span class="image"><img src="../images//icons/java-logo.png" alt="java logo" width="16" height="30"></span> Java</div>
 <div class="content">
-<div class="listingblock collapse-lines:1-19 irrelevant-lines:1-19">
+<div class="listingblock collapse-lines:1-20 irrelevant-lines:1-20">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">fr.sii.ogham.sample.test</span>;
-
-<span class="keyword">import</span> <span class="include">static</span> <span class="include">fr.sii.ogham.testing.assertion.OghamAssertions.assertThat</span>;
-<span class="keyword">import</span> <span class="include">static</span> <span class="include">org.hamcrest.Matchers.is</span>;
-
-<span class="keyword">import</span> <span class="include">java.io.IOException</span>;
-
-<span class="keyword">import</span> <span class="include">ogham.testing.org.jsmpp.bean.SubmitSm</span>;
-<span class="keyword">import</span> <span class="include">org.junit.Before</span>;
-<span class="keyword">import</span> <span class="include">org.junit.Rule</span>;
-<span class="keyword">import</span> <span class="include">org.junit.jupiter.api.Test</span>;
 
 <span class="keyword">import</span> <span class="include">fr.sii.ogham.core.builder.MessagingBuilder</span>;
 <span class="keyword">import</span> <span class="include">fr.sii.ogham.core.exception.MessagingException</span>;
 <span class="keyword">import</span> <span class="include">fr.sii.ogham.core.service.MessagingService</span>;
 <span class="keyword">import</span> <span class="include">fr.sii.ogham.sms.message.Sms</span>;
+<span class="keyword">import</span> <span class="include">fr.sii.ogham.testing.extension.junit.sms.JSmppServer</span>;
+<span class="keyword">import</span> <span class="include">fr.sii.ogham.testing.extension.junit.sms.JsmppServerExtension</span>;
+<span class="keyword">import</span> <span class="include">fr.sii.ogham.testing.extension.junit.sms.SmppServerExtension</span>;
+<span class="keyword">import</span> <span class="include">fr.sii.ogham.testing.sms.simulator.SmppServerSimulator</span>;
+<span class="keyword">import</span> <span class="include">ogham.testing.org.jsmpp.bean.SubmitSm</span>;
+<span class="keyword">import</span> <span class="include">org.junit.jupiter.api.BeforeEach</span>;
+<span class="keyword">import</span> <span class="include">org.junit.jupiter.api.Test</span>;
+<span class="keyword">import</span> <span class="include">org.junit.jupiter.api.extension.RegisterExtension</span>;
 
+<span class="keyword">import</span> <span class="include">java.io.IOException</span>;
+
+<span class="keyword">import</span> <span class="include">static</span> <span class="include">fr.sii.ogham.testing.assertion.OghamAssertions.assertThat</span>;
+<span class="keyword">import</span> <span class="include">static</span> <span class="include">org.hamcrest.Matchers.is</span>;
+
+<span class="annotation">@JSmppServer</span>                                                                               <i class="conum" data-value="1"></i><b>(1)</b>
 <span class="directive">public</span> <span class="type">class</span> <span class="class">SmsTestSample</span> {
   <span class="directive">private</span> MessagingService oghamService;
 
-  <span class="annotation">@RegisterExtension</span>
-  <span class="directive">public</span> <span class="directive">final</span> SmppServerExtension&lt;SubmitSm&gt; smppServer = <span class="keyword">new</span> JsmppServerExtension();    <i class="conum" data-value="1"></i><b>(1)</b>
-
   <span class="annotation">@BeforeEach</span>
-  <span class="directive">public</span> <span class="type">void</span> setUp() <span class="directive">throws</span> <span class="exception">IOException</span> {
+  <span class="directive">public</span> <span class="type">void</span> setUp(SmppServerSimulator&lt;SubmitSm&gt; smppServer) <span class="directive">throws</span> <span class="exception">IOException</span> {         <i class="conum" data-value="2"></i><b>(2)</b>
     oghamService = MessagingBuilder.standard()
         .environment()
           .properties()
             .set(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.sms.from.default-value</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">+33603040506</span><span class="delimiter">&quot;</span></span>)
-            .set(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.sms.smpp.host</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">localhost</span><span class="delimiter">&quot;</span></span>)                 <i class="conum" data-value="2"></i><b>(2)</b>
-            .set(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.sms.smpp.port</span><span class="delimiter">&quot;</span></span>, smppServer.getPort())        <i class="conum" data-value="3"></i><b>(3)</b>
+            .set(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.sms.smpp.host</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">localhost</span><span class="delimiter">&quot;</span></span>)                                       <i class="conum" data-value="3"></i><b>(3)</b>
+            .set(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.sms.smpp.port</span><span class="delimiter">&quot;</span></span>, smppServer.getPort())                              <i class="conum" data-value="4"></i><b>(4)</b>
             .and()
           .and()
         .build();
   }
 
   <span class="annotation">@Test</span>
-  <span class="directive">public</span> <span class="type">void</span> simple() <span class="directive">throws</span> MessagingException {
+  <span class="directive">public</span> <span class="type">void</span> simple(SmppServerSimulator&lt;SubmitSm&gt; smppServer) <span class="directive">throws</span> MessagingException { <i class="conum" data-value="5"></i><b>(5)</b>
     <span class="comment">// @formatter:off</span>
     oghamService.send(<span class="keyword">new</span> Sms()
-              .message().string(<span class="string"><span class="delimiter">&quot;</span><span class="content">sms content</span><span class="delimiter">&quot;</span></span>)
-              .to(<span class="string"><span class="delimiter">&quot;</span><span class="content">0601020304</span><span class="delimiter">&quot;</span></span>));
-    assertThat(smppServer).receivedMessages()                                <i class="conum" data-value="4"></i><b>(4)</b>
-      .count(is(<span class="integer">1</span>))                                                        <i class="conum" data-value="5"></i><b>(5)</b>
-      .message(<span class="integer">0</span>)                                                          <i class="conum" data-value="6"></i><b>(6)</b>
-        .content(is(<span class="string"><span class="delimiter">&quot;</span><span class="content">sms content</span><span class="delimiter">&quot;</span></span>))                                      <i class="conum" data-value="7"></i><b>(7)</b>
+        .message().string(<span class="string"><span class="delimiter">&quot;</span><span class="content">sms content</span><span class="delimiter">&quot;</span></span>)
+        .to(<span class="string"><span class="delimiter">&quot;</span><span class="content">0601020304</span><span class="delimiter">&quot;</span></span>));
+    assertThat(smppServer).receivedMessages()                                              <i class="conum" data-value="6"></i><b>(6)</b>
+      .count(is(<span class="integer">1</span>))                                                                        <i class="conum" data-value="7"></i><b>(7)</b>
+      .message(<span class="integer">0</span>)                                                                          <i class="conum" data-value="8"></i><b>(8)</b>
+        .content(is(<span class="string"><span class="delimiter">&quot;</span><span class="content">sms content</span><span class="delimiter">&quot;</span></span>))                                                        <i class="conum" data-value="9"></i><b>(9)</b>
         .from()
-          .number(is(<span class="string"><span class="delimiter">&quot;</span><span class="content">+33603040506</span><span class="delimiter">&quot;</span></span>))                                  <i class="conum" data-value="8"></i><b>(8)</b>
+          .number(is(<span class="string"><span class="delimiter">&quot;</span><span class="content">+33603040506</span><span class="delimiter">&quot;</span></span>))                                                      <i class="conum" data-value="10"></i><b>(10)</b>
           .and()
         .to()
-          .number(is(<span class="string"><span class="delimiter">&quot;</span><span class="content">0601020304</span><span class="delimiter">&quot;</span></span>));                                   <i class="conum" data-value="9"></i><b>(9)</b>
+          .number(is(<span class="string"><span class="delimiter">&quot;</span><span class="content">0601020304</span><span class="delimiter">&quot;</span></span>));                                                       <i class="conum" data-value="11"></i><b>(11)</b>
     <span class="comment">// @formatter:on</span>
   }
 }</code></pre>
@@ -2561,38 +2488,46 @@ Only the setup differs, the test is the same.
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>Declare and initialize the JUnit rule that encapsulates jSMPP for starting a local SMPP server in tests (you can set a different port than the default one)</td>
+<td>Declare and initialize the JUnit extension that encapsulates jSMPP for starting a local SMPP server in tests</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>Configure Ogham to use <code>localhost</code> for SMPP host</td>
+<td>Use JUnit 5 feature to inject the started SMPP server instance</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="3"></i><b>3</b></td>
-<td>Get the local SMPP server port and configure Ogham to use this value</td>
+<td>Configure Ogham to use <code>localhost</code> for SMPP host</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="4"></i><b>4</b></td>
-<td>Entry point for declaring assertion on received SMS using a fluent API</td>
+<td>Get the local SMPP server port and configure Ogham to use this value</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="5"></i><b>5</b></td>
-<td>Assert that one and only one SMS has been received</td>
+<td>Use JUnit 5 feature to inject the started SMPP server instance</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="6"></i><b>6</b></td>
-<td>Access the first received message for declaring assertions for that message using fluent API</td>
+<td>Entry point for declaring assertion on received SMS using a fluent API</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="7"></i><b>7</b></td>
-<td>Assert that the received message text is exactly <code>sms content</code></td>
+<td>Assert that one and only one SMS has been received</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="8"></i><b>8</b></td>
-<td>Assert that the sender phone number is <code>+33603040506</code></td>
+<td>Access the first received message for declaring assertions for that message using fluent API</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="9"></i><b>9</b></td>
+<td>Assert that the received message text is exactly <code>sms content</code></td>
+</tr>
+<tr>
+<td><i class="conum" data-value="10"></i><b>10</b></td>
+<td>Assert that the sender phone number is <code>+33603040506</code></td>
+</tr>
+<tr>
+<td><i class="conum" data-value="11"></i><b>11</b></td>
 <td>Assert that the recipient phone number is <code>0601020304</code></td>
 </tr>
 </table>
@@ -2618,37 +2553,34 @@ Only the setup differs, the test is the same.
 <div class="openblock tab">
 <div class="title"><span class="image"><img src="../images//icons/java-logo.png" alt="java logo" width="16" height="30"></span> Java</div>
 <div class="content">
-<div class="listingblock collapse-lines:1-19 irrelevant-lines:1-19,21-38 highlight-lines:56">
+<div class="listingblock collapse-lines:1-20 irrelevant-lines:1-20,23-37 highlight-lines:55">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">fr.sii.ogham.sample.test</span>;
-
-<span class="keyword">import</span> <span class="include">static</span> <span class="include">fr.sii.ogham.testing.assertion.OghamAssertions.assertThat</span>;
-<span class="keyword">import</span> <span class="include">static</span> <span class="include">org.hamcrest.Matchers.is</span>;
-
-<span class="keyword">import</span> <span class="include">java.io.IOException</span>;
-
-<span class="keyword">import</span> <span class="include">fr.sii.ogham.testing.extension.junit.sms.JsmppServerExtension</span>;
-<span class="keyword">import</span> <span class="include">fr.sii.ogham.testing.extension.junit.sms.SmppServerExtension</span>;
-<span class="keyword">import</span> <span class="include">ogham.testing.org.jsmpp.bean.SubmitSm</span>;
-<span class="keyword">import</span> <span class="include">org.junit.Before</span>;
-<span class="keyword">import</span> <span class="include">org.junit.Rule</span>;
-<span class="keyword">import</span> <span class="include">org.junit.jupiter.api.BeforeEach</span>;
-<span class="keyword">import</span> <span class="include">org.junit.jupiter.api.Test</span>;
 
 <span class="keyword">import</span> <span class="include">fr.sii.ogham.core.builder.MessagingBuilder</span>;
 <span class="keyword">import</span> <span class="include">fr.sii.ogham.core.exception.MessagingException</span>;
 <span class="keyword">import</span> <span class="include">fr.sii.ogham.core.service.MessagingService</span>;
 <span class="keyword">import</span> <span class="include">fr.sii.ogham.sms.message.Sms</span>;
+<span class="keyword">import</span> <span class="include">fr.sii.ogham.testing.extension.junit.sms.JSmppServer</span>;
+<span class="keyword">import</span> <span class="include">fr.sii.ogham.testing.extension.junit.sms.JsmppServerExtension</span>;
+<span class="keyword">import</span> <span class="include">fr.sii.ogham.testing.extension.junit.sms.SmppServerExtension</span>;
+<span class="keyword">import</span> <span class="include">fr.sii.ogham.testing.sms.simulator.SmppServerSimulator</span>;
+<span class="keyword">import</span> <span class="include">ogham.testing.org.jsmpp.bean.SubmitSm</span>;
+<span class="keyword">import</span> <span class="include">org.junit.jupiter.api.BeforeEach</span>;
+<span class="keyword">import</span> <span class="include">org.junit.jupiter.api.Test</span>;
 <span class="keyword">import</span> <span class="include">org.junit.jupiter.api.extension.RegisterExtension</span>;
 
+<span class="keyword">import</span> <span class="include">java.io.IOException</span>;
+
+<span class="keyword">import</span> <span class="include">static</span> <span class="include">fr.sii.ogham.testing.assertion.OghamAssertions.assertThat</span>;
+<span class="keyword">import</span> <span class="include">static</span> <span class="include">org.hamcrest.Matchers.is</span>;
+
+<span class="annotation">@JSmppServer</span>
 <span class="directive">public</span> <span class="type">class</span> <span class="class">LongSmsTestSample</span> {
   <span class="directive">private</span> MessagingService oghamService;
 
-  <span class="annotation">@RegisterExtension</span>
-  <span class="directive">public</span> <span class="directive">final</span> SmppServerExtension&lt;SubmitSm&gt; smppServer = <span class="keyword">new</span> JsmppServerExtension();
-
   <span class="annotation">@BeforeEach</span>
-  <span class="directive">public</span> <span class="type">void</span> setUp() <span class="directive">throws</span> <span class="exception">IOException</span> {
+  <span class="directive">public</span> <span class="type">void</span> setUp(SmppServerSimulator&lt;SubmitSm&gt; smppServer) <span class="directive">throws</span> <span class="exception">IOException</span> {
     oghamService = MessagingBuilder.standard()
         .environment()
           .properties()
@@ -2661,28 +2593,28 @@ Only the setup differs, the test is the same.
   }
 
   <span class="annotation">@Test</span>
-  <span class="directive">public</span> <span class="type">void</span> longMessageUsingGsm8bit() <span class="directive">throws</span> MessagingException, <span class="exception">IOException</span> {
+  <span class="directive">public</span> <span class="type">void</span> longMessageUsingGsm8bit(SmppServerSimulator&lt;SubmitSm&gt; smppServer) <span class="directive">throws</span> MessagingException {
     <span class="comment">// @formatter:off</span>
     oghamService.send(<span class="keyword">new</span> Sms()
-              .message().string(<span class="string"><span class="delimiter">&quot;</span><span class="content">sms content with a very very very loooooooooo</span><span class="delimiter">&quot;</span></span>
-                  + <span class="string"><span class="delimiter">&quot;</span><span class="content">oooooooooonnnnnnnnnnnnnnnnng message that is</span><span class="delimiter">&quot;</span></span>
-                  + <span class="string"><span class="delimiter">&quot;</span><span class="content"> over 140 characters in order to test the be</span><span class="delimiter">&quot;</span></span>
-                  + <span class="string"><span class="delimiter">&quot;</span><span class="content">havior of the sender when message has to be split</span><span class="delimiter">&quot;</span></span>)
-              .to(<span class="string"><span class="delimiter">&quot;</span><span class="content">0601020304</span><span class="delimiter">&quot;</span></span>));
+        .message().string(<span class="string"><span class="delimiter">&quot;</span><span class="content">sms content with a very very very loooooooooo</span><span class="delimiter">&quot;</span></span>
+            + <span class="string"><span class="delimiter">&quot;</span><span class="content">oooooooooonnnnnnnnnnnnnnnnng message that is</span><span class="delimiter">&quot;</span></span>
+            + <span class="string"><span class="delimiter">&quot;</span><span class="content"> over 140 characters in order to test the be</span><span class="delimiter">&quot;</span></span>
+            + <span class="string"><span class="delimiter">&quot;</span><span class="content">havior of the sender when message has to be split</span><span class="delimiter">&quot;</span></span>)
+        .to(<span class="string"><span class="delimiter">&quot;</span><span class="content">0601020304</span><span class="delimiter">&quot;</span></span>));
     assertThat(smppServer).receivedMessages()
-      .count(is(<span class="integer">2</span>))                                                                   <i class="conum" data-value="1"></i><b>(1)</b>
-      .message(<span class="integer">0</span>)                                                                     <i class="conum" data-value="2"></i><b>(2)</b>
+      .count(is(<span class="integer">2</span>))                                                                 <i class="conum" data-value="1"></i><b>(1)</b>
+      .message(<span class="integer">0</span>)                                                                   <i class="conum" data-value="2"></i><b>(2)</b>
         .content(is(<span class="string"><span class="delimiter">&quot;</span><span class="content">sms content with a very very very looooooooooooooooooo</span><span class="delimiter">&quot;</span></span>        <i class="conum" data-value="3"></i><b>(3)</b>
             + <span class="string"><span class="delimiter">&quot;</span><span class="content">onnnnnnnnnnnnnnnnng message that is over 140 characters </span><span class="delimiter">&quot;</span></span>
             + <span class="string"><span class="delimiter">&quot;</span><span class="content">in order to test the beh</span><span class="delimiter">&quot;</span></span>)).and()
-      .message(<span class="integer">1</span>)                                                                     <i class="conum" data-value="4"></i><b>(4)</b>
+      .message(<span class="integer">1</span>)                                                                   <i class="conum" data-value="4"></i><b>(4)</b>
         .content(is(<span class="string"><span class="delimiter">&quot;</span><span class="content">avior of the sender when message has to be split</span><span class="delimiter">&quot;</span></span>)).and()      <i class="conum" data-value="5"></i><b>(5)</b>
-      .every()                                                                        <i class="conum" data-value="6"></i><b>(6)</b>
+      .every()                                                                      <i class="conum" data-value="6"></i><b>(6)</b>
         .from()
-          .number(is(<span class="string"><span class="delimiter">&quot;</span><span class="content">+33603040506</span><span class="delimiter">&quot;</span></span>))                                             <i class="conum" data-value="7"></i><b>(7)</b>
+          .number(is(<span class="string"><span class="delimiter">&quot;</span><span class="content">+33603040506</span><span class="delimiter">&quot;</span></span>))                                               <i class="conum" data-value="7"></i><b>(7)</b>
           .and()
         .to()
-          .number(is(<span class="string"><span class="delimiter">&quot;</span><span class="content">0601020304</span><span class="delimiter">&quot;</span></span>));                                              <i class="conum" data-value="8"></i><b>(8)</b>
+          .number(is(<span class="string"><span class="delimiter">&quot;</span><span class="content">0601020304</span><span class="delimiter">&quot;</span></span>));                                                <i class="conum" data-value="8"></i><b>(8)</b>
     <span class="comment">// @formatter:on</span>
   }
 }</code></pre>
@@ -2774,34 +2706,28 @@ Here is an example with email (it is exactly the same for SMS):</p>
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">fr.sii.ogham.sample.test</span>;
 
-<span class="keyword">import</span> <span class="include">static</span> <span class="include">com.icegreen.greenmail.util.ServerSetupTest.SMTP</span>;
-<span class="keyword">import</span> <span class="include">static</span> <span class="include">fr.sii.ogham.testing.assertion.OghamAssertions.assertAll</span>;
-<span class="keyword">import</span> <span class="include">static</span> <span class="include">fr.sii.ogham.testing.assertion.OghamAssertions.assertThat</span>;
-<span class="keyword">import</span> <span class="include">static</span> <span class="include">fr.sii.ogham.testing.assertion.OghamMatchers.isSimilarHtml</span>;
-<span class="keyword">import</span> <span class="include">static</span> <span class="include">org.hamcrest.Matchers.emptyIterable</span>;
-<span class="keyword">import</span> <span class="include">static</span> <span class="include">org.hamcrest.Matchers.hasItems</span>;
-<span class="keyword">import</span> <span class="include">static</span> <span class="include">org.hamcrest.Matchers.is</span>;
-<span class="keyword">import</span> <span class="include">static</span> <span class="include">org.hamcrest.Matchers.nullValue</span>;
-<span class="keyword">import</span> <span class="include">static</span> <span class="include">org.hamcrest.Matchers.startsWith</span>;
-
-<span class="keyword">import</span> <span class="include">java.io.IOException</span>;
-
-<span class="keyword">import</span> <span class="include">org.junit.Before</span>;
-<span class="keyword">import</span> <span class="include">org.junit.Rule</span>;
-<span class="keyword">import</span> <span class="include">org.junit.jupiter.api.Test</span>;
-
-<span class="keyword">import</span> <span class="include">com.icegreen.greenmail.junit4.GreenMailRule</span>;
-
 <span class="keyword">import</span> <span class="include">fr.sii.ogham.core.builder.MessagingBuilder</span>;
 <span class="keyword">import</span> <span class="include">fr.sii.ogham.core.exception.MessagingException</span>;
 <span class="keyword">import</span> <span class="include">fr.sii.ogham.core.service.MessagingService</span>;
 <span class="keyword">import</span> <span class="include">fr.sii.ogham.email.message.Email</span>;
+<span class="keyword">import</span> <span class="include">ogham.testing.com.icegreen.greenmail.junit5.GreenMailExtension</span>;
+<span class="keyword">import</span> <span class="include">org.junit.jupiter.api.BeforeEach</span>;
+<span class="keyword">import</span> <span class="include">org.junit.jupiter.api.Test</span>;
+<span class="keyword">import</span> <span class="include">org.junit.jupiter.api.extension.RegisterExtension</span>;
+
+<span class="keyword">import</span> <span class="include">java.io.IOException</span>;
+
+<span class="keyword">import</span> <span class="include">static</span> <span class="include">fr.sii.ogham.testing.assertion.OghamAssertions.assertAll</span>;
+<span class="keyword">import</span> <span class="include">static</span> <span class="include">fr.sii.ogham.testing.assertion.OghamAssertions.assertThat</span>;
+<span class="keyword">import</span> <span class="include">static</span> <span class="include">fr.sii.ogham.testing.assertion.OghamMatchers.isSimilarHtml</span>;
+<span class="keyword">import</span> <span class="include">static</span> <span class="include">ogham.testing.com.icegreen.greenmail.util.ServerSetupTest.SMTP</span>;
+<span class="keyword">import</span> <span class="include">static</span> <span class="include">org.hamcrest.Matchers</span>.*;
 
 <span class="directive">public</span> <span class="type">class</span> <span class="class">AssertAllEmailTestSample</span> {
   <span class="directive">private</span> MessagingService oghamService;
 
-  <span class="annotation">@Rule</span>
-  <span class="directive">public</span> <span class="directive">final</span> GreenMailRule greenMail = <span class="keyword">new</span> GreenMailRule(SMTP);
+  <span class="annotation">@RegisterExtension</span>
+  <span class="directive">public</span> <span class="directive">final</span> GreenMailExtension greenMail = <span class="keyword">new</span> GreenMailExtension(SMTP);
 
   <span class="annotation">@BeforeEach</span>
   <span class="directive">public</span> <span class="type">void</span> setUp() <span class="directive">throws</span> <span class="exception">IOException</span> {
@@ -2817,7 +2743,7 @@ Here is an example with email (it is exactly the same for SMS):</p>
   }
 
   <span class="annotation">@Test</span>
-  <span class="directive">public</span> <span class="type">void</span> simple() <span class="directive">throws</span> MessagingException, jakarta.mail.MessagingException {
+  <span class="directive">public</span> <span class="type">void</span> simple() <span class="directive">throws</span> MessagingException {
     <span class="comment">// @formatter:off</span>
     oghamService.send(<span class="keyword">new</span> Email()
                 .subject(<span class="string"><span class="delimiter">&quot;</span><span class="content">Simple (assertAll)</span><span class="delimiter">&quot;</span></span>)
@@ -2942,70 +2868,66 @@ to start on a random port instead of a fixed port.</p>
 <div class="openblock tab">
 <div class="title"><span class="image"><img src="../images//icons/java-logo.png" alt="java logo" width="16" height="30"></span> Java</div>
 <div class="content">
-<div class="listingblock collapse-lines:1-23 irrelevant-lines:1-23, highlight-lines:28,36,37">
+<div class="listingblock collapse-lines:1-19 irrelevant-lines:1-19, highlight-lines:20,25,30,31">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">fr.sii.ogham.sample.test</span>;
-
-<span class="keyword">import</span> <span class="include">static</span> <span class="include">fr.sii.ogham.testing.assertion.OghamAssertions.assertThat</span>;
-<span class="keyword">import</span> <span class="include">static</span> <span class="include">org.hamcrest.Matchers.emptyIterable</span>;
-<span class="keyword">import</span> <span class="include">static</span> <span class="include">org.hamcrest.Matchers.hasItems</span>;
-<span class="keyword">import</span> <span class="include">static</span> <span class="include">org.hamcrest.Matchers.is</span>;
-<span class="keyword">import</span> <span class="include">static</span> <span class="include">org.hamcrest.Matchers.nullValue</span>;
-<span class="keyword">import</span> <span class="include">static</span> <span class="include">org.hamcrest.Matchers.startsWith</span>;
-
-<span class="keyword">import</span> <span class="include">java.io.IOException</span>;
-
-<span class="keyword">import</span> <span class="include">org.junit.Before</span>;
-<span class="keyword">import</span> <span class="include">org.junit.Rule</span>;
-<span class="keyword">import</span> <span class="include">org.junit.jupiter.api.Test</span>;
-
-<span class="keyword">import</span> <span class="include">com.icegreen.greenmail.junit4.GreenMailRule</span>;
 
 <span class="keyword">import</span> <span class="include">fr.sii.ogham.core.builder.MessagingBuilder</span>;
 <span class="keyword">import</span> <span class="include">fr.sii.ogham.core.exception.MessagingException</span>;
 <span class="keyword">import</span> <span class="include">fr.sii.ogham.core.service.MessagingService</span>;
 <span class="keyword">import</span> <span class="include">fr.sii.ogham.email.message.Email</span>;
+<span class="keyword">import</span> <span class="include">fr.sii.ogham.testing.extension.junit.email.GreenMailServer</span>;
+<span class="keyword">import</span> <span class="include">fr.sii.ogham.testing.extension.junit.email.RandomPortGreenMailExtension</span>;
+<span class="keyword">import</span> <span class="include">ogham.testing.com.icegreen.greenmail.junit5.GreenMailExtension</span>;
+<span class="keyword">import</span> <span class="include">ogham.testing.com.icegreen.greenmail.util.GreenMail</span>;
+<span class="keyword">import</span> <span class="include">org.junit.jupiter.api.BeforeEach</span>;
+<span class="keyword">import</span> <span class="include">org.junit.jupiter.api.Test</span>;
+<span class="keyword">import</span> <span class="include">org.junit.jupiter.api.extension.RegisterExtension</span>;
 
+<span class="keyword">import</span> <span class="include">java.io.IOException</span>;
+
+<span class="keyword">import</span> <span class="include">static</span> <span class="include">fr.sii.ogham.testing.assertion.OghamAssertions.assertThat</span>;
+<span class="keyword">import</span> <span class="include">static</span> <span class="include">org.hamcrest.Matchers</span>.*;
+
+<span class="annotation">@GreenMailServer</span>                                                                 <i class="conum" data-value="1"></i><b>(1)</b>
 <span class="directive">public</span> <span class="type">class</span> <span class="class">RandomPortEmailTestSample</span> {
   <span class="directive">private</span> MessagingService oghamService;
 
-  <span class="annotation">@RegisterExtension</span> <span class="directive">public</span> <span class="directive">final</span> GreenMailExtension greenMail = <span class="keyword">new</span> RandomPortGreenMailExtension();        <i class="conum" data-value="1"></i><b>(1)</b>
-
   <span class="annotation">@BeforeEach</span>
-  <span class="directive">public</span> <span class="type">void</span> setUp() <span class="directive">throws</span> <span class="exception">IOException</span> {
+  <span class="directive">public</span> <span class="type">void</span> setUp(GreenMail greenMail) <span class="directive">throws</span> <span class="exception">IOException</span> {                  <i class="conum" data-value="2"></i><b>(2)</b>
     oghamService = MessagingBuilder.standard()
         .environment()
           .properties()
             .set(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.email.from.default-value</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">Sender Name &lt;test.sender@sii.fr&gt;</span><span class="delimiter">&quot;</span></span>)
-            .set(<span class="string"><span class="delimiter">&quot;</span><span class="content">mail.smtp.host</span><span class="delimiter">&quot;</span></span>, greenMail.getSmtp().getBindTo())  <i class="conum" data-value="2"></i><b>(2)</b>
-            .set(<span class="string"><span class="delimiter">&quot;</span><span class="content">mail.smtp.port</span><span class="delimiter">&quot;</span></span>, greenMail.getSmtp().getPort())    <i class="conum" data-value="3"></i><b>(3)</b>
+            .set(<span class="string"><span class="delimiter">&quot;</span><span class="content">mail.smtp.host</span><span class="delimiter">&quot;</span></span>, greenMail.getSmtp().getBindTo())  <i class="conum" data-value="3"></i><b>(3)</b>
+            .set(<span class="string"><span class="delimiter">&quot;</span><span class="content">mail.smtp.port</span><span class="delimiter">&quot;</span></span>, greenMail.getSmtp().getPort())    <i class="conum" data-value="4"></i><b>(4)</b>
             .and()
           .and()
         .build();
   }
 
   <span class="annotation">@Test</span>
-  <span class="directive">public</span> <span class="type">void</span> simple() <span class="directive">throws</span> MessagingException, jakarta.mail.MessagingException {
+  <span class="directive">public</span> <span class="type">void</span> simple(GreenMail greenMail) <span class="directive">throws</span> MessagingException {          <i class="conum" data-value="5"></i><b>(5)</b>
     <span class="comment">// @formatter:off</span>
     oghamService.send(<span class="keyword">new</span> Email()
                 .subject(<span class="string"><span class="delimiter">&quot;</span><span class="content">Simple</span><span class="delimiter">&quot;</span></span>)
                 .body().string(<span class="string"><span class="delimiter">&quot;</span><span class="content">string body</span><span class="delimiter">&quot;</span></span>)
                 .to(<span class="string"><span class="delimiter">&quot;</span><span class="content">Recipient Name &lt;recipient@sii.fr&gt;</span><span class="delimiter">&quot;</span></span>));
-    assertThat(greenMail).receivedMessages()                                 <i class="conum" data-value="4"></i><b>(4)</b>
-      .count(is(<span class="integer">1</span>))                                                        <i class="conum" data-value="5"></i><b>(5)</b>
-      .message(<span class="integer">0</span>)                                                          <i class="conum" data-value="6"></i><b>(6)</b>
-        .subject(is(<span class="string"><span class="delimiter">&quot;</span><span class="content">Simple</span><span class="delimiter">&quot;</span></span>))                                           <i class="conum" data-value="7"></i><b>(7)</b>
+    assertThat(greenMail).receivedMessages()                                 <i class="conum" data-value="6"></i><b>(6)</b>
+      .count(is(<span class="integer">1</span>))                                                        <i class="conum" data-value="7"></i><b>(7)</b>
+      .message(<span class="integer">0</span>)                                                          <i class="conum" data-value="8"></i><b>(8)</b>
+        .subject(is(<span class="string"><span class="delimiter">&quot;</span><span class="content">Simple</span><span class="delimiter">&quot;</span></span>))                                           <i class="conum" data-value="9"></i><b>(9)</b>
         .from()
-          .address(hasItems(<span class="string"><span class="delimiter">&quot;</span><span class="content">test.sender@sii.fr</span><span class="delimiter">&quot;</span></span>))                     <i class="conum" data-value="8"></i><b>(8)</b>
-          .personal(hasItems(<span class="string"><span class="delimiter">&quot;</span><span class="content">Sender Name</span><span class="delimiter">&quot;</span></span>)).and()                     <i class="conum" data-value="9"></i><b>(9)</b>
+          .address(hasItems(<span class="string"><span class="delimiter">&quot;</span><span class="content">test.sender@sii.fr</span><span class="delimiter">&quot;</span></span>))                     <i class="conum" data-value="9"></i><b>(9)</b>
+          .personal(hasItems(<span class="string"><span class="delimiter">&quot;</span><span class="content">Sender Name</span><span class="delimiter">&quot;</span></span>)).and()                     <i class="conum" data-value="10"></i><b>(10)</b>
         .to()
-          .address(hasItems(<span class="string"><span class="delimiter">&quot;</span><span class="content">recipient@sii.fr</span><span class="delimiter">&quot;</span></span>))                       <i class="conum" data-value="10"></i><b>(10)</b>
-          .personal(hasItems(<span class="string"><span class="delimiter">&quot;</span><span class="content">Recipient Name</span><span class="delimiter">&quot;</span></span>)).and()                  <i class="conum" data-value="11"></i><b>(11)</b>
+          .address(hasItems(<span class="string"><span class="delimiter">&quot;</span><span class="content">recipient@sii.fr</span><span class="delimiter">&quot;</span></span>))                       <i class="conum" data-value="11"></i><b>(11)</b>
+          .personal(hasItems(<span class="string"><span class="delimiter">&quot;</span><span class="content">Recipient Name</span><span class="delimiter">&quot;</span></span>)).and()                  <i class="conum" data-value="12"></i><b>(12)</b>
         .body()
-          .contentAsString(is(<span class="string"><span class="delimiter">&quot;</span><span class="content">string body</span><span class="delimiter">&quot;</span></span>))                          <i class="conum" data-value="12"></i><b>(12)</b>
-          .contentType(startsWith(<span class="string"><span class="delimiter">&quot;</span><span class="content">text/plain</span><span class="delimiter">&quot;</span></span>)).and()                 <i class="conum" data-value="13"></i><b>(13)</b>
-        .alternative(nullValue())                                        <i class="conum" data-value="14"></i><b>(14)</b>
-        .attachments(emptyIterable());                                   <i class="conum" data-value="15"></i><b>(15)</b>
+          .contentAsString(is(<span class="string"><span class="delimiter">&quot;</span><span class="content">string body</span><span class="delimiter">&quot;</span></span>))                          <i class="conum" data-value="13"></i><b>(13)</b>
+          .contentType(startsWith(<span class="string"><span class="delimiter">&quot;</span><span class="content">text/plain</span><span class="delimiter">&quot;</span></span>)).and()                 <i class="conum" data-value="14"></i><b>(14)</b>
+        .alternative(nullValue())                                        <i class="conum" data-value="15"></i><b>(15)</b>
+        .attachments(emptyIterable());                                   <i class="conum" data-value="16"></i><b>(16)</b>
     <span class="comment">// @formatter:on</span>
   }
 }</code></pre>
@@ -3015,63 +2937,71 @@ to start on a random port instead of a fixed port.</p>
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>Declare and initialize the GreenMail JUnit rule to start a local SMTP server on a
+<td>Declare and initialize the GreenMail JUnit extension to start a local SMTP server on a
 random port</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>Get the local SMTP server host address and configure Ogham to use this value</td>
+<td>Use JUnit 5 parameter injection to get GreenMail server instance</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="3"></i><b>3</b></td>
-<td>Get the local SMTP server port and configure Ogham to use this value</td>
+<td>Get the local SMTP server host address and configure Ogham to use this value</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="4"></i><b>4</b></td>
-<td>Entry point for declaring assertion on received emails using a fluent API</td>
+<td>Get the local SMTP server port and configure Ogham to use this value</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="5"></i><b>5</b></td>
-<td>Assert that one and only one email has been received</td>
+<td>Use JUnit 5 parameter injection to get GreenMail server instance</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="6"></i><b>6</b></td>
-<td>Access the first received message for declaring assertions for that message using fluent API</td>
+<td>Entry point for declaring assertion on received emails using a fluent API</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="7"></i><b>7</b></td>
-<td>Assert that the subject of the first message is exactly <code>Simple</code> string</td>
+<td>Assert that one and only one email has been received</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="8"></i><b>8</b></td>
-<td>Assert that the sender email address is exactly <code>test.sender@sii.fr</code></td>
+<td>Access the first received message for declaring assertions for that message using fluent API</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="9"></i><b>9</b></td>
-<td>Assert that the sender name is exactly <code>Sender Name</code></td>
+<td>Assert that the subject of the first message is exactly <code>Simple</code> string</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="10"></i><b>10</b></td>
-<td>Assert that the recipient email address is exactly <code>recipient@sii.fr</code></td>
+<td>Assert that the sender email address is exactly <code>test.sender@sii.fr</code></td>
 </tr>
 <tr>
 <td><i class="conum" data-value="11"></i><b>11</b></td>
-<td>Assert that the recipient name is exactly <code>Recipient Name</code></td>
+<td>Assert that the sender name is exactly <code>Sender Name</code></td>
 </tr>
 <tr>
 <td><i class="conum" data-value="12"></i><b>12</b></td>
-<td>Assert that the body of the received email is exactly <code>string body</code></td>
+<td>Assert that the recipient email address is exactly <code>recipient@sii.fr</code></td>
 </tr>
 <tr>
 <td><i class="conum" data-value="13"></i><b>13</b></td>
-<td>Assert that the mimetype of the body of the received email starts with <code>text/plain</code></td>
+<td>Assert that the recipient name is exactly <code>Recipient Name</code></td>
 </tr>
 <tr>
 <td><i class="conum" data-value="14"></i><b>14</b></td>
-<td>Assert that received email has no alternative content</td>
+<td>Assert that the body of the received email is exactly <code>string body</code></td>
 </tr>
 <tr>
 <td><i class="conum" data-value="15"></i><b>15</b></td>
+<td>Assert that the mimetype of the body of the received email starts with <code>text/plain</code></td>
+</tr>
+<tr>
+<td><i class="conum" data-value="16"></i><b>16</b></td>
+<td>Assert that received email has no alternative content</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="17"></i><b>17</b></td>
 <td>Assert that received email has no attachment</td>
 </tr>
 </table>
@@ -3123,7 +3053,7 @@ to benefit from random ports easily.</p>
   <span class="string"><span class="delimiter">&quot;</span><span class="content">mail.smtp.host=127.0.0.1</span><span class="delimiter">&quot;</span></span>,
   <span class="string"><span class="delimiter">&quot;</span><span class="content">mail.smtp.port=${greenmail.smtp.port}</span><span class="delimiter">&quot;</span></span>                              <i class="conum" data-value="1"></i><b>(1)</b>
 })
-<span class="annotation">@ContextConfiguration</span>(initializers = GreenMailInitializer.class)         <i class="conum" data-value="2"></i><b>(2)</b>
+<span class="annotation">@ContextConfiguration</span>(initializers = GreenMailInitializer.class)       <i class="conum" data-value="2"></i><b>(2)</b>
 <span class="directive">public</span> <span class="type">class</span> <span class="class">RandomSmtpPortJUnit5TestSample</span> {
   <span class="annotation">@RegisterExtension</span> <span class="annotation">@Autowired</span> <span class="directive">public</span> GreenMailExtension greenMail;   <i class="conum" data-value="3"></i><b>(3)</b>
   <span class="annotation">@Autowired</span> MessagingService messagingService;
@@ -3138,7 +3068,7 @@ to benefit from random ports easily.</p>
         .to(<span class="string"><span class="delimiter">&quot;</span><span class="content">bar@yopmail.com</span><span class="delimiter">&quot;</span></span>)
         .body().string(<span class="string"><span class="delimiter">&quot;</span><span class="content">Random port sample</span><span class="delimiter">&quot;</span></span>));
     <span class="comment">// make assertions</span>
-    assertThat(greenMail).receivedMessages()                         <i class="conum" data-value="4"></i><b>(4)</b>
+    assertThat(greenMail).receivedMessages()                           <i class="conum" data-value="4"></i><b>(4)</b>
       .count(is(<span class="integer">1</span>));
   }
 }</code></pre>
@@ -3200,7 +3130,7 @@ random port.</td>
   <span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.sms.smpp.host=127.0.0.1</span><span class="delimiter">&quot;</span></span>,
   <span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.sms.smpp.port=${jsmpp.server.port}</span><span class="delimiter">&quot;</span></span>                                        <i class="conum" data-value="1"></i><b>(1)</b>
 })
-<span class="annotation">@ContextConfiguration</span>(initializers = JsmppServerInitializer.class)                    <i class="conum" data-value="2"></i><b>(2)</b>
+<span class="annotation">@ContextConfiguration</span>(initializers = JsmppServerInitializer.class)                  <i class="conum" data-value="2"></i><b>(2)</b>
 <span class="directive">public</span> <span class="type">class</span> <span class="class">RandomSmppPortJUnit5TestSample</span> {
   <span class="annotation">@RegisterExtension</span> <span class="annotation">@Autowired</span> <span class="directive">public</span> SmppServerExtension&lt;SubmitSm&gt; smppServer;    <i class="conum" data-value="3"></i><b>(3)</b>
   <span class="annotation">@Autowired</span> MessagingService messagingService;
@@ -3214,7 +3144,7 @@ random port.</td>
         .to(<span class="string"><span class="delimiter">&quot;</span><span class="content">1111111111</span><span class="delimiter">&quot;</span></span>)
         .message().string(<span class="string"><span class="delimiter">&quot;</span><span class="content">Random port</span><span class="delimiter">&quot;</span></span>));
     <span class="comment">// make assertions</span>
-    assertThat(smppServer).receivedMessages()                                     <i class="conum" data-value="4"></i><b>(4)</b>
+    assertThat(smppServer).receivedMessages()                                       <i class="conum" data-value="4"></i><b>(4)</b>
       .count(is(<span class="integer">1</span>));
   }
 }</code></pre>
@@ -3267,7 +3197,7 @@ random port.</td>
 <span class="keyword">import</span> <span class="include">org.springframework.test.context.ContextConfiguration</span>;
 <span class="keyword">import</span> <span class="include">org.springframework.test.context.junit4.SpringJUnit4ClassRunner</span>;
 
-<span class="keyword">import</span> <span class="include">com.icegreen.greenmail.junit4.GreenMailRule</span>;
+<span class="keyword">import</span> <span class="include">ogham.testing.com.icegreen.greenmail.junit4.GreenMailRule</span>;
 
 <span class="keyword">import</span> <span class="include">fr.sii.ogham.core.service.MessagingService</span>;
 <span class="keyword">import</span> <span class="include">fr.sii.ogham.email.message.Email</span>;
@@ -3279,7 +3209,7 @@ random port.</td>
   <span class="string"><span class="delimiter">&quot;</span><span class="content">mail.smtp.host=127.0.0.1</span><span class="delimiter">&quot;</span></span>,
   <span class="string"><span class="delimiter">&quot;</span><span class="content">mail.smtp.port=${greenmail.smtp.port}</span><span class="delimiter">&quot;</span></span>                              <i class="conum" data-value="1"></i><b>(1)</b>
 })
-<span class="annotation">@ContextConfiguration</span>(initializers = GreenMailInitializer.class)         <i class="conum" data-value="2"></i><b>(2)</b>
+<span class="annotation">@ContextConfiguration</span>(initializers = GreenMailInitializer.class)       <i class="conum" data-value="2"></i><b>(2)</b>
 <span class="directive">public</span> <span class="type">class</span> <span class="class">RandomSmtpPortJUnit4TestSample</span> {
   <span class="annotation">@Rule</span> <span class="annotation">@Autowired</span> <span class="directive">public</span> GreenMailRule greenMail;                     <i class="conum" data-value="3"></i><b>(3)</b>
   <span class="annotation">@Autowired</span> MessagingService messagingService;
@@ -3294,7 +3224,7 @@ random port.</td>
         .to(<span class="string"><span class="delimiter">&quot;</span><span class="content">bar@yopmail.com</span><span class="delimiter">&quot;</span></span>)
         .body().string(<span class="string"><span class="delimiter">&quot;</span><span class="content">Random port sample</span><span class="delimiter">&quot;</span></span>));
     <span class="comment">// make assertions</span>
-    assertThat(greenMail).receivedMessages()                         <i class="conum" data-value="4"></i><b>(4)</b>
+    assertThat(greenMail).receivedMessages()                           <i class="conum" data-value="4"></i><b>(4)</b>
       .count(is(<span class="integer">1</span>));
   }
 }</code></pre>
@@ -3339,6 +3269,7 @@ random port.</td>
 <span class="keyword">import</span> <span class="include">static</span> <span class="include">fr.sii.ogham.testing.assertion.OghamAssertions.assertThat</span>;
 <span class="keyword">import</span> <span class="include">static</span> <span class="include">org.hamcrest.Matchers.is</span>;
 
+<span class="keyword">import</span> <span class="include">fr.sii.ogham.testing.extension.junit.sms.SmppServerRule</span>;
 <span class="keyword">import</span> <span class="include">ogham.testing.org.jsmpp.bean.SubmitSm</span>;
 <span class="keyword">import</span> <span class="include">org.junit.Rule</span>;
 <span class="keyword">import</span> <span class="include">org.junit.jupiter.api.Test</span>;
@@ -3356,11 +3287,11 @@ random port.</td>
 <span class="annotation">@RunWith</span>(SpringJUnit4ClassRunner.class)
 <span class="annotation">@SpringBootTest</span>(classes = MockApplication.class, properties = {
   <span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.sms.smpp.host=127.0.0.1</span><span class="delimiter">&quot;</span></span>,
-  <span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.sms.smpp.port=${jsmpp.server.port}</span><span class="delimiter">&quot;</span></span>                                   <i class="conum" data-value="1"></i><b>(1)</b>
+  <span class="string"><span class="delimiter">&quot;</span><span class="content">ogham.sms.smpp.port=${jsmpp.server.port}</span><span class="delimiter">&quot;</span></span>                           <i class="conum" data-value="1"></i><b>(1)</b>
 })
-<span class="annotation">@ContextConfiguration</span>(initializers = JsmppServerInitializer.class)               <i class="conum" data-value="2"></i><b>(2)</b>
+<span class="annotation">@ContextConfiguration</span>(initializers = JsmppServerInitializer.class)     <i class="conum" data-value="2"></i><b>(2)</b>
 <span class="directive">public</span> <span class="type">class</span> <span class="class">RandomSmppPortJUnit4TestSample</span> {
-  <span class="annotation">@Rule</span> <span class="annotation">@Autowired</span> <span class="directive">public</span> SmppServerRule&lt;SubmitSm&gt; smppServer;                 <i class="conum" data-value="3"></i><b>(3)</b>
+  <span class="annotation">@Rule</span> <span class="annotation">@Autowired</span> <span class="directive">public</span> SmppServerRule&lt;SubmitSm&gt; smppServer;         <i class="conum" data-value="3"></i><b>(3)</b>
   <span class="annotation">@Autowired</span> MessagingService messagingService;
 
   <span class="annotation">@Test</span>
@@ -3372,7 +3303,7 @@ random port.</td>
         .to(<span class="string"><span class="delimiter">&quot;</span><span class="content">1111111111</span><span class="delimiter">&quot;</span></span>)
         .message().string(<span class="string"><span class="delimiter">&quot;</span><span class="content">Random port</span><span class="delimiter">&quot;</span></span>));
     <span class="comment">// make assertions</span>
-    assertThat(smppServer).receivedMessages()                                <i class="conum" data-value="4"></i><b>(4)</b>
+    assertThat(smppServer).receivedMessages()                          <i class="conum" data-value="4"></i><b>(4)</b>
       .count(is(<span class="integer">1</span>));
   }
 }</code></pre>
@@ -3415,7 +3346,7 @@ random port.</td>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2023-05-24 16:19:38 UTC
+Last updated 2023-05-25 09:06:21 UTC
 </div>
 </div>
 <link rel="stylesheet" href="./coderay-asciidoctor.css">
