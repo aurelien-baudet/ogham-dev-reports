@@ -4,12 +4,13 @@
 <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="generator" content="Asciidoctor 2.0.10">
+<meta name="generator" content="Asciidoctor 2.0.18">
 <meta name="author" content="4.0.0-SNAPSHOT">
 <title>Ogham User Manual</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <link rel="stylesheet" href="./asciidoctor.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="./coderay-asciidoctor.css">
 <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 <script type="text/javascript" src="..//javascripts/steps.js"></script>
 <script type="text/javascript" src="..//javascripts/sourcecode/source-utils.js"></script>
@@ -46,8 +47,6 @@
 <ul class="sectlevel3">
 <li><a href="#install-standalone">2.1.1. Standalone</a></li>
 <li><a href="#install-spring-boot">2.1.2. With Spring Boot</a></li>
-<li><a href="#_explanation">2.1.3. Explanation:</a></li>
-<li><a href="#_solutions">2.1.4. Solutions:</a></li>
 </ul>
 </li>
 <li><a href="#_select_the_features_you_need">2.2. Select the features you need</a>
@@ -270,7 +269,7 @@ Your templates can be embedded in classpath.</p>
 </div>
 <div class="imageblock code-once-diagram text-center">
 <div class="content">
-<img src="diag-4d054048ef810aadd6180fe4ba2ef667.png" alt="diag 4d054048ef810aadd6180fe4ba2ef667" width="840" height="364">
+<img src="diag-4d054048ef810aadd6180fe4ba2ef667.png" alt="Diagram" width="840" height="364">
 </div>
 </div>
 </div>
@@ -287,7 +286,7 @@ You can do the same with SMS through an embedded local SMPP server.</p>
 </div>
 <div class="imageblock code-once-diagram text-center">
 <div class="content">
-<img src="diag-8385a83b1fbd518b9455ee2564ba8a34.png" alt="diag 8385a83b1fbd518b9455ee2564ba8a34" width="890" height="364">
+<img src="diag-8385a83b1fbd518b9455ee2564ba8a34.png" alt="Diagram" width="890" height="364">
 </div>
 </div>
 </div>
@@ -303,7 +302,7 @@ You can do the same with SMS through an embedded local SMPP server.</p>
 </div>
 <div class="imageblock code-once-diagram text-center">
 <div class="content">
-<img src="diag-e1248c0af6c5ff8753a903b803e002e2.png" alt="diag e1248c0af6c5ff8753a903b803e002e2" width="810" height="364">
+<img src="diag-e1248c0af6c5ff8753a903b803e002e2.png" alt="Diagram" width="810" height="364">
 </div>
 </div>
 </div>
@@ -795,13 +794,9 @@ Spring Boot version).</p>
 <div class="paragraph">
 <p>/!\ You may experience classpath issues while sending emails with Ogham using Java Mail and Spring Boot &gt;= 2.2.x &lt; 3.0.x.</p>
 </div>
-</td>
-</tr>
-</table>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_explanation"><a class="anchor" href="#_explanation"></a>2.1.3. Explanation:</h4>
+<details>
+<summary class="title">Explanation</summary>
+<div class="content">
 <div class="paragraph">
 <p>There can be a mess in the classpath due to Spring Boot dependency management
 that forces versions:</p>
@@ -867,10 +862,13 @@ is not really developer friendly and hard to understand why it happens.</p>
 </ul>
 </div>
 </div>
-<div class="sect3">
-<h4 id="_solutions"><a class="anchor" href="#_solutions"></a>2.1.4. Solutions:</h4>
-<div class="sect4">
-<h5 id="_either_prefer_use_of_old_javax_mail"><a class="anchor" href="#_either_prefer_use_of_old_javax_mail"></a>2.1.4.1. Either prefer use of old Javax mail</h5>
+</details>
+<details>
+<summary class="title">Solutions</summary>
+<div class="content">
+<div class="paragraph">
+<p><strong>Solution 1: Prefer use of old Javax mail</strong></p>
+</div>
 <div class="paragraph">
 <p>If you prefer using Javax mail in order to avoid possible classpath clashes by mixing both javax and jakarta, you can:</p>
 </div>
@@ -882,6 +880,9 @@ is not really developer friendly and hard to understand why it happens.</p>
 <li>
 <p>Or add explicitly the dependency <code>com.sun.mail:jakarta.mail</code> BEFORE <code>fr.sii.ogham:ogham-email-javamail</code> dependency</p>
 </li>
+<li>
+<p>Or exclude <code>org.eclipse.angus:angus-mail</code> from <code>fr.sii.ogham:ogham-email-javamail</code> (so that order doesn&#8217;t matter)</p>
+</li>
 </ul>
 </div>
 <div class="admonitionblock note">
@@ -892,16 +893,15 @@ is not really developer friendly and hard to understand why it happens.</p>
 </td>
 <td class="content">
 <div class="paragraph">
-<p>Order is important in order to let Java pick the service configuration of the <code>com.sun.mail:jakarta-mail</code> dependency first.
-You can also exclude <code>org.eclipse.angus:angus-mail</code> from <code>fr.sii.ogham:ogham-email-javamail</code> (so that order doesn&#8217;t matter).</p>
+<p>Order is important in order to let Java pick the service configuration of the <code>com.sun.mail:jakarta-mail</code> dependency first.</p>
 </div>
 </td>
 </tr>
 </table>
 </div>
+<div class="paragraph">
+<p><strong>Solution 2: Prefer use of new Jakarta mail</strong></p>
 </div>
-<div class="sect4">
-<h5 id="_or_prefer_use_of_new_jakarta_mail"><a class="anchor" href="#_or_prefer_use_of_new_jakarta_mail"></a>2.1.4.2. Or prefer use of new Jakarta mail</h5>
 <div class="paragraph">
 <p>If you prefer using the new Jakarta mail, you can:</p>
 </div>
@@ -972,6 +972,12 @@ So you also have to override dependency management by adding:</p>
 </tr>
 </table>
 </div>
+</div>
+</details>
+</td>
+</tr>
+</table>
+</div>
 <div class="admonitionblock tip">
 <table>
 <tr>
@@ -980,12 +986,11 @@ So you also have to override dependency management by adding:</p>
 </td>
 <td class="content">
 <div class="paragraph">
-<p>You can disable this message by setting the property <code>ogham.email.javamail.check-classpath-consistency=false</code></p>
+<p>You can disable the warning message by setting the property <code>ogham.email.javamail.check-classpath-consistency=false</code></p>
 </div>
 </td>
 </tr>
 </table>
-</div>
 </div>
 </div>
 </div>
@@ -1868,7 +1873,7 @@ a different evaluation syntax or context just for one line.</p>
                       <span class="keyword">new</span> SimpleBean(<span class="string"><span class="delimiter">&quot;</span><span class="content">foo</span><span class="delimiter">&quot;</span></span>, <span class="integer">42</span>))
         .to(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham-test@yopmail.com</span><span class="delimiter">&quot;</span></span>));
   }
-
+  
   <span class="directive">public</span> <span class="directive">static</span> <span class="type">class</span> <span class="class">SimpleBean</span> {
     <span class="directive">private</span> <span class="predefined-type">String</span> name;
     <span class="directive">private</span> <span class="type">int</span> value;
@@ -1988,7 +1993,7 @@ with <code>Subject:</code> (spaces can be added after colon). Other lines are us
                       <span class="keyword">new</span> SimpleBean(<span class="string"><span class="delimiter">&quot;</span><span class="content">foo</span><span class="delimiter">&quot;</span></span>, <span class="integer">42</span>))
         .to(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham-test@yopmail.com</span><span class="delimiter">&quot;</span></span>));
   }
-
+  
   <span class="directive">public</span> <span class="directive">static</span> <span class="type">class</span> <span class="class">SimpleBean</span> {
     <span class="directive">private</span> <span class="predefined-type">String</span> name;
     <span class="directive">private</span> <span class="type">int</span> value;
@@ -2779,7 +2784,7 @@ be inlined (using <code>attach</code> strategy)</td>
     <span class="tag">&lt;div</span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">social</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">style</span>=<span class="string"><span class="delimiter">&quot;</span><span class="key">text-align</span>: <span class="value">center</span>;<span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
       <span class="tag">&lt;a</span> <span class="attribute-name">href</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">http://www.twitter.com/</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">style</span>=<span class="string"><span class="delimiter">&quot;</span><span class="key">display</span>: <span class="value">inline-block</span>; <span class="key">color</span>: <span class="color">#ffffff</span>;<span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>   <i class="conum" data-value="7"></i><b>(7)</b>
         <span class="tag">&lt;img</span> <span class="attribute-name">src</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">cid:2</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">alt</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">Twitter</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>                           <i class="conum" data-value="8"></i><b>(8)</b>
-      <span class="tag">&lt;/a&gt;</span>
+      <span class="tag">&lt;/a&gt;</span> 
       <span class="tag">&lt;a</span> <span class="attribute-name">href</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">http://www.facebook.com/</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">style</span>=<span class="string"><span class="delimiter">&quot;</span><span class="key">display</span>: <span class="value">inline-block</span>; <span class="key">color</span>: <span class="color">#ffffff</span>;<span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>    <i class="conum" data-value="9"></i><b>(9)</b>
         <span class="tag">&lt;img</span> <span class="attribute-name">src</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">images/fb.gif</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">alt</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">Facebook</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>                      <i class="conum" data-value="10"></i><b>(10)</b>
       <span class="tag">&lt;/a&gt;</span>
@@ -3059,7 +3064,7 @@ this information for you thanks to <a href="../user-manual.html#mimetype-detecti
     <span class="tag">&lt;div</span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">social</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">style</span>=<span class="string"><span class="delimiter">&quot;</span><span class="key">text-align</span>: <span class="value">center</span>;<span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
       <span class="tag">&lt;a</span> <span class="attribute-name">href</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">http://www.twitter.com/</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">style</span>=<span class="string"><span class="delimiter">&quot;</span><span class="key">display</span>: <span class="value">inline-block</span>; <span class="key">color</span>: <span class="color">#ffffff</span>;<span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>   <i class="conum" data-value="7"></i><b>(7)</b>
         <span class="tag">&lt;img</span> <span class="attribute-name">src</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">cid:2</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">alt</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">Twitter</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>                           <i class="conum" data-value="8"></i><b>(8)</b>
-      <span class="tag">&lt;/a&gt;</span>
+      <span class="tag">&lt;/a&gt;</span> 
       <span class="tag">&lt;a</span> <span class="attribute-name">href</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">http://www.facebook.com/</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">style</span>=<span class="string"><span class="delimiter">&quot;</span><span class="key">display</span>: <span class="value">inline-block</span>; <span class="key">color</span>: <span class="color">#ffffff</span>;<span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>    <i class="conum" data-value="9"></i><b>(9)</b>
         <span class="tag">&lt;img</span> <span class="attribute-name">src</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">images/fb.gif</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">alt</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">Facebook</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>                      <i class="conum" data-value="10"></i><b>(10)</b>
       <span class="tag">&lt;/a&gt;</span>
@@ -3325,7 +3330,7 @@ on the <code>&lt;img&gt;</code> tag.</p>
     <span class="tag">&lt;div</span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">social</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">style</span>=<span class="string"><span class="delimiter">&quot;</span><span class="key">text-align</span>: <span class="value">center</span>;<span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
       <span class="tag">&lt;a</span> <span class="attribute-name">href</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">http://www.twitter.com/</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">style</span>=<span class="string"><span class="delimiter">&quot;</span><span class="key">display</span>: <span class="value">inline-block</span>; <span class="key">color</span>: <span class="color">#ffffff</span>;<span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>   <i class="conum" data-value="7"></i><b>(7)</b>
         <span class="tag">&lt;img</span> <span class="attribute-name">src</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">cid:2</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">alt</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">Twitter</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>                           <i class="conum" data-value="8"></i><b>(8)</b>
-      <span class="tag">&lt;/a&gt;</span>
+      <span class="tag">&lt;/a&gt;</span> 
       <span class="tag">&lt;a</span> <span class="attribute-name">href</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">http://www.facebook.com/</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">style</span>=<span class="string"><span class="delimiter">&quot;</span><span class="key">display</span>: <span class="value">inline-block</span>; <span class="key">color</span>: <span class="color">#ffffff</span>;<span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>    <i class="conum" data-value="9"></i><b>(9)</b>
         <span class="tag">&lt;img</span> <span class="attribute-name">src</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">images/fb.gif</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">alt</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">Facebook</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>                      <i class="conum" data-value="10"></i><b>(10)</b>
       <span class="tag">&lt;/a&gt;</span>
@@ -3804,7 +3809,7 @@ default strategy</p>
     <span class="tag">&lt;div</span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">social</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">style</span>=<span class="string"><span class="delimiter">&quot;</span><span class="key">text-align</span>: <span class="value">center</span>;<span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
       <span class="tag">&lt;a</span> <span class="attribute-name">href</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">http://www.twitter.com/</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">style</span>=<span class="string"><span class="delimiter">&quot;</span><span class="key">display</span>: <span class="value">inline-block</span>; <span class="key">color</span>: <span class="color">#ffffff</span>;<span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>   <i class="conum" data-value="7"></i><b>(7)</b>
         <span class="tag">&lt;img</span> <span class="attribute-name">src</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">cid:2</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">alt</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">Twitter</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>                           <i class="conum" data-value="8"></i><b>(8)</b>
-      <span class="tag">&lt;/a&gt;</span>
+      <span class="tag">&lt;/a&gt;</span> 
       <span class="tag">&lt;a</span> <span class="attribute-name">href</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">http://www.facebook.com/</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">style</span>=<span class="string"><span class="delimiter">&quot;</span><span class="key">display</span>: <span class="value">inline-block</span>; <span class="key">color</span>: <span class="color">#ffffff</span>;<span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>    <i class="conum" data-value="9"></i><b>(9)</b>
         <span class="tag">&lt;img</span> <span class="attribute-name">src</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">images/fb.gif</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">alt</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">Facebook</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>                      <i class="conum" data-value="10"></i><b>(10)</b>
       <span class="tag">&lt;/a&gt;</span>
@@ -4190,7 +4195,7 @@ nodes, the whole contained rules are not applied at all.</p>
     <span class="tag">&lt;div</span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">social</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">style</span>=<span class="string"><span class="delimiter">&quot;</span><span class="key">text-align</span>: <span class="value">center</span>;<span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
       <span class="tag">&lt;a</span> <span class="attribute-name">href</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">http://www.twitter.com/</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">style</span>=<span class="string"><span class="delimiter">&quot;</span><span class="key">display</span>: <span class="value">inline-block</span>; <span class="key">color</span>: <span class="color">#ffffff</span>;<span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>   <i class="conum" data-value="7"></i><b>(7)</b>
         <span class="tag">&lt;img</span> <span class="attribute-name">src</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">cid:2</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">alt</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">Twitter</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>                           <i class="conum" data-value="8"></i><b>(8)</b>
-      <span class="tag">&lt;/a&gt;</span>
+      <span class="tag">&lt;/a&gt;</span> 
       <span class="tag">&lt;a</span> <span class="attribute-name">href</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">http://www.facebook.com/</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">style</span>=<span class="string"><span class="delimiter">&quot;</span><span class="key">display</span>: <span class="value">inline-block</span>; <span class="key">color</span>: <span class="color">#ffffff</span>;<span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>    <i class="conum" data-value="9"></i><b>(9)</b>
         <span class="tag">&lt;img</span> <span class="attribute-name">src</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">images/fb.gif</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">alt</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">Facebook</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>                      <i class="conum" data-value="10"></i><b>(10)</b>
       <span class="tag">&lt;/a&gt;</span>
@@ -4564,7 +4569,7 @@ background image will be inlined (using <code>attach</code> strategy).</td>
 <div class="listingblock highlight-lines:2">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="css"><span class="class">.header</span> {
-  <span class="key">background</span>: <span class="color">#ccc</span> <span class="function"><span class="delimiter">url(</span><span class="content">&quot;../images/header.jpg&quot;</span><span class="delimiter">)</span></span> <span class="value">repeat-x</span>;    <span class="comment">/* <i class="conum" data-value="1"></i><b>(1)</b>
+  <span class="key">background</span>: <span class="color">#ccc</span> <span class="function"><span class="delimiter">url(</span><span class="content">&quot;../images/header.jpg&quot;</span><span class="delimiter">)</span></span> <span class="value">repeat-x</span>;    <span class="comment">/* // &lt;1&gt; 
   */</span>
   <span class="key">height</span>: <span class="float">200px</span>;
 }
@@ -4623,22 +4628,22 @@ is specified, the image will be inlined using <code>attach</code> strategy.</td>
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="html"><span class="doctype">&lt;!doctype html&gt;</span>
 <span class="tag">&lt;html&gt;</span>
- <span class="tag">&lt;head&gt;</span>
-  <span class="tag">&lt;meta</span> <span class="attribute-name">http-equiv</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">Content-Type</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">content</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">text/html; charset=UTF-8</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
-  <span class="tag">&lt;title&gt;</span>Inline background images<span class="tag">&lt;/title&gt;</span>
-  <span class="tag">&lt;meta</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">viewport</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">content</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">width=device-width, initial-scale=1.0</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
-                                                                                                                                                             <i class="conum" data-value="1"></i><b>(1)</b>
- <span class="tag">&lt;/head&gt;</span>
- <span class="tag">&lt;body&gt;</span>
-  <span class="tag">&lt;div</span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">header</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">style</span>=<span class="string"><span class="delimiter">&quot;</span><span class="key">background</span>: <span class="color">#ccc</span> <span class="function"><span class="delimiter">url(</span><span class="content">&amp;quot;cid:0&amp;quot;</span><span class="delimiter">)</span></span> <span class="value">repeat-x</span>;  <span class="key">height</span>: <span class="float">200px</span>;<span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>                                                             <i class="conum" data-value="2"></i><b>(2)</b>
-   Hello foo !
-  <span class="tag">&lt;/div&gt;</span>
-  <span class="tag">&lt;div</span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">content</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">style</span>=<span class="string"><span class="delimiter">&quot;</span><span class="key">background</span>: <span class="function"><span class="delimiter">url(</span><span class="content">&amp;quot;classpath:/resources/images/h1.gif&amp;quot;</span><span class="delimiter">)</span></span> <span class="value">no-repeat</span>;  <span class="key">height</span>: <span class="float">400px</span>;  <span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>                               <i class="conum" data-value="3"></i><b>(3)</b>
-   content
-  <span class="tag">&lt;/div&gt;</span>
+ <span class="tag">&lt;head&gt;</span> 
+  <span class="tag">&lt;meta</span> <span class="attribute-name">http-equiv</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">Content-Type</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">content</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">text/html; charset=UTF-8</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span> 
+  <span class="tag">&lt;title&gt;</span>Inline background images<span class="tag">&lt;/title&gt;</span> 
+  <span class="tag">&lt;meta</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">viewport</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">content</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">width=device-width, initial-scale=1.0</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span> 
+                                                                                                                                                             <span class="comment">&lt;!--1--&gt;</span> 
+ <span class="tag">&lt;/head&gt;</span> 
+ <span class="tag">&lt;body&gt;</span> 
+  <span class="tag">&lt;div</span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">header</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">style</span>=<span class="string"><span class="delimiter">&quot;</span><span class="key">background</span>: <span class="color">#ccc</span> <span class="function"><span class="delimiter">url(</span><span class="content">&amp;quot;cid:0&amp;quot;</span><span class="delimiter">)</span></span> <span class="value">repeat-x</span>;  <span class="key">height</span>: <span class="float">200px</span>;<span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>                                                             <span class="comment">&lt;!--2--&gt;</span> 
+   Hello foo ! 
+  <span class="tag">&lt;/div&gt;</span> 
+  <span class="tag">&lt;div</span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">content</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">style</span>=<span class="string"><span class="delimiter">&quot;</span><span class="key">background</span>: <span class="function"><span class="delimiter">url(</span><span class="content">&amp;quot;classpath:/resources/images/h1.gif&amp;quot;</span><span class="delimiter">)</span></span> <span class="value">no-repeat</span>;  <span class="key">height</span>: <span class="float">400px</span>;  <span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>                               <span class="comment">&lt;!--3--&gt;</span> 
+   content 
+  <span class="tag">&lt;/div&gt;</span> 
   <span class="tag">&lt;div</span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">footer</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">style</span>=<span class="string"><span class="delimiter">&quot;</span><span class="key">background</span>: <span class="function"><span class="delimiter">url(</span><span class="content">&amp;quot;data:image/jpeg;base64,/9j/4QAYRXhpZgAASUkq[...]JpRFcBO8BIP/2Q==&amp;quot;</span><span class="delimiter">)</span></span> <span class="value">no-repeat</span>; <span class="key">height</span>: <span class="float">200px</span>;  <span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>   <i class="conum" data-value="4"></i><b>(4)</b>
-   footer
-  <span class="tag">&lt;/div&gt;</span>
+   footer 
+  <span class="tag">&lt;/div&gt;</span>  
  <span class="tag">&lt;/body&gt;</span>
 <span class="tag">&lt;/html&gt;</span></code></pre>
 </div>
@@ -4810,7 +4815,7 @@ background image will be inlined (using <code>base64</code> strategy).</td>
 <div class="listingblock highlight-lines:8,11">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="css"><span class="class">.header</span> {
-  <span class="key">background</span>: <span class="color">#ccc</span> <span class="function"><span class="delimiter">url(</span><span class="content">&quot;../images/header.jpg&quot;</span><span class="delimiter">)</span></span> <span class="value">repeat-x</span>;    <span class="comment">/* <i class="conum" data-value="1"></i><b>(1)</b>
+  <span class="key">background</span>: <span class="color">#ccc</span> <span class="function"><span class="delimiter">url(</span><span class="content">&quot;../images/header.jpg&quot;</span><span class="delimiter">)</span></span> <span class="value">repeat-x</span>;    <span class="comment">/* // &lt;1&gt; 
   */</span>
   <span class="key">height</span>: <span class="float">200px</span>;
 }
@@ -4870,22 +4875,22 @@ strategy is specified using <code>--inline-image</code> property on the same CSS
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="html"><span class="doctype">&lt;!doctype html&gt;</span>
 <span class="tag">&lt;html&gt;</span>
- <span class="tag">&lt;head&gt;</span>
-  <span class="tag">&lt;meta</span> <span class="attribute-name">http-equiv</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">Content-Type</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">content</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">text/html; charset=UTF-8</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
-  <span class="tag">&lt;title&gt;</span>Inline background images<span class="tag">&lt;/title&gt;</span>
-  <span class="tag">&lt;meta</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">viewport</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">content</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">width=device-width, initial-scale=1.0</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
-                                                                                                                                                             <i class="conum" data-value="1"></i><b>(1)</b>
- <span class="tag">&lt;/head&gt;</span>
- <span class="tag">&lt;body&gt;</span>
-  <span class="tag">&lt;div</span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">header</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">style</span>=<span class="string"><span class="delimiter">&quot;</span><span class="key">background</span>: <span class="color">#ccc</span> <span class="function"><span class="delimiter">url(</span><span class="content">&amp;quot;cid:0&amp;quot;</span><span class="delimiter">)</span></span> <span class="value">repeat-x</span>;  <span class="key">height</span>: <span class="float">200px</span>;<span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>                                                             <i class="conum" data-value="2"></i><b>(2)</b>
-   Hello foo !
-  <span class="tag">&lt;/div&gt;</span>
-  <span class="tag">&lt;div</span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">content</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">style</span>=<span class="string"><span class="delimiter">&quot;</span><span class="key">background</span>: <span class="function"><span class="delimiter">url(</span><span class="content">&amp;quot;classpath:/resources/images/h1.gif&amp;quot;</span><span class="delimiter">)</span></span> <span class="value">no-repeat</span>;  <span class="key">height</span>: <span class="float">400px</span>;  <span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>                               <i class="conum" data-value="3"></i><b>(3)</b>
-   content
-  <span class="tag">&lt;/div&gt;</span>
+ <span class="tag">&lt;head&gt;</span> 
+  <span class="tag">&lt;meta</span> <span class="attribute-name">http-equiv</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">Content-Type</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">content</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">text/html; charset=UTF-8</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span> 
+  <span class="tag">&lt;title&gt;</span>Inline background images<span class="tag">&lt;/title&gt;</span> 
+  <span class="tag">&lt;meta</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">viewport</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">content</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">width=device-width, initial-scale=1.0</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span> 
+                                                                                                                                                             <span class="comment">&lt;!--1--&gt;</span> 
+ <span class="tag">&lt;/head&gt;</span> 
+ <span class="tag">&lt;body&gt;</span> 
+  <span class="tag">&lt;div</span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">header</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">style</span>=<span class="string"><span class="delimiter">&quot;</span><span class="key">background</span>: <span class="color">#ccc</span> <span class="function"><span class="delimiter">url(</span><span class="content">&amp;quot;cid:0&amp;quot;</span><span class="delimiter">)</span></span> <span class="value">repeat-x</span>;  <span class="key">height</span>: <span class="float">200px</span>;<span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>                                                             <span class="comment">&lt;!--2--&gt;</span> 
+   Hello foo ! 
+  <span class="tag">&lt;/div&gt;</span> 
+  <span class="tag">&lt;div</span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">content</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">style</span>=<span class="string"><span class="delimiter">&quot;</span><span class="key">background</span>: <span class="function"><span class="delimiter">url(</span><span class="content">&amp;quot;classpath:/resources/images/h1.gif&amp;quot;</span><span class="delimiter">)</span></span> <span class="value">no-repeat</span>;  <span class="key">height</span>: <span class="float">400px</span>;  <span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>                               <span class="comment">&lt;!--3--&gt;</span> 
+   content 
+  <span class="tag">&lt;/div&gt;</span> 
   <span class="tag">&lt;div</span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">footer</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">style</span>=<span class="string"><span class="delimiter">&quot;</span><span class="key">background</span>: <span class="function"><span class="delimiter">url(</span><span class="content">&amp;quot;data:image/jpeg;base64,/9j/4QAYRXhpZgAASUkq[...]JpRFcBO8BIP/2Q==&amp;quot;</span><span class="delimiter">)</span></span> <span class="value">no-repeat</span>; <span class="key">height</span>: <span class="float">200px</span>;  <span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>   <i class="conum" data-value="4"></i><b>(4)</b>
-   footer
-  <span class="tag">&lt;/div&gt;</span>
+   footer 
+  <span class="tag">&lt;/div&gt;</span>  
  <span class="tag">&lt;/body&gt;</span>
 <span class="tag">&lt;/html&gt;</span></code></pre>
 </div>
@@ -5072,7 +5077,7 @@ background image will not be inlined.</td>
 <div class="listingblock highlight-lines:16,18">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="css"><span class="class">.header</span> {
-  <span class="key">background</span>: <span class="color">#ccc</span> <span class="function"><span class="delimiter">url(</span><span class="content">&quot;../images/header.jpg&quot;</span><span class="delimiter">)</span></span> <span class="value">repeat-x</span>;    <span class="comment">/* <i class="conum" data-value="1"></i><b>(1)</b>
+  <span class="key">background</span>: <span class="color">#ccc</span> <span class="function"><span class="delimiter">url(</span><span class="content">&quot;../images/header.jpg&quot;</span><span class="delimiter">)</span></span> <span class="value">repeat-x</span>;    <span class="comment">/* // &lt;1&gt; 
   */</span>
   <span class="key">height</span>: <span class="float">200px</span>;
 }
@@ -5132,22 +5137,22 @@ strategy is specified using <code>--inline-image</code> property on the same CSS
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="html"><span class="doctype">&lt;!doctype html&gt;</span>
 <span class="tag">&lt;html&gt;</span>
- <span class="tag">&lt;head&gt;</span>
-  <span class="tag">&lt;meta</span> <span class="attribute-name">http-equiv</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">Content-Type</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">content</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">text/html; charset=UTF-8</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
-  <span class="tag">&lt;title&gt;</span>Inline background images<span class="tag">&lt;/title&gt;</span>
-  <span class="tag">&lt;meta</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">viewport</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">content</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">width=device-width, initial-scale=1.0</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
-                                                                                                                                                             <i class="conum" data-value="1"></i><b>(1)</b>
- <span class="tag">&lt;/head&gt;</span>
- <span class="tag">&lt;body&gt;</span>
-  <span class="tag">&lt;div</span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">header</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">style</span>=<span class="string"><span class="delimiter">&quot;</span><span class="key">background</span>: <span class="color">#ccc</span> <span class="function"><span class="delimiter">url(</span><span class="content">&amp;quot;cid:0&amp;quot;</span><span class="delimiter">)</span></span> <span class="value">repeat-x</span>;  <span class="key">height</span>: <span class="float">200px</span>;<span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>                                                             <i class="conum" data-value="2"></i><b>(2)</b>
-   Hello foo !
-  <span class="tag">&lt;/div&gt;</span>
-  <span class="tag">&lt;div</span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">content</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">style</span>=<span class="string"><span class="delimiter">&quot;</span><span class="key">background</span>: <span class="function"><span class="delimiter">url(</span><span class="content">&amp;quot;classpath:/resources/images/h1.gif&amp;quot;</span><span class="delimiter">)</span></span> <span class="value">no-repeat</span>;  <span class="key">height</span>: <span class="float">400px</span>;  <span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>                               <i class="conum" data-value="3"></i><b>(3)</b>
-   content
-  <span class="tag">&lt;/div&gt;</span>
+ <span class="tag">&lt;head&gt;</span> 
+  <span class="tag">&lt;meta</span> <span class="attribute-name">http-equiv</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">Content-Type</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">content</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">text/html; charset=UTF-8</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span> 
+  <span class="tag">&lt;title&gt;</span>Inline background images<span class="tag">&lt;/title&gt;</span> 
+  <span class="tag">&lt;meta</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">viewport</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">content</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">width=device-width, initial-scale=1.0</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span> 
+                                                                                                                                                             <span class="comment">&lt;!--1--&gt;</span> 
+ <span class="tag">&lt;/head&gt;</span> 
+ <span class="tag">&lt;body&gt;</span> 
+  <span class="tag">&lt;div</span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">header</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">style</span>=<span class="string"><span class="delimiter">&quot;</span><span class="key">background</span>: <span class="color">#ccc</span> <span class="function"><span class="delimiter">url(</span><span class="content">&amp;quot;cid:0&amp;quot;</span><span class="delimiter">)</span></span> <span class="value">repeat-x</span>;  <span class="key">height</span>: <span class="float">200px</span>;<span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>                                                             <span class="comment">&lt;!--2--&gt;</span> 
+   Hello foo ! 
+  <span class="tag">&lt;/div&gt;</span> 
+  <span class="tag">&lt;div</span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">content</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">style</span>=<span class="string"><span class="delimiter">&quot;</span><span class="key">background</span>: <span class="function"><span class="delimiter">url(</span><span class="content">&amp;quot;classpath:/resources/images/h1.gif&amp;quot;</span><span class="delimiter">)</span></span> <span class="value">no-repeat</span>;  <span class="key">height</span>: <span class="float">400px</span>;  <span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>                               <span class="comment">&lt;!--3--&gt;</span> 
+   content 
+  <span class="tag">&lt;/div&gt;</span> 
   <span class="tag">&lt;div</span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">footer</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">style</span>=<span class="string"><span class="delimiter">&quot;</span><span class="key">background</span>: <span class="function"><span class="delimiter">url(</span><span class="content">&amp;quot;data:image/jpeg;base64,/9j/4QAYRXhpZgAASUkq[...]JpRFcBO8BIP/2Q==&amp;quot;</span><span class="delimiter">)</span></span> <span class="value">no-repeat</span>; <span class="key">height</span>: <span class="float">200px</span>;  <span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>   <i class="conum" data-value="4"></i><b>(4)</b>
-   footer
-  <span class="tag">&lt;/div&gt;</span>
+   footer 
+  <span class="tag">&lt;/div&gt;</span>  
  <span class="tag">&lt;/body&gt;</span>
 <span class="tag">&lt;/html&gt;</span></code></pre>
 </div>
@@ -5554,7 +5559,7 @@ and text template files).</p>
                           <span class="keyword">new</span> SimpleBean(<span class="string"><span class="delimiter">&quot;</span><span class="content">foo</span><span class="delimiter">&quot;</span></span>, <span class="integer">42</span>))                     <i class="conum" data-value="2"></i><b>(2)</b>
         .to(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham-test@yopmail.com</span><span class="delimiter">&quot;</span></span>));
   }
-
+  
   <span class="directive">public</span> <span class="directive">static</span> <span class="type">class</span> <span class="class">SimpleBean</span> {
     <span class="directive">private</span> <span class="predefined-type">String</span> name;
     <span class="directive">private</span> <span class="type">int</span> value;
@@ -5712,7 +5717,7 @@ the same email. Just write your templates with the engine you want.</p>
                           <span class="keyword">new</span> SimpleBean(<span class="string"><span class="delimiter">&quot;</span><span class="content">foo</span><span class="delimiter">&quot;</span></span>, <span class="integer">42</span>))                     <i class="conum" data-value="2"></i><b>(2)</b>
         .to(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham-test@yopmail.com</span><span class="delimiter">&quot;</span></span>));
   }
-
+  
   <span class="directive">public</span> <span class="directive">static</span> <span class="type">class</span> <span class="class">SimpleBean</span> {
     <span class="directive">private</span> <span class="predefined-type">String</span> name;
     <span class="directive">private</span> <span class="type">int</span> value;
@@ -6087,10 +6092,10 @@ will never be seen in received emails).</p>
 <span class="directive">public</span> <span class="type">class</span> <span class="class">EmailPropertiesTest</span> {
 
   <span class="directive">private</span> MessagingService oghamService;
-
+  
   <span class="annotation">@RegisterExtension</span>
   <span class="directive">public</span> <span class="directive">final</span> GreenMailExtension greenMail = <span class="keyword">new</span> RandomPortGreenMailExtension();
-
+  
   <span class="annotation">@BeforeEach</span>
   <span class="directive">public</span> <span class="type">void</span> setUp() <span class="directive">throws</span> <span class="exception">IOException</span> {
     <span class="predefined-type">Properties</span> additional = <span class="keyword">new</span> <span class="predefined-type">Properties</span>();
@@ -6107,7 +6112,7 @@ will never be seen in received emails).</p>
           .and()
         .build();
   }
-
+  
   <span class="annotation">@Test</span>
   <span class="directive">public</span> <span class="type">void</span> simple() <span class="directive">throws</span> MessagingException, jakarta.mail.MessagingException {
     oghamService.send(<span class="keyword">new</span> Email()
@@ -6423,22 +6428,22 @@ difference is the configuration of Ogham.</p>
  * &lt;li&gt;Add attachments to the email&lt;/li&gt;
  * &lt;li&gt;Properties are loaded from external file and API key is set in code&lt;/li&gt;
  * &lt;/ul&gt;
- *
+ * 
  * &lt;p&gt;
  * The templates are available in src/main/resources/template/thymeleaf/email:
  * &lt;ul&gt;
  * &lt;li&gt;full.html&lt;/li&gt;
  * &lt;li&gt;full.txt&lt;/li&gt;
  * &lt;/ul&gt;
- *
+ * 
  * &lt;p&gt;
  * The HTML template uses a page fragment that is available in
  * src/main/resources/template/thymeleaf/email/fragments/header.html.
- *
+ * 
  * &lt;p&gt;
  * The HTML template also references external CSS and images that are available
  * in src/main/resources/resources.
- *
+ * 
  * @author Aurélien Baudet
  *
  */</span>
@@ -6554,22 +6559,22 @@ ogham.email.template.path-prefix=/template/thymeleaf/email/    <i class="conum" 
  * &lt;li&gt;Add attachments to the email&lt;/li&gt;
  * &lt;li&gt;Properties are loaded from external file&lt;/li&gt;
  * &lt;/ul&gt;
- *
+ * 
  * &lt;p&gt;
  * The templates are available in src/main/resources/template/thymeleaf/email:
  * &lt;ul&gt;
  * &lt;li&gt;full.html&lt;/li&gt;
  * &lt;li&gt;full.txt&lt;/li&gt;
  * &lt;/ul&gt;
- *
+ * 
  * &lt;p&gt;
  * The HTML template uses a page fragment that is available in
  * src/main/resources/template/thymeleaf/email/fragments/header.html.
- *
+ * 
  * &lt;p&gt;
  * The HTML template also references external CSS and images that are available
  * in src/main/resources/resources.
- *
+ * 
  * @author Aurélien Baudet
  *
  */</span>
@@ -8730,7 +8735,7 @@ The following sample shows a Spring Web that exposes one simple endpoint for sen
   <span class="directive">public</span> <span class="directive">static</span> <span class="type">void</span> main(<span class="predefined-type">String</span><span class="type">[]</span> args) <span class="directive">throws</span> MessagingException {
     SpringApplication.run(ThymeleafHtmlAndFreemarkerTextSample.class, args);
   }
-
+  
   <span class="annotation">@RestController</span>
   <span class="directive">public</span> <span class="directive">static</span> <span class="type">class</span> <span class="class">EmailController</span> {
     <span class="comment">// Messaging service is automatically created using Spring Boot features</span>
@@ -8739,7 +8744,7 @@ The following sample shows a Spring Web that exposes one simple endpoint for sen
     <span class="comment">// The configuration file set the prefix for templates into email folder available in src/main/resources</span>
     <span class="annotation">@Autowired</span>
     MessagingService messagingService;                                         <i class="conum" data-value="1"></i><b>(1)</b>
-
+    
     <span class="annotation">@PostMapping</span>(value=<span class="string"><span class="delimiter">&quot;</span><span class="content">api/email/multitemplate/mixed</span><span class="delimiter">&quot;</span></span>)
     <span class="annotation">@ResponseStatus</span>(HttpStatus.CREATED)
     <span class="directive">public</span> <span class="type">void</span> sendEmail(<span class="annotation">@RequestParam</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">to</span><span class="delimiter">&quot;</span></span>) <span class="predefined-type">String</span> to, <span class="annotation">@RequestParam</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">name</span><span class="delimiter">&quot;</span></span>) <span class="predefined-type">String</span> name, <span class="annotation">@RequestParam</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">value</span><span class="delimiter">&quot;</span></span>) <span class="type">int</span> value) <span class="directive">throws</span> MessagingException {
@@ -8955,7 +8960,7 @@ The following sample shows a Spring Web that exposes one simple endpoint for sen
   <span class="directive">public</span> <span class="directive">static</span> <span class="type">void</span> main(<span class="predefined-type">String</span><span class="type">[]</span> args) {
     SpringApplication.run(TemplateSample.class, args);
   }
-
+  
   <span class="annotation">@RestController</span>
   <span class="directive">public</span> <span class="directive">static</span> <span class="type">class</span> <span class="class">SmsController</span> {
     <span class="comment">// Messaging service is automatically created using Spring Boot features</span>
@@ -8963,7 +8968,7 @@ The following sample shows a Spring Web that exposes one simple endpoint for sen
     <span class="comment">// The configuration files are stored into src/main/resources</span>
     <span class="annotation">@Autowired</span>
     MessagingService messagingService;                                         <i class="conum" data-value="1"></i><b>(1)</b>
-
+    
     <span class="annotation">@PostMapping</span>(value=<span class="string"><span class="delimiter">&quot;</span><span class="content">api/sms/template</span><span class="delimiter">&quot;</span></span>)
     <span class="annotation">@ResponseStatus</span>(HttpStatus.CREATED)
     <span class="directive">public</span> <span class="type">void</span> sendSms(<span class="annotation">@RequestParam</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">to</span><span class="delimiter">&quot;</span></span>) <span class="predefined-type">String</span> to, <span class="annotation">@RequestParam</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">name</span><span class="delimiter">&quot;</span></span>) <span class="predefined-type">String</span> name, <span class="annotation">@RequestParam</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">value</span><span class="delimiter">&quot;</span></span>) <span class="type">int</span> value) <span class="directive">throws</span> MessagingException {
@@ -9547,7 +9552,7 @@ the same utility function every time.</p>
         .attachments(emptyIterable());
     <span class="comment">// @formatter:on</span>
   }
-
+  
   <span class="directive">public</span> <span class="directive">static</span> <span class="type">class</span> <span class="class">SimpleBean</span> {
     <span class="directive">private</span> <span class="predefined-type">String</span> name;
     <span class="directive">private</span> <span class="type">int</span> value;
@@ -9600,7 +9605,7 @@ the same utility function every time.</p>
  <span class="tag">&lt;/head&gt;</span>
  <span class="tag">&lt;body&gt;</span>
   <span class="tag">&lt;h1</span> <span class="attribute-name">title</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">foo</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">title</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">th:text</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">|Hello ${name}|</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span><span class="tag">&lt;/h1&gt;</span>
-
+  
   <span class="tag">&lt;p</span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">text</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">th:text</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">${value}</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
   <span class="tag">&lt;/p&gt;</span>
  <span class="tag">&lt;/body&gt;</span>
@@ -9734,7 +9739,7 @@ the same utility function every time.</p>
         .attachments(emptyIterable());
     <span class="comment">// @formatter:on</span>
   }
-
+  
   <span class="directive">public</span> <span class="directive">static</span> <span class="type">class</span> <span class="class">SimpleBean</span> {
     <span class="directive">private</span> <span class="predefined-type">String</span> name;
     <span class="directive">private</span> <span class="type">int</span> value;
@@ -9787,7 +9792,7 @@ the same utility function every time.</p>
  <span class="tag">&lt;/head&gt;</span>
  <span class="tag">&lt;body&gt;</span>
   <span class="tag">&lt;h1</span> <span class="attribute-name">title</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">foo</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">title</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">th:text</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">|Hello ${name}|</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span><span class="tag">&lt;/h1&gt;</span>
-
+  
   <span class="tag">&lt;p</span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">text</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">th:text</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">${value}</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
   <span class="tag">&lt;/p&gt;</span>
  <span class="tag">&lt;/body&gt;</span>
@@ -9898,7 +9903,7 @@ the same utility function every time.</p>
         .attachments(emptyIterable());
     <span class="comment">// @formatter:on</span>
   }
-
+  
   <span class="directive">public</span> <span class="directive">static</span> <span class="type">class</span> <span class="class">SimpleBean</span> {
     <span class="directive">private</span> <span class="predefined-type">String</span> name;
     <span class="directive">private</span> <span class="type">int</span> value;
@@ -9951,7 +9956,7 @@ the same utility function every time.</p>
  <span class="tag">&lt;/head&gt;</span>
  <span class="tag">&lt;body&gt;</span>
   <span class="tag">&lt;h1</span> <span class="attribute-name">title</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">foo</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">title</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">th:text</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">|Hello ${name}|</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span><span class="tag">&lt;/h1&gt;</span>
-
+  
   <span class="tag">&lt;p</span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">text</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">th:text</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">${value}</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
   <span class="tag">&lt;/p&gt;</span>
  <span class="tag">&lt;/body&gt;</span>
@@ -10275,7 +10280,7 @@ Spaces, tag closing and attributes order are reported by the comparison window p
 
 <span class="directive">public</span> <span class="type">class</span> <span class="class">EmailAttachmentTestSample</span> {
   <span class="directive">private</span> MessagingService oghamService;
-
+  
   <span class="annotation">@RegisterExtension</span>
   <span class="directive">public</span> <span class="directive">final</span> GreenMailExtension greenMail = <span class="keyword">new</span> GreenMailExtension(SMTP);
 
@@ -10423,7 +10428,7 @@ Spaces, tag closing and attributes order are reported by the comparison window p
           .personal(hasItems(<span class="string"><span class="delimiter">&quot;</span><span class="content">Sender Name</span><span class="delimiter">&quot;</span></span>)).and()
         .to()
           .address(containsInAnyOrder(<span class="string"><span class="delimiter">&quot;</span><span class="content">recipient1@sii.fr</span><span class="delimiter">&quot;</span></span>,                    <i class="conum" data-value="3"></i><b>(3)</b>
-                        <span class="string"><span class="delimiter">&quot;</span><span class="content">recipient2@sii.fr</span><span class="delimiter">&quot;</span></span>,
+                        <span class="string"><span class="delimiter">&quot;</span><span class="content">recipient2@sii.fr</span><span class="delimiter">&quot;</span></span>, 
                         <span class="string"><span class="delimiter">&quot;</span><span class="content">recipient3@sii.fr</span><span class="delimiter">&quot;</span></span>)).and()
         .cc()
           .address(containsInAnyOrder(<span class="string"><span class="delimiter">&quot;</span><span class="content">recipient4@sii.fr</span><span class="delimiter">&quot;</span></span>,                    <i class="conum" data-value="4"></i><b>(4)</b>
@@ -10660,7 +10665,7 @@ Spaces, tag closing and attributes order are reported by the comparison window p
           .and()
         .build();
   }
-
+  
   <span class="annotation">@Test</span>
   <span class="directive">public</span> <span class="type">void</span> authenticated() <span class="directive">throws</span> MessagingException, jakarta.mail.MessagingException {
     <span class="comment">// @formatter:off</span>
@@ -10974,7 +10979,7 @@ Only the setup differs, the test is the same.
 
 <span class="directive">public</span> <span class="type">class</span> <span class="class">EmailAttachmentTestSample</span> {
   <span class="directive">private</span> MessagingService oghamService;
-
+  
   <span class="annotation">@RegisterExtension</span>
   <span class="directive">public</span> <span class="directive">final</span> GreenMailExtension greenMail = <span class="keyword">new</span> GreenMailExtension(SMTP);
 
@@ -11122,7 +11127,7 @@ Only the setup differs, the test is the same.
           .personal(hasItems(<span class="string"><span class="delimiter">&quot;</span><span class="content">Sender Name</span><span class="delimiter">&quot;</span></span>)).and()
         .to()
           .address(containsInAnyOrder(<span class="string"><span class="delimiter">&quot;</span><span class="content">recipient1@sii.fr</span><span class="delimiter">&quot;</span></span>,                    <i class="conum" data-value="3"></i><b>(3)</b>
-                        <span class="string"><span class="delimiter">&quot;</span><span class="content">recipient2@sii.fr</span><span class="delimiter">&quot;</span></span>,
+                        <span class="string"><span class="delimiter">&quot;</span><span class="content">recipient2@sii.fr</span><span class="delimiter">&quot;</span></span>, 
                         <span class="string"><span class="delimiter">&quot;</span><span class="content">recipient3@sii.fr</span><span class="delimiter">&quot;</span></span>)).and()
         .cc()
           .address(containsInAnyOrder(<span class="string"><span class="delimiter">&quot;</span><span class="content">recipient4@sii.fr</span><span class="delimiter">&quot;</span></span>,                    <i class="conum" data-value="4"></i><b>(4)</b>
@@ -11359,7 +11364,7 @@ Only the setup differs, the test is the same.
           .and()
         .build();
   }
-
+  
   <span class="annotation">@Test</span>
   <span class="directive">public</span> <span class="type">void</span> authenticated() <span class="directive">throws</span> MessagingException, jakarta.mail.MessagingException {
     <span class="comment">// @formatter:off</span>
@@ -11495,7 +11500,7 @@ Only the setup differs, the test is the same.
           .and()
         .build();
   }
-
+  
   <span class="annotation">@Test</span>
   <span class="directive">public</span> <span class="type">void</span> simple(SmppServerSimulator&lt;SubmitSm&gt; smppServer) <span class="directive">throws</span> MessagingException { <i class="conum" data-value="5"></i><b>(5)</b>
     <span class="comment">// @formatter:off</span>
@@ -11755,7 +11760,7 @@ Here is an example with email (it is exactly the same for SMS):</p>
 
 <span class="directive">public</span> <span class="type">class</span> <span class="class">AssertAllEmailTestSample</span> {
   <span class="directive">private</span> MessagingService oghamService;
-
+  
   <span class="annotation">@RegisterExtension</span>
   <span class="directive">public</span> <span class="directive">final</span> GreenMailExtension greenMail = <span class="keyword">new</span> GreenMailExtension(SMTP);
 
@@ -12085,10 +12090,10 @@ to benefit from random ports easily.</p>
 <span class="directive">public</span> <span class="type">class</span> <span class="class">RandomSmtpPortJUnit5TestSample</span> {
   <span class="annotation">@RegisterExtension</span> <span class="annotation">@Autowired</span> <span class="directive">public</span> GreenMailExtension greenMail;   <i class="conum" data-value="3"></i><b>(3)</b>
   <span class="annotation">@Autowired</span> MessagingService messagingService;
-
+  
   <span class="annotation">@Test</span>
   <span class="directive">public</span> <span class="type">void</span> foo() <span class="directive">throws</span> <span class="exception">Exception</span> {
-    <span class="comment">// some code to test your application here</span>
+    <span class="comment">// some code to test your application here </span>
     <span class="comment">// that sends email through SMTP</span>
     messagingService.send(<span class="keyword">new</span> Email()
         .subject(<span class="string"><span class="delimiter">&quot;</span><span class="content">Random port</span><span class="delimiter">&quot;</span></span>)
@@ -12165,7 +12170,7 @@ random port.</td>
 
   <span class="annotation">@Test</span>
   <span class="directive">public</span> <span class="type">void</span> foo() <span class="directive">throws</span> <span class="exception">Exception</span> {
-    <span class="comment">// some code to test your application here</span>
+    <span class="comment">// some code to test your application here </span>
     <span class="comment">// that sends SMS through SMPP</span>
     messagingService.send(<span class="keyword">new</span> Sms()
         .from(<span class="string"><span class="delimiter">&quot;</span><span class="content">0000000000</span><span class="delimiter">&quot;</span></span>)
@@ -12241,10 +12246,10 @@ random port.</td>
 <span class="directive">public</span> <span class="type">class</span> <span class="class">RandomSmtpPortJUnit4TestSample</span> {
   <span class="annotation">@Rule</span> <span class="annotation">@Autowired</span> <span class="directive">public</span> GreenMailRule greenMail;                     <i class="conum" data-value="3"></i><b>(3)</b>
   <span class="annotation">@Autowired</span> MessagingService messagingService;
-
+  
   <span class="annotation">@Test</span>
   <span class="directive">public</span> <span class="type">void</span> foo() <span class="directive">throws</span> <span class="exception">Exception</span> {
-    <span class="comment">// some code to test your application here</span>
+    <span class="comment">// some code to test your application here </span>
     <span class="comment">// that sends email through SMTP</span>
     messagingService.send(<span class="keyword">new</span> Email()
         .subject(<span class="string"><span class="delimiter">&quot;</span><span class="content">Random port</span><span class="delimiter">&quot;</span></span>)
@@ -12324,7 +12329,7 @@ random port.</td>
 
   <span class="annotation">@Test</span>
   <span class="directive">public</span> <span class="type">void</span> foo() <span class="directive">throws</span> <span class="exception">Exception</span> {
-    <span class="comment">// some code to test your application here</span>
+    <span class="comment">// some code to test your application here </span>
     <span class="comment">// that sends SMS through SMPP</span>
     messagingService.send(<span class="keyword">new</span> Sms()
         .from(<span class="string"><span class="delimiter">&quot;</span><span class="content">0000000000</span><span class="delimiter">&quot;</span></span>)
@@ -12831,7 +12836,7 @@ The delay is configured to 5 seconds.</p>
 </div>
 <div class="imageblock text-center">
 <div class="content">
-<img src="diag-a06f51132cf94cbf725435783306e458.png" alt="diag a06f51132cf94cbf725435783306e458" width="891" height="787">
+<img src="diag-a06f51132cf94cbf725435783306e458.png" alt="Diagram" width="880" height="780">
 </div>
 </div>
 </div>
@@ -12848,7 +12853,7 @@ is reached. The delay is configured to 5 seconds. The maximum attempts is config
 </div>
 <div class="imageblock text-center">
 <div class="content">
-<img src="diag-147807c30d86cdff96b0084161d8d76a.png" alt="diag 147807c30d86cdff96b0084161d8d76a" width="912" height="1099">
+<img src="diag-147807c30d86cdff96b0084161d8d76a.png" alt="Diagram" width="905" height="1092">
 </div>
 </div>
 </div>
@@ -13037,7 +13042,7 @@ The initial delay is configured to 5 seconds.</p>
 </div>
 <div class="imageblock text-center">
 <div class="content">
-<img src="diag-1081b15e5b4d6c663f43a3c231b3036c.png" alt="diag 1081b15e5b4d6c663f43a3c231b3036c" width="891" height="787">
+<img src="diag-1081b15e5b4d6c663f43a3c231b3036c.png" alt="Diagram" width="880" height="780">
 </div>
 </div>
 </div>
@@ -13054,7 +13059,7 @@ is reached. The initial delay is configured to 5 seconds. The maximum attempts i
 </div>
 <div class="imageblock text-center">
 <div class="content">
-<img src="diag-54e47c9bc8234ed61ccf076d78778170.png" alt="diag 54e47c9bc8234ed61ccf076d78778170" width="912" height="1099">
+<img src="diag-54e47c9bc8234ed61ccf076d78778170.png" alt="Diagram" width="905" height="1092">
 </div>
 </div>
 </div>
@@ -13256,7 +13261,7 @@ The configured delays are: 5 seconds and 25 seconds.</p>
 </div>
 <div class="imageblock text-center">
 <div class="content">
-<img src="diag-e9cd46f72cc85592656b913b1391eb70.png" alt="diag e9cd46f72cc85592656b913b1391eb70" width="891" height="787">
+<img src="diag-e9cd46f72cc85592656b913b1391eb70.png" alt="Diagram" width="880" height="780">
 </div>
 </div>
 </div>
@@ -13274,7 +13279,7 @@ The configured delays are: 5 seconds, 25 seconds and 32 seconds.</p>
 </div>
 <div class="imageblock text-center">
 <div class="content">
-<img src="diag-5f16fae08764dcaeaf866c6a040922d1.png" alt="diag 5f16fae08764dcaeaf866c6a040922d1" width="912" height="1099">
+<img src="diag-5f16fae08764dcaeaf866c6a040922d1.png" alt="Diagram" width="905" height="1092">
 </div>
 </div>
 </div>
@@ -13462,7 +13467,7 @@ The interval is configured to 5 seconds.</p>
 </div>
 <div class="imageblock text-center">
 <div class="content">
-<img src="diag-f931fe62484350584168ca1628d85119.png" alt="diag f931fe62484350584168ca1628d85119" width="891" height="703">
+<img src="diag-f931fe62484350584168ca1628d85119.png" alt="Diagram" width="880" height="696">
 </div>
 </div>
 </div>
@@ -13479,7 +13484,7 @@ is reached. The delay is configured to 5 seconds. The maximum attempts is config
 </div>
 <div class="imageblock text-center">
 <div class="content">
-<img src="diag-a8c3dd7e1465f4fa21dc72fdc61d96f4.png" alt="diag a8c3dd7e1465f4fa21dc72fdc61d96f4" width="912" height="973">
+<img src="diag-a8c3dd7e1465f4fa21dc72fdc61d96f4.png" alt="Diagram" width="905" height="966">
 </div>
 </div>
 </div>
@@ -13517,7 +13522,7 @@ may not be respected.</p>
 </div>
 <div class="imageblock text-center">
 <div class="content">
-<img src="diag-1dc3c3c9a3dfcae0564a271efd08953d.png" alt="diag 1dc3c3c9a3dfcae0564a271efd08953d" width="1516" height="1398">
+<img src="diag-1dc3c3c9a3dfcae0564a271efd08953d.png" alt="Diagram" width="1511" height="1359">
 </div>
 </div>
 </div>
@@ -13749,7 +13754,7 @@ that it should stop).</p>
 
 <span class="directive">public</span> <span class="type">class</span> <span class="class">CustomRetryExecutorSample</span> {
   <span class="directive">private</span> <span class="directive">static</span> <span class="directive">final</span> <span class="predefined-type">Logger</span> LOG = LoggerFactory.getLogger(CustomRetryExecutorSample.class);
-
+  
   <span class="directive">private</span> <span class="directive">static</span> <span class="directive">final</span> <span class="type">int</span> INVALID_PORT = <span class="integer">65000</span>;
 
   <span class="directive">public</span> <span class="directive">static</span> <span class="type">void</span> main(<span class="predefined-type">String</span><span class="type">[]</span> args) <span class="directive">throws</span> MessagingException {
@@ -13803,7 +13808,7 @@ that it should stop).</p>
   <span class="comment">/**
    * Custom strategy implementation. For the sample, the executor reproduces
    * the base behavior of SimpleRetryExecutor.
-   *
+   * 
    * @author Aurélien Baudet
    *
    */</span>
@@ -14056,7 +14061,7 @@ For each SMS, a session is created, the message is sent and the session is close
 </div>
 <div class="imageblock text-center">
 <div class="content">
-<img src="diag-7ddead08cf6b3809422d41f55e6d7895.png" alt="diag 7ddead08cf6b3809422d41f55e6d7895" width="521" height="1012">
+<img src="diag-7ddead08cf6b3809422d41f55e6d7895.png" alt="Diagram" width="509" height="1005">
 </div>
 <div class="title">Figure 13. How it works</div>
 </div>
@@ -14167,7 +14172,7 @@ ogham.sms.cloudhopper.session.reuse-session.enable=true           <i class="conu
 </div>
 <div class="imageblock text-center">
 <div class="content">
-<img src="diag-4644cd346f4e29f19da7b4c4a46244a6.png" alt="diag 4644cd346f4e29f19da7b4c4a46244a6" width="742" height="1067">
+<img src="diag-4644cd346f4e29f19da7b4c4a46244a6.png" alt="Diagram" width="722" height="1060">
 </div>
 <div class="title">Figure 14. How reuse session works</div>
 </div>
@@ -14412,7 +14417,7 @@ ogham.sms.cloudhopper.session.keep-alive.enable=true           <i class="conum" 
 </div>
 <div class="imageblock text-center">
 <div class="content">
-<img src="diag-9b8bc5f590eff6826bd7312d098259ca.png" alt="diag 9b8bc5f590eff6826bd7312d098259ca" width="792" height="1395">
+<img src="diag-9b8bc5f590eff6826bd7312d098259ca.png" alt="Diagram" width="768" height="1388">
 </div>
 <div class="title">Figure 15. How keep alive works</div>
 </div>
@@ -15396,9 +15401,8 @@ it expires.</p></td>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2023-05-25 15:18:35 UTC
+Last updated 2023-05-25 20:07:33 UTC
 </div>
 </div>
-<link rel="stylesheet" href="./coderay-asciidoctor.css">
 </body>
 </html>

@@ -4,11 +4,12 @@
 <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="generator" content="Asciidoctor 2.0.10">
-<title>Explanation:</title>
+<meta name="generator" content="Asciidoctor 2.0.18">
+<title>Untitled</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <link rel="stylesheet" href="./asciidoctor.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="./coderay-asciidoctor.css">
 <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 <script type="text/javascript" src="../..//javascripts/steps.js"></script>
 <script type="text/javascript" src="../..//javascripts/sourcecode/source-utils.js"></script>
@@ -20,20 +21,8 @@
 <script type="text/javascript" src="../..//javascripts/image-viewer.js"></script>
 <link rel="stylesheet" type="text/css" href="../..//styles/doc-styles.css" />
 </head>
-<body class="book toc2 toc-left">
+<body class="book">
 <div id="header">
-<div id="toc" class="toc2">
-<div id="toctitle">Table of Contents</div>
-<ul class="sectlevel1">
-<li><a href="#_explanation">Explanation:</a></li>
-<li><a href="#_solutions">Solutions:</a>
-<ul class="sectlevel2">
-<li><a href="#_either_prefer_use_of_old_javax_mail">Either prefer use of old Javax mail</a></li>
-<li><a href="#_or_prefer_use_of_new_jakarta_mail">Or prefer use of new Jakarta mail</a></li>
-</ul>
-</li>
-</ul>
-</div>
 </div>
 <div id="content">
 <div id="preamble">
@@ -406,15 +395,9 @@ Spring Boot version).</p>
 <div class="paragraph">
 <p>/!\ You may experience classpath issues while sending emails with Ogham using Java Mail and Spring Boot &gt;= 2.2.x &lt; 3.0.x.</p>
 </div>
-</td>
-</tr>
-</table>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_explanation"><a class="anchor" href="#_explanation"></a>Explanation:</h2>
-<div class="sectionbody">
+<details>
+<summary class="title">Explanation</summary>
+<div class="content">
 <div class="paragraph">
 <p>There can be a mess in the classpath due to Spring Boot dependency management
 that forces versions:</p>
@@ -480,12 +463,13 @@ is not really developer friendly and hard to understand why it happens.</p>
 </ul>
 </div>
 </div>
+</details>
+<details>
+<summary class="title">Solutions</summary>
+<div class="content">
+<div class="paragraph">
+<p><strong>Solution 1: Prefer use of old Javax mail</strong></p>
 </div>
-<div class="sect1">
-<h2 id="_solutions"><a class="anchor" href="#_solutions"></a>Solutions:</h2>
-<div class="sectionbody">
-<div class="sect2">
-<h3 id="_either_prefer_use_of_old_javax_mail"><a class="anchor" href="#_either_prefer_use_of_old_javax_mail"></a>Either prefer use of old Javax mail</h3>
 <div class="paragraph">
 <p>If you prefer using Javax mail in order to avoid possible classpath clashes by mixing both javax and jakarta, you can:</p>
 </div>
@@ -497,6 +481,9 @@ is not really developer friendly and hard to understand why it happens.</p>
 <li>
 <p>Or add explicitly the dependency <code>com.sun.mail:jakarta.mail</code> BEFORE <code>fr.sii.ogham:ogham-email-javamail</code> dependency</p>
 </li>
+<li>
+<p>Or exclude <code>org.eclipse.angus:angus-mail</code> from <code>fr.sii.ogham:ogham-email-javamail</code> (so that order doesn&#8217;t matter)</p>
+</li>
 </ul>
 </div>
 <div class="admonitionblock note">
@@ -507,16 +494,15 @@ is not really developer friendly and hard to understand why it happens.</p>
 </td>
 <td class="content">
 <div class="paragraph">
-<p>Order is important in order to let Java pick the service configuration of the <code>com.sun.mail:jakarta-mail</code> dependency first.
-You can also exclude <code>org.eclipse.angus:angus-mail</code> from <code>fr.sii.ogham:ogham-email-javamail</code> (so that order doesn&#8217;t matter).</p>
+<p>Order is important in order to let Java pick the service configuration of the <code>com.sun.mail:jakarta-mail</code> dependency first.</p>
 </div>
 </td>
 </tr>
 </table>
 </div>
+<div class="paragraph">
+<p><strong>Solution 2: Prefer use of new Jakarta mail</strong></p>
 </div>
-<div class="sect2">
-<h3 id="_or_prefer_use_of_new_jakarta_mail"><a class="anchor" href="#_or_prefer_use_of_new_jakarta_mail"></a>Or prefer use of new Jakarta mail</h3>
 <div class="paragraph">
 <p>If you prefer using the new Jakarta mail, you can:</p>
 </div>
@@ -587,6 +573,12 @@ So you also have to override dependency management by adding:</p>
 </tr>
 </table>
 </div>
+</div>
+</details>
+</td>
+</tr>
+</table>
+</div>
 <div class="admonitionblock tip">
 <table>
 <tr>
@@ -595,7 +587,7 @@ So you also have to override dependency management by adding:</p>
 </td>
 <td class="content">
 <div class="paragraph">
-<p>You can disable this message by setting the property <code>ogham.email.javamail.check-classpath-consistency=false</code></p>
+<p>You can disable the warning message by setting the property <code>ogham.email.javamail.check-classpath-consistency=false</code></p>
 </div>
 </td>
 </tr>
@@ -604,12 +596,10 @@ So you also have to override dependency management by adding:</p>
 </div>
 </div>
 </div>
-</div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2023-05-25 15:18:35 UTC
+Last updated 2023-05-25 20:07:33 UTC
 </div>
 </div>
-<link rel="stylesheet" href="./coderay-asciidoctor.css">
 </body>
 </html>

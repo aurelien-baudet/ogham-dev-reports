@@ -4,11 +4,12 @@
 <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="generator" content="Asciidoctor 2.0.10">
+<meta name="generator" content="Asciidoctor 2.0.18">
 <title>Ogham</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <link rel="stylesheet" href="./asciidoctor.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="./coderay-asciidoctor.css">
 <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 <script type="text/javascript" src="..//javascripts/steps.js"></script>
 <script type="text/javascript" src="..//javascripts/sourcecode/source-utils.js"></script>
@@ -84,7 +85,7 @@
 <div class="paragraph">
 <p><span class="image"><a class="image" href="https://mvnrepository.com/artifact/fr.sii.ogham/ogham-all/"><img src="https://img.shields.io/maven-central/v/fr.sii.ogham/ogham-all.svg" alt="Latest Release Standalone"></a></span>
 <span class="image"><a class="image" href="https://opensource.org/licenses/Apache-2.0"><img src="https://img.shields.io/badge/License-Apache%202.0-lightgrey.svg" alt="License"></a></span>
-<span class="image"><a class="image" href="https://github.com/groupe-sii/ogham/actions?query=workflow%3ABuild"><img src="https://github.com/groupe-sii/ogham/workflows/Build/badge.svg?branch={git-branch}" alt="Build Status"></a></span></p>
+<span class="image"><a class="image" href="https://github.com/groupe-sii/ogham/actions?query=workflow%3ABuild"><img src="https://github.com/groupe-sii/ogham/workflows/Build/badge.svg?branch=master" alt="Build Status"></a></span></p>
 </div>
 <div class="paragraph">
 <p><span class="image"><a class="image" href="https://sonarcloud.io/dashboard?id=fr.sii.ogham%3Aogham-parent"><img src="https://sonarcloud.io/api/project_badges/measure?project=fr.sii.ogham%3Aogham-parent&amp;metric=alert_status" alt="Sonar"></a></span>
@@ -678,9 +679,8 @@ Spring Boot version).</p>
 </tr>
 </table>
 </div>
-<div class="paragraph">
-<p>== Explanation:</p>
 </div>
+</details>
 <div class="paragraph">
 <p>There can be a mess in the classpath due to Spring Boot dependency management
 that forces versions:</p>
@@ -745,11 +745,13 @@ is not really developer friendly and hard to understand why it happens.</p>
 </li>
 </ul>
 </div>
-<div class="paragraph">
-<p>== Solutions:</p>
+<div class="exampleblock">
+<div class="content">
+
+</div>
 </div>
 <div class="paragraph">
-<p>=== Either prefer use of old Javax mail</p>
+<p><strong>Solution 1: Prefer use of old Javax mail</strong></p>
 </div>
 <div class="paragraph">
 <p>If you prefer using Javax mail in order to avoid possible classpath clashes by mixing both javax and jakarta, you can:</p>
@@ -762,6 +764,9 @@ is not really developer friendly and hard to understand why it happens.</p>
 <li>
 <p>Or add explicitly the dependency <code>com.sun.mail:jakarta.mail</code> BEFORE <code>fr.sii.ogham:ogham-email-javamail</code> dependency</p>
 </li>
+<li>
+<p>Or exclude <code>org.eclipse.angus:angus-mail</code> from <code>fr.sii.ogham:ogham-email-javamail</code> (so that order doesn&#8217;t matter)</p>
+</li>
 </ul>
 </div>
 <div class="admonitionblock note">
@@ -772,15 +777,14 @@ is not really developer friendly and hard to understand why it happens.</p>
 </td>
 <td class="content">
 <div class="paragraph">
-<p>Order is important in order to let Java pick the service configuration of the <code>com.sun.mail:jakarta-mail</code> dependency first.
-You can also exclude <code>org.eclipse.angus:angus-mail</code> from <code>fr.sii.ogham:ogham-email-javamail</code> (so that order doesn&#8217;t matter).</p>
+<p>Order is important in order to let Java pick the service configuration of the <code>com.sun.mail:jakarta-mail</code> dependency first.</p>
 </div>
 </td>
 </tr>
 </table>
 </div>
 <div class="paragraph">
-<p>=== Or prefer use of new Jakarta mail</p>
+<p><strong>Solution 2: Prefer use of new Jakarta mail</strong></p>
 </div>
 <div class="paragraph">
 <p>If you prefer using the new Jakarta mail, you can:</p>
@@ -852,6 +856,10 @@ So you also have to override dependency management by adding:</p>
 </tr>
 </table>
 </div>
+<div class="exampleblock">
+<div class="content">
+<div class="exampleblock">
+<div class="content">
 <div class="admonitionblock tip">
 <table>
 <tr>
@@ -860,14 +868,16 @@ So you also have to override dependency management by adding:</p>
 </td>
 <td class="content">
 <div class="paragraph">
-<p>You can disable this message by setting the property <code>ogham.email.javamail.check-classpath-consistency=false</code></p>
+<p>You can disable the warning message by setting the property <code>ogham.email.javamail.check-classpath-consistency=false</code></p>
 </div>
 </td>
 </tr>
 </table>
 </div>
 </div>
-</details>
+</div>
+</div>
+</div>
 </div>
 </div>
 </div>
@@ -1298,7 +1308,7 @@ a different evaluation syntax or context just for one line.</p>
                       <span class="keyword">new</span> SimpleBean(<span class="string"><span class="delimiter">&quot;</span><span class="content">foo</span><span class="delimiter">&quot;</span></span>, <span class="integer">42</span>))
         .to(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham-test@yopmail.com</span><span class="delimiter">&quot;</span></span>));
   }
-
+  
   <span class="directive">public</span> <span class="directive">static</span> <span class="type">class</span> <span class="class">SimpleBean</span> {
     <span class="directive">private</span> <span class="predefined-type">String</span> name;
     <span class="directive">private</span> <span class="type">int</span> value;
@@ -1418,7 +1428,7 @@ with <code>Subject:</code> (spaces can be added after colon). Other lines are us
                       <span class="keyword">new</span> SimpleBean(<span class="string"><span class="delimiter">&quot;</span><span class="content">foo</span><span class="delimiter">&quot;</span></span>, <span class="integer">42</span>))
         .to(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham-test@yopmail.com</span><span class="delimiter">&quot;</span></span>));
   }
-
+  
   <span class="directive">public</span> <span class="directive">static</span> <span class="type">class</span> <span class="class">SimpleBean</span> {
     <span class="directive">private</span> <span class="predefined-type">String</span> name;
     <span class="directive">private</span> <span class="type">int</span> value;
@@ -2074,7 +2084,7 @@ and text template files).</p>
                           <span class="keyword">new</span> SimpleBean(<span class="string"><span class="delimiter">&quot;</span><span class="content">foo</span><span class="delimiter">&quot;</span></span>, <span class="integer">42</span>))                     <i class="conum" data-value="2"></i><b>(2)</b>
         .to(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham-test@yopmail.com</span><span class="delimiter">&quot;</span></span>));
   }
-
+  
   <span class="directive">public</span> <span class="directive">static</span> <span class="type">class</span> <span class="class">SimpleBean</span> {
     <span class="directive">private</span> <span class="predefined-type">String</span> name;
     <span class="directive">private</span> <span class="type">int</span> value;
@@ -2232,7 +2242,7 @@ the same email. Just write your templates with the engine you want.</p>
                           <span class="keyword">new</span> SimpleBean(<span class="string"><span class="delimiter">&quot;</span><span class="content">foo</span><span class="delimiter">&quot;</span></span>, <span class="integer">42</span>))                     <i class="conum" data-value="2"></i><b>(2)</b>
         .to(<span class="string"><span class="delimiter">&quot;</span><span class="content">ogham-test@yopmail.com</span><span class="delimiter">&quot;</span></span>));
   }
-
+  
   <span class="directive">public</span> <span class="directive">static</span> <span class="type">class</span> <span class="class">SimpleBean</span> {
     <span class="directive">private</span> <span class="predefined-type">String</span> name;
     <span class="directive">private</span> <span class="type">int</span> value;
@@ -3222,7 +3232,7 @@ assertions on your email (right recipients, right sender, right body&#8230;&#820
           .and()
         .build();
   }
-
+  
   <span class="annotation">@Test</span>
   <span class="directive">public</span> <span class="type">void</span> simple(SmppServerSimulator&lt;SubmitSm&gt; smppServer) <span class="directive">throws</span> MessagingException { <i class="conum" data-value="5"></i><b>(5)</b>
     <span class="comment">// @formatter:off</span>
@@ -3368,9 +3378,8 @@ I have many ideas for this project to ease other developer work.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2023-05-25 15:18:35 UTC
+Last updated 2023-05-25 20:07:33 UTC
 </div>
 </div>
-<link rel="stylesheet" href="./coderay-asciidoctor.css">
 </body>
 </html>
