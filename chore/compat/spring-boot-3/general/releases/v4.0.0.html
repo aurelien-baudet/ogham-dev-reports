@@ -28,6 +28,7 @@
 <li><a href="#_updates">Updates</a>
 <ul class="sectlevel2">
 <li><a href="#_java_support">Java support</a></li>
+<li><a href="#_javax_mail_and_jakarta_mail_support">Javax mail and Jakarta mail support</a></li>
 <li><a href="#_spring_boot_support">Spring Boot support</a></li>
 </ul>
 </li>
@@ -41,6 +42,7 @@
 <li><a href="#_testing">Testing</a>
 <ul class="sectlevel2">
 <li><a href="#_test_utilities_dependencies">Test utilities dependencies</a></li>
+<li><a href="#_junit_4">JUnit 4</a></li>
 </ul>
 </li>
 <li><a href="#_compatibility_check">Compatibility check</a></li>
@@ -79,6 +81,165 @@ either standalone or with Spring Boot 1 and Spring Boot 2.</p>
 <div class="paragraph">
 <p>Ogham should support newer Java versions in the future without any changes.
 Currently, the latest tested version through compatibility checks is Java 20.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_javax_mail_and_jakarta_mail_support"><a class="anchor" href="#_javax_mail_and_jakarta_mail_support"></a>Javax mail and Jakarta mail support</h3>
+<div class="paragraph">
+<p>There is a big change in Java community that has many side effects. The "simple" renaming of Javax to Jakarta can produce big mess in the classpath.</p>
+</div>
+<div class="paragraph">
+<p>Now by default, Ogham brings transitive dependencies to Jakarta mail through <code>org.eclipse.angus:angus-mail</code> and doesn&#8217;t bring <code>com.sun.mail:javax.mail</code> anymore. Ogham is still able to support both Javax mail and Jakarta mail because it adapts to what is present in the classpath.</p>
+</div>
+<div class="admonitionblock caution">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-caution" title="Caution"></i>
+</td>
+<td class="content">
+<div class="title">Mix of Javax mail and Jakarta mail is not recommended</div>
+<div class="paragraph">
+<p>Be careful if you mix dependencies that bring Javax mail implementation such as <code>com.sun.mail:javax.mail</code> (or <code>com.sun.mail:jakarta.mail</code> &#8656; 1.6.7 that still uses package name <code>javax.mail</code>) and new implementations that bring Jakarta mail (package <code>jakarta.mail</code>).</p>
+</div>
+<div class="paragraph">
+<p>There can be a big mess and it is very complicated. So a diagram can explain better than a long explanation:</p>
+</div>
+<div class="listingblock text-center">
+<div class="content">
+<pre>Failed to generate image: PlantUML image generation failed: [From <input> (line 33) ]
+
+@startuml
+skinparam sequence {
+	ArrowColor DeepSkyBlue
+	ActorBorderColor DeepSkyBlue
+	LifeLineBorderColor blue
+...
+... ( skipping 25 lines )
+...
+        [javax.mail.Session] as javaxSession
+        interface javax.mail.Provider as javaxProvider
+    }
+
+    package "com.sun.mail" as javaxSunPackage {
+        [com.sun.mail.imap.IMAPProvider] as javaxProviderImplImap
+        [com.sun.mail.imap.IMAPSSLProvider] as javaxProviderImplImapSsl
+        [... other implementations ...] as javaxOthers
+    }
+
+}
+
+javaxSession -> javaxServicesProvider            : load
+
+javaxSession -> javaxProviderImplImap            : instantiate
+javaxSession -> javaxProviderImplImapSsl         : instantiate
+
+javaxProviderImplImap    .up.> javaxProvider     : implements
+javaxProviderImplImapSsl .up.> javaxProvider     : implements
+javaxOthers              -left[hidden]-> javaxProviderImplImapSsl
+^^^^^
+ Syntax Error?
+
+
+node "com.sun.mail:jakarta.mail <= 1.6.7" as javaxMailJar {
+
+    file javaxServicesProvider [
+        META-INF/services/javax.mail.Provider
+        ----
+        com.sun.mail.imap.IMAPProvider
+        com.sun.mail.imap.IMAPSSLProvider
+        ...
+    ]
+
+    package "javax.mail" as javaxMailPackage {
+        [javax.mail.Session] as javaxSession
+        interface javax.mail.Provider as javaxProvider
+    }
+
+    package "com.sun.mail" as javaxSunPackage {
+        [com.sun.mail.imap.IMAPProvider] as javaxProviderImplImap
+        [com.sun.mail.imap.IMAPSSLProvider] as javaxProviderImplImapSsl
+        [... other implementations ...] as javaxOthers
+    }
+
+}
+
+javaxSession -> javaxServicesProvider            : load
+
+javaxSession -> javaxProviderImplImap            : instantiate
+javaxSession -> javaxProviderImplImapSsl         : instantiate
+
+javaxProviderImplImap    .up.> javaxProvider     : implements
+javaxProviderImplImapSsl .up.> javaxProvider     : implements
+javaxOthers              -left[hidden]-> javaxProviderImplImapSsl
+
+node "com.sun.mail:jakarta.mail > 1.6.7" as jakartaMailJar {
+
+    file jakartaServicesProvider [
+        META-INF/services/jakarta.mail.Provider
+        ----
+        com.sun.mail.imap.IMAPProvider
+        com.sun.mail.imap.IMAPSSLProvider
+        ...
+    ]
+
+    package "jakarta.mail" as jakartaMailPackage {
+        [jakarta.mail.Session] as jakartaSession
+        interface jakarta.mail.Provider as jakartaProvider
+    }
+
+    package "com.sun.mail" as jakartaSunPackage {
+        [com.sun.mail.imap.IMAPProvider] as jakartaProviderImplImap
+        [com.sun.mail.imap.IMAPSSLProvider] as jakartaProviderImplImapSsl
+        [... other implementations ...] as jakartaOthers
+    }
+
+}
+
+jakartaSession -> jakartaServicesProvider           : load
+
+jakartaSession -> jakartaProviderImplImap           : instantiate
+jakartaSession -> jakartaProviderImplImapSsl        : instantiate
+
+jakartaProviderImplImap    .up.> jakartaProvider    : implements
+jakartaProviderImplImapSsl .up.> jakartaProvider    : implements
+jakartaOthers              -left[hidden]-> jakartaProviderImplImapSsl
+
+
+jakartaServicesProvider -up[hidden]-> javaxProviderImplImap</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>As you can notice, both JARs define the classes <code>com.sun.mail.imap.IMAPProvider</code> and <code>com.sun.mail.imap.IMAPSSLProvider</code>. However, <code>com.sun.mail.imap.IMAPProvider</code> and <code>com.sun.mail.imap.IMAPSSLProvider</code> from <code>com.sun.mail:jakarta.mail</code> &#8656; 1.6.7 implements <code>javax.mail.Provider</code> while <code>com.sun.mail.imap.IMAPProvider</code> and <code>com.sun.mail.imap.IMAPSSLProvider</code> from <code>com.sun.mail:jakarta.mail</code> &gt; 1.6.7 implements <code>jakarta.mail.Provider</code>. So loading of the class may fail according to the classpath declaration order.</p>
+</div>
+<div class="paragraph">
+<p>For example, if the classpath order is <code>com.sun.mail:jakarta.mail:1.6.7;com.sun.mail:jakarta.mail:2.0.0</code>, using <code>javax.mail.Session</code> will load <code>META-INF/services/javax.mail.Provider</code> which in turn will load <code>com.sun.mail.imap.IMAPProvider</code>. As <code>com.sun.mail:jakarta.mail:1.6.7</code> is the first declared JAR, it will be used first so the class <code>com.sun.mail.imap.IMAPProvider</code> from <code>com.sun.mail:jakarta.mail:1.6.7</code> is loaded which is good since it implements <code>javax.mail.Provider</code>.</p>
+</div>
+<div class="paragraph">
+<p>However, if the classpath order is <code>com.sun.mail:jakarta.mail:2.0.0;com.sun.mail:jakarta.mail:1.6.7</code>, using <code>javax.mail.Session</code> will load <code>META-INF/services/javax.mail.Provider</code> which in turn will load <code>com.sun.mail.imap.IMAPProvider</code>. As <code>com.sun.mail:jakarta.mail:2.0.0</code> is the first declared JAR, it will be used first so the class <code>com.sun.mail.imap.IMAPProvider</code> from <code>com.sun.mail:jakarta.mail:2.0.0</code> is loaded which <strong>will fail</strong> since it implements <code>jakarta.mail.Provider</code> (and <code>javax.mail.Provider</code> is required).</p>
+</div>
+<div class="paragraph">
+<p>You may think that is not a big issue since it seems that trying to use <code>javax.mail.Session</code> first and then <code>jakarta.mail.Session</code> if it fails will work. But it is not the case. There are other configuration files in the JARs that define implementations for other interfaces:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>META-INF/javamail.default.providers</code></p>
+</li>
+<li>
+<p><code>META-INF/mailcap</code></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>There are conflicting with Javax/Jakarta activation too&#8230;&#8203;</p>
+</div>
+<div class="paragraph">
+<p>Ogham still tries to use one of Javax or Jakarta mail but check classpath consistency. If classpath is not consistent, a message is logged to indicate why emails can&#8217;t be sent with the implementation.</p>
 </div>
 </td>
 </tr>
@@ -357,6 +518,15 @@ Now, those internal dependencies are not available as transitive dependencies an
 <p>The drawback of Fat JAR is that if you need to upgrade a test dependency due to a bug, you can&#8217;t without a new Ogham version.</p>
 </div>
 </div>
+<div class="sect2">
+<h3 id="_junit_4"><a class="anchor" href="#_junit_4"></a>JUnit 4</h3>
+<div class="paragraph">
+<p>Internally, all tests have been updated to use JUnit 5. Almost all samples are using JUnit 5 (except specific tests showing how to use JUnit 4 rules).</p>
+</div>
+<div class="paragraph">
+<p>JUnit 4 is still supported meaning that you can still use it with Ogham. However, Ogham doesn&#8217;t bring it for you anymore. So, you hate to add explicit dependencies to JUnit 4.</p>
+</div>
+</div>
 </div>
 </div>
 <div class="sect1">
@@ -548,7 +718,7 @@ are not available on Github Actions using <code>actions/setup-java</code> action
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2023-05-25 13:25:50 UTC
+Last updated 2023-05-25 15:18:35 UTC
 </div>
 </div>
 <link rel="stylesheet" href="./coderay-asciidoctor.css">
