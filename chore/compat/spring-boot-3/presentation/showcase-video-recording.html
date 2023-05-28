@@ -521,10 +521,10 @@ ${i}) Hello world !!
 <div class="admonitionblock tip fragment"><table><tr><td class="icon"><i class="fa fa-lightbulb-o" title="Tip"></i></td><td class="content"><div class="paragraph"><p>Number of characters per SMS depends on message encoding.</p></div>
 <div class="paragraph"><p><strong>Ogham handles it for you !</strong></p></div></td></tr></table></div>
 <div class="paragraph fragment wait attr:data-autoslide=5000"><p>-</p></div></div></section><section id="_2_focus_on_business_code_get_rid_of_technical_concerns_4" class="stretch vcenter" data-transition="fade"><h2>2. Focus on business code <span class="subobjective">Get rid of technical concerns</span></h2><div class="slide-content"><div class="paragraph"><p>Don&#8217;t waste time on technical concerns anymore !!</p></div>
-<div class="paragraph fragment wait attr:data-autoslide=1000"><p>-</p></div></div></section><section id="_2_focus_on_business_code_test_your_code" class="stretch vcenter" data-transition="fade"><h2>2. Focus on business code <span class="subobjective">Test your code</span></h2><div class="slide-content"><h3>Start a SMTP server on a random port</h3><div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-java hljs" data-noescape="true" data-lang="java">@Rule
-public GreenMailRule greenMail = new RandomPortGreenMailRule();</code></pre></div></div>
+<div class="paragraph fragment wait attr:data-autoslide=1000"><p>-</p></div></div></section><section id="_2_focus_on_business_code_test_your_code" class="stretch vcenter" data-transition="fade"><h2>2. Focus on business code <span class="subobjective">Test your code</span></h2><div class="slide-content"><h3>Start a SMTP server on a random port</h3><div class="listingblock fragment irrelevant-lines:2"><div class="content"><pre class="highlightjs highlight"><code class="language-java hljs" data-noescape="true" data-lang="java">@GreenMailServer
+class YourIntegrationTest {}</code></pre></div></div>
 <div class="paragraph fragment wait attr:data-autoslide=500"><p>-</p></div></div></section><section id="_2_focus_on_business_code_test_your_code_2" class="stretch vcenter" data-transition="fade"><h2>2. Focus on business code <span class="subobjective">Test your code</span></h2><div class="slide-content"><h3>Use <strong>Ogham assertions</strong> to ensure your business code sends email with the right information</h3><div class="listingblock fragment irrelevant-lines:1-2,4,17"><div class="content"><pre class="highlightjs highlight"><code class="language-java hljs" data-noescape="true" data-lang="java">@Test
-public void userShouldReceiveConfirmationEmail() {
+public void userShouldReceiveConfirmationEmail(GreenMail greenMail) {
   // test your business code here that sends an email
   String code = yourAccountService.newAccount(someAccount);
 
@@ -540,10 +540,10 @@ public void userShouldReceiveConfirmationEmail() {
         .contentAsString(containsString("?confirmation="+code))
       // ... other assertions
 }</code></pre></div></div>
-<div class="paragraph fragment wait attr:data-autoslide=7000"><p>-</p></div></div></section><section id="_2_focus_on_business_code_test_your_code_3" class="stretch vcenter" data-transition="fade"><h2>2. Focus on business code <span class="subobjective">Test your code</span></h2><div class="slide-content"><h3>Start a SMPP server on a random port</h3><div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-java hljs" data-noescape="true" data-lang="java">@Rule
-public SmppServerRule&lt;SubmitSm&gt; smppServer = new JsmppServerRule();</code></pre></div></div>
+<div class="paragraph fragment wait attr:data-autoslide=7000"><p>-</p></div></div></section><section id="_2_focus_on_business_code_test_your_code_3" class="stretch vcenter" data-transition="fade"><h2>2. Focus on business code <span class="subobjective">Test your code</span></h2><div class="slide-content"><h3>Start a SMPP server on a random port</h3><div class="listingblock fragment irrelevant-lines:2"><div class="content"><pre class="highlightjs highlight"><code class="language-java hljs" data-noescape="true" data-lang="java">@JsmppServer
+class YourIntegrationTest {}</code></pre></div></div>
 <div class="paragraph fragment wait attr:data-autoslide=500"><p>-</p></div></div></section><section id="_2_focus_on_business_code_test_your_code_4" class="stretch vcenter" data-transition="fade"><h2>2. Focus on business code <span class="subobjective">Test your code</span></h2><div class="slide-content"><h3>Use <strong>Ogham assertions</strong> to ensure your business code sends SMS with the right information</h3><div class="listingblock fragment irrelevant-lines:1-2,4,14"><div class="content"><pre class="highlightjs highlight"><code class="language-java hljs" data-noescape="true" data-lang="java">@Test
-public void userShouldReceiveConfirmationCode() {
+public void userShouldReceiveConfirmationCode(SmppServerSimulator&lt;SubmitSm&gt; smppServer) {
   // test your business code here that sends a SMS
   String code = yourAccountService.newAccount(someAccount);
 
