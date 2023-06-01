@@ -12,49 +12,48 @@ import java.util.Properties;
 
 import static java.util.Arrays.asList;
 
-@SuppressWarnings(&quot;Duplicates&quot;)
-<span class="nc" id="L16">public class JavaxMailConsistencyChecker {</span>
+<span class="nc" id="L15">public class JavaxMailConsistencyChecker {</span>
     public static List&lt;Provider&gt; checkMailProvidersAvailable() throws JavaxMailConsistencyException {
         try {
-<span class="fc" id="L19">            Provider[] providers = Session.getInstance(new Properties()).getProviders();</span>
-<span class="fc" id="L20">            return asList(providers);</span>
-<span class="nc" id="L21">        } catch(Exception | NoClassDefFoundError e) {</span>
-<span class="nc" id="L22">            throw new JavaxMailProvidersLoadFailed(e);</span>
+<span class="fc" id="L18">            Provider[] providers = Session.getInstance(new Properties()).getProviders();</span>
+<span class="fc" id="L19">            return asList(providers);</span>
+<span class="nc" id="L20">        } catch(Exception | NoClassDefFoundError e) {</span>
+<span class="nc" id="L21">            throw new JavaxMailProvidersLoadFailed(e);</span>
         }
     }
 
     public static List&lt;DataContentHandler&gt; checkDataHandlersAvailable() throws JavaxMailConsistencyException {
         try {
-<span class="fc" id="L28">            MailcapCommandMap commandMap = new MailcapCommandMap();</span>
-<span class="fc" id="L29">            List&lt;DataContentHandler&gt; found = new ArrayList&lt;&gt;();</span>
-<span class="fc bfc" id="L30" title="All 2 branches covered.">            for (String mimetype : commandMap.getMimeTypes()) {</span>
-<span class="fc" id="L31">                DataContentHandler dataContentHandler = commandMap.createDataContentHandler(mimetype);</span>
-<span class="fc bfc" id="L32" title="All 2 branches covered.">                if (dataContentHandler != null) {</span>
-<span class="fc" id="L33">                    found.add(dataContentHandler);</span>
+<span class="fc" id="L27">            MailcapCommandMap commandMap = new MailcapCommandMap();</span>
+<span class="fc" id="L28">            List&lt;DataContentHandler&gt; found = new ArrayList&lt;&gt;();</span>
+<span class="fc bfc" id="L29" title="All 2 branches covered.">            for (String mimetype : commandMap.getMimeTypes()) {</span>
+<span class="fc" id="L30">                DataContentHandler dataContentHandler = commandMap.createDataContentHandler(mimetype);</span>
+<span class="fc bfc" id="L31" title="All 2 branches covered.">                if (dataContentHandler != null) {</span>
+<span class="fc" id="L32">                    found.add(dataContentHandler);</span>
                 }
             }
-<span class="fc" id="L36">            return found;</span>
-<span class="fc" id="L37">        } catch(Exception | NoClassDefFoundError e) {</span>
-<span class="fc" id="L38">            throw new JavaxDataHandlersLoadFailed(e);</span>
+<span class="fc" id="L35">            return found;</span>
+<span class="fc" id="L36">        } catch(Exception | NoClassDefFoundError e) {</span>
+<span class="fc" id="L37">            throw new JavaxDataHandlersLoadFailed(e);</span>
         }
     }
 
     public static class JavaxMailConsistencyException extends MessagingException {
         public JavaxMailConsistencyException(String message, Throwable cause) {
-<span class="fc" id="L44">            super(message, cause);</span>
-<span class="fc" id="L45">        }</span>
+<span class="fc" id="L43">            super(message, cause);</span>
+<span class="fc" id="L44">        }</span>
     }
 
     public static class JavaxMailProvidersLoadFailed extends JavaxMailConsistencyException {
         public JavaxMailProvidersLoadFailed(Throwable cause) {
-<span class="nc" id="L50">            super(&quot;javax.mail.Provider implementations can't be loaded. Cause: &quot;+cause.getMessage(), cause);</span>
-<span class="nc" id="L51">        }</span>
+<span class="nc" id="L49">            super(&quot;javax.mail.Provider implementations can't be loaded. Cause: &quot;+cause.getMessage(), cause);</span>
+<span class="nc" id="L50">        }</span>
     }
 
     public static class JavaxDataHandlersLoadFailed extends JavaxMailConsistencyException {
         public JavaxDataHandlersLoadFailed(Throwable cause) {
-<span class="fc" id="L56">            super(&quot;javax.activation.DataHandler implementations can't be loaded. Cause: &quot;+cause.getMessage(), cause);</span>
-<span class="fc" id="L57">        }</span>
+<span class="fc" id="L55">            super(&quot;javax.activation.DataHandler implementations can't be loaded. Cause: &quot;+cause.getMessage(), cause);</span>
+<span class="fc" id="L56">        }</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>
