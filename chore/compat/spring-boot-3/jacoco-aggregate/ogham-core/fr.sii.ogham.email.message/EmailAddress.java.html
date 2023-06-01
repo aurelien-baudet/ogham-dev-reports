@@ -15,10 +15,11 @@ import fr.sii.ogham.core.util.HashCodeBuilder;
  *
  */
 public class EmailAddress {
-	private static final String QUOTED = &quot;([\&quot;](?&lt;personal1&gt;[^\&quot;]+)[\&quot;])&quot;;
-	private static final String UNQUOTED = &quot;(?&lt;personal2&gt;.+)&quot;;
+	private static final String QUOTED = &quot;(\&quot;(?&lt;personal1&gt;[^\&quot;]+)\&quot;)&quot;;
+	private static final String UNQUOTED = &quot;(?&lt;personal2&gt;[^\&quot;]+)&quot;;
 	private static final String ADDRESS_WITH_TAG = &quot;&lt;(?&lt;address&gt;[^&gt;]+)&gt;&quot;;
-<span class="fc" id="L21">	private static final Pattern SIMPLE_ADDRESS_WITH_PERSONAL = Pattern.compile(&quot;\\s*(&quot;+QUOTED+&quot;|&quot;+UNQUOTED+&quot;)\\s* &quot;+ADDRESS_WITH_TAG);</span>
+<span class="fc" id="L21">	private static final Pattern SIMPLE_ADDRESS_WITH_PERSONAL = Pattern.compile(&quot;\\s*+(&quot;+QUOTED+&quot;|&quot;+UNQUOTED+&quot;)\\s++&quot;+ADDRESS_WITH_TAG);</span>
+	private static final int MAX_SIZE = 320;
 
 	/**
 	 * The email address part (is of the form &quot;user@domain.host&quot;)
@@ -56,11 +57,11 @@ public class EmailAddress {
 	 *            the email address part
 	 */
 	public EmailAddress(String rawAddress) {
-<span class="fc" id="L59">		super();</span>
-<span class="fc" id="L60">		EmailAddress parsed = parse(rawAddress);</span>
-<span class="fc" id="L61">		address = parsed.getAddress();</span>
-<span class="fc" id="L62">		personal = parsed.getPersonal();</span>
-<span class="fc" id="L63">	}</span>
+<span class="fc" id="L60">		super();</span>
+<span class="fc" id="L61">		EmailAddress parsed = parse(rawAddress);</span>
+<span class="fc" id="L62">		address = parsed.getAddress();</span>
+<span class="fc" id="L63">		personal = parsed.getPersonal();</span>
+<span class="fc" id="L64">	}</span>
 
 	/**
 	 * Initialize the address with the email address and the personal parts.
@@ -72,50 +73,53 @@ public class EmailAddress {
 	 *            the personal part
 	 */
 	public EmailAddress(String address, String personal) {
-<span class="fc" id="L75">		super();</span>
-<span class="fc" id="L76">		this.address = address;</span>
-<span class="fc" id="L77">		this.personal = personal;</span>
-<span class="fc" id="L78">	}</span>
+<span class="fc" id="L76">		super();</span>
+<span class="fc" id="L77">		this.address = address;</span>
+<span class="fc" id="L78">		this.personal = personal;</span>
+<span class="fc" id="L79">	}</span>
 
 	public String getAddress() {
-<span class="fc" id="L81">		return address;</span>
+<span class="fc" id="L82">		return address;</span>
 	}
 
 	public String getPersonal() {
-<span class="fc" id="L85">		return personal;</span>
+<span class="fc" id="L86">		return personal;</span>
 	}
 
 	@Override
 	public String toString() {
-<span class="fc" id="L90">		StringBuilder builder = new StringBuilder();</span>
-<span class="pc bpc" id="L91" title="1 of 4 branches missed.">		if (personal != null &amp;&amp; !personal.isEmpty()) {</span>
-<span class="fc" id="L92">			builder.append(personal).append(&quot; &quot;);</span>
+<span class="fc" id="L91">		StringBuilder builder = new StringBuilder();</span>
+<span class="pc bpc" id="L92" title="1 of 4 branches missed.">		if (personal != null &amp;&amp; !personal.isEmpty()) {</span>
+<span class="fc" id="L93">			builder.append(personal).append(&quot; &quot;);</span>
 		}
-<span class="fc" id="L94">		builder.append(&quot;&lt;&quot;).append(address).append(&quot;&gt;&quot;);</span>
-<span class="fc" id="L95">		return builder.toString();</span>
+<span class="fc" id="L95">		builder.append(&quot;&lt;&quot;).append(address).append(&quot;&gt;&quot;);</span>
+<span class="fc" id="L96">		return builder.toString();</span>
 	}
 
 	@Override
 	public int hashCode() {
-<span class="fc" id="L100">		return new HashCodeBuilder().append(address, personal).hashCode();</span>
+<span class="fc" id="L101">		return new HashCodeBuilder().append(address, personal).hashCode();</span>
 	}
 
 	@Override
 	public boolean equals(Object obj) {
-<span class="fc" id="L105">		return new EqualsBuilder(this, obj).appendFields(&quot;address&quot;, &quot;personal&quot;).isEqual();</span>
+<span class="fc" id="L106">		return new EqualsBuilder(this, obj).appendFields(&quot;address&quot;, &quot;personal&quot;).isEqual();</span>
 	}
 
 	public static EmailAddress parse(String rawAddress) {
-<span class="fc bfc" id="L109" title="All 2 branches covered.">		if(rawAddress == null) {</span>
-<span class="fc" id="L110">			throw new IllegalArgumentException(&quot;Address can't be null&quot;);</span>
+<span class="fc bfc" id="L110" title="All 2 branches covered.">		if(rawAddress == null) {</span>
+<span class="fc" id="L111">			throw new IllegalArgumentException(&quot;Address can't be null&quot;);</span>
 		}
-<span class="fc" id="L112">		Matcher matcher = SIMPLE_ADDRESS_WITH_PERSONAL.matcher(rawAddress);</span>
-<span class="fc bfc" id="L113" title="All 2 branches covered.">		if(matcher.matches()) {</span>
-<span class="fc" id="L114">			String address = matcher.group(&quot;address&quot;);</span>
-<span class="fc bfc" id="L115" title="All 2 branches covered.">			String personal = matcher.group(&quot;personal1&quot;) != null ? matcher.group(&quot;personal1&quot;) : matcher.group(&quot;personal2&quot;);</span>
-<span class="fc" id="L116">			return new EmailAddress(address, personal);</span>
+<span class="pc bpc" id="L113" title="1 of 2 branches missed.">		if(rawAddress.length() &gt; MAX_SIZE) {</span>
+<span class="nc" id="L114">			throw new IllegalArgumentException(&quot;Address maximum length is &quot; + MAX_SIZE);</span>
 		}
-<span class="fc" id="L118">		return new EmailAddress(rawAddress, null);</span>
+<span class="fc" id="L116">		Matcher matcher = SIMPLE_ADDRESS_WITH_PERSONAL.matcher(rawAddress);</span>
+<span class="fc bfc" id="L117" title="All 2 branches covered.">		if(matcher.matches()) {</span>
+<span class="fc" id="L118">			String address = matcher.group(&quot;address&quot;);</span>
+<span class="fc bfc" id="L119" title="All 2 branches covered.">			String personal = matcher.group(&quot;personal1&quot;) != null ? matcher.group(&quot;personal1&quot;) : matcher.group(&quot;personal2&quot;);</span>
+<span class="fc" id="L120">			return new EmailAddress(address, personal);</span>
+		}
+<span class="fc" id="L122">		return new EmailAddress(rawAddress, null);</span>
 	}
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

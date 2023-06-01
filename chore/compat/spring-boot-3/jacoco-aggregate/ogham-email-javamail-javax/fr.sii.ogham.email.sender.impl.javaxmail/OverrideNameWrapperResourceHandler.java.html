@@ -11,29 +11,30 @@ import fr.sii.ogham.core.resource.Resource;
 import fr.sii.ogham.email.attachment.Attachment;
 import fr.sii.ogham.email.exception.handler.AttachmentResourceHandlerException;
 
+@SuppressWarnings(&quot;Duplicates&quot;)
 public class OverrideNameWrapperResourceHandler implements JavaMailAttachmentResourceHandler {
 	private final JavaMailAttachmentResourceHandler delegate;
 	
 	public OverrideNameWrapperResourceHandler(JavaMailAttachmentResourceHandler delegate) {
-<span class="fc" id="L18">		super();</span>
-<span class="fc" id="L19">		this.delegate = delegate;</span>
-<span class="fc" id="L20">	}</span>
+<span class="fc" id="L19">		super();</span>
+<span class="fc" id="L20">		this.delegate = delegate;</span>
+<span class="fc" id="L21">	}</span>
 
 	@Override
 	public void setData(BodyPart part, NamedResource resource, Attachment attachment) throws AttachmentResourceHandlerException {
-<span class="nc" id="L24">		OverrideNameWrapper wrapper = (OverrideNameWrapper) resource;</span>
-<span class="nc" id="L25">		Resource wrapped = wrapper.getDelegate();</span>
+<span class="nc" id="L25">		OverrideNameWrapper wrapper = (OverrideNameWrapper) resource;</span>
+<span class="nc" id="L26">		Resource wrapped = wrapper.getDelegate();</span>
 		// if possible, do not convert to ByteResource
-<span class="nc bnc" id="L27" title="All 2 branches missed.">		if (wrapped instanceof NamedResource) {</span>
-<span class="nc" id="L28">			delegate.setData(part, (NamedResource) wrapped, attachment);</span>
-<span class="nc" id="L29">			return;</span>
+<span class="nc bnc" id="L28" title="All 2 branches missed.">		if (wrapped instanceof NamedResource) {</span>
+<span class="nc" id="L29">			delegate.setData(part, (NamedResource) wrapped, attachment);</span>
+<span class="nc" id="L30">			return;</span>
 		}
 		try {
-<span class="nc" id="L32">			delegate.setData(part, new ByteResource(wrapper.getName(), wrapper.getInputStream()), attachment);</span>
-<span class="nc" id="L33">		} catch (IOException e) {</span>
-<span class="nc" id="L34">			throw new AttachmentResourceHandlerException(&quot;Failed to read the content of the attachment named &quot;+wrapper.getName(), attachment, e);</span>
-<span class="nc" id="L35">		}</span>
-<span class="nc" id="L36">	}</span>
+<span class="nc" id="L33">			delegate.setData(part, new ByteResource(wrapper.getName(), wrapper.getInputStream()), attachment);</span>
+<span class="nc" id="L34">		} catch (IOException e) {</span>
+<span class="nc" id="L35">			throw new AttachmentResourceHandlerException(&quot;Failed to read the content of the attachment named &quot;+wrapper.getName(), attachment, e);</span>
+<span class="nc" id="L36">		}</span>
+<span class="nc" id="L37">	}</span>
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

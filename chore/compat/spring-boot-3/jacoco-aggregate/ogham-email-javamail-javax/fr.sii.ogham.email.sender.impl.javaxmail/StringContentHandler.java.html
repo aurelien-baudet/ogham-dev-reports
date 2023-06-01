@@ -22,6 +22,7 @@ import fr.sii.ogham.email.message.Email;
  * @author Aurélien Baudet
  *
  */
+@SuppressWarnings(&quot;Duplicates&quot;)
 public class StringContentHandler implements JavaMailContentHandler {
 	/**
 	 * The Mime Type detector
@@ -34,29 +35,29 @@ public class StringContentHandler implements JavaMailContentHandler {
 	private CharsetDetector charsetProvider;
 
 	public StringContentHandler(MimeTypeProvider mimetypeProvider, CharsetDetector charsetProvider) {
-<span class="fc" id="L37">		super();</span>
-<span class="fc" id="L38">		this.mimetypeProvider = mimetypeProvider;</span>
-<span class="fc" id="L39">		this.charsetProvider = charsetProvider;</span>
-<span class="fc" id="L40">	}</span>
+<span class="fc" id="L38">		super();</span>
+<span class="fc" id="L39">		this.mimetypeProvider = mimetypeProvider;</span>
+<span class="fc" id="L40">		this.charsetProvider = charsetProvider;</span>
+<span class="fc" id="L41">	}</span>
 
 	@Override
 	public void setContent(MimePart message, Multipart multipart, Email email, Content content) throws ContentHandlerException {
 		try {
-<span class="fc" id="L45">			String strContent = ((MayHaveStringContent) content).asString();</span>
-<span class="fc" id="L46">			Charset charset = charsetProvider.detect(strContent);</span>
-<span class="pc bpc" id="L47" title="1 of 2 branches missed.">			String charsetParam = charset == null ? &quot;&quot; : (&quot;;charset=&quot; + charset.name());</span>
-<span class="fc" id="L48">			String contentType = mimetypeProvider.detect(strContent).toString() + charsetParam;</span>
+<span class="fc" id="L46">			String strContent = ((MayHaveStringContent) content).asString();</span>
+<span class="fc" id="L47">			Charset charset = charsetProvider.detect(strContent);</span>
+<span class="pc bpc" id="L48" title="1 of 2 branches missed.">			String charsetParam = charset == null ? &quot;&quot; : (&quot;;charset=&quot; + charset.name());</span>
+<span class="fc" id="L49">			String contentType = mimetypeProvider.detect(strContent).toString() + charsetParam;</span>
 			// add the part
-<span class="fc" id="L50">			MimeBodyPart part = new MimeBodyPart();</span>
-<span class="fc" id="L51">			part.setContent(strContent, contentType);</span>
-<span class="fc" id="L52">			part.setHeader(&quot;Content-Type&quot;, contentType);</span>
-<span class="fc" id="L53">			multipart.addBodyPart(part);</span>
-<span class="nc" id="L54">		} catch (MessagingException e) {</span>
-<span class="nc" id="L55">			throw new ContentHandlerException(&quot;failed to set content on mime message&quot;, content, e);</span>
-<span class="nc" id="L56">		} catch (MimeTypeDetectionException e) {</span>
-<span class="nc" id="L57">			throw new ContentHandlerException(&quot;failed to determine mimetype for the content&quot;, content, e);</span>
-<span class="fc" id="L58">		}</span>
-<span class="fc" id="L59">	}</span>
+<span class="fc" id="L51">			MimeBodyPart part = new MimeBodyPart();</span>
+<span class="fc" id="L52">			part.setContent(strContent, contentType);</span>
+<span class="fc" id="L53">			part.setHeader(&quot;Content-Type&quot;, contentType);</span>
+<span class="fc" id="L54">			multipart.addBodyPart(part);</span>
+<span class="nc" id="L55">		} catch (MessagingException e) {</span>
+<span class="nc" id="L56">			throw new ContentHandlerException(&quot;failed to set content on mime message&quot;, content, e);</span>
+<span class="nc" id="L57">		} catch (MimeTypeDetectionException e) {</span>
+<span class="nc" id="L58">			throw new ContentHandlerException(&quot;failed to determine mimetype for the content&quot;, content, e);</span>
+<span class="fc" id="L59">		}</span>
+<span class="fc" id="L60">	}</span>
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

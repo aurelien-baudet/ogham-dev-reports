@@ -48,8 +48,9 @@ import fr.sii.ogham.email.sender.impl.javaxmail.JavaMailInterceptor;
  * @see JavaMailContentHandler
  */
 @Priority(properties = &quot;${ogham.email.implementation-priority.javamail}&quot;, defaultValue = DEFAULT_JAVAX_MAIL_IMPLEMENTATION_PRIORITY)
+@SuppressWarnings(&quot;Duplicates&quot;)
 public class JavaxMailSender extends AbstractSpecializedSender&lt;Email&gt; {
-<span class="fc" id="L52">	private static final Logger LOG = LoggerFactory.getLogger(JavaxMailSender.class);</span>
+<span class="fc" id="L53">	private static final Logger LOG = LoggerFactory.getLogger(JavaxMailSender.class);</span>
 
 	/**
 	 * Properties that is used to initialize the session
@@ -77,54 +78,54 @@ public class JavaxMailSender extends AbstractSpecializedSender&lt;Email&gt; {
 	private final Authenticator authenticator;
 
 	public JavaxMailSender(PropertyResolver propertyResolver, JavaMailContentHandler contentHandler, JavaMailAttachmentHandler attachmentHandler, Authenticator authenticator) {
-<span class="nc" id="L80">		this(new PropertiesBridge(propertyResolver), contentHandler, attachmentHandler, authenticator);</span>
-<span class="nc" id="L81">	}</span>
+<span class="nc" id="L81">		this(new PropertiesBridge(propertyResolver), contentHandler, attachmentHandler, authenticator);</span>
+<span class="nc" id="L82">	}</span>
 
 	public JavaxMailSender(PropertyResolver propertyResolver, JavaMailContentHandler contentHandler, JavaMailAttachmentHandler attachmentHandler, Authenticator authenticator,
 						   JavaMailInterceptor interceptor) {
-<span class="nc" id="L85">		this(new PropertiesBridge(propertyResolver), contentHandler, attachmentHandler, authenticator, interceptor);</span>
-<span class="nc" id="L86">	}</span>
+<span class="nc" id="L86">		this(new PropertiesBridge(propertyResolver), contentHandler, attachmentHandler, authenticator, interceptor);</span>
+<span class="nc" id="L87">	}</span>
 
 	public JavaxMailSender(Properties properties, JavaMailContentHandler contentHandler, JavaMailAttachmentHandler attachmentHandler, Authenticator authenticator) {
-<span class="nc" id="L89">		this(properties, contentHandler, attachmentHandler, authenticator, null);</span>
-<span class="nc" id="L90">	}</span>
+<span class="nc" id="L90">		this(properties, contentHandler, attachmentHandler, authenticator, null);</span>
+<span class="nc" id="L91">	}</span>
 
 	public JavaxMailSender(Properties properties, JavaMailContentHandler contentHandler, JavaMailAttachmentHandler attachmentHandler, Authenticator authenticator, JavaMailInterceptor interceptor) {
-<span class="fc" id="L93">		super();</span>
-<span class="fc" id="L94">		this.properties = properties;</span>
-<span class="fc" id="L95">		this.contentHandler = contentHandler;</span>
-<span class="fc" id="L96">		this.attachmentHandler = attachmentHandler;</span>
-<span class="fc" id="L97">		this.authenticator = authenticator;</span>
-<span class="fc" id="L98">		this.interceptor = interceptor;</span>
-<span class="fc" id="L99">	}</span>
+<span class="fc" id="L94">		super();</span>
+<span class="fc" id="L95">		this.properties = properties;</span>
+<span class="fc" id="L96">		this.contentHandler = contentHandler;</span>
+<span class="fc" id="L97">		this.attachmentHandler = attachmentHandler;</span>
+<span class="fc" id="L98">		this.authenticator = authenticator;</span>
+<span class="fc" id="L99">		this.interceptor = interceptor;</span>
+<span class="fc" id="L100">	}</span>
 
 	@Override
 	public void send(Email email) throws MessageException {
 		try {
-<span class="fc" id="L104">			LOG.debug(&quot;Initialize Javax mail session with authenticator {} and properties {}&quot;, authenticator, properties);</span>
-<span class="fc" id="L105">			LOG.debug(&quot;Create the mime message for email {}&quot;, logString(email));</span>
-<span class="fc" id="L106">			MimeMessage mimeMsg = createMimeMessage();</span>
+<span class="fc" id="L105">			LOG.debug(&quot;Initialize Javax mail session with authenticator {} and properties {}&quot;, authenticator, properties);</span>
+<span class="fc" id="L106">			LOG.debug(&quot;Create the mime message for email {}&quot;, logString(email));</span>
+<span class="fc" id="L107">			MimeMessage mimeMsg = createMimeMessage();</span>
 			// set the sender address
-<span class="fc" id="L108">			setFrom(email, mimeMsg);</span>
+<span class="fc" id="L109">			setFrom(email, mimeMsg);</span>
 			// set recipients (to, cc, bcc)
-<span class="fc" id="L110">			setRecipients(email, mimeMsg);</span>
+<span class="fc" id="L111">			setRecipients(email, mimeMsg);</span>
 			// set subject and content
-<span class="fc" id="L112">			mimeMsg.setSubject(email.getSubject());</span>
-<span class="fc" id="L113">			setMimeContent(email, mimeMsg);</span>
+<span class="fc" id="L113">			mimeMsg.setSubject(email.getSubject());</span>
+<span class="fc" id="L114">			setMimeContent(email, mimeMsg);</span>
 			// default behavior is done =&gt; message is ready but let possibility
 			// to add extra operations to do on the message
-<span class="pc bpc" id="L116" title="1 of 2 branches missed.">			if (interceptor != null) {</span>
-<span class="nc" id="L117">				LOG.debug(&quot;Executing extra operations for email {}&quot;, logString(email));</span>
-<span class="nc" id="L118">				interceptor.intercept(mimeMsg, email);</span>
+<span class="pc bpc" id="L117" title="1 of 2 branches missed.">			if (interceptor != null) {</span>
+<span class="nc" id="L118">				LOG.debug(&quot;Executing extra operations for email {}&quot;, logString(email));</span>
+<span class="nc" id="L119">				interceptor.intercept(mimeMsg, email);</span>
 			}
 			// message is ready =&gt; send it
-<span class="fc" id="L121">			LOG.info(&quot;Sending email using Javax Mail API through server {}:{}...&quot;, properties.getProperty(&quot;mail.smtp.host&quot;, properties.getProperty(&quot;mail.host&quot;)),</span>
-<span class="fc" id="L122">					properties.getProperty(&quot;mail.smtp.port&quot;, properties.getProperty(&quot;mail.port&quot;)));</span>
-<span class="fc" id="L123">			Transport.send(mimeMsg);</span>
-<span class="fc" id="L124">		} catch (MessagingException | ContentHandlerException | AttachmentResourceHandlerException | IOException e) {</span>
-<span class="fc" id="L125">			throw new MessageException(&quot;failed to send message using Javax Mail API&quot;, email, e);</span>
-<span class="fc" id="L126">		}</span>
-<span class="fc" id="L127">	}</span>
+<span class="fc" id="L122">			LOG.info(&quot;Sending email using Javax Mail API through server {}:{}...&quot;, properties.getProperty(&quot;mail.smtp.host&quot;, properties.getProperty(&quot;mail.host&quot;)),</span>
+<span class="fc" id="L123">					properties.getProperty(&quot;mail.smtp.port&quot;, properties.getProperty(&quot;mail.port&quot;)));</span>
+<span class="fc" id="L124">			Transport.send(mimeMsg);</span>
+<span class="fc" id="L125">		} catch (MessagingException | ContentHandlerException | AttachmentResourceHandlerException | IOException e) {</span>
+<span class="fc" id="L126">			throw new MessageException(&quot;failed to send message using Javax Mail API&quot;, email, e);</span>
+<span class="fc" id="L127">		}</span>
+<span class="fc" id="L128">	}</span>
 
 	/**
 	 * Initialize the session and create the mime message.
@@ -133,8 +134,8 @@ public class JavaxMailSender extends AbstractSpecializedSender&lt;Email&gt; {
 	 */
 	private MimeMessage createMimeMessage() {
 		// prepare the message
-<span class="fc" id="L136">		Session session = Session.getInstance(properties, authenticator);</span>
-<span class="fc" id="L137">		return new MimeMessage(session);</span>
+<span class="fc" id="L137">		Session session = Session.getInstance(properties, authenticator);</span>
+<span class="fc" id="L138">		return new MimeMessage(session);</span>
 	}
 
 	/**
@@ -154,11 +155,11 @@ public class JavaxMailSender extends AbstractSpecializedSender&lt;Email&gt; {
 	 *             when the email address is not valid
 	 */
 	private static void setFrom(Email email, MimeMessage mimeMsg) throws MessagingException, UnsupportedEncodingException, InvalidMessageException {
-<span class="fc bfc" id="L157" title="All 2 branches covered.">		if (email.getFrom() == null) {</span>
-<span class="fc" id="L158">			throw new InvalidMessageException(&quot;The sender address has not been set&quot;, email, &quot;Missing sender email address&quot;);</span>
+<span class="fc bfc" id="L158" title="All 2 branches covered.">		if (email.getFrom() == null) {</span>
+<span class="fc" id="L159">			throw new InvalidMessageException(&quot;The sender address has not been set&quot;, email, &quot;Missing sender email address&quot;);</span>
 		}
-<span class="fc" id="L160">		mimeMsg.setFrom(toInternetAddress(email.getFrom()));</span>
-<span class="fc" id="L161">	}</span>
+<span class="fc" id="L161">		mimeMsg.setFrom(toInternetAddress(email.getFrom()));</span>
+<span class="fc" id="L162">	}</span>
 
 	/**
 	 * Set the recipients addresses on the mime message.
@@ -175,10 +176,10 @@ public class JavaxMailSender extends AbstractSpecializedSender&lt;Email&gt; {
 	 *             when the email address is not valid
 	 */
 	private static void setRecipients(Email email, MimeMessage mimeMsg) throws MessagingException, UnsupportedEncodingException {
-<span class="fc bfc" id="L178" title="All 2 branches covered.">		for (Recipient recipient : email.getRecipients()) {</span>
-<span class="fc" id="L179">			mimeMsg.addRecipient(convert(recipient.getType()), toInternetAddress(recipient.getAddress()));</span>
-<span class="fc" id="L180">		}</span>
-<span class="fc" id="L181">	}</span>
+<span class="fc bfc" id="L179" title="All 2 branches covered.">		for (Recipient recipient : email.getRecipients()) {</span>
+<span class="fc" id="L180">			mimeMsg.addRecipient(convert(recipient.getType()), toInternetAddress(recipient.getAddress()));</span>
+<span class="fc" id="L181">		}</span>
+<span class="fc" id="L182">	}</span>
 
 	/**
 	 * Set the content on the mime message.
@@ -298,112 +299,112 @@ public class JavaxMailSender extends AbstractSpecializedSender&lt;Email&gt; {
 	 *             when the content can't be constructed
 	 */
 	private void setMimeContent(Email email, MimeMessage mimeMsg) throws MessagingException, ContentHandlerException, AttachmentResourceHandlerException, IOException {
-<span class="fc" id="L301">		LOG.debug(&quot;Add message content for email {}&quot;, logString(email));</span>
+<span class="fc" id="L302">		LOG.debug(&quot;Add message content for email {}&quot;, logString(email));</span>
 
-<span class="fc" id="L303">		Multipart mixedContainer = new MimeMultipart(&quot;mixed&quot;);</span>
+<span class="fc" id="L304">		Multipart mixedContainer = new MimeMultipart(&quot;mixed&quot;);</span>
 
 		// prepare the body
-<span class="fc" id="L306">		contentHandler.setContent(mimeMsg, mixedContainer, email, email.getContent());</span>
+<span class="fc" id="L307">		contentHandler.setContent(mimeMsg, mixedContainer, email, email.getContent());</span>
 
 		// add the attachments (either embedded or attached)
-<span class="fc" id="L309">		Multipart relatedContainer = getOrAddRelatedContainer(mixedContainer, email);</span>
-<span class="fc bfc" id="L310" title="All 2 branches covered.">		for (Attachment attachment : email.getAttachments()) {</span>
-<span class="fc bfc" id="L311" title="All 2 branches covered.">			Multipart attachmentContainer = isEmbeddableAttachment(attachment) ? relatedContainer : mixedContainer;</span>
-<span class="fc" id="L312">			attachmentHandler.addAttachment(attachmentContainer, attachment);</span>
-<span class="fc" id="L313">		}</span>
+<span class="fc" id="L310">		Multipart relatedContainer = getOrAddRelatedContainer(mixedContainer, email);</span>
+<span class="fc bfc" id="L311" title="All 2 branches covered.">		for (Attachment attachment : email.getAttachments()) {</span>
+<span class="fc bfc" id="L312" title="All 2 branches covered.">			Multipart attachmentContainer = isEmbeddableAttachment(attachment) ? relatedContainer : mixedContainer;</span>
+<span class="fc" id="L313">			attachmentHandler.addAttachment(attachmentContainer, attachment);</span>
+<span class="fc" id="L314">		}</span>
 
 		// set the content of the email
-<span class="fc bfc" id="L316" title="All 4 branches covered.">		if (hasDownloadableAttachments(email) || hasEmbeddableAttachments(email)) {</span>
-<span class="fc bfc" id="L317" title="All 2 branches covered.">			mimeMsg.setContent(hasDownloadableAttachments(email) ? mixedContainer : relatedContainer);</span>
+<span class="fc bfc" id="L317" title="All 4 branches covered.">		if (hasDownloadableAttachments(email) || hasEmbeddableAttachments(email)) {</span>
+<span class="fc bfc" id="L318" title="All 2 branches covered.">			mimeMsg.setContent(hasDownloadableAttachments(email) ? mixedContainer : relatedContainer);</span>
 		} else {
 			// extract the body from the container (as it is not necessary)
 			// and place the body at the root of the message
-<span class="fc" id="L321">			BodyPart body = mixedContainer.getBodyPart(0);</span>
-<span class="fc" id="L322">			mimeMsg.setContent(body.getContent(), body.getContentType());</span>
+<span class="fc" id="L322">			BodyPart body = mixedContainer.getBodyPart(0);</span>
+<span class="fc" id="L323">			mimeMsg.setContent(body.getContent(), body.getContentType());</span>
 		}
-<span class="fc" id="L324">	}</span>
+<span class="fc" id="L325">	}</span>
 
 	private static Multipart getOrAddRelatedContainer(Multipart root, Email email) throws MessagingException, IOException {
 		// no embeddable attachments means that there is no need of the related
 		// container
-<span class="fc bfc" id="L329" title="All 2 branches covered.">		if (!hasEmbeddableAttachments(email)) {</span>
-<span class="fc" id="L330">			return null;</span>
+<span class="fc bfc" id="L330" title="All 2 branches covered.">		if (!hasEmbeddableAttachments(email)) {</span>
+<span class="fc" id="L331">			return null;</span>
 		}
-<span class="fc" id="L332">		Multipart related = findRelatedContainer(root);</span>
-<span class="pc bpc" id="L333" title="1 of 2 branches missed.">		if (related == null) {</span>
-<span class="fc" id="L334">			related = new MimeMultipart(&quot;related&quot;);</span>
-<span class="fc" id="L335">			moveBodyToRelatedContainer(root, related);</span>
-<span class="fc" id="L336">			addRelatedContainer(root, related);</span>
+<span class="fc" id="L333">		Multipart related = findRelatedContainer(root);</span>
+<span class="pc bpc" id="L334" title="1 of 2 branches missed.">		if (related == null) {</span>
+<span class="fc" id="L335">			related = new MimeMultipart(&quot;related&quot;);</span>
+<span class="fc" id="L336">			moveBodyToRelatedContainer(root, related);</span>
+<span class="fc" id="L337">			addRelatedContainer(root, related);</span>
 		}
-<span class="fc" id="L338">		return related;</span>
+<span class="fc" id="L339">		return related;</span>
 	}
 
 	private static void moveBodyToRelatedContainer(Multipart root, Multipart related) throws MessagingException {
-<span class="fc bfc" id="L342" title="All 2 branches covered.">		while (root.getCount() &gt; 0) {</span>
-<span class="fc" id="L343">			related.addBodyPart(root.getBodyPart(0));</span>
-<span class="fc" id="L344">			root.removeBodyPart(0);</span>
+<span class="fc bfc" id="L343" title="All 2 branches covered.">		while (root.getCount() &gt; 0) {</span>
+<span class="fc" id="L344">			related.addBodyPart(root.getBodyPart(0));</span>
+<span class="fc" id="L345">			root.removeBodyPart(0);</span>
 		}
-<span class="fc" id="L346">	}</span>
+<span class="fc" id="L347">	}</span>
 
 	private static void addRelatedContainer(Multipart root, Multipart related) throws MessagingException {
-<span class="fc" id="L349">		MimeBodyPart part = new MimeBodyPart();</span>
-<span class="fc" id="L350">		part.setContent(related);</span>
-<span class="fc" id="L351">		root.addBodyPart(part);</span>
-<span class="fc" id="L352">	}</span>
+<span class="fc" id="L350">		MimeBodyPart part = new MimeBodyPart();</span>
+<span class="fc" id="L351">		part.setContent(related);</span>
+<span class="fc" id="L352">		root.addBodyPart(part);</span>
+<span class="fc" id="L353">	}</span>
 
 	private static Multipart findRelatedContainer(Multipart container) throws MessagingException, IOException {
-<span class="pc bpc" id="L355" title="1 of 2 branches missed.">		if (isRelated(container)) {</span>
-<span class="nc" id="L356">			return container;</span>
+<span class="pc bpc" id="L356" title="1 of 2 branches missed.">		if (isRelated(container)) {</span>
+<span class="nc" id="L357">			return container;</span>
 		}
-<span class="fc bfc" id="L358" title="All 2 branches covered.">		for (int i = 0; i &lt; container.getCount(); i++) {</span>
-<span class="fc" id="L359">			Object content = container.getBodyPart(i).getContent();</span>
-<span class="fc bfc" id="L360" title="All 2 branches covered.">			if (content instanceof Multipart) {</span>
-<span class="fc" id="L361">				return findRelatedContainer((Multipart) content);</span>
+<span class="fc bfc" id="L359" title="All 2 branches covered.">		for (int i = 0; i &lt; container.getCount(); i++) {</span>
+<span class="fc" id="L360">			Object content = container.getBodyPart(i).getContent();</span>
+<span class="fc bfc" id="L361" title="All 2 branches covered.">			if (content instanceof Multipart) {</span>
+<span class="fc" id="L362">				return findRelatedContainer((Multipart) content);</span>
 			}
 		}
-<span class="fc" id="L364">		return null;</span>
+<span class="fc" id="L365">		return null;</span>
 	}
 
 	private static boolean isRelated(Multipart mp) {
-<span class="fc" id="L368">		return mp.getContentType().startsWith(&quot;multipart/related&quot;);</span>
+<span class="fc" id="L369">		return mp.getContentType().startsWith(&quot;multipart/related&quot;);</span>
 	}
 
 	private static boolean isEmbeddableAttachment(Attachment attachment) {
-<span class="fc" id="L372">		return INLINE.equals(attachment.getDisposition());</span>
+<span class="fc" id="L373">		return INLINE.equals(attachment.getDisposition());</span>
 	}
 
 	private static boolean isDownloadableAttachment(Attachment attachment) {
-<span class="fc" id="L376">		return ATTACHMENT.equals(attachment.getDisposition());</span>
+<span class="fc" id="L377">		return ATTACHMENT.equals(attachment.getDisposition());</span>
 	}
 
 	private static boolean hasEmbeddableAttachments(Email email) {
-<span class="fc" id="L380">		return email.getAttachments().stream().anyMatch(JavaxMailSender::isEmbeddableAttachment);</span>
+<span class="fc" id="L381">		return email.getAttachments().stream().anyMatch(JavaxMailSender::isEmbeddableAttachment);</span>
 	}
 
 	private static boolean hasDownloadableAttachments(Email email) {
-<span class="fc" id="L384">		return email.getAttachments().stream().anyMatch(JavaxMailSender::isDownloadableAttachment);</span>
+<span class="fc" id="L385">		return email.getAttachments().stream().anyMatch(JavaxMailSender::isDownloadableAttachment);</span>
 	}
 
 	private static RecipientType convert(fr.sii.ogham.email.message.RecipientType type) {
-<span class="pc bpc" id="L388" title="3 of 4 branches missed.">		switch (type) {</span>
+<span class="pc bpc" id="L389" title="3 of 4 branches missed.">		switch (type) {</span>
 			case BCC:
-<span class="nc" id="L390">				return RecipientType.BCC;</span>
+<span class="nc" id="L391">				return RecipientType.BCC;</span>
 			case CC:
-<span class="nc" id="L392">				return RecipientType.CC;</span>
+<span class="nc" id="L393">				return RecipientType.CC;</span>
 			case TO:
-<span class="fc" id="L394">				return RecipientType.TO;</span>
+<span class="fc" id="L395">				return RecipientType.TO;</span>
 			default:
-<span class="nc" id="L396">				throw new IllegalArgumentException(&quot;Invalid recipient type &quot; + type);</span>
+<span class="nc" id="L397">				throw new IllegalArgumentException(&quot;Invalid recipient type &quot; + type);</span>
 		}
 	}
 
 	private static InternetAddress toInternetAddress(EmailAddress address) throws AddressException, UnsupportedEncodingException {
-<span class="pc bpc" id="L401" title="1 of 2 branches missed.">		return address.getPersonal() == null ? new InternetAddress(address.getAddress()) : new InternetAddress(address.getAddress(), address.getPersonal());</span>
+<span class="pc bpc" id="L402" title="1 of 2 branches missed.">		return address.getPersonal() == null ? new InternetAddress(address.getAddress()) : new InternetAddress(address.getAddress(), address.getPersonal());</span>
 	}
 
 	@Override
 	public String toString() {
-<span class="fc" id="L406">		return &quot;JavaxMailSender&quot;;</span>
+<span class="fc" id="L407">		return &quot;JavaxMailSender&quot;;</span>
 	}
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>
